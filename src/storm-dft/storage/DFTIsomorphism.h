@@ -217,9 +217,12 @@ class DFTColouring {
                 colourize(dft.getGate(id));
             } else if (dft.isDependency(id)) {
                 colourize(dft.getDependency(id));
-            } else {
-                STORM_LOG_ASSERT(dft.isRestriction(id), "Element is no restriction.");
+            } else if (dft.isRestriction(id)) {
                 colourize(dft.getRestriction(id));
+            } else {
+                auto element = dft.getElement(id);
+                STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException,
+                                "Element " << element->name() << " of type '" << element->type() << "' cannot be coloured.");
             }
         }
     }
@@ -252,14 +255,17 @@ class DFTColouring {
                 } else {
                     res.pdepCandidates[depColour.at(index)] = std::vector<size_t>({index});
                 }
-            } else {
-                STORM_LOG_ASSERT(dft.isRestriction(index), "Element is no restriction.");
+            } else if (dft.isRestriction(index)) {
                 auto it = res.restrictionCandidates.find(restrictionColour.at(index));
                 if (it != res.restrictionCandidates.end()) {
                     it->second.push_back(index);
                 } else {
                     res.restrictionCandidates[restrictionColour.at(index)] = std::vector<size_t>({index});
                 }
+            } else {
+                auto element = dft.getElement(index);
+                STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException,
+                                "Element " << element->name() << " of type '" << element->type() << "' cannot be coloured.");
             }
         }
         return res;

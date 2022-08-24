@@ -40,16 +40,16 @@ class BEErlang : public DFTBE<ValueType> {
     }
 
     /*!
-     * Return failure probability in active state.
-     * @return Active failure probability.
+     * Return failure rate in active state.
+     * @return Active failure rate.
      */
     ValueType const& activeFailureRate() const {
         return mActiveFailureRate;
     }
 
     /*!
-     * Return failure probability in passive state.
-     * @return Passive failure probability.
+     * Return failure rate in passive state.
+     * @return Passive failure rate.
      */
     ValueType const& passiveFailureRate() const {
         return mPassiveFailureRate;
