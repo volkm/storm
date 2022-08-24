@@ -9,7 +9,7 @@ namespace elements {
 /*!
  * Element types in a DFT.
  */
-enum class DFTElementType { BE, AND, OR, VOT, PAND, POR, SPARE, PDEP, SEQ, MUTEX };
+enum class DFTElementType { BE, AND, OR, VOT, PAND, POR, SPARE, PDEP, SEQ, MUTEX, INSPECTION };
 
 /*!
  * BE types in a DFT.
@@ -29,6 +29,7 @@ inline bool isGateType(DFTElementType const& type) {
         case DFTElementType::PDEP:
         case DFTElementType::SEQ:
         case DFTElementType::MUTEX:
+        case DFTElementType::INSPECTION:
             return false;
         default:
             STORM_LOG_ASSERT(false, "DFT type not known.");
@@ -77,6 +78,8 @@ inline std::string toString(DFTElementType const& type) {
             return "SEQ";
         case DFTElementType::MUTEX:
             return "MUTEX";
+        case DFTElementType::INSPECTION:
+            return "INSPECTION";
         default:
             STORM_LOG_ASSERT(false, "DFT type not known.");
             return "";

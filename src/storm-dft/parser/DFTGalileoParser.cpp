@@ -136,8 +136,11 @@ storm::dft::storage::DFT<ValueType> DFTGalileoParser<ValueType>::parseDFT(const 
                     std::string remaining_line = std::regex_replace(line, regexName, "");
                     parseBasicElement(name, remaining_line, builder, valueParser);
                 } else if (type.find("insp") != std::string::npos) {
-                    // Inspection as defined by DFTCalc
-                    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Inspections are not supported.");
+                    // Inspection module as defined by DFTCalc
+                    size_t pos = type.find("insp");
+                    size_t phases = storm::parser::parseNumber<size_t>(type.substr(0, pos));
+                    ValueType rate = valueParser.parseValue(type.substr(pos + 4));
+                    builder.addInspectionModule(name, rate, phases, childNames);
                 } else {
                     STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Type name '" << type << "' not recognized.");
                 }

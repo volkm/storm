@@ -20,3 +20,6 @@
 #include "DFTDependency.h"
 #include "DFTMutex.h"
 #include "DFTSeq.h"
+
+// Other types
+#include "InspectionModule.h"

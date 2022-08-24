@@ -31,6 +31,7 @@ class DFTBuilder {
     using DFTGatePointer = std::shared_ptr<storm::dft::storage::elements::DFTGate<ValueType>>;
     using DFTDependencyPointer = std::shared_ptr<storm::dft::storage::elements::DFTDependency<ValueType>>;
     using DFTRestrictionPointer = std::shared_ptr<storm::dft::storage::elements::DFTRestriction<ValueType>>;
+    using InspectionModulePointer = std::shared_ptr<storm::dft::storage::elements::InspectionModule<ValueType>>;
 
    private:
     std::size_t mNextId;
@@ -39,6 +40,7 @@ class DFTBuilder {
     std::unordered_map<DFTElementPointer, std::vector<std::string>> mChildNames;
     std::unordered_map<DFTRestrictionPointer, std::vector<std::string>> mRestrictionChildNames;
     std::unordered_map<DFTDependencyPointer, std::vector<std::string>> mDependencyChildNames;
+    std::unordered_map<InspectionModulePointer, std::vector<std::string>> mInspectionChildNames;
     std::unordered_map<std::string, storm::dft::storage::DFTLayoutInfo> mLayoutInfo;
     storm::utility::ConstantsComparator<ValueType> comparator;
 
@@ -173,6 +175,15 @@ class DFTBuilder {
     void addPdep(std::string const& name, std::vector<std::string> const& children, ValueType probability);
 
     /*!
+     * Create inspection module and add it to DFT.
+     * @param name Name.
+     * @param rate Rate governing distribution in each phase.
+     * @param phases Number of consecutive phases.
+     * @param children Names of children.
+     */
+    void addInspectionModule(std::string const& name, ValueType rate, unsigned phases, std::vector<std::string> const& children);
+
+    /*!
      * Set top level element.
      * @param tle Name of top level element.
      */
@@ -235,6 +246,13 @@ class DFTBuilder {
      * @param children Names of children.
      */
     void addRestriction(DFTRestrictionPointer restriction, std::vector<std::string> const& children);
+
+    /*!
+     * Add given inspection module to DFT.
+     * @param inspection Inspection module.
+     * @param children Names of children.
+     */
+    void addInspectionModule(InspectionModulePointer inspection, std::vector<std::string> const& children);
 
     /**
      * Check whether the name is already used.

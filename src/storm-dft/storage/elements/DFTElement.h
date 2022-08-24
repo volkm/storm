@@ -186,6 +186,14 @@ class DFTElement {
     }
 
     /*!
+     * Check whether the element is an inspection module.
+     * @return True iff element is an inspection module.
+     */
+    virtual bool isInspectionModule() const {
+        return false;
+    }
+
+    /*!
      * Get number of children.
      * @return Nr of children.
      */

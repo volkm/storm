@@ -87,6 +87,21 @@ storm::dft::storage::DFT<ValueType> DFTBuilder<ValueType>::build() {
         }
     }
 
+    // Build connections for inspection modules
+    for (auto& inspectionChildrenPair : mInspectionChildNames) {
+        InspectionModulePointer inspection = inspectionChildrenPair.first;
+        for (std::string const& childName : inspectionChildrenPair.second) {
+            auto itFind = mElements.find(childName);
+            STORM_LOG_THROW(itFind != mElements.end(), storm::exceptions::WrongFormatException,
+                            "Child '" << childName << "' for inspection module '" << inspection->name() << "' not found.");
+            DFTElementPointer childElement = itFind->second;
+            STORM_LOG_THROW(childElement->isBasicElement(), storm::exceptions::WrongFormatException,
+                            "Child '" << childElement->name() << "' of inspection module '" << inspection->name() << "' must be a BE.");
+            inspection->addChild(childElement);
+            // childElement->addInspectionModule(inspection);
+        }
+    }
+
     // Sort elements topologically
     DFTElementVector elements = sortTopological();
     // Set ids according to order
@@ -302,6 +317,21 @@ void DFTBuilder<ValueType>::addMutex(std::string const& name, std::vector<std::s
 }
 
 template<typename ValueType>
+void DFTBuilder<ValueType>::addInspectionModule(InspectionModulePointer inspection, std::vector<std::string> const& children) {
+    STORM_LOG_THROW(children.size() > 0, storm::exceptions::WrongFormatException, "No children given for inspection module " << inspection->name() << ".");
+    mInspectionChildNames[inspection] = children;
+    addElement(inspection);
+}
+
+template<typename ValueType>
+void DFTBuilder<ValueType>::addInspectionModule(std::string const& name, ValueType rate, unsigned phases, std::vector<std::string> const& children) {
+    STORM_LOG_THROW(this->comparator.isLess(storm::utility::zero<ValueType>(), rate), storm::exceptions::WrongFormatException,
+                    "Inspection module " << name << " requires a positive rate.");
+    STORM_LOG_THROW(phases > 0, storm::exceptions::WrongFormatException, "Inspection module " << name << " requires a positive number of phases.");
+    addInspectionModule(std::make_shared<storm::dft::storage::elements::InspectionModule<ValueType>>(0, name, rate, phases), children);
+}
+
+template<typename ValueType>
 void DFTBuilder<ValueType>::setTopLevel(std::string const& tle) {
     STORM_LOG_THROW(mTopLevelName.empty(), storm::exceptions::WrongFormatException, "Top level element was already set");
     STORM_LOG_THROW(nameInUse(tle), storm::exceptions::InvalidArgumentException, "Element with name '" << tle << "' not known.");
@@ -327,7 +357,8 @@ void DFTBuilder<ValueType>::cloneElement(DFTElementCPointer element) {
         case storm::dft::storage::elements::DFTElementType::POR:
         case storm::dft::storage::elements::DFTElementType::SPARE:
         case storm::dft::storage::elements::DFTElementType::SEQ:
-        case storm::dft::storage::elements::DFTElementType::MUTEX: {
+        case storm::dft::storage::elements::DFTElementType::MUTEX:
+        case storm::dft::storage::elements::DFTElementType::INSPECTION: {
             auto elemWithChildren = std::static_pointer_cast<storm::dft::storage::elements::DFTChildren<ValueType> const>(element);
             std::vector<std::string> children{};
             for (DFTElementPointer const& elem : elemWithChildren->children()) {
@@ -366,6 +397,9 @@ void DFTBuilder<ValueType>::cloneElementWithNewChildren(DFTChildrenCPointer elem
         case storm::dft::storage::elements::DFTElementType::MUTEX:
             addRestriction(std::static_pointer_cast<storm::dft::storage::elements::DFTRestriction<ValueType>>(elemWithChildren->clone()), children);
             break;
+        case storm::dft::storage::elements::DFTElementType::INSPECTION:
+            addInspectionModule(std::static_pointer_cast<storm::dft::storage::elements::InspectionModule<ValueType>>(elemWithChildren->clone()), children);
+            break;
         default:
             STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException, "DFT element type '" << elemWithChildren->type() << "' not known.");
             break;
@@ -388,8 +422,8 @@ void DFTBuilder<ValueType>::topologicalVisit(DFTElementPointer const& element,
             }
         }
         // TODO: restrictions and dependencies have no parents, so this can be done more efficiently.
-        else if (element->isRestriction()) {
-            for (DFTElementPointer const& child : std::static_pointer_cast<storm::dft::storage::elements::DFTRestriction<ValueType>>(element)->children()) {
+        else if (element->isRestriction() || element->isInspectionModule()) {
+            for (DFTElementPointer const& child : std::static_pointer_cast<storm::dft::storage::elements::DFTChildren<ValueType>>(element)->children()) {
                 // Recursively visit all children
                 topologicalVisit(child, visited, visitedElements);
             }
