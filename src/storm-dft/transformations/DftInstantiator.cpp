@@ -90,6 +90,13 @@ std::shared_ptr<storm::dft::storage::DFT<ConstantType>> DftInstantiator<Parametr
                 builder.addPdep(dependency->name(), children, probability);
                 break;
             }
+            case storm::dft::storage::elements::DFTElementType::INSPECTION: {
+                auto inspection = std::static_pointer_cast<storm::dft::storage::elements::InspectionModule<ParametricType> const>(element);
+                // Instantiate rate
+                ConstantType rate = storm::utility::convertNumber<ConstantType>(inspection->rate().evaluate(valuation));
+                builder.addInspectionModule(inspection->name(), rate, inspection->phases(), getChildrenVector(inspection));
+                break;
+            }
             default:
                 STORM_LOG_THROW(false, storm::exceptions::NotImplementedException, "DFT type '" << element->type() << "' not known.");
                 break;

@@ -1263,6 +1263,7 @@ std::set<storm::RationalFunctionVariable> getParameters(DFT<storm::RationalFunct
             case storm::dft::storage::elements::DFTElementType::SPARE:
             case storm::dft::storage::elements::DFTElementType::SEQ:
             case storm::dft::storage::elements::DFTElementType::MUTEX:
+            case storm::dft::storage::elements::DFTElementType::INSPECTION:
                 // Do nothing
                 break;
             default:
