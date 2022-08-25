@@ -51,6 +51,18 @@ class DFTAnd : public DFTGate<ValueType> {
             this->childrenDontCare(state, queues);
         }
     }
+
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        if (state.hasFailed(this->mId)) {
+            for (auto const& child : this->children()) {
+                if (state.hasFailed(child->id())) {
+                    return;
+                }
+            }
+            // All children are operational
+            this->repair(state, queues);
+        }
+    }
 };
 
 }  // namespace elements

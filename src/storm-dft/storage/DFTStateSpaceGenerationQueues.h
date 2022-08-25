@@ -32,6 +32,7 @@ class DFTStateSpaceGenerationQueues {
     using DFTRestrictionVector = std::vector<DFTRestrictionPointer>;
 
     std::priority_queue<DFTGatePointer, DFTGateVector, OrderElementsByRank<ValueType>> failurePropagation;
+    std::priority_queue<DFTGatePointer, DFTGateVector, OrderElementsByRank<ValueType>> repairPropagation;
     DFTGateVector failsafePropagation;
     DFTElementVector dontcarePropagation;
     DFTElementVector activatePropagation;
@@ -49,6 +50,20 @@ class DFTStateSpaceGenerationQueues {
     DFTGatePointer nextFailurePropagation() {
         DFTGatePointer next = failurePropagation.top();
         failurePropagation.pop();
+        return next;
+    }
+
+    void propagateRepair(DFTGatePointer const& elem) {
+        repairPropagation.push(elem);
+    }
+
+    bool repairPropagationDone() const {
+        return repairPropagation.empty();
+    }
+
+    DFTGatePointer nextRepairPropagation() {
+        DFTGatePointer next = repairPropagation.top();
+        repairPropagation.pop();
         return next;
     }
 

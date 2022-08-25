@@ -19,6 +19,7 @@ class DftNextStateGenerator {
     using DFTElementPointer = std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType>>;
     using DFTGatePointer = std::shared_ptr<storm::dft::storage::elements::DFTGate<ValueType>>;
     using DFTRestrictionPointer = std::shared_ptr<storm::dft::storage::elements::DFTRestriction<ValueType>>;
+    using InspectionModulePointer = std::shared_ptr<storm::dft::storage::elements::InspectionModule<ValueType>>;
 
    public:
     typedef std::function<StateType(DFTStatePointer const&)> StateToIdCallback;
@@ -68,6 +69,15 @@ class DftNextStateGenerator {
     DFTStatePointer createSuccessorState(DFTStatePointer const state, std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& failedBE,
                                          std::shared_ptr<storm::dft::storage::elements::DFTDependency<ValueType> const>& triggeringDependency,
                                          bool dependencySuccessful = true) const;
+    /*!
+     * Create successor state from given state by letting the given BE be repaired next.
+     *
+     * @param state Current state.
+     * @param failedBE BE which is repaired next.
+     * @return Successor state.
+     */
+    DFTStatePointer createSuccessorStateRepair(DFTStatePointer const state,
+                                               std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& repairedBE) const;
 
     /**
      * Propagate the failures in a given state if the given BE fails
@@ -86,6 +96,15 @@ class DftNextStateGenerator {
      */
     void propagateFailsafe(DFTStatePointer newState, std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& nextBE,
                            storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const;
+
+    /**
+     * Propagate the repairs in a given state if the given BE is repaired.
+     *
+     * @param newState starting state of the propagation
+     * @param nextBE BE whose repair is propagated
+     */
+    void propagateRepair(DFTStatePointer newState, std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& nextBE,
+                         storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const;
 
    private:
     /*!

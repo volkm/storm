@@ -207,6 +207,11 @@ void DFTState<ValueType>::setDontCare(size_t id) {
 }
 
 template<typename ValueType>
+void DFTState<ValueType>::setOperational(size_t id) {
+    mStatus.setFromInt(mStateGenerationInfo.getStateIndex(id), 2, static_cast<uint_fast64_t>(DFTElementState::Operational));
+}
+
+template<typename ValueType>
 void DFTState<ValueType>::setDependencySuccessful(size_t id) {
     // Only distinguish between passive and dont care dependencies
     // mStatus.set(mStateGenerationInfo.getStateIndex(id));
@@ -350,6 +355,16 @@ void DFTState<ValueType>::letBEFail(std::shared_ptr<storm::dft::storage::element
     // Set BE as failed
     setFailed(be->id());
     failableElements.removeBE(be->id());
+}
+
+template<typename ValueType>
+void DFTState<ValueType>::letBERepair(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> be) {
+    STORM_LOG_ASSERT(hasFailed(be->id()), "Element " << *be << " is not failed.");
+    // Consider "normal" failure
+    STORM_LOG_ASSERT(be->canFail(), "Element " << *be << " cannot fail.");
+    // Set BE as operational
+    setOperational(be->id());
+    failableElements.addBE(be->id());
 }
 
 template<typename ValueType>

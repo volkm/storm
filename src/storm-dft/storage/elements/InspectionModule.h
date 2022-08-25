@@ -88,12 +88,20 @@ class InspectionModule : public DFTChildren<ValueType> {
         return false;
     }
 
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        // Do nothing
+    }
+
    protected:
     void fail(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
         // Do nothing
     }
 
     void failsafe(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        // Do nothing
+    }
+
+    void repair(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
         // Do nothing
     }
 

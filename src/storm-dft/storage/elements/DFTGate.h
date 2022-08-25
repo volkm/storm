@@ -95,6 +95,18 @@ class DFTGate : public DFTChildren<ValueType> {
     void childrenDontCare(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const {
         queues.propagateDontCare(this->children());
     }
+
+    void repair(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        for (std::shared_ptr<DFTGate> parent : this->mParents) {
+            if (state.hasFailed(parent->id())) {
+                queues.propagateRepair(parent);
+            }
+        }
+        for (std::shared_ptr<DFTRestriction<ValueType>> restr : this->mRestrictions) {
+            queues.checkRestrictionLater(restr);
+        }
+        state.setOperational(this->mId);
+    }
 };
 
 }  // namespace elements

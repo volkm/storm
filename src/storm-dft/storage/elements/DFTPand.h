@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DFTGate.h"
+#include "storm/exceptions/NotImplementedException.h"
 
 namespace storm::dft {
 namespace storage {
@@ -76,6 +77,10 @@ class DFTPand : public DFTGate<ValueType> {
             this->failsafe(state, queues);
             this->childrenDontCare(state, queues);
         }
+    }
+
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        STORM_LOG_THROW(false, storm::exceptions::NotImplementedException, "Repairs for PAND are not implemented.");
     }
 
    protected:

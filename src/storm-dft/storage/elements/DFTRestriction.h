@@ -81,6 +81,10 @@ class DFTRestriction : public DFTChildren<ValueType> {
     void failsafe(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
         // Do nothing
     }
+
+    void repair(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        // Do nothing
+    }
 };
 
 }  // namespace elements

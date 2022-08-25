@@ -62,6 +62,10 @@ class DFTMutex : public DFTRestriction<ValueType> {
         // Actually, it doesnt matter what we return here..
         return false;
     }
+
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        STORM_LOG_THROW(false, storm::exceptions::NotImplementedException, "Repairs for PAND are not implemented.");
+    }
 };
 
 }  // namespace elements

@@ -126,6 +126,13 @@ class DFTChildren : public DFTElement<ValueType> {
     virtual void checkFailsafe(storm::dft::storage::DFTState<ValueType>& state,
                                storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const = 0;
 
+    /*!
+     * Check repair status.
+     * @param state Current state of DFT.
+     * @param queues Propagation queue for rpair.
+     */
+    virtual void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const = 0;
+
     virtual std::string toString() const override {
         std::stringstream stream;
         stream << "{" << this->name() << "} " << this->typestring() << " (";
@@ -158,6 +165,8 @@ class DFTChildren : public DFTElement<ValueType> {
     virtual void fail(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const = 0;
 
     virtual void failsafe(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const = 0;
+
+    virtual void repair(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const = 0;
 
    private:
     DFTElementVector mChildren;

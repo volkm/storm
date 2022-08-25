@@ -78,6 +78,21 @@ class DFTVot : public DFTGate<ValueType> {
         }
     }
 
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        if (state.hasFailed(this->mId)) {
+            unsigned nrFailedChildren = this->nrChildren();
+            for (auto const& child : this->children()) {
+                if (!state.hasFailed(child->id())) {
+                    --nrFailedChildren;
+                    if (nrFailedChildren < mThreshold) {
+                        this->repair(state, queues);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     bool isTypeEqualTo(DFTElement<ValueType> const& other) const override {
         if (!DFTElement<ValueType>::isTypeEqualTo(other)) {
             return false;

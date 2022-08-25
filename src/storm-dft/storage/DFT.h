@@ -68,9 +68,10 @@ class DFT {
     size_t mTopLevelIndex;
     size_t mStateVectorSize;
     size_t mMaxSpareChildCount;
-    std::map<size_t, std::vector<size_t>> mSpareModules;
     std::vector<size_t> mDependencies;
+    std::vector<size_t> mInspections;
     std::vector<size_t> mTopModule;
+    std::map<size_t, std::vector<size_t>> mSpareModules;
     std::map<size_t, size_t> mRepresentants;  // id element -> id representative
     std::vector<std::vector<size_t>> mSymmetries;
     std::map<size_t, DFTLayoutInfo> mLayoutInfo;
@@ -154,6 +155,10 @@ class DFT {
 
     std::vector<size_t> const& getDependencies() const {
         return mDependencies;
+    }
+
+    std::vector<size_t> const& getInspections() const {
+        return mInspections;
     }
 
     std::vector<bool> const& getDynamicBehavior() const {

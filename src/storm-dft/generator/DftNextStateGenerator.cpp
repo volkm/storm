@@ -195,6 +195,45 @@ storm::generator::StateBehavior<ValueType, StateType> DftNextStateGenerator<Valu
         }
     }  // end iteration of failing BE
 
+    // Inspect elements
+    std::vector<size_t> inspections = mDft.getInspections();
+    for (size_t inspId : inspections) {
+        // Perform inspection of module and check which BEs can be repaired
+        auto inspection = std::static_pointer_cast<storm::dft::storage::elements::InspectionModule<ValueType> const>(mDft.getElement(inspId));
+
+        auto newState = state->copy();
+        // Propagate all repairs at once
+        bool changed = false;
+        for (auto const& child : inspection->children()) {
+            if (!newState->hasFailed(child->id())) {
+                // BE is still operational
+                continue;
+            }
+            std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> nextBE =
+                std::static_pointer_cast<storm::dft::storage::elements::DFTBE<ValueType> const>(child);
+
+            // Obtain successor state by propagating failure
+            newState = createSuccessorStateRepair(newState, nextBE);
+            changed = true;
+
+            if (newState->isInvalid() || newState->isTransient()) {
+                STORM_LOG_TRACE("State is ignored because " << (newState->isInvalid() ? "it is invalid" : "the transient fault is ignored"));
+                // Continue with next possible state
+                continue;
+            }
+        }
+        if (changed) {
+            // Add new state
+            StateType newStateId = stateToIdCallback(newState);
+            // Set transitions
+            ValueType rate = inspection->rate();
+            STORM_LOG_ASSERT(!storm::utility::isZero(rate), "Rate is 0.");
+            choice.addProbability(newStateId, rate);
+            STORM_LOG_TRACE("Added transition to " << newStateId << " with rate " << rate);
+            STORM_LOG_ASSERT(newStateId != state->getId(), "Self loop was added for " << newStateId << " and repair of " << inspection->name());
+        }
+    }  // end iteration of inspection
+
     if (exploreDependencies) {
         if (result.empty()) {
             // Dependencies might have been prevented from sequence enforcer
@@ -275,6 +314,24 @@ typename DftNextStateGenerator<ValueType, StateType>::DFTStatePointer DftNextSta
 }
 
 template<typename ValueType, typename StateType>
+typename DftNextStateGenerator<ValueType, StateType>::DFTStatePointer DftNextStateGenerator<ValueType, StateType>::createSuccessorStateRepair(
+    DFTStatePointer const state, std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& repairedBE) const {
+    // Construct new state as copy from original one
+    DFTStatePointer newState = state->copy();
+
+    STORM_LOG_TRACE("With the repair of " << repairedBE->name() << " [" << repairedBE->id() << "] in " << mDft.getStateString(state));
+
+    newState->letBERepair(repairedBE);
+
+    // Propagate
+    storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType> queues;
+    propagateRepair(newState, repairedBE, queues);
+
+    // TODO Propagate fail safe
+    return newState;
+}
+
+template<typename ValueType, typename StateType>
 void DftNextStateGenerator<ValueType, StateType>::propagateFailure(DFTStatePointer newState,
                                                                    std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& nextBE,
                                                                    storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const {
@@ -321,6 +378,26 @@ void DftNextStateGenerator<ValueType, StateType>::propagateFailsafe(DFTStatePoin
         DFTElementPointer next = queues.nextDontCarePropagation();
         next->checkDontCareAnymore(*newState, queues);
     }
+}
+
+template<typename ValueType, typename StateType>
+void DftNextStateGenerator<ValueType, StateType>::propagateRepair(DFTStatePointer newState,
+                                                                  std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>& nextBE,
+                                                                  storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const {
+    // Propagate repair
+    for (DFTGatePointer parent : nextBE->parents()) {
+        if (newState->hasFailed(parent->id())) {
+            queues.propagateRepair(parent);
+        }
+    }
+    // Propagate repairs
+    while (!queues.repairPropagationDone()) {
+        DFTGatePointer next = queues.nextRepairPropagation();
+        next->checkRepairs(*newState, queues);
+        // TODO update dependencies
+    }
+
+    // TODO check restrictions
 }
 
 template<typename ValueType, typename StateType>

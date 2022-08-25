@@ -49,6 +49,17 @@ class DFTOr : public DFTGate<ValueType> {
         this->failsafe(state, queues);
     }
 
+    void checkRepairs(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        if (state.hasFailed(this->mId)) {
+            for (auto const& child : this->children()) {
+                if (!state.hasFailed(child->id())) {
+                    this->repair(state, queues);
+                    return;
+                }
+            }
+        }
+    }
+
    private:
     /*!
      * Check whether it has a failed child.

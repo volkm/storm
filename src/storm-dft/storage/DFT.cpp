@@ -54,6 +54,8 @@ DFT<ValueType>::DFT(DFTElementVector const& elements, DFTElementPointer const& t
         } else if (elem->isDependency()) {
             mDependencies.push_back(elem->id());
             mDependencyInConflict.insert(std::make_pair(elem->id(), true));
+        } else if (elem->isInspectionModule()) {
+            mInspections.push_back(elem->id());
         }
     }
 
@@ -1143,6 +1145,7 @@ void DFT<ValueType>::writeStatsToStream(std::ostream& stream) const {
     size_t noSpare = 0;
     size_t noDependency = 0;
     size_t noRestriction = 0;
+    size_t noInspection = 0;
     for (auto const& elem : mElements) {
         switch (elem->type()) {
             case storm::dft::storage::elements::DFTElementType::BE:
@@ -1173,6 +1176,9 @@ void DFT<ValueType>::writeStatsToStream(std::ostream& stream) const {
             case storm::dft::storage::elements::DFTElementType::MUTEX:
                 ++noRestriction;
                 break;
+            case storm::dft::storage::elements::DFTElementType::INSPECTION:
+                ++noInspection;
+                break;
             default:
                 STORM_LOG_ASSERT(false, "DFT element type " << elem->type() << " not known.");
                 break;
@@ -1184,9 +1190,10 @@ void DFT<ValueType>::writeStatsToStream(std::ostream& stream) const {
     // Check whether numbers are correct
     STORM_LOG_ASSERT(noBE == nrBasicElements(), "No. of BEs does not match.");
     STORM_LOG_ASSERT(noSpare == mNrOfSpares, "No. of SPAREs does not match.");
-    STORM_LOG_ASSERT(noDependency == mDependencies.size(), "No. of Dependencies does not match.");
+    STORM_LOG_ASSERT(noDependency == mDependencies.size(), "No. of dependencies does not match.");
+    STORM_LOG_ASSERT(noInspection == mInspections.size(), "No. of inspection modules does not match.");
     STORM_LOG_ASSERT(noAnd + noOr + noVot == noStatic, "No. of static gates does not match.");
-    STORM_LOG_ASSERT(noPand + noPor + noSpare + noDependency + noRestriction == noDynamic, "No. of dynamic gates does not match.");
+    STORM_LOG_ASSERT(noPand + noPor + noSpare + noDependency + noRestriction + noInspection == noDynamic, "No. of dynamic gates does not match.");
     STORM_LOG_ASSERT(noBE + noStatic + noDynamic == nrElements(), "No. of elements does not match.");
 
     // Print output
@@ -1222,6 +1229,9 @@ void DFT<ValueType>::writeStatsToStream(std::ostream& stream) const {
     }
     if (noRestriction > 0) {
         stream << "Number of Restrictions: " << noRestriction << '\n';
+    }
+    if (noInspection > 0) {
+        stream << "Number of Inspection Modules: " << noInspection << '\n';
     }
     stream << "=========================================\n";
 }

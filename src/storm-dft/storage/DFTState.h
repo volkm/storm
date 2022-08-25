@@ -107,6 +107,8 @@ class DFTState {
 
     void setDontCare(size_t id);
 
+    void setOperational(size_t id);
+
     void setDependencySuccessful(size_t id);
 
     void setDependencyUnsuccessful(size_t id);
@@ -251,6 +253,13 @@ class DFTState {
      */
     void letBEFail(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> be,
                    std::shared_ptr<storm::dft::storage::elements::DFTDependency<ValueType> const> dependency);
+
+    /**
+     * Sets the next BE as repaired.
+     *
+     * @param be BE to repair.
+     */
+    void letBERepair(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> be);
 
     /**
      * Sets the dependency as unsuccesful meaning no BE will fail.
