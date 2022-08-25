@@ -606,6 +606,7 @@ size_t DFT<ValueType>::nrDynamicElements() const {
             case storm::dft::storage::elements::DFTElementType::SEQ:
             case storm::dft::storage::elements::DFTElementType::MUTEX:
             case storm::dft::storage::elements::DFTElementType::PDEP:
+            case storm::dft::storage::elements::DFTElementType::INSPECTION:
                 noDyn += 1;
                 break;
             default:
@@ -633,6 +634,7 @@ size_t DFT<ValueType>::nrStaticElements() const {
             case storm::dft::storage::elements::DFTElementType::SEQ:
             case storm::dft::storage::elements::DFTElementType::MUTEX:
             case storm::dft::storage::elements::DFTElementType::PDEP:
+            case storm::dft::storage::elements::DFTElementType::INSPECTION:
                 break;
             default:
                 STORM_LOG_ASSERT(false, "DFT element type " << elem->type() << " not known.");
