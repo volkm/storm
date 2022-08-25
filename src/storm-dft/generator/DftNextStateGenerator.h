@@ -61,7 +61,7 @@ class DftNextStateGenerator {
      * @param failedBE BE which fails next.
      * @param triggeringDependency Dependency which triggered the failure (or nullptr if BE failed on its own).
      * @param dependencySuccessful Whether the triggering dependency was successful.
-     *              If the dependency is unsuccessful, failedBE does not fail and only the depedendy is marked as failed.
+     *              If the dependency is unsuccessful, failedBE does not fail and only the dependency is marked as failed.
      *
      * @return Successor state.
      */

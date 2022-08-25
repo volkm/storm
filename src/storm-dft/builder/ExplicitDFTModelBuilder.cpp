@@ -187,7 +187,7 @@ void ExplicitDFTModelBuilder<ValueType, StateType>::buildModel(size_t iteration,
             return;
         }
 
-        // Initialize heuristic values for inital state
+        // Initialize heuristic values for initial state
         STORM_LOG_ASSERT(!statesNotExplored.at(initialStateIndex).second, "Heuristic for initial state is already initialized");
         ExplorationHeuristicPointer heuristic;
         switch (usedHeuristic) {

@@ -55,24 +55,17 @@ std::vector<StateType> DftNextStateGenerator<ValueType, StateType>::getInitialSt
         storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType> queues;
         propagateFailure(initialState, constFailedBE, queues);
 
+        propagateFailsafe(initialState, constFailedBE, queues);
+
+        // Update failable dependencies
+        initialState->updateFailableDependencies(constFailedBE->id());
+        initialState->updateDontCareDependencies(constFailedBE->id());
+        initialState->updateFailableInRestrictions(constFailedBE->id());
+
         if (initialState->hasFailed(mDft.getTopLevelIndex()) && uniqueFailedState) {
-            propagateFailsafe(initialState, constFailedBE, queues);
-
-            // Update failable dependencies
-            initialState->updateFailableDependencies(constFailedBE->id());
-            initialState->updateDontCareDependencies(constFailedBE->id());
-            initialState->updateFailableInRestrictions(constFailedBE->id());
-
             // Unique failed state
             id = 0;
         } else {
-            propagateFailsafe(initialState, constFailedBE, queues);
-
-            // Update failable dependencies
-            initialState->updateFailableDependencies(constFailedBE->id());
-            initialState->updateDontCareDependencies(constFailedBE->id());
-            initialState->updateFailableInRestrictions(constFailedBE->id());
-
             id = stateToIdCallback(initialState);
         }
     }
@@ -322,7 +315,7 @@ void DftNextStateGenerator<ValueType, StateType>::propagateFailsafe(DFTStatePoin
         next->checkFailsafe(*newState, queues);
     }
 
-    // Propagate dont cares
+    // Propagate Don't Cares
     // Relevance is considered for each element independently
     while (!queues.dontCarePropagationDone()) {
         DFTElementPointer next = queues.nextDontCarePropagation();

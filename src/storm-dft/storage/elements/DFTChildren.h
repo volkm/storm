@@ -146,23 +146,9 @@ class DFTChildren : public DFTElement<ValueType> {
      * @param state Current state of DFT.
      * @return True iff failsafe child exists.
      */
-    bool hasFailsafeChild(storm::dft::storage::DFTState<ValueType>& state) const {
+    bool hasFailsafeChild(storm::dft::storage::DFTState<ValueType> const& state) const {
         for (auto const& child : mChildren) {
             if (state.isFailsafe(child->id())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*!
-     * Check whether it has a failed child.
-     * @param state Current state of DFT.
-     * @return True iff failed child exists.
-     */
-    bool hasFailedChild(storm::dft::storage::DFTState<ValueType>& state) const {
-        for (auto const& child : mChildren) {
-            if (state.hasFailed(child->id())) {
                 return true;
             }
         }

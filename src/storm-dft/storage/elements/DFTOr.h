@@ -45,8 +45,23 @@ class DFTOr : public DFTGate<ValueType> {
                 return;
             }
         }
-        // All chidren are failsafe
+        // All children are failsafe
         this->failsafe(state, queues);
+    }
+
+   private:
+    /*!
+     * Check whether it has a failed child.
+     * @param state Current state of DFT.
+     * @return True iff failed child exists.
+     */
+    bool hasFailedChild(storm::dft::storage::DFTState<ValueType> const& state) const {
+        for (auto const& child : this->children()) {
+            if (state.hasFailed(child->id())) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 

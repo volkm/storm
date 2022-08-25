@@ -53,7 +53,9 @@ class DFTMutex : public DFTRestriction<ValueType> {
         }
     }
 
-    void checkFailsafe(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {}
+    void checkFailsafe(storm::dft::storage::DFTState<ValueType>& state, storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
+        // Do nothing
+    }
 
     bool checkDontCareAnymore(storm::dft::storage::DFTState<ValueType>& state,
                               storm::dft::storage::DFTStateSpaceGenerationQueues<ValueType>& queues) const override {
