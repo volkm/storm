@@ -208,30 +208,26 @@ storm::generator::StateBehavior<ValueType, StateType> DftNextStateGenerator<Valu
             std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> nextBE =
                 std::static_pointer_cast<storm::dft::storage::elements::DFTBE<ValueType> const>(child);
 
-            if (newState->hasFailed(nextBE->id())) {
+            if (newState->hasFailed(child->id())) {
                 // Obtain successor state by propagating repair
                 newState = createSuccessorStateRepair(newState, nextBE);
                 changed = true;
             }
 
             // Consider previous phases
-            // TODO: avoid hard-coding for cabinets.2-3
-            size_t indexPhase1 = mDft.getIndex(nextBE->name() + "_1");
-            if (newState->hasFailed(indexPhase1)) {
-                //Threshold reached -> repair BE of phase 1
-                auto phaseBE = mDft.getBasicElement(indexPhase1);
+            // TODO: avoid hard-coding
+            size_t phase = 0;
+            std::string phaseName = nextBE->name() + "_" + std::to_string(phase);
+            while (mDft.existsName(phaseName)) {
+                size_t phaseIndex = mDft.getIndex(phaseName);
+                if (!newState->hasFailed(phaseIndex)) {
+                    break;
+                }
+                auto phaseBE = mDft.getBasicElement(phaseIndex);
                 // Obtain successor state by propagating repair
                 newState = createSuccessorStateRepair(newState, phaseBE);
-
-                // Repair BE of phase 0 as well
-                size_t indexPhase0 = mDft.getIndex(nextBE->name() + "_0");
-                STORM_LOG_ASSERT(newState->hasFailed(indexPhase0), "BE " << nextBE->name() << "_0 should be failed as well");
-                phaseBE = mDft.getBasicElement(indexPhase0);
-
-                // Obtain successor state by propagating repair
-                newState = createSuccessorStateRepair(newState, phaseBE);
-
                 changed = true;
+                phaseName = nextBE->name() + "_" + std::to_string(++phase);
             }
 
             if (newState->isInvalid() || newState->isTransient()) {
