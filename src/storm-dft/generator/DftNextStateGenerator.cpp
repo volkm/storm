@@ -205,16 +205,34 @@ storm::generator::StateBehavior<ValueType, StateType> DftNextStateGenerator<Valu
         // Propagate all repairs at once
         bool changed = false;
         for (auto const& child : inspection->children()) {
-            if (!newState->hasFailed(child->id())) {
-                // BE is still operational
-                continue;
-            }
             std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> nextBE =
                 std::static_pointer_cast<storm::dft::storage::elements::DFTBE<ValueType> const>(child);
 
-            // Obtain successor state by propagating failure
-            newState = createSuccessorStateRepair(newState, nextBE);
-            changed = true;
+            if (newState->hasFailed(nextBE->id())) {
+                // Obtain successor state by propagating repair
+                newState = createSuccessorStateRepair(newState, nextBE);
+                changed = true;
+            }
+
+            // Consider previous phases
+            // TODO: avoid hard-coding for cabinets.2-3
+            size_t indexPhase1 = mDft.getIndex(nextBE->name() + "_1");
+            if (newState->hasFailed(indexPhase1)) {
+                //Threshold reached -> repair BE of phase 1
+                auto phaseBE = mDft.getBasicElement(indexPhase1);
+                // Obtain successor state by propagating repair
+                newState = createSuccessorStateRepair(newState, phaseBE);
+
+                // Repair BE of phase 0 as well
+                size_t indexPhase0 = mDft.getIndex(nextBE->name() + "_0");
+                STORM_LOG_ASSERT(newState->hasFailed(indexPhase0), "BE " << nextBE->name() << "_0 should be failed as well");
+                phaseBE = mDft.getBasicElement(indexPhase0);
+
+                // Obtain successor state by propagating repair
+                newState = createSuccessorStateRepair(newState, phaseBE);
+
+                changed = true;
+            }
 
             if (newState->isInvalid() || newState->isTransient()) {
                 STORM_LOG_TRACE("State is ignored because " << (newState->isInvalid() ? "it is invalid" : "the transient fault is ignored"));
