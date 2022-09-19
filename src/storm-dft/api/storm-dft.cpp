@@ -14,22 +14,26 @@
 #include "storm-dft/storage/DftJsonExporter.h"
 #include "storm-dft/storage/SylvanBddManager.h"
 #include "storm-dft/transformations/SftToBddTransformator.h"
-#include "storm-dft/utility/MTTFHelper.h"
 
 namespace storm::dft {
 namespace api {
 
 template<>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft, bool const exportToDot, std::string const& filename, bool const calculateMttf,
-                   double const mttfPrecision, double const mttfStepsize, std::string const mttfAlgorithmName, bool const calculateMCS,
-                   bool const calculateProbability, bool const useModularisation, std::string const importanceMeasureName,
+                   double const mttfPrecision, double const mttfStepsize, storm::dft::utility::MTTFApproximationAlgorithm const mttfAlgorithm,
+                   bool const calculateMCS, bool const calculateProbability, bool const useModularisation, std::string const importanceMeasureName,
                    std::vector<double> const& timepoints, std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
                    std::vector<std::string> const& additionalRelevantEventNames, size_t const chunksize) {
     if (calculateMttf) {
-        if (mttfAlgorithmName == "proceeding") {
-            std::cout << "The numerically approximated MTTF is " << storm::dft::utility::MTTFHelperProceeding(dft, mttfStepsize, mttfPrecision) << '\n';
-        } else if (mttfAlgorithmName == "variableChange") {
-            std::cout << "The numerically approximated MTTF is " << storm::dft::utility::MTTFHelperVariableChange(dft, mttfStepsize) << '\n';
+        switch (mttfAlgorithm) {
+            case storm::dft::utility::MTTFApproximationAlgorithm::Proceeding:
+                std::cout << "The numerically approximated MTTF is " << storm::dft::utility::MTTFHelperProceeding(dft, mttfStepsize, mttfPrecision) << '\n';
+                break;
+            case storm::dft::utility::MTTFApproximationAlgorithm::VariableChange:
+                std::cout << "The numerically approximated MTTF is " << storm::dft::utility::MTTFHelperVariableChange(dft, mttfStepsize) << '\n';
+                break;
+            default:
+                STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException, "MTTF approximation algorithm not known.");
         }
     }
 
@@ -163,10 +167,11 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
 
 template<>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<storm::RationalFunction>> const& dft, bool const exportToDot, std::string const& filename,
-                   bool const calculateMttf, double const mttfPrecision, double const mttfStepsize, std::string const mttfAlgorithmName,
-                   bool const calculateMCS, bool const calculateProbability, bool const useModularisation, std::string const importanceMeasureName,
-                   std::vector<double> const& timepoints, std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
-                   std::vector<std::string> const& additionalRelevantEventNames, size_t const chunksize) {
+                   bool const calculateMttf, double const mttfPrecision, double const mttfStepsize,
+                   storm::dft::utility::MTTFApproximationAlgorithm const mttfAlgorithm, bool const calculateMCS, bool const calculateProbability,
+                   bool const useModularisation, std::string const importanceMeasureName, std::vector<double> const& timepoints,
+                   std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, std::vector<std::string> const& additionalRelevantEventNames,
+                   size_t const chunksize) {
     STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "BDD analysis is not supportet for this data type.");
 }
 

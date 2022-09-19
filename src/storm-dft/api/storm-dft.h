@@ -13,6 +13,7 @@
 #include "storm-dft/utility/DftValidator.h"
 #include "storm-dft/utility/FDEPConflictFinder.h"
 #include "storm-dft/utility/FailureBoundFinder.h"
+#include "storm-dft/utility/MTTFHelper.h"
 #include "storm-dft/utility/RelevantEvents.h"
 
 #include "storm-gspn/api/storm-gspn.h"
@@ -234,10 +235,11 @@ typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analy
  */
 template<typename ValueType>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<ValueType>> const& dft, bool const exportToDot, std::string const& filename,
-                   bool const calculateMttf, double const mttfPrecision, double const mttfStepsize, std::string const mttfAlgorithmName,
-                   bool const calculateMCS, bool const calculateProbability, bool const useModularisation, std::string const importanceMeasureName,
-                   std::vector<double> const& timepoints, std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
-                   std::vector<std::string> const& additionalRelevantEventNames, size_t const chunksize);
+                   bool const calculateMttf, double const mttfPrecision, double const mttfStepsize,
+                   storm::dft::utility::MTTFApproximationAlgorithm mttfAlgorithm, bool const calculateMCS, bool const calculateProbability,
+                   bool const useModularisation, std::string const importanceMeasureName, std::vector<double> const& timepoints,
+                   std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, std::vector<std::string> const& additionalRelevantEventNames,
+                   size_t const chunksize);
 
 /*!
  * Analyze the DFT using the SMT encoding

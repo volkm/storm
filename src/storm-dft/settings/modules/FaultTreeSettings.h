@@ -2,6 +2,7 @@
 
 #include "storm-config.h"
 #include "storm-dft/builder/DftExplorationHeuristic.h"
+#include "storm-dft/utility/MTTFHelper.h"
 #include "storm/settings/modules/ModuleSettings.h"
 
 namespace storm::dft {
@@ -135,37 +136,32 @@ class FaultTreeSettings : public storm::settings::modules::ModuleSettings {
     bool isChunksizeSet() const;
 
     /*!
-     * Retrieves the size of the chunks
-     * to calculate proabilities with.
+     * Retrieves the size of the chunks to calculate proabilities with.
      *
      * @return The size of the chunks.
      */
     size_t getChunksize() const;
 
     /*!
-     * Retrieves the Precision to
-     * detect the convergence of the
-     * mttf algorithm.
+     * Retrieves the precision to detect the convergence of the MTTF approximation algorithm.
      *
-     * @return The Precision.
+     * @return The precision.
      */
     double getMttfPrecision() const;
 
     /*!
-     * Retrieves the Stepsize for the
-     * mttf algorithm.
+     * Retrieves the stepsize for the MTTF approximation algorithm.
      *
-     * @return The Stepsize.
+     * @return The stepsize.
      */
     double getMttfStepsize() const;
 
     /*!
-     * Retrieves the name of the Algorithm
-     * to use to approximate the MTTF.
+     * Retrieves the algorithm to use for approximating the MTTF.
      *
-     * @return The Stepsize.
+     * @return Algorithm.
      */
-    std::string getMttfAlgorithm() const;
+    storm::dft::utility::MTTFApproximationAlgorithm getMttfAlgorithm() const;
 
     bool check() const override;
 

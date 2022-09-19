@@ -83,7 +83,7 @@ FaultTreeSettings::FaultTreeSettings() : ModuleSettings(moduleName) {
                                          .build())
                         .build());
     this->addOption(storm::settings::OptionBuilder(moduleName, mttfPrecisionName, false,
-                                                   "The precision used for detecting convergence of the iterative MTTF approximation method.")
+                                                   "The precision used for detecting convergence of the iterative MTTF approximation algorithm.")
                         .setIsAdvanced()
                         .addArgument(storm::settings::ArgumentBuilder::createDoubleArgument("value", "The precision to achieve.")
                                          .setDefaultValueDouble(1e-12)
@@ -91,7 +91,7 @@ FaultTreeSettings::FaultTreeSettings() : ModuleSettings(moduleName) {
                                          .build())
                         .build());
     this->addOption(storm::settings::OptionBuilder(moduleName, mttfStepsizeName, false,
-                                                   "The stepsize used to iterativly approximate the integral in the MTTF approximation method.")
+                                                   "The stepsize used to iteratively approximate the integral in the MTTF approximation algorithm.")
                         .setIsAdvanced()
                         .addArgument(storm::settings::ArgumentBuilder::createDoubleArgument("value", "The stepsize to use.")
                                          .setDefaultValueDouble(1e-10)
@@ -197,8 +197,15 @@ double FaultTreeSettings::getMttfStepsize() const {
     return this->getOption(mttfStepsizeName).getArgumentByName("value").getValueAsDouble();
 }
 
-std::string FaultTreeSettings::getMttfAlgorithm() const {
-    return this->getOption(mttfAlgorithmName).getArgumentByName("algorithm").getValueAsString();
+storm::dft::utility::MTTFApproximationAlgorithm FaultTreeSettings::getMttfAlgorithm() const {
+    std::string algorithmAsString = this->getOption(mttfAlgorithmName).getArgumentByName("algorithm").getValueAsString();
+    if (algorithmAsString == "proceeding") {
+        return storm::dft::utility::MTTFApproximationAlgorithm::Proceeding;
+    } else if (algorithmAsString == "variableChange") {
+        return storm::dft::utility::MTTFApproximationAlgorithm::VariableChange;
+    }
+    STORM_LOG_THROW(false, storm::exceptions::IllegalArgumentValueException,
+                    "Illegal value '" << algorithmAsString << "' set as algorithm for MTTF approximation.");
 }
 
 void FaultTreeSettings::finalize() {}
