@@ -1,20 +1,39 @@
 #pragma once
 
-#include "storm-dft/storage/DFT.h"
+#include <memory>
 
 namespace storm::dft {
+
+namespace storage {
+// Forward declaration
+template<typename ValueType>
+class DFT;
+}  // namespace storage
+
 namespace utility {
 
-/**
- * Tries to numerically approximate the mttf of the given dft
- * by integrating 1 - cdf(dft) with Simpson's rule
+/*!
+ * Algorithms to approximate the MTTF.
+ */
+enum class MTTFApproximationAlgorithm { Proceeding, VariableChange };
+
+/*!
+ * Numerically approximate the MTTF of the given DFT
+ * by integrating 1 - cdf(dft) with Simpson's rule.
+ * @param dft DFT.
+ * @param stepsize Step size.
+ * @param precision Precision for convergence.
+ * @return Approximate MTTF.
  */
 double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double>> const dft, double const stepsize = 1e-10, double const precision = 1e-12);
 
-/**
- * Tries to numerically approximate the mttf of the given dft
+/*!
+ * Numerically approximate the MTTF of the given DFT
  * by integrating 1 - cdf(dft) by changing the variable
- * such that the interval is (0,1) instead of (0,oo)
+ * such that the interval (0,oo) becomes (0,1).
+ * @param dft DFT.
+ * @param stepsize Step size.
+ * @return Approximate MTTF.
  */
 double MTTFHelperVariableChange(std::shared_ptr<storm::dft::storage::DFT<double>> const dft, double const stepsize = 1e-6);
 

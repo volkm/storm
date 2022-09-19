@@ -115,7 +115,6 @@ void processOptions() {
         bool const isMTTF{dftIOSettings.usePropExpectedTime()};
         double const mttfPrecision{faultTreeSettings.getMttfPrecision()};
         double const mttfStepsize{faultTreeSettings.getMttfStepsize()};
-        std::string const mttfAlgorithm{faultTreeSettings.getMttfAlgorithm()};
         bool const isExportToBddDot{dftIOSettings.isExportToBddDot()};
         bool const isTimebound{dftIOSettings.usePropTimebound()};
         bool const isTimepoints{dftIOSettings.usePropTimepoints()};
@@ -149,9 +148,9 @@ void processOptions() {
         }
 
         auto const additionalRelevantEventNames{faultTreeSettings.getRelevantEvents()};
-        storm::dft::api::analyzeDFTBdd<ValueType>(dft, isExportToBddDot, filename, isMTTF, mttfPrecision, mttfStepsize, mttfAlgorithm, isMinimalCutSets,
-                                                  probabilityAnalysis, isModularisation, importanceMeasureName, timepoints, manuallyInputtedProperties,
-                                                  additionalRelevantEventNames, chunksize);
+        storm::dft::api::analyzeDFTBdd<ValueType>(dft, isExportToBddDot, filename, isMTTF, mttfPrecision, mttfStepsize, faultTreeSettings.getMttfAlgorithm(),
+                                                  isMinimalCutSets, probabilityAnalysis, isModularisation, importanceMeasureName, timepoints,
+                                                  manuallyInputtedProperties, additionalRelevantEventNames, chunksize);
 
         // don't perform other analysis if analyzeWithBdds is set
         if (dftIOSettings.isAnalyzeWithBdds()) {
