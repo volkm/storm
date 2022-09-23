@@ -8,7 +8,7 @@
 #include "storm/utility/iota_n.h"
 #include "storm/utility/vector.h"
 
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/storage/DFTIsomorphism.h"
 #include "storm-dft/utility/RelevantEvents.h"
 
@@ -485,7 +485,7 @@ std::vector<DFT<ValueType>> DFT<ValueType>::topModularisation() const {
 
     std::vector<DFT<ValueType>> res;
     for (auto const& subdft : subdfts) {
-        storm::dft::builder::DFTBuilder<ValueType> builder;
+        storm::dft::builder::DftBuilder<ValueType> builder;
 
         for (size_t id : subdft.second) {
             builder.cloneElement(mElements[id]);
@@ -520,7 +520,7 @@ DFT<ValueType> DFT<ValueType>::optimize() const {
     std::vector<std::vector<size_t>> rewriteIds;
     rewriteIds.push_back(modIdea);
 
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
 
     // Accumulate elements which must be rewritten
     std::set<size_t> rewriteSet;

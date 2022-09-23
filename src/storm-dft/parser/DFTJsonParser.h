@@ -46,7 +46,7 @@ class DFTJsonParser {
      * @param builder DFTBuilder.
      * @param valueParser ValueParser for parsing numbers.
      */
-    static void parseBasicElement(std::string const& name, std::string const& type, Json input, storm::dft::builder::DFTBuilder<ValueType>& builder,
+    static void parseBasicElement(std::string const& name, std::string const& type, Json input, storm::dft::builder::DftBuilder<ValueType>& builder,
                                   storm::parser::ValueParser<ValueType>& valueParser);
 
     /*!

@@ -3,7 +3,7 @@
 #include "storm/exceptions/UnexpectedException.h"
 #include "storm/utility/macros.h"
 
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 
 namespace storm::dft {
 namespace transformations {
@@ -38,7 +38,7 @@ bool DftTransformer<ValueType>::hasUniqueFailedBE(storm::dft::storage::DFT<Value
 
 template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftTransformer<ValueType>::transformUniqueFailedBE(storm::dft::storage::DFT<ValueType> const &dft) {
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
     std::vector<std::string> failedBEs;
 
     for (size_t i = 0; i < dft.nrElements(); ++i) {
@@ -106,7 +106,7 @@ bool DftTransformer<ValueType>::hasNonBinaryDependency(storm::dft::storage::DFT<
 
 template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftTransformer<ValueType>::transformBinaryDependencies(storm::dft::storage::DFT<ValueType> const &dft) {
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
 
     for (size_t i = 0; i < dft.nrElements(); ++i) {
         std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> element = dft.getElement(i);
@@ -175,7 +175,7 @@ bool DftTransformer<ValueType>::hasOnlyExponentialDistributions(storm::dft::stor
 template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftTransformer<ValueType>::transformExponentialDistributions(
     storm::dft::storage::DFT<ValueType> const &dft) {
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
 
     for (size_t i = 0; i < dft.nrElements(); ++i) {
         std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> element = dft.getElement(i);
