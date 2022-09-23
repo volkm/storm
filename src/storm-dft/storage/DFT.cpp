@@ -457,54 +457,17 @@ DFT<ValueType> DFT<ValueType>::optimize() const {
 
 template<typename ValueType>
 size_t DFT<ValueType>::nrDynamicElements() const {
-    size_t noDyn = 0;
-    for (auto const& elem : mElements) {
-        switch (elem->type()) {
-            case storm::dft::storage::elements::DFTElementType::AND:
-            case storm::dft::storage::elements::DFTElementType::OR:
-            case storm::dft::storage::elements::DFTElementType::VOT:
-            case storm::dft::storage::elements::DFTElementType::BE:
-                break;
-            case storm::dft::storage::elements::DFTElementType::PAND:
-            case storm::dft::storage::elements::DFTElementType::SPARE:
-            case storm::dft::storage::elements::DFTElementType::POR:
-            case storm::dft::storage::elements::DFTElementType::SEQ:
-            case storm::dft::storage::elements::DFTElementType::MUTEX:
-            case storm::dft::storage::elements::DFTElementType::PDEP:
-                noDyn += 1;
-                break;
-            default:
-                STORM_LOG_ASSERT(false, "DFT element type " << elem->type() << " not known.");
-                break;
-        }
-    }
-    return noDyn;
+    return std::count_if(mElements.begin(), mElements.end(), [](DFTElementPointer elem) { return !elem->isStaticElement(); });
 }
 
 template<typename ValueType>
 size_t DFT<ValueType>::nrStaticElements() const {
-    size_t noStatic = 0;
-    for (auto const& elem : mElements) {
-        switch (elem->type()) {
-            case storm::dft::storage::elements::DFTElementType::AND:
-            case storm::dft::storage::elements::DFTElementType::OR:
-            case storm::dft::storage::elements::DFTElementType::VOT:
-                ++noStatic;
-                break;
-            case storm::dft::storage::elements::DFTElementType::BE:
-            case storm::dft::storage::elements::DFTElementType::PAND:
-            case storm::dft::storage::elements::DFTElementType::SPARE:
-            case storm::dft::storage::elements::DFTElementType::POR:
-            case storm::dft::storage::elements::DFTElementType::SEQ:
-            case storm::dft::storage::elements::DFTElementType::MUTEX:
-            case storm::dft::storage::elements::DFTElementType::PDEP:
-                break;
-            default:
-                STORM_LOG_ASSERT(false, "DFT element type " << elem->type() << " not known.");
-                break;
-        }
-    }
-    return noStatic;
+    return std::count_if(mElements.begin(), mElements.end(), [](DFTElementPointer elem) { return elem->isStaticElement() && !elem->isBasicElement(); });
+}
+
+template<typename ValueType>
+bool DFT<ValueType>::isStatic() const {
+    return std::all_of(mElements.begin(), mElements.end(), [](DFTElementPointer elem) { return elem->isStaticElement(); });
 }
 
 template<typename ValueType>

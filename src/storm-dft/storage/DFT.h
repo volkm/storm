@@ -91,17 +91,39 @@ class DFT {
         return (mStateVectorSize / 64 + (mStateVectorSize % 64 != 0)) * 64;
     }
 
+    /*!
+     * Get the total number of elements in the fault tree.
+     * @return Number of elements.
+     */
     size_t nrElements() const {
         return mElements.size();
     }
 
+    /*!
+     * Get the number of basic elements.
+     * @return Number of BE.
+     */
     size_t nrBasicElements() const {
         return mNrOfBEs;
     }
 
+    /*!
+     * Get the number of static elements (excluding BEs).
+     * @return Number of elements of type AND, OR and VOT.
+     */
+    size_t nrStaticElements() const;
+
+    /*!
+     * Get the number of dynamic elements.
+     * @return Number of dynamic elements (FDEP, PAND, SPARE, SEQ, etc.).
+     */
     size_t nrDynamicElements() const;
 
-    size_t nrStaticElements() const;
+    /*!
+     * Return whether the fault tree is static, i.e. containing only static elements (BE, AND, OR, VOT).
+     * @return True iff the fault tree is static.
+     */
+    bool isStatic() const;
 
     size_t getTopLevelIndex() const {
         return mTopLevelIndex;
