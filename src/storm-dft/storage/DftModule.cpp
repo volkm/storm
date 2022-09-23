@@ -1,6 +1,6 @@
 #include "storm-dft/storage/DftModule.h"
 
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/storage/DFT.h"
 
 #include "storm/adapters/RationalFunctionAdapter.h"
@@ -49,7 +49,7 @@ std::set<size_t> DftIndependentModule::getAllElements() const {
 
 template<typename ValueType>
 storm::dft::storage::DFT<ValueType> DftIndependentModule::getSubtree(storm::dft::storage::DFT<ValueType> const& dft) const {
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
     std::unordered_set<std::string> depInConflict;
     for (auto const id : getAllElements()) {
         auto const tmpElement = dft.getElement(id);

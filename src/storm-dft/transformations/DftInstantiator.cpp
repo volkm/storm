@@ -1,5 +1,5 @@
 #include "DftInstantiator.h"
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm/exceptions/NotImplementedException.h"
 
 namespace storm::dft {
@@ -11,7 +11,7 @@ DftInstantiator<ParametricType, ConstantType>::DftInstantiator(storm::dft::stora
 template<typename ParametricType, typename ConstantType>
 std::shared_ptr<storm::dft::storage::DFT<ConstantType>> DftInstantiator<ParametricType, ConstantType>::instantiate(
     storm::utility::parametric::Valuation<ParametricType> const &valuation) {
-    storm::dft::builder::DFTBuilder<ConstantType> builder;
+    storm::dft::builder::DftBuilder<ConstantType> builder;
     for (size_t i = 0; i < dft.nrElements(); ++i) {
         std::shared_ptr<storm::dft::storage::elements::DFTElement<ParametricType> const> element = dft.getElement(i);
         switch (element->type()) {

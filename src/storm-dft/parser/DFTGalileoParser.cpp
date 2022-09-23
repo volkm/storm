@@ -16,7 +16,7 @@ namespace parser {
 
 template<typename ValueType>
 storm::dft::storage::DFT<ValueType> DFTGalileoParser<ValueType>::parseDFT(const std::string& filename) {
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
     storm::parser::ValueParser<ValueType> valueParser;
     // Regular expression to detect comments
     // taken from: https://stackoverflow.com/questions/9449887/removing-c-c-style-comments-using-boostregex
@@ -186,7 +186,7 @@ std::string DFTGalileoParser<ValueType>::parseValue(std::string name, std::strin
 }
 
 template<typename ValueType>
-void DFTGalileoParser<ValueType>::parseBasicElement(std::string const& name, std::string& input, storm::dft::builder::DFTBuilder<ValueType>& builder,
+void DFTGalileoParser<ValueType>::parseBasicElement(std::string const& name, std::string& input, storm::dft::builder::DftBuilder<ValueType>& builder,
                                                     storm::parser::ValueParser<ValueType>& valueParser) {
     // Avoid writing too much
     using namespace storm::dft::storage::elements;

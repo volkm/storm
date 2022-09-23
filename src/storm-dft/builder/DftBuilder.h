@@ -22,7 +22,7 @@ namespace storm::dft {
 namespace builder {
 
 template<typename ValueType>
-class DFTBuilder {
+class DftBuilder {
     using DFTElementPointer = std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType>>;
     using DFTElementCPointer = std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const>;
     using DFTElementVector = std::vector<DFTElementPointer>;
@@ -46,7 +46,7 @@ class DFTBuilder {
     /*!
      * Constructor.
      */
-    DFTBuilder();
+    DftBuilder();
 
     /*!
      * Create BE which is constant failed or constant failsafe and add it to DFT.

@@ -24,7 +24,7 @@ namespace storm::dft {
 // Forward declarations
 namespace builder {
 template<typename T>
-class DFTBuilder;
+class DftBuilder;
 }  // namespace builder
 
 namespace utility {
@@ -84,7 +84,7 @@ class DFT {
 
     DFT<ValueType> optimize() const;
 
-    void copyElements(std::vector<size_t> elements, storm::dft::builder::DFTBuilder<ValueType> builder) const;
+    void copyElements(std::vector<size_t> elements, storm::dft::builder::DftBuilder<ValueType> builder) const;
 
     size_t stateBitVectorSize() const {
         // Ensure multiple of 64

@@ -4,7 +4,7 @@
 
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/api/storm-dft.h"
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SFTBDDChecker.h"
 #include "storm-dft/utility/DftModularizer.h"
@@ -90,7 +90,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
     }
 
     // Replace each dynamic module by a single BE which has samples corresponding to the previously computed analysis results
-    storm::dft::builder::DFTBuilder<ValueType> builder{};
+    storm::dft::builder::DftBuilder<ValueType> builder{};
     std::unordered_set<std::string> depInConflict;
     for (auto const id : dft->getAllIds()) {
         auto const element{dft->getElement(id)};

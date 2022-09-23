@@ -1,6 +1,6 @@
 #pragma once
 
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-parsers/parser/ValueParser.h"
 
@@ -45,7 +45,7 @@ class DFTGalileoParser {
      * @param builder DFTBuilder.
      * @param valueParser ValueParser for parsing numbers.
      */
-    static void parseBasicElement(std::string const& name, std::string& input, storm::dft::builder::DFTBuilder<ValueType>& builder,
+    static void parseBasicElement(std::string const& name, std::string& input, storm::dft::builder::DftBuilder<ValueType>& builder,
                                   storm::parser::ValueParser<ValueType>& valueParser);
 
     /*!

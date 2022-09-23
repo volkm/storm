@@ -3,7 +3,7 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 
-#include "storm-dft/builder/DFTBuilder.h"
+#include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/utility/RelevantEvents.h"
 #include "storm/adapters/JsonAdapter.h"
 #include "storm/exceptions/FileIoException.h"
@@ -34,7 +34,7 @@ storm::dft::storage::DFT<ValueType> DFTJsonParser<ValueType>::parseJsonFromStrin
 template<typename ValueType>
 storm::dft::storage::DFT<ValueType> DFTJsonParser<ValueType>::parseJson(Json const& jsonInput) {
     // Initialize DFT builder and value parser
-    storm::dft::builder::DFTBuilder<ValueType> builder;
+    storm::dft::builder::DftBuilder<ValueType> builder;
     storm::parser::ValueParser<ValueType> valueParser;
     std::string toplevelName = "";
     storm::dft::utility::RelevantEvents relevantEvents;
@@ -186,7 +186,7 @@ std::string DFTJsonParser<ValueType>::parseValue(Json value) {
 
 template<typename ValueType>
 void DFTJsonParser<ValueType>::parseBasicElement(std::string const& name, std::string const& type, Json input,
-                                                 storm::dft::builder::DFTBuilder<ValueType>& builder, storm::parser::ValueParser<ValueType>& valueParser) {
+                                                 storm::dft::builder::DftBuilder<ValueType>& builder, storm::parser::ValueParser<ValueType>& valueParser) {
     std::string distribution = "exponential";  // Default is exponential distribution
     if (input.count("distribution") > 0) {
         distribution = input.at("distribution");
