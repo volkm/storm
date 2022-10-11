@@ -10,24 +10,24 @@
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/SylvanBddManager.h"
 #include "storm-dft/transformations/SftToBddTransformator.h"
+#include "storm/adapters/EigenAdapter.h"
 #include "storm/storage/PairHash.h"
 
 namespace storm::dft {
 namespace modelchecker {
 
-/**
- * Main class for the SFTBDDChecker
- *
+/*!
+ * SFT checker based on BDDs.
  */
-class SFTBDDChecker {
+template<typename ValueType>
+class SftBddChecker {
    public:
-    using ValueType = double;
     using Bdd = sylvan::Bdd;
 
-    SFTBDDChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft,
+    SftBddChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft,
                   std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager = std::make_shared<storm::dft::storage::SylvanBddManager>());
 
-    SFTBDDChecker(std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator);
+    SftBddChecker(std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator);
 
     /**
      * \return The internal DFT
@@ -62,61 +62,47 @@ class SFTBDDChecker {
      */
     std::vector<std::vector<std::string>> getMinimalCutSets();
 
-    /**
-     * \return
-     * A set of minimal cut sets,
-     * where the basic events are identified by their index
-     * in the bdd manager
+    /*!
+     * Get the set of minimal cut sets (MCS) by the element indices in the BDD manager.
+     * @return List of MCS given by indices of the SFT elements in the BDD manager.
      */
     std::vector<std::vector<uint32_t>> getMinimalCutSetsAsIndices();
 
-    /**
-     * \return
-     * The Probability that the top level event fails.
+    /*!
+     * Compute probability that the top level event fails within the given timebound.
+     * @param timebound Time bound.
+     * @return
      */
     ValueType getProbabilityAtTimebound(ValueType timebound) {
         return getProbabilityAtTimebound(getTopLevelElementBdd(), timebound);
     }
 
-    /**
-     * \return
-     * The Probabilities that the given Event fails at the given timebound.
-     *
-     * \param bdd
-     * The bdd that represents an event in the dft.
-     * Must be from a call to some function of *this.
+    /*!
+     * Compute probability that the given BDD fails within the given timebound.
+     * @param bdd The BDD that represents an event in the DFT.
+     * @param timebound Time bound.
+     * @return Probability at time bound.
      */
     ValueType getProbabilityAtTimebound(Bdd bdd, ValueType timebound) const;
 
-    /**
-     * \return
-     * The Probabilities that the top level event fails at the given timepoints.
-     *
-     * \param timepoints
-     * Array of timebounds to calculate the failure probabilities for.
-     *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+    /*!
+     * Compute probabilities that the top level event fails within the given time points.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of probabilities corresponding to given timepoints.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(std::vector<ValueType> const &timepoints, size_t const chunksize = 0) {
         return getProbabilitiesAtTimepoints(getTopLevelElementBdd(), timepoints, chunksize);
     }
 
-    /**
-     * \return
-     * The Probabilities that the given Event fails at the given timepoints.
-     *
-     * \param bdd
-     * The bdd that represents an event in the dft.
-     * Must be from a call to some function of *this.
-     *
-     * \param timepoints
-     * Array of timebounds to calculate the failure probabilities for.
-     *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+    /*!
+     * Compute probabilities that the given BDD fails within the given time points.
+     * @param bdd The BDD that represents an event in the DFT.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of probabilities corresponding to given timepoints.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(Bdd bdd, std::vector<ValueType> const &timepoints, size_t chunksize = 0) const;
 
@@ -341,19 +327,60 @@ class SFTBDDChecker {
     std::vector<std::vector<ValueType>> getAllRRWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
    private:
-    /**
-     * Recursively traverses the given BDD and returns the minimalCutSets.
-     *
-     * \param bdd
-     * The current bdd
-     *
-     * \param buffer
-     * Reference to a vector that is used as a stack.
-     * Temporarily stores the positive variables encountered.
-     *
-     * \param minimalCutSets
-     * Reference to a set of minimal cut sets.
-     * Will be populated by the function.
+    /*!
+     * Recursively compute probability that the BDD is true given the probabilities that the variables are true.
+     * @param bdd BDD.
+     * @param indexToProbability Mapping from each variable in the BDD to a probability.
+     * @param bddToProbability Cache for common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @return Probability for given BDD.
+     */
+    ValueType recursiveProbability(Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability,
+                                   std::map<uint64_t, ValueType> &bddToProbability) const;
+
+    /*!
+     * Recursively compute Birnbaum importance factor for the given variable.
+     * @param variableIndex Index of variable.
+     * @param bdd BDD.
+     * @param indexToProbability Mapping from each variable in the BDD to a probability.
+     * @param bddToProbability Cache for probabilities of common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @param bddToBirnbaumFactor Cache for Birnbaum factor of common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @return Birnbaum importance factor for given variable.
+     */
+    ValueType recursiveBirnbaumFactor(uint32_t const variableIndex, Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability,
+                                      std::map<uint64_t, ValueType> &bddToProbability, std::map<uint64_t, ValueType> &bddToBirnbaumFactor) const;
+
+    /*!
+     * Recursively compute the (multiple) probabilities that the BDD is true given the probabilities that the variables are true.
+     * @param chunksize The width of the Eigen arrays.
+     * @param bdd BDD.
+     * @param indexToProbabilities Mapping from each variable in the BDD to probabilities.
+     * @param bddToProbabilities Cache for probabilities of common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @return Probabilities for the given BDD.
+     * @note Great care was made to ensure that all pointers are valid elements in bddToProbabilities.
+     */
+    Eigen::ArrayXd const *recursiveProbabilities(size_t const chunksize, Bdd const bdd, std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
+                                                 std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities) const;
+
+    /*!
+     * Recursively compute (multiple) Birnbaum importance factors for the given variable.
+     * @param chunksize The width of the Eigen arrays.
+     * @param variableIndex Index of variable.
+     * @param bdd BDD.
+     * @param indexToProbabilities Mapping from each variable in the BDD to probabilities.
+     * @param bddToProbabilities Cache for probabilities of common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @param bddToBirnbaumFactors  Cache for Birnbaum factor of common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
+     * @return Birnbaum importance factors for given variable.
+     */
+    Eigen::ArrayXd const *recursiveBirnbaumFactors(size_t const chunksize, uint32_t const variableIndex, Bdd const bdd,
+                                                   std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
+                                                   std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities,
+                                                   std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToBirnbaumFactors) const;
+
+    /*!
+     * Recursively traverse the given BDD and return the minimal cut sets.
+     * @param bdd Current BDD.
+     * @param buffer Reference to a vector that is used as a stack. The stack temporarily stores the positive variables encountered.
+     * @param minimalCutSets Reference to a set of minimal cut sets. It will be populated by the function and contains the MCS in the end.
      */
     void recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, std::vector<std::vector<uint32_t>> &minimalCutSets) const;
 

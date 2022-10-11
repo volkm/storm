@@ -3,40 +3,20 @@
 #include <memory>
 #include <vector>
 
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/transformations/SftToBddTransformator.h"
 #include "storm/adapters/eigen.h"
 
 namespace storm::dft {
 namespace modelchecker {
 
-using ValueType = SFTBDDChecker::ValueType;
-using Bdd = SFTBDDChecker::Bdd;
-
-namespace {
-
-/**
- * \returns
- * The probability that the bdd is true
- * given the probabilities that the variables are true.
- *
- * \param bdd
- * The bdd for which to calculate the probability
- *
- * \param indexToProbability
- * A reference to a mapping
- * that must map every variable in the bdd to a probability
- *
- * \param bddToProbability
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- */
-ValueType recursiveProbability(Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability, std::map<uint64_t, ValueType> &bddToProbability) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::recursiveProbability(Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability,
+                                                         std::map<uint64_t, ValueType> &bddToProbability) const {
     if (bdd.isOne()) {
-        return 1;
+        return storm::utility::one<ValueType>();
     } else if (bdd.isZero()) {
-        return 0;
+        return storm::utility::zero<ValueType>();
     }
 
     auto const it{bddToProbability.find(bdd.GetBDD())};
@@ -51,39 +31,18 @@ ValueType recursiveProbability(Bdd const bdd, std::map<uint32_t, ValueType> cons
     auto const elseProbability{recursiveProbability(bdd.Else(), indexToProbability, bddToProbability)};
 
     // P(Ite(x, f1, f2)) = P(x) * P(f1) + P(!x) * P(f2)
-    auto const probability{currentProbability * thenProbability + (1 - currentProbability) * elseProbability};
+    auto const probability{currentProbability * thenProbability + (storm::utility::one<ValueType>() - currentProbability) * elseProbability};
     bddToProbability[bdd.GetBDD()] = probability;
     return probability;
 }
 
-/**
- * \returns
- * The birnbaum importance factor of the given variable
- *
- * \param variableIndex
- * The index of the variable the birnbaum factor should be calculated
- *
- * \param bdd
- * The bdd for which to calculate the factor
- *
- * \param indexToProbability
- * A reference to a mapping
- * that must map every variable in the bdd to a probability
- *
- * \param bddToProbability
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- *
- * \param bddToBirnbaumFactor
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- */
-ValueType recursiveBirnbaumFactor(uint32_t const variableIndex, Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability,
-                                  std::map<uint64_t, ValueType> &bddToProbability, std::map<uint64_t, ValueType> &bddToBirnbaumFactor) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::recursiveBirnbaumFactor(uint32_t const variableIndex, Bdd const bdd,
+                                                            std::map<uint32_t, ValueType> const &indexToProbability,
+                                                            std::map<uint64_t, ValueType> &bddToProbability,
+                                                            std::map<uint64_t, ValueType> &bddToBirnbaumFactor) const {
     if (bdd.isTerminal()) {
-        return 0;
+        return storm::utility::zero<ValueType>();
     }
 
     auto const it{bddToBirnbaumFactor.find(bdd.GetBDD())};
@@ -94,10 +53,10 @@ ValueType recursiveBirnbaumFactor(uint32_t const variableIndex, Bdd const bdd, s
     auto const currentVar{bdd.TopVar()};
     auto const currentProbability{indexToProbability.at(currentVar)};
 
-    ValueType birnbaumFactor{0};
+    ValueType birnbaumFactor{storm::utility::zero<ValueType>()};
 
     if (currentVar > variableIndex) {
-        return 0;
+        return storm::utility::zero<ValueType>();
     } else if (currentVar == variableIndex) {
         auto const thenProbability{recursiveProbability(bdd.Then(), indexToProbability, bddToProbability)};
         auto const elseProbability{recursiveProbability(bdd.Else(), indexToProbability, bddToProbability)};
@@ -106,40 +65,17 @@ ValueType recursiveBirnbaumFactor(uint32_t const variableIndex, Bdd const bdd, s
         auto const thenBirnbaumFactor{recursiveBirnbaumFactor(variableIndex, bdd.Then(), indexToProbability, bddToProbability, bddToBirnbaumFactor)};
         auto const elseBirnbaumFactor{recursiveBirnbaumFactor(variableIndex, bdd.Else(), indexToProbability, bddToProbability, bddToBirnbaumFactor)};
 
-        birnbaumFactor = currentProbability * thenBirnbaumFactor + (1 - currentProbability) * elseBirnbaumFactor;
+        birnbaumFactor = currentProbability * thenBirnbaumFactor + (storm::utility::one<ValueType>() - currentProbability) * elseBirnbaumFactor;
     }
 
     bddToBirnbaumFactor[bdd.GetBDD()] = birnbaumFactor;
     return birnbaumFactor;
 }
 
-/**
- * \returns
- * The probabilities that the bdd is true
- * given the probabilities that the variables are true.
- *
- * \param chunksize
- * The width of the Eigen Arrays
- *
- * \param bdd
- * The bdd for which to calculate the probabilities
- *
- * \param indexToProbabilities
- * A reference to a mapping
- * that must map every variable in the bdd to probabilities
- *
- * \param bddToProbabilities
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- *
- * \note
- * Great care was made that all pointers
- * are valid elements in bddToProbabilities.
- *
- */
-Eigen::ArrayXd const *recursiveProbabilities(size_t const chunksize, Bdd const bdd, std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
-                                             std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities) {
+template<typename ValueType>
+Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveProbabilities(
+    size_t const chunksize, Bdd const bdd, std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
+    std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities) const {
     auto const bddId{bdd.GetBDD()};
     auto const it{bddToProbabilities.find(bddId)};
     if (it != bddToProbabilities.end() && it->second.first) {
@@ -169,37 +105,11 @@ Eigen::ArrayXd const *recursiveProbabilities(size_t const chunksize, Bdd const b
     return &bddToProbabilitiesElement.second;
 }
 
-/**
- * \returns
- * The birnbaum importance factors of the given variable
- *
- * \param chunksize
- * The width of the Eigen Arrays
- *
- * \param bdd
- * The bdd for which to calculate the factors
- *
- * \param variableIndex
- * The index of the variable the birnbaum factors should be calculated
- *
- * \param indexToProbability
- * A reference to a mapping
- * that must map every variable in the bdd to a probabilities
- *
- * \param bddToProbability
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- *
- * \param bddToBirnbaumFactor
- * A cache for common sub Bdds.
- * Must be empty or from an earlier call with a bdd that is an
- * ancestor of the current one.
- */
-Eigen::ArrayXd const *recursiveBirnbaumFactors(size_t const chunksize, uint32_t const variableIndex, Bdd const bdd,
-                                               std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
-                                               std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities,
-                                               std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToBirnbaumFactors) {
+template<typename ValueType>
+Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveBirnbaumFactors(
+    size_t const chunksize, uint32_t const variableIndex, Bdd const bdd, std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
+    std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities,
+    std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToBirnbaumFactors) const {
     auto const bddId{bdd.GetBDD()};
     auto const it{bddToBirnbaumFactors.find(bddId)};
     if (it != bddToBirnbaumFactors.end() && it->second.first) {
@@ -235,47 +145,57 @@ Eigen::ArrayXd const *recursiveBirnbaumFactors(size_t const chunksize, uint32_t 
     bddToBirnbaumFactorsElement.second = currentProbabilities * thenBirnbaumFactors + (1 - currentProbabilities) * elseBirnbaumFactors;
     return &bddToBirnbaumFactorsElement.second;
 }
-}  // namespace
 
-SFTBDDChecker::SFTBDDChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft, std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager)
+template<typename ValueType>
+SftBddChecker<ValueType>::SftBddChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft,
+                                        std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager)
     : transformator{std::make_shared<storm::dft::transformations::SftToBddTransformator<ValueType>>(dft, sylvanBddManager)} {}
 
-SFTBDDChecker::SFTBDDChecker(std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator) : transformator{transformator} {}
+template<typename ValueType>
+SftBddChecker<ValueType>::SftBddChecker(std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator)
+    : transformator{transformator} {}
 
-Bdd SFTBDDChecker::getTopLevelElementBdd() {
+template<typename ValueType>
+typename SftBddChecker<ValueType>::Bdd SftBddChecker<ValueType>::getTopLevelElementBdd() {
     return transformator->transformTopLevel();
 }
 
-std::shared_ptr<storm::dft::storage::DFT<ValueType>> SFTBDDChecker::getDFT() const noexcept {
+template<typename ValueType>
+std::shared_ptr<storm::dft::storage::DFT<ValueType>> SftBddChecker<ValueType>::getDFT() const noexcept {
     return transformator->getDFT();
 }
-std::shared_ptr<storm::dft::storage::SylvanBddManager> SFTBDDChecker::getSylvanBddManager() const noexcept {
+
+template<typename ValueType>
+std::shared_ptr<storm::dft::storage::SylvanBddManager> SftBddChecker<ValueType>::getSylvanBddManager() const noexcept {
     return transformator->getSylvanBddManager();
 }
 
-std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> SFTBDDChecker::getTransformator() const noexcept {
+template<typename ValueType>
+std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> SftBddChecker<ValueType>::getTransformator() const noexcept {
     return transformator;
 }
 
-std::vector<std::vector<std::string>> SFTBDDChecker::getMinimalCutSets() {
-    std::vector<std::vector<uint32_t>> mcs{getMinimalCutSetsAsIndices()};
+template<typename ValueType>
+std::vector<std::vector<std::string>> SftBddChecker<ValueType>::getMinimalCutSets() {
+    std::vector<std::vector<uint32_t>> mcsIndices{getMinimalCutSetsAsIndices()};
 
-    std::vector<std::vector<std::string>> rval{};
-    rval.reserve(mcs.size());
-    while (!mcs.empty()) {
+    std::vector<std::vector<std::string>> mcs{};
+    mcs.reserve(mcsIndices.size());
+    while (!mcsIndices.empty()) {
         std::vector<std::string> tmp{};
-        tmp.reserve(mcs.back().size());
-        for (auto const &be : mcs.back()) {
+        tmp.reserve(mcsIndices.back().size());
+        for (auto const &be : mcsIndices.back()) {
             tmp.push_back(getSylvanBddManager()->getName(be));
         }
-        rval.push_back(std::move(tmp));
-        mcs.pop_back();
+        mcs.push_back(std::move(tmp));
+        mcsIndices.pop_back();
     }
 
-    return rval;
+    return mcs;
 }
 
-std::vector<std::vector<uint32_t>> SFTBDDChecker::getMinimalCutSetsAsIndices() {
+template<typename ValueType>
+std::vector<std::vector<uint32_t>> SftBddChecker<ValueType>::getMinimalCutSetsAsIndices() {
     auto const bdd{getTopLevelElementBdd().Minsol()};
 
     std::vector<std::vector<uint32_t>> mcs{};
@@ -285,8 +205,9 @@ std::vector<std::vector<uint32_t>> SFTBDDChecker::getMinimalCutSetsAsIndices() {
     return mcs;
 }
 
+template<>
 template<typename FuncType>
-void SFTBDDChecker::chunkCalculationTemplate(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func) const {
+void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &timepoints, size_t chunksize, FuncType func) const {
     if (chunksize == 0) {
         chunksize = timepoints.size();
     }
@@ -316,7 +237,7 @@ void SFTBDDChecker::chunkCalculationTemplate(std::vector<ValueType> const &timep
             // Vectorize known BETypes
             // fallback to getUnreliability() otherwise
             if (be->beType() == storm::dft::storage::elements::BEType::EXPONENTIAL) {
-                auto const failureRate{std::static_pointer_cast<storm::dft::storage::elements::BEExponential<ValueType>>(be)->activeFailureRate()};
+                auto const failureRate{std::static_pointer_cast<storm::dft::storage::elements::BEExponential<double>>(be)->activeFailureRate()};
 
                 // exponential distribution
                 // p(T <= t) = 1 - exp(-lambda*t)
@@ -334,7 +255,14 @@ void SFTBDDChecker::chunkCalculationTemplate(std::vector<ValueType> const &timep
     }
 }
 
-ValueType SFTBDDChecker::getProbabilityAtTimebound(Bdd bdd, ValueType timebound) const {
+template<typename ValueType>
+template<typename FuncType>
+void SftBddChecker<ValueType>::chunkCalculationTemplate(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func) const {
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Chunk calculation not supported for datatypes other than double.");
+}
+
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getProbabilityAtTimebound(Bdd bdd, ValueType timebound) const {
     std::map<uint32_t, ValueType> indexToProbability{};
     for (auto const &be : getDFT()->getBasicElements()) {
         auto const currentIndex{getSylvanBddManager()->getIndex(be->name())};
@@ -346,7 +274,8 @@ ValueType SFTBDDChecker::getProbabilityAtTimebound(Bdd bdd, ValueType timebound)
     return probability;
 }
 
-std::vector<ValueType> SFTBDDChecker::getProbabilitiesAtTimepoints(Bdd bdd, std::vector<ValueType> const &timepoints, size_t chunksize) const {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getProbabilitiesAtTimepoints(Bdd bdd, std::vector<ValueType> const &timepoints, size_t chunksize) const {
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};
     std::vector<ValueType> resultProbabilities{};
     resultProbabilities.reserve(timepoints.size());
@@ -370,8 +299,9 @@ std::vector<ValueType> SFTBDDChecker::getProbabilitiesAtTimepoints(Bdd bdd, std:
     return resultProbabilities;
 }
 
+template<typename ValueType>
 template<typename FuncType>
-ValueType SFTBDDChecker::getImportanceMeasureAtTimebound(std::string const &beName, ValueType timebound, FuncType func) {
+ValueType SftBddChecker<ValueType>::getImportanceMeasureAtTimebound(std::string const &beName, ValueType timebound, FuncType func) {
     std::map<uint32_t, ValueType> indexToProbability{};
     for (auto const &be : getDFT()->getBasicElements()) {
         auto const currentIndex{getSylvanBddManager()->getIndex(be->name())};
@@ -389,8 +319,9 @@ ValueType SFTBDDChecker::getImportanceMeasureAtTimebound(std::string const &beNa
     return func(beProbability, probability, birnbaumFactor);
 }
 
+template<typename ValueType>
 template<typename FuncType>
-std::vector<ValueType> SFTBDDChecker::getAllImportanceMeasuresAtTimebound(ValueType timebound, FuncType func) {
+std::vector<ValueType> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimebound(ValueType timebound, FuncType func) {
     auto const bdd{getTopLevelElementBdd()};
 
     std::vector<ValueType> resultVector{};
@@ -415,9 +346,10 @@ std::vector<ValueType> SFTBDDChecker::getAllImportanceMeasuresAtTimebound(ValueT
     return resultVector;
 }
 
+template<typename ValueType>
 template<typename FuncType>
-std::vector<ValueType> SFTBDDChecker::getImportanceMeasuresAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize,
-                                                                        FuncType func) {
+std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints,
+                                                                                   size_t chunksize, FuncType func) {
     auto const bdd{getTopLevelElementBdd()};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToBirnbaumFactors{};
@@ -451,9 +383,10 @@ std::vector<ValueType> SFTBDDChecker::getImportanceMeasuresAtTimepoints(std::str
     return resultVector;
 }
 
+template<typename ValueType>
 template<typename FuncType>
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize,
-                                                                                        FuncType func) {
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize,
+                                                                                                   FuncType func) {
     auto const bdd{getTopLevelElementBdd()};
     auto const basicElements{getDFT()->getBasicElements()};
 
@@ -503,123 +436,145 @@ std::vector<std::vector<ValueType>> SFTBDDChecker::getAllImportanceMeasuresAtTim
 namespace {
 
 struct BirnbaumFunctor {
-    template<typename T>
-    constexpr auto operator()(T const &beProbability, T const &probability, T const &birnbaumFactor) const {
+    template<typename ValueType>
+    constexpr auto operator()(ValueType const &beProbability, ValueType const &probability, ValueType const &birnbaumFactor) const {
         return birnbaumFactor;
     }
 };
 
 struct CIFFunctor {
-    template<typename T>
-    constexpr T operator()(T const &beProbability, T const &probability, T const &birnbaumFactor) const {
+    template<typename ValueType>
+    constexpr ValueType operator()(ValueType const &beProbability, ValueType const &probability, ValueType const &birnbaumFactor) const {
         return (beProbability / probability) * birnbaumFactor;
     }
 };
 
 struct DIFFunctor {
-    template<typename T>
-    constexpr T operator()(T const &beProbability, T const &probability, T const &birnbaumFactor) const {
+    template<typename ValueType>
+    constexpr ValueType operator()(ValueType const &beProbability, ValueType const &probability, ValueType const &birnbaumFactor) const {
         return beProbability + (beProbability * (1 - beProbability) * birnbaumFactor) / probability;
     }
 };
 
 struct RAWFunctor {
-    template<typename T>
-    constexpr T operator()(T const &beProbability, T const &probability, T const &birnbaumFactor) const {
+    template<typename ValueType>
+    constexpr ValueType operator()(ValueType const &beProbability, ValueType const &probability, ValueType const &birnbaumFactor) const {
         return 1 + ((1 - beProbability) * birnbaumFactor) / probability;
     }
 };
 
 struct RRWFunctor {
-    template<typename T>
-    constexpr T operator()(T const &beProbability, T const &probability, T const &birnbaumFactor) const {
+    template<typename ValueType>
+    constexpr ValueType operator()(ValueType const &beProbability, ValueType const &probability, ValueType const &birnbaumFactor) const {
         return probability / (probability - beProbability * birnbaumFactor);
     }
 };
 
 }  // namespace
 
-ValueType SFTBDDChecker::getBirnbaumFactorAtTimebound(std::string const &beName, ValueType timebound) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getBirnbaumFactorAtTimebound(std::string const &beName, ValueType timebound) {
     return getImportanceMeasureAtTimebound(beName, timebound, BirnbaumFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getAllBirnbaumFactorsAtTimebound(ValueType timebound) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getAllBirnbaumFactorsAtTimebound(ValueType timebound) {
     return getAllImportanceMeasuresAtTimebound(timebound, BirnbaumFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getBirnbaumFactorsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getBirnbaumFactorsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints,
+                                                                                size_t chunksize) {
     return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, BirnbaumFunctor{});
 }
 
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllBirnbaumFactorsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllBirnbaumFactorsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, BirnbaumFunctor{});
 }
 
-ValueType SFTBDDChecker::getCIFAtTimebound(std::string const &beName, ValueType timebound) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getCIFAtTimebound(std::string const &beName, ValueType timebound) {
     return getImportanceMeasureAtTimebound(beName, timebound, CIFFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getAllCIFsAtTimebound(ValueType timebound) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getAllCIFsAtTimebound(ValueType timebound) {
     return getAllImportanceMeasuresAtTimebound(timebound, CIFFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getCIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getCIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, CIFFunctor{});
 }
 
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllCIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllCIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, CIFFunctor{});
 }
 
-ValueType SFTBDDChecker::getDIFAtTimebound(std::string const &beName, ValueType timebound) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getDIFAtTimebound(std::string const &beName, ValueType timebound) {
     return getImportanceMeasureAtTimebound(beName, timebound, DIFFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getAllDIFsAtTimebound(ValueType timebound) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getAllDIFsAtTimebound(ValueType timebound) {
     return getAllImportanceMeasuresAtTimebound(timebound, DIFFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getDIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getDIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, DIFFunctor{});
 }
 
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllDIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllDIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, DIFFunctor{});
 }
 
-ValueType SFTBDDChecker::getRAWAtTimebound(std::string const &beName, ValueType timebound) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getRAWAtTimebound(std::string const &beName, ValueType timebound) {
     return getImportanceMeasureAtTimebound(beName, timebound, RAWFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getAllRAWsAtTimebound(ValueType timebound) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getAllRAWsAtTimebound(ValueType timebound) {
     return getAllImportanceMeasuresAtTimebound(timebound, RAWFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getRAWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getRAWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, RAWFunctor{});
 }
 
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllRAWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllRAWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, RAWFunctor{});
 }
 
-ValueType SFTBDDChecker::getRRWAtTimebound(std::string const &beName, ValueType timebound) {
+template<typename ValueType>
+ValueType SftBddChecker<ValueType>::getRRWAtTimebound(std::string const &beName, ValueType timebound) {
     return getImportanceMeasureAtTimebound(beName, timebound, RRWFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getAllRRWsAtTimebound(ValueType timebound) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getAllRRWsAtTimebound(ValueType timebound) {
     return getAllImportanceMeasuresAtTimebound(timebound, RRWFunctor{});
 }
 
-std::vector<ValueType> SFTBDDChecker::getRRWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::getRRWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, RRWFunctor{});
 }
 
-std::vector<std::vector<ValueType>> SFTBDDChecker::getAllRRWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
+template<typename ValueType>
+std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllRRWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize) {
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, RRWFunctor{});
 }
 
-void SFTBDDChecker::recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, std::vector<std::vector<uint32_t>> &minimalCutSets) const {
+template<typename ValueType>
+void SftBddChecker<ValueType>::recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, std::vector<std::vector<uint32_t>> &minimalCutSets) const {
     if (bdd.isOne()) {
         minimalCutSets.push_back(buffer);
     } else if (!bdd.isZero()) {
@@ -632,6 +587,10 @@ void SFTBDDChecker::recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, s
         recursiveMCS(bdd.Else(), buffer, minimalCutSets);
     }
 }
+
+// Explicitly instantiate the class.
+template class SftBddChecker<double>;
+// template class SftBddChecker<storm::RationalFunction>;
 
 }  // namespace modelchecker
 }  // namespace storm::dft
