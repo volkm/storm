@@ -9,7 +9,7 @@
 #include <vector>
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/modelchecker/DftModularizationChecker.h"
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/DftJsonExporter.h"
 #include "storm-dft/storage/SylvanBddManager.h"
@@ -70,7 +70,7 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
     sylvanBddManager->execute([&]() {
         storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
         storm::dft::adapters::SFTBDDPropertyFormulaAdapter adapter{dft, properties, relevantEvents, sylvanBddManager};
-        auto checker{adapter.getSFTBDDChecker()};
+        auto checker{adapter.getSftBddChecker()};
 
         if (exportToDot) {
             checker->exportBddToDot(filename);

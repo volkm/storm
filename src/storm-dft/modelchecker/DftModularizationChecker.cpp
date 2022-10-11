@@ -6,7 +6,7 @@
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/utility/DftModularizer.h"
 
 #include "storm-parsers/api/properties.h"
@@ -60,7 +60,7 @@ std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector 
 template<typename ValueType>
 std::vector<ValueType> DftModularizationChecker<ValueType>::getProbabilitiesAtTimepoints(std::vector<ValueType> const& timepoints, size_t chunksize) {
     auto newDft = replaceDynamicModules(timepoints);
-    storm::dft::modelchecker::SFTBDDChecker checker{newDft, sylvanBddManager};
+    storm::dft::modelchecker::SftBddChecker<ValueType> checker{newDft, sylvanBddManager};
     return checker.getProbabilitiesAtTimepoints(timepoints, chunksize);
 }
 

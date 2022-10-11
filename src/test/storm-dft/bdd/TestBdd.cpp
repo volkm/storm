@@ -6,7 +6,7 @@
 #include "storm-config.h"
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/api/storm-dft.h"
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/transformations/SftToBddTransformator.h"
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
@@ -63,10 +63,10 @@ class SftBddTest : public testing::TestWithParam<SftTestData> {
     void SetUp() override {
         auto const &param{TestWithParam::GetParam()};
         auto dft{storm::dft::api::loadDFTGalileoFile<double>(param.filepath)};
-        checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+        checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     }
 
-    std::shared_ptr<storm::dft::modelchecker::SFTBDDChecker> checker;
+    std::shared_ptr<storm::dft::modelchecker::SftBddChecker<double>> checker;
 };
 
 TEST_P(SftBddTest, bddHash) {
@@ -208,7 +208,7 @@ TEST(TestBdd, AndOrRelevantEventsChecked) {
     storm::dft::utility::RelevantEvents relevantEvents{"F", "F1", "F2", "x1"};
     auto transformator{std::make_shared<storm::dft::transformations::SftToBddTransformator<double>>(dft, manager, relevantEvents)};
 
-    storm::dft::modelchecker::SFTBDDChecker checker{transformator};
+    storm::dft::modelchecker::SftBddChecker<double> checker{transformator};
 
     auto relevantEventsBdds = transformator->transformRelevantEvents();
 

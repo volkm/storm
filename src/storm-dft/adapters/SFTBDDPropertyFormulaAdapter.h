@@ -6,7 +6,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <memory>
 
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/SylvanBddManager.h"
 #include "storm/logic/AtomicLabelFormula.h"
@@ -38,7 +38,7 @@ class SFTBDDPropertyFormulaAdapter {
 
         relevantEvents.insertNamesFromProperties(formulas.begin(), formulas.end());
         auto const transformator{std::make_shared<storm::dft::transformations::SftToBddTransformator<ValueType>>(dft, sylvanBddManager, relevantEvents)};
-        checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(transformator);
+        checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<ValueType>>(transformator);
     }
 
     /**
@@ -63,9 +63,9 @@ class SFTBDDPropertyFormulaAdapter {
     }
 
     /**
-     * \return The internal SFTBDDChecker
+     * \return The internal SftBddChecker
      */
-    std::shared_ptr<storm::dft::modelchecker::SFTBDDChecker> getSFTBDDChecker() const noexcept {
+    std::shared_ptr<storm::dft::modelchecker::SftBddChecker<ValueType>> getSftBddChecker() const noexcept {
         return checker;
     }
 
@@ -184,7 +184,7 @@ class SFTBDDPropertyFormulaAdapter {
     }
 
    private:
-    std::shared_ptr<storm::dft::modelchecker::SFTBDDChecker> checker;
+    std::shared_ptr<storm::dft::modelchecker::SftBddChecker<ValueType>> checker;
     FormulaVector formulas;
 
     /**

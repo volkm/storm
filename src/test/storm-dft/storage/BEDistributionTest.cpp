@@ -1,7 +1,7 @@
 #include "test/storm_gtest.h"
 
 #include "storm-dft/api/storm-dft.h"
-#include "storm-dft/modelchecker/SFTBDDChecker.h"
+#include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-parsers/api/storm-parsers.h"
 
 namespace {
@@ -11,7 +11,7 @@ TEST(BEDistributionTest, ConstantFail) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.3296799540, 1e-10);
 
@@ -29,7 +29,7 @@ TEST(BEDistributionTest, ConstantNonFail) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.9592377960, 1e-10);
 
@@ -47,7 +47,7 @@ TEST(BEDistributionTest, ConstantNonFail2) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_EQ(resultBDD, 0);
 
@@ -65,7 +65,7 @@ TEST(BEDistributionTest, Probability) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.1095403852, 1e-10);
 
@@ -83,7 +83,7 @@ TEST(BEDistributionTest, Exponential) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.108688872, 1e-10);
 
@@ -101,7 +101,7 @@ TEST(BEDistributionTest, Erlang) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.4949009834, 1e-10);
 
@@ -119,7 +119,7 @@ TEST(BEDistributionTest, Weibull) {
     double timebound = 2;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.0382982486, 1e-10);
 }
@@ -129,7 +129,7 @@ TEST(BEDistributionTest, LogNormal) {
     double timebound = 0.8;
 
     // Perform BDD-based analysis on FT
-    auto checker = std::make_shared<storm::dft::modelchecker::SFTBDDChecker>(dft);
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
     double resultBDD = checker->getProbabilityAtTimebound(timebound);
     EXPECT_NEAR(resultBDD, 0.2336675428, 1e-10);
 }
