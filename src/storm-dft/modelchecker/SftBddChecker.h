@@ -7,9 +7,9 @@
 #include <utility>
 #include <vector>
 
+#include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/SylvanBddManager.h"
-#include "storm-dft/transformations/SftToBddTransformator.h"
 #include "storm/adapters/EigenAdapter.h"
 #include "storm/storage/PairHash.h"
 
@@ -27,22 +27,22 @@ class SftBddChecker {
     SftBddChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft,
                   std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager = std::make_shared<storm::dft::storage::SylvanBddManager>());
 
-    SftBddChecker(std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator);
+    SftBddChecker(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder);
 
     /**
-     * \return The internal DFT
+     * \return The internal SFT
      */
-    std::shared_ptr<storm::dft::storage::DFT<ValueType>> getDFT() const noexcept;
+    std::shared_ptr<storm::dft::storage::DFT<ValueType> const> getSft() const noexcept;
 
     /**
      * \return The internal sylvanBddManager
      */
-    std::shared_ptr<storm::dft::storage::SylvanBddManager> getSylvanBddManager() const noexcept;
+    storm::dft::storage::SylvanBddManager const &getSylvanBddManager() const noexcept;
 
     /**
-     * \return The internal SftToBddTransformator
+     * \return The internal BddSftModelBuilder
      */
-    std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> getTransformator() const noexcept;
+    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> getBuilder() const noexcept;
 
     /**
      * Exports the Bdd that represents the top level event to a file
@@ -52,7 +52,7 @@ class SftBddChecker {
      * The name of the file the dot graph is written to
      */
     void exportBddToDot(std::string const &filename) {
-        getSylvanBddManager()->exportBddToDot(getTopLevelElementBdd(), filename);
+        getSylvanBddManager().exportBddToDot(getTopLevelElementBdd(), filename);
     }
 
     /**
@@ -406,7 +406,7 @@ class SftBddChecker {
      */
     Bdd getTopLevelElementBdd();
 
-    std::shared_ptr<storm::dft::transformations::SftToBddTransformator<ValueType>> transformator;
+    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder;
 };
 
 }  // namespace modelchecker

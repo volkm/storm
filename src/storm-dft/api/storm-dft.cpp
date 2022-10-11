@@ -8,12 +8,12 @@
 #include <memory>
 #include <vector>
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
+#include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/DftModularizationChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/DftJsonExporter.h"
 #include "storm-dft/storage/SylvanBddManager.h"
-#include "storm-dft/transformations/SftToBddTransformator.h"
 
 namespace storm::dft {
 namespace api {
@@ -78,7 +78,6 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
 
         if (calculateMCS) {
             auto const minimalCutSets{checker->getMinimalCutSetsAsIndices()};
-            auto const sylvanBddManager{checker->getSylvanBddManager()};
 
             std::cout << "{\n";
             for (auto const& minimalCutSet : minimalCutSets) {
