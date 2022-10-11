@@ -29,7 +29,7 @@ class DftModularizationChecker {
      * Initializes and computes all modules.
      * @param dft DFT.
      */
-    DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft);
+    DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft);
 
     /*!
      * Calculate the properties specified by the formulas.
@@ -81,7 +81,7 @@ class DftModularizationChecker {
                                                                                                     std::vector<ValueType> const &timepoints);
 
     // DFT.
-    std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft;
+    std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft;
     // DFT modelchecker
     storm::dft::modelchecker::DFTModelChecker<ValueType> modelchecker;
     // don't reinitialize Sylvan BDD

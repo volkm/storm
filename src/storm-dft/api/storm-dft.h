@@ -99,7 +99,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> applyTransformations(storm:
 }
 
 /*!
- * Apply transformations to make DFT feasible for Markovian analysis.
+ * Apply transformations to make DFT feasible for analysis via Markov models.
  *
  * @param dft DFT.
  * @return Transformed DFT.

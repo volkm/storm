@@ -352,7 +352,7 @@ std::vector<ValueType> SFTBDDChecker::getProbabilitiesAtTimepoints(Bdd bdd, std:
     resultProbabilities.reserve(timepoints.size());
 
     chunkCalculationTemplate(timepoints, chunksize, [&](auto const currentChunksize, auto const &timepointsArray, auto const &indexToProbabilities) {
-        // Invalidate bdd cache
+        // Invalidate BDD cache
         for (auto &i : bddToProbabilities) {
             i.second.first = false;
         }
