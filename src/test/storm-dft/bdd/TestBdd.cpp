@@ -6,8 +6,8 @@
 #include "storm-config.h"
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/api/storm-dft.h"
+#include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
-#include "storm-dft/transformations/SftToBddTransformator.h"
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
@@ -71,7 +71,7 @@ class SftBddTest : public testing::TestWithParam<SftTestData> {
 
 TEST_P(SftBddTest, bddHash) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_EQ(checker->getTransformator()->transformTopLevel().GetShaHash(), param.bddHash);
+    EXPECT_EQ(checker->getBuilder()->getBddForTopLevelElement().GetShaHash(), param.bddHash);
 }
 
 TEST_P(SftBddTest, ProbabilityAtTimeOne) {
@@ -81,8 +81,8 @@ TEST_P(SftBddTest, ProbabilityAtTimeOne) {
 
 TEST_P(SftBddTest, MTTF) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(checker->getDFT()), param.mttf, 1e-5);
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(checker->getDFT()), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(checker->getSft()), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(checker->getSft()), param.mttf, 1e-5);
 }
 
 template<typename T1, typename T2>
@@ -188,36 +188,28 @@ INSTANTIATE_TEST_SUITE_P(SFTs, SftBddTest, testing::ValuesIn(sftTestData), [](au
 
 TEST(TestBdd, AndOrRelevantEvents) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
-    auto manager = std::make_shared<storm::dft::storage::SylvanBddManager>();
     storm::dft::utility::RelevantEvents relevantEvents{"F", "F1", "F2", "x1"};
-    storm::dft::transformations::SftToBddTransformator<double> transformer{dft, manager, relevantEvents};
+    storm::dft::builder::BddSftModelBuilder<double> builder(dft);
+    builder.buildBdds(relevantEvents);
 
-    auto const result = transformer.transformRelevantEvents();
-
-    EXPECT_EQ(result.size(), 4ul);
-
-    EXPECT_EQ(result.at("F").GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(result.at("F1").GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
-    EXPECT_EQ(result.at("F2").GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
-    EXPECT_EQ(result.at("x1").GetShaHash(), "b0d991484e405a391b6d3d241fed9c00d4a2e5bf6f57300512394d819253893d");
+    EXPECT_EQ(builder.getBddForElement("F").GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
+    EXPECT_EQ(builder.getBddForElement("F1").GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
+    EXPECT_EQ(builder.getBddForElement("F2").GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
+    EXPECT_EQ(builder.getBddForElement("x1").GetShaHash(), "b0d991484e405a391b6d3d241fed9c00d4a2e5bf6f57300512394d819253893d");
 }
 
 TEST(TestBdd, AndOrRelevantEventsChecked) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
-    auto manager{std::make_shared<storm::dft::storage::SylvanBddManager>()};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+    storm::dft::modelchecker::SftBddChecker checker{builder};
+
     storm::dft::utility::RelevantEvents relevantEvents{"F", "F1", "F2", "x1"};
-    auto transformator{std::make_shared<storm::dft::transformations::SftToBddTransformator<double>>(dft, manager, relevantEvents)};
+    builder->buildBdds(relevantEvents);
 
-    storm::dft::modelchecker::SftBddChecker<double> checker{transformator};
-
-    auto relevantEventsBdds = transformator->transformRelevantEvents();
-
-    EXPECT_NEAR(checker.getProbabilityAtTimebound(relevantEventsBdds["F"], 1), 0.5625, 1e-6);
-
-    EXPECT_NEAR(checker.getProbabilityAtTimebound(relevantEventsBdds["F1"], 1), 0.75, 1e-6);
-    EXPECT_NEAR(checker.getProbabilityAtTimebound(relevantEventsBdds["F2"], 1), 0.75, 1e-6);
-
-    EXPECT_NEAR(checker.getProbabilityAtTimebound(relevantEventsBdds["x1"], 1), 0.5, 1e-6);
+    EXPECT_NEAR(checker.getProbabilityAtTimebound(builder->getBddForElement("F"), 1), 0.5625, 1e-6);
+    EXPECT_NEAR(checker.getProbabilityAtTimebound(builder->getBddForElement("F1"), 1), 0.75, 1e-6);
+    EXPECT_NEAR(checker.getProbabilityAtTimebound(builder->getBddForElement("F2"), 1), 0.75, 1e-6);
+    EXPECT_NEAR(checker.getProbabilityAtTimebound(builder->getBddForElement("x1"), 1), 0.5, 1e-6);
 }
 
 TEST(TestBdd, AndOrFormulaFail) {
