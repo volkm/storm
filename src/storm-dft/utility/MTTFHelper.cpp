@@ -4,26 +4,20 @@
 #include "storm-dft/storage/DFT.h"
 
 namespace {
-
-/**
- * Fills Vector buffer with elements which are
- * stepsize apart starting with the given start
- *
- * \note
- * Helperfunction for MTTFHelper
+/*!
+ * Fills vector buffer with elements which are stepsize apart starting with given start.
  */
 void linspace(std::vector<double> &buffer, double start, double const stepsize) {
     for (size_t i{0}; i < buffer.size(); ++i) {
         buffer[i] = i * stepsize + start;
     }
 }
-
 }  // namespace
 
 namespace storm::dft {
 namespace utility {
 
-double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double>> const dft, double const stepsize, double const precision) {
+double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double> const> const dft, double const stepsize, double const precision) {
     constexpr size_t chunksize{1001};
     storm::dft::modelchecker::DftModularizationChecker checker{dft};
 
@@ -64,7 +58,7 @@ double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double>> co
     return rval;
 }
 
-double MTTFHelperVariableChange(std::shared_ptr<storm::dft::storage::DFT<double>> const dft, double const stepsize) {
+double MTTFHelperVariableChange(std::shared_ptr<storm::dft::storage::DFT<double> const> const dft, double const stepsize) {
     constexpr size_t chunksize{1001};
     storm::dft::modelchecker::DftModularizationChecker checker{dft};
 

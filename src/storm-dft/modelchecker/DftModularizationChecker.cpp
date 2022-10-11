@@ -17,7 +17,7 @@ namespace storm::dft {
 namespace modelchecker {
 
 template<typename ValueType>
-DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft)
+DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft)
     : dft{dft}, modelchecker(true), sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()} {
     // Initialize modules
     storm::dft::utility::DftModularizer<ValueType> modularizer;
