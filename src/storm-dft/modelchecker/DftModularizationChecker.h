@@ -16,13 +16,10 @@ namespace modelchecker {
  * DFT analysis via modularization.
  * Dynamic modules are analyzed via model checking and replaced by a single BE capturing the probabilities of the module.
  * The resulting (static) fault tree is then analyzed via BDDs.
- *
- * @note All public functions must make sure that workDFT is set correctly and should assume workDFT to be in an erroneous state.
  */
 template<typename ValueType>
 class DftModularizationChecker {
    public:
-    using DFTElementCPointer = std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const>;
     using FormulaVector = typename DFTModelChecker<ValueType>::property_vector;
 
     /*!
@@ -36,7 +33,6 @@ class DftModularizationChecker {
      * @param formulas List of formulas to check.
      * @param chunksize Chunk size used by the BDD checker.
      * @return Results corresponding to the given formulas.
-     * @note Does not work with events in dynamic modules.
      */
     std::vector<ValueType> check(FormulaVector const &formulas, size_t chunksize = 0);
 
@@ -54,7 +50,6 @@ class DftModularizationChecker {
      * @return The Probability that the top level event fails at the given time bound.
      */
     ValueType getProbabilityAtTimebound(ValueType const timebound) {
-        // workDFT will be set in getProbabilitiesAtTimepoints()
         return getProbabilitiesAtTimepoints({timebound}).at(0);
     }
 
@@ -66,7 +61,7 @@ class DftModularizationChecker {
     void populateDynamicModules(storm::dft::storage::DftIndependentModule const &module);
 
     /*!
-     * Calculate results for dynamic modules and replace them with BE's in workDFT.
+     * Calculate results for dynamic modules and replace them with BE's capturing the probabilities of the dynamic modules.
      * @param timepoints Time points for which the failure probability should be computed.
      * @return Dft where dynamic modules are replaced.
      */
@@ -80,10 +75,8 @@ class DftModularizationChecker {
     typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analyseDynamicModule(storm::dft::storage::DftIndependentModule const &module,
                                                                                                     std::vector<ValueType> const &timepoints);
 
-    // DFT.
+    // DFT
     std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft;
-    // DFT modelchecker
-    storm::dft::modelchecker::DFTModelChecker<ValueType> modelchecker;
     // Independent modules with their top element
     std::vector<storm::dft::storage::DftIndependentModule> dynamicModules;
 };

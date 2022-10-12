@@ -45,7 +45,7 @@ class SftBddChecker {
     /*!
      * Compute probability that the top level event fails within the given timebound.
      * @param timebound Time bound.
-     * @return
+     * @return Probability at time bound.
      */
     ValueType getProbabilityAtTimebound(ValueType timebound) {
         return getProbabilityAtTimebound(builder->getBddForTopLevelElement(), timebound);

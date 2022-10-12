@@ -17,7 +17,7 @@ namespace storm::dft {
 namespace modelchecker {
 
 template<typename ValueType>
-DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft) : dft{dft}, modelchecker(true) {
+DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft) : dft{dft} {
     // Initialize modules
     storm::dft::utility::DftModularizer<ValueType> modularizer;
     auto topModule = modularizer.computeModules(*dft);
@@ -137,6 +137,7 @@ typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results DftMo
     }
     auto const props{storm::api::extractFormulasFromProperties(storm::api::parseProperties(propertyStream.str()))};
 
+    storm::dft::modelchecker::DFTModelChecker<ValueType> modelchecker(true);
     return std::move(modelchecker.check(subDft, props, false, false, {}));
 }
 
