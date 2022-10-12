@@ -48,7 +48,7 @@ class SftBddChecker {
      * @return Probability at time bound.
      */
     ValueType getProbabilityAtTimebound(ValueType timebound) {
-        return getProbabilityAtTimebound(builder->getBddForTopLevelElement(), timebound);
+        return getProbabilityAtTimebound(builder->getOrCreateBddForTopLevelElement(), timebound);
     }
 
     /*!
@@ -67,7 +67,7 @@ class SftBddChecker {
      * @return List of probabilities corresponding to given timepoints.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(std::vector<ValueType> const &timepoints, size_t const chunksize = 0) {
-        return getProbabilitiesAtTimepoints(builder->getBddForTopLevelElement(), timepoints, chunksize);
+        return getProbabilitiesAtTimepoints(builder->getOrCreateBddForTopLevelElement(), timepoints, chunksize);
     }
 
     /*!
@@ -79,6 +79,17 @@ class SftBddChecker {
      * @return List of probabilities corresponding to given timepoints.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(Bdd bdd, std::vector<ValueType> const &timepoints, size_t chunksize = 0) const;
+
+    /*!
+     * Check the given formulas.
+     * @param formulas Formulas to check.
+     * @param chunksize Splits to timepoints array into chunksize chunks.
+     * @param relevantEvents Additional relevant events which should be considerd while building the BDDs.
+     * A value of 0 represents to calculate the whole array at once.
+     * @return List of values corresponding to the given formulas.
+     */
+    std::vector<ValueType> check(std::vector<std::shared_ptr<storm::logic::Formula const>> const &formulas, size_t const chunksize = 0,
+                                 storm::dft::utility::RelevantEvents relevantEvents = {});
 
     /**
      * \return

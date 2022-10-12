@@ -5,12 +5,63 @@
 
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
+#include "storm-dft/transformations/PropertyToBddTransformer.h"
 
 namespace storm::dft {
 namespace modelchecker {
 
 template<typename ValueType>
 SftBddChecker<ValueType>::SftBddChecker(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder) : builder{builder} {}
+
+template<typename ValueType>
+std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_ptr<storm::logic::Formula const>> const &formulas, size_t const chunksize,
+                                                       storm::dft::utility::RelevantEvents relevantEvents) {
+    // Mark all events from formulas as relevant (even from formulas which cannot be handled)
+    relevantEvents.insertNamesFromProperties(formulas.begin(), formulas.end());
+    // Build relevant BDDs
+    builder->buildBdds(relevantEvents);
+    // Init BDD-based checker
+    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<ValueType>>(builder);
+
+    // Create BDDs for formulas
+    std::vector<Bdd> bdds{};
+    bdds.reserve(formulas.size());
+    std::map<uint64_t, Bdd> bddMap{};
+    for (auto const &formula : formulas) {
+        auto const &bdd = storm::dft::transformations::PropertyToBddTransformer<ValueType>::translate(*formula, builder);
+        bdds.push_back(bdd);
+        bddMap[bdd.GetBDD()] = bdd;
+    }
+
+    std::map<uint64_t, std::vector<double>> bddToReversedTimepoints{};
+    // A vector of timepoints is necessary as formula-BDDs can occur multiple times.
+    // The vector is reversed as it later allows to pop the results from the back which is more efficient.
+    for (size_t i{0}; i < bdds.size(); ++i) {
+        auto const reversedIndex{bdds.size() - 1 - i};
+        auto const &bdd{bdds[reversedIndex]};
+        auto const &formula{formulas[reversedIndex]};
+        auto const timebound{storm::dft::transformations::PropertyToBddTransformer<ValueType>::getTimebound(*formula)};
+
+        bddToReversedTimepoints[bdd.GetBDD()].push_back(timebound);
+    }
+
+    std::map<uint64_t, std::vector<double>> bddToReversedProbabilities{};
+    for (auto const &pair : bddToReversedTimepoints) {
+        auto const bdd{bddMap.at(pair.first)};
+        bddToReversedProbabilities[pair.first] = checker->getProbabilitiesAtTimepoints(bdd, pair.second, chunksize);
+    }
+
+    std::vector<ValueType> rval{};
+    rval.reserve(bdds.size());
+    for (size_t i{0}; i < bdds.size(); ++i) {
+        auto const &bdd{bdds[i]};
+        auto &tmpVec{bddToReversedProbabilities.at(bdd.GetBDD())};
+        rval.push_back(tmpVec.back());
+        tmpVec.pop_back();
+    }
+
+    return rval;
+}
 
 template<typename ValueType>
 ValueType SftBddChecker<ValueType>::recursiveProbability(Bdd const bdd, std::map<uint32_t, ValueType> const &indexToProbability,
@@ -169,7 +220,7 @@ std::vector<std::vector<std::string>> SftBddChecker<ValueType>::getMinimalCutSet
 
 template<typename ValueType>
 std::vector<std::vector<uint32_t>> SftBddChecker<ValueType>::getMinimalCutSetsAsIndices() {
-    auto const bdd{builder->getBddForTopLevelElement().Minsol()};
+    auto const bdd{builder->getOrCreateBddForTopLevelElement().Minsol()};
 
     std::vector<std::vector<uint32_t>> mcs{};
     std::vector<uint32_t> buffer{};
@@ -281,7 +332,7 @@ ValueType SftBddChecker<ValueType>::getImportanceMeasureAtTimebound(std::string 
         indexToProbability[currentIndex] = be->getUnreliability(timebound);
     }
 
-    auto const bdd{builder->getBddForTopLevelElement()};
+    auto const bdd{builder->getOrCreateBddForTopLevelElement()};
     auto const index{builder->getSylvanBddManager().getIndex(beName)};
     std::map<uint64_t, ValueType> bddToProbability{};
     std::map<uint64_t, ValueType> bddToBirnbaumFactor{};
@@ -295,7 +346,7 @@ ValueType SftBddChecker<ValueType>::getImportanceMeasureAtTimebound(std::string 
 template<typename ValueType>
 template<typename FuncType>
 std::vector<ValueType> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimebound(ValueType timebound, FuncType func) {
-    auto const bdd{builder->getBddForTopLevelElement()};
+    auto const bdd{builder->getOrCreateBddForTopLevelElement()};
 
     std::vector<ValueType> resultVector{};
     resultVector.reserve(builder->getSft()->getBasicElements().size());
@@ -323,7 +374,7 @@ template<typename ValueType>
 template<typename FuncType>
 std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints,
                                                                                    size_t chunksize, FuncType func) {
-    auto const bdd{builder->getBddForTopLevelElement()};
+    auto const bdd{builder->getOrCreateBddForTopLevelElement()};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToBirnbaumFactors{};
     std::vector<ValueType> resultVector{};
@@ -360,7 +411,7 @@ template<typename ValueType>
 template<typename FuncType>
 std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize,
                                                                                                    FuncType func) {
-    auto const bdd{builder->getBddForTopLevelElement()};
+    auto const bdd{builder->getOrCreateBddForTopLevelElement()};
     auto const basicElements{builder->getSft()->getBasicElements()};
 
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};

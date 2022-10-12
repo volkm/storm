@@ -2,18 +2,14 @@
 
 #include "storm-conv/api/storm-conv.h"
 #include "storm-conv/settings/modules/JaniExportSettings.h"
-#include "storm-dft/settings/modules/DftGspnSettings.h"
-#include "storm-dft/settings/modules/FaultTreeSettings.h"
-
-#include <memory>
-#include <vector>
-#include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/DftModularizationChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
+#include "storm-dft/settings/modules/DftGspnSettings.h"
+#include "storm-dft/settings/modules/FaultTreeSettings.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/storage/DftJsonExporter.h"
-#include "storm-dft/storage/SylvanBddManager.h"
+#include "storm-dft/transformations/PropertyToBddTransformer.h"
 
 namespace storm::dft {
 namespace api {
@@ -85,8 +81,7 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
     storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
     builder->getSylvanBddManager().execute([&]() {
-        storm::dft::adapters::SFTBDDPropertyFormulaAdapter adapter{builder, properties, relevantEvents};
-        auto checker{adapter.getSftBddChecker()};
+        storm::dft::modelchecker::SftBddChecker checker{builder};
 
         if (exportToDot) {
             builder->buildBdds(relevantEvents);
@@ -94,27 +89,27 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
         }
 
         if (calculateMCS) {
-            auto const minimalCutSets{checker->getMinimalCutSetsAsIndices()};
+            auto const minimalCutSets{checker.getMinimalCutSetsAsIndices()};
 
             std::cout << "{\n";
             for (auto const& minimalCutSet : minimalCutSets) {
                 std::cout << '{';
                 for (auto const& be : minimalCutSet) {
+                    // TODO make more efficient
                     std::cout << builder->getSylvanBddManager().getName(be) << ' ';
                 }
                 std::cout << "},\n";
             }
-            std::cout << "}\n";
         }
 
         if (calculateProbability) {
             if (chunksize == 1) {
                 for (auto const& timebound : timepoints) {
-                    auto const probability{checker->getProbabilityAtTimebound(timebound)};
+                    auto const probability{checker.getProbabilityAtTimebound(timebound)};
                     std::cout << "System failure probability at timebound " << timebound << " is " << probability << '\n';
                 }
             } else {
-                auto const probabilities{checker->getProbabilitiesAtTimepoints(timepoints, chunksize)};
+                auto const probabilities{checker.getProbabilitiesAtTimepoints(timepoints, chunksize)};
                 for (size_t i{0}; i < timepoints.size(); ++i) {
                     auto const timebound{timepoints[i]};
                     auto const probability{probabilities[i]};
@@ -123,7 +118,7 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             }
 
             if (!properties.empty()) {
-                auto const probabilities{adapter.check(chunksize)};
+                auto const probabilities{checker.check(properties, chunksize, relevantEvents)};
                 for (size_t i{0}; i < probabilities.size(); ++i) {
                     std::cout << "Property \"" << properties.at(i)->toString() << "\" has result " << probabilities.at(i) << '\n';
                 }
@@ -134,19 +129,19 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             auto const bes{dft->getBasicElements()};
             std::vector<double> values{};
             if (importanceMeasureName == "MIF") {
-                values = checker->getAllBirnbaumFactorsAtTimebound(timepoints[0]);
+                values = checker.getAllBirnbaumFactorsAtTimebound(timepoints[0]);
             }
             if (importanceMeasureName == "CIF") {
-                values = checker->getAllCIFsAtTimebound(timepoints[0]);
+                values = checker.getAllCIFsAtTimebound(timepoints[0]);
             }
             if (importanceMeasureName == "DIF") {
-                values = checker->getAllDIFsAtTimebound(timepoints[0]);
+                values = checker.getAllDIFsAtTimebound(timepoints[0]);
             }
             if (importanceMeasureName == "RAW") {
-                values = checker->getAllRAWsAtTimebound(timepoints[0]);
+                values = checker.getAllRAWsAtTimebound(timepoints[0]);
             }
             if (importanceMeasureName == "RRW") {
-                values = checker->getAllRRWsAtTimebound(timepoints[0]);
+                values = checker.getAllRRWsAtTimebound(timepoints[0]);
             }
 
             for (size_t i{0}; i < bes.size(); ++i) {
@@ -157,19 +152,19 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             auto const bes{dft->getBasicElements()};
             std::vector<std::vector<double>> values{};
             if (importanceMeasureName == "MIF") {
-                values = checker->getAllBirnbaumFactorsAtTimepoints(timepoints, chunksize);
+                values = checker.getAllBirnbaumFactorsAtTimepoints(timepoints, chunksize);
             }
             if (importanceMeasureName == "CIF") {
-                values = checker->getAllCIFsAtTimepoints(timepoints, chunksize);
+                values = checker.getAllCIFsAtTimepoints(timepoints, chunksize);
             }
             if (importanceMeasureName == "DIF") {
-                values = checker->getAllDIFsAtTimepoints(timepoints, chunksize);
+                values = checker.getAllDIFsAtTimepoints(timepoints, chunksize);
             }
             if (importanceMeasureName == "RAW") {
-                values = checker->getAllRAWsAtTimepoints(timepoints, chunksize);
+                values = checker.getAllRAWsAtTimepoints(timepoints, chunksize);
             }
             if (importanceMeasureName == "RRW") {
-                values = checker->getAllRRWsAtTimepoints(timepoints, chunksize);
+                values = checker.getAllRRWsAtTimepoints(timepoints, chunksize);
             }
             for (size_t i{0}; i < bes.size(); ++i) {
                 for (size_t j{0}; j < timepoints.size(); ++j) {

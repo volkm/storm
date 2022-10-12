@@ -2,11 +2,11 @@
 
 #include <sstream>
 
-#include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
+#include "storm-dft/transformations/PropertyToBddTransformer.h"
 #include "storm-dft/utility/DftModularizer.h"
 
 #include "storm-parsers/api/properties.h"
@@ -42,19 +42,19 @@ void DftModularizationChecker<ValueType>::populateDynamicModules(storm::dft::sto
 
 template<typename ValueType>
 std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector const& formulas, size_t chunksize) {
-    // Gather time points
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter::checkForm(formulas);
+    // Gather all occurring time points
     std::set<ValueType> timepointSet;
     for (auto const& formula : formulas) {
-        timepointSet.insert(storm::dft::adapters::SFTBDDPropertyFormulaAdapter::getTimebound(formula));
+        timepointSet.insert(storm::dft::transformations::PropertyToBddTransformer<ValueType>::getTimebound(*formula));
     }
     std::vector<ValueType> timepoints(timepointSet.begin(), timepointSet.end());
 
-    auto newDft = replaceDynamicModules(timepoints);
+    // Build SFT by replacing dynamic modules
+    auto sft = replaceDynamicModules(timepoints);
 
-    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(newDft);
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, formulas, {}};
-    return checker.check(chunksize);
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(sft);
+    storm::dft::modelchecker::SftBddChecker checker{builder};
+    return checker.check(formulas, chunksize);
 }
 
 template<typename ValueType>
