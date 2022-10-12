@@ -19,7 +19,7 @@ namespace utility {
 
 double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double> const> const dft, double const stepsize, double const precision) {
     constexpr size_t chunksize{1001};
-    storm::dft::modelchecker::DftModularizationChecker checker{dft};
+    storm::dft::modelchecker::DftModularizationChecker<double> checker{dft};
 
     std::vector<double> timepoints{};
     timepoints.resize(chunksize);
@@ -60,7 +60,7 @@ double MTTFHelperProceeding(std::shared_ptr<storm::dft::storage::DFT<double> con
 
 double MTTFHelperVariableChange(std::shared_ptr<storm::dft::storage::DFT<double> const> const dft, double const stepsize) {
     constexpr size_t chunksize{1001};
-    storm::dft::modelchecker::DftModularizationChecker checker{dft};
+    storm::dft::modelchecker::DftModularizationChecker<double> checker{dft};
 
     std::vector<double> timepoints{};
     timepoints.resize(static_cast<size_t>(1 / stepsize) - 1);
