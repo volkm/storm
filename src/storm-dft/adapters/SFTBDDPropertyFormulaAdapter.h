@@ -30,37 +30,14 @@ class SFTBDDPropertyFormulaAdapter {
     using FormulaVector = std::vector<FormulaCPointer>;
 
    public:
-    SFTBDDPropertyFormulaAdapter(
-        std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft, FormulaVector const &formulas, storm::dft::utility::RelevantEvents relevantEvents = {},
-        std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager = std::make_shared<storm::dft::storage::SylvanBddManager>())
-        : formulas{formulas} {
+    SFTBDDPropertyFormulaAdapter(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder, FormulaVector const &formulas,
+                                 storm::dft::utility::RelevantEvents relevantEvents = {})
+        : builder{builder}, formulas{formulas} {
         checkForm(formulas);
 
         relevantEvents.insertNamesFromProperties(formulas.begin(), formulas.end());
-        auto const builder{std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(dft)};
         builder->buildBdds(relevantEvents);
         checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<ValueType>>(builder);
-    }
-
-    /**
-     * \return The internal SFT
-     */
-    std::shared_ptr<storm::dft::storage::DFT<ValueType> const> getSft() const noexcept {
-        return checker->getSft();
-    }
-
-    /**
-     * \return The internal sylvanBddManager
-     */
-    storm::dft::storage::SylvanBddManager const &getSylvanBddManager() const noexcept {
-        return checker->getSylvanBddManager();
-    }
-
-    /**
-     * \return The internal BddSftModelBuilder
-     */
-    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> getBuilder() const noexcept {
-        return checker->getBuilder();
     }
 
     /**
@@ -185,6 +162,7 @@ class SFTBDDPropertyFormulaAdapter {
     }
 
    private:
+    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder;
     std::shared_ptr<storm::dft::modelchecker::SftBddChecker<ValueType>> checker;
     FormulaVector formulas;
 
@@ -230,7 +208,7 @@ class SFTBDDPropertyFormulaAdapter {
     std::string getAtomicLabelString(AtomicLabelFormulaCPointer const &formula) const {
         auto const label{formula->getLabel()};
         if (label == "failed") {
-            return getSft()->getTopLevelElement()->name();
+            return builder->getSft()->getTopLevelElement()->name();
         } else if (boost::ends_with(label, "_failed")) {
             auto const name{label.substr(0, label.size() - 7)};
             return name;
@@ -250,7 +228,7 @@ class SFTBDDPropertyFormulaAdapter {
         }
 
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Illegal Formula: " << formula->toString());
-        return getSylvanBddManager().getZero();
+        return builder->getSylvanBddManager().getZero();
     }
 
     /**
@@ -267,7 +245,7 @@ class SFTBDDPropertyFormulaAdapter {
         }
 
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Illegal StateFormula: " << formula->toString());
-        return getSylvanBddManager().getZero();
+        return builder->getSylvanBddManager().getZero();
     }
 
     /**
@@ -285,7 +263,7 @@ class SFTBDDPropertyFormulaAdapter {
         }
 
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Illegal BinaryStateFormula: " << formula->toString());
-        return getSylvanBddManager().getZero();
+        return builder->getSylvanBddManager().getZero();
     }
 
     /**
@@ -301,7 +279,7 @@ class SFTBDDPropertyFormulaAdapter {
                             "Illegal UnaryStateFormula: \"" << formula->toString()
                                                             << "\". Can only use negation with a formula "
                                                                "of the form 'P=? [F = x phi]'");
-            return getSylvanBddManager().getZero();
+            return builder->getSylvanBddManager().getZero();
         }
         auto const subBdd{FormulaToBdd(formula->getSubformula().asSharedPointer())};
 
@@ -310,7 +288,7 @@ class SFTBDDPropertyFormulaAdapter {
         }
 
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Illegal UnaryStateFormula: " << formula->toString());
-        return getSylvanBddManager().getZero();
+        return builder->getSylvanBddManager().getZero();
     }
 
     /**
@@ -318,7 +296,7 @@ class SFTBDDPropertyFormulaAdapter {
      * The bdds representing the given Stateformula
      */
     Bdd atomicLabelFormulaToBdd(AtomicLabelFormulaCPointer const &formula) const {
-        return getBuilder()->getBddForElement(getAtomicLabelString(formula));
+        return builder->getBddForElement(getAtomicLabelString(formula));
     }
 };
 

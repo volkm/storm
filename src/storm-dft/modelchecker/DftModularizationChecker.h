@@ -84,9 +84,6 @@ class DftModularizationChecker {
     std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft;
     // DFT modelchecker
     storm::dft::modelchecker::DFTModelChecker<ValueType> modelchecker;
-    // don't reinitialize Sylvan BDD
-    // temporary
-    std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager;
     // Independent modules with their top element
     std::vector<storm::dft::storage::DftIndependentModule> dynamicModules;
 };

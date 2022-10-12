@@ -63,15 +63,17 @@ class SftBddTest : public testing::TestWithParam<SftTestData> {
     void SetUp() override {
         auto const &param{TestWithParam::GetParam()};
         auto dft{storm::dft::api::loadDFTGalileoFile<double>(param.filepath)};
-        checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(dft);
+        builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+        checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(builder);
     }
 
+    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<double>> builder;
     std::shared_ptr<storm::dft::modelchecker::SftBddChecker<double>> checker;
 };
 
 TEST_P(SftBddTest, bddHash) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_EQ(checker->getBuilder()->getBddForTopLevelElement().GetShaHash(), param.bddHash);
+    EXPECT_EQ(builder->getBddForTopLevelElement().GetShaHash(), param.bddHash);
 }
 
 TEST_P(SftBddTest, ProbabilityAtTimeOne) {
@@ -81,8 +83,8 @@ TEST_P(SftBddTest, ProbabilityAtTimeOne) {
 
 TEST_P(SftBddTest, MTTF) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(checker->getSft()), param.mttf, 1e-5);
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(checker->getSft()), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(builder->getSft()), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(builder->getSft()), param.mttf, 1e-5);
 }
 
 template<typename T1, typename T2>
@@ -215,7 +217,8 @@ TEST(TestBdd, AndOrRelevantEventsChecked) {
 TEST(TestBdd, AndOrFormulaFail) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     auto const props{storm::api::extractFormulasFromProperties(storm::api::parseProperties("P=? [F < 1 !\"F2_failed\"];"))};
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{dft, props};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, props};
 
     STORM_SILENT_EXPECT_THROW(checker.check(), storm::exceptions::NotSupportedException);
 }
@@ -231,7 +234,8 @@ TEST(TestBdd, AndOrFormula) {
                                                                               "P=? [F  = 1 !\"F2_failed\"];"
                                                                               "P=? [F <= 1 \"F1_failed\"];"
                                                                               "P=? [F <= 1 \"F2_failed\"];"))};
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{dft, props};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, props};
 
     auto const resultProbs{checker.check()};
     auto const result{checker.formulasToBdd()};

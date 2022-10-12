@@ -128,22 +128,6 @@ class SylvanBddManager {
         return indexToName.at(index);
     }
 
-    /*!
-     * Export given BDD to a file in the dot format.
-     * @param bdd BDD.
-     * @param filename Name of file.
-     */
-    static void exportBddToDot(sylvan::Bdd const& bdd, std::string const& filename) {
-        FILE* filePointer = fopen(filename.c_str(), "w+");
-        // fopen returns a nullptr on failure
-        if (filePointer == nullptr) {
-            STORM_LOG_ERROR("Failure to open file: " << filename);
-        } else {
-            bdd.PrintDot(filePointer);
-            fclose(filePointer);
-        }
-    }
-
    private:
     storm::dd::InternalDdManager<storm::dd::DdType::Sylvan> internalManager{};
     uint32_t nextFreeVariableIndex{0};

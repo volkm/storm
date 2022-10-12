@@ -18,6 +18,22 @@
 namespace storm::dft {
 namespace api {
 
+/*!
+ * Export the given BDD to a file in the dot format.
+ * @param bdd BDD.
+ * @param filename File to export to.
+ */
+void exportBddToDot(sylvan::Bdd const& bdd, std::string const& filename) {
+    FILE* filePointer = fopen(filename.c_str(), "w+");
+    // fopen returns a nullptr on failure
+    if (filePointer == nullptr) {
+        STORM_LOG_ERROR("Failure to open file: " << filename);
+    } else {
+        bdd.PrintDot(filePointer);
+        fclose(filePointer);
+    }
+}
+
 template<>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft, bool const exportToDot, std::string const& filename, bool const calculateMttf,
                    double const mttfPrecision, double const mttfStepsize, storm::dft::utility::MTTFApproximationAlgorithm const mttfAlgorithm,
@@ -66,14 +82,15 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
                         "Try modularisation.");
     }
 
-    auto sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()};
-    sylvanBddManager->execute([&]() {
-        storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
-        storm::dft::adapters::SFTBDDPropertyFormulaAdapter adapter{dft, properties, relevantEvents, sylvanBddManager};
+    storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+    builder->getSylvanBddManager().execute([&]() {
+        storm::dft::adapters::SFTBDDPropertyFormulaAdapter adapter{builder, properties, relevantEvents};
         auto checker{adapter.getSftBddChecker()};
 
         if (exportToDot) {
-            checker->exportBddToDot(filename);
+            builder->buildBdds(relevantEvents);
+            exportBddToDot(builder->getBddForTopLevelElement(), filename);
         }
 
         if (calculateMCS) {
@@ -83,7 +100,7 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             for (auto const& minimalCutSet : minimalCutSets) {
                 std::cout << '{';
                 for (auto const& be : minimalCutSet) {
-                    std::cout << sylvanBddManager->getName(be) << ' ';
+                    std::cout << builder->getSylvanBddManager().getName(be) << ' ';
                 }
                 std::cout << "},\n";
             }

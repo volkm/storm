@@ -17,8 +17,7 @@ namespace storm::dft {
 namespace modelchecker {
 
 template<typename ValueType>
-DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft)
-    : dft{dft}, modelchecker(true), sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()} {
+DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft) : dft{dft}, modelchecker(true) {
     // Initialize modules
     storm::dft::utility::DftModularizer<ValueType> modularizer;
     auto topModule = modularizer.computeModules(*dft);
@@ -53,14 +52,16 @@ std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector 
 
     auto newDft = replaceDynamicModules(timepoints);
 
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{newDft, formulas, {}, sylvanBddManager};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(newDft);
+    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, formulas, {}};
     return checker.check(chunksize);
 }
 
 template<typename ValueType>
 std::vector<ValueType> DftModularizationChecker<ValueType>::getProbabilitiesAtTimepoints(std::vector<ValueType> const& timepoints, size_t chunksize) {
     auto newDft = replaceDynamicModules(timepoints);
-    storm::dft::modelchecker::SftBddChecker<ValueType> checker{newDft, sylvanBddManager};
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(newDft);
+    storm::dft::modelchecker::SftBddChecker checker{builder};
     return checker.getProbabilitiesAtTimepoints(timepoints, chunksize);
 }
 

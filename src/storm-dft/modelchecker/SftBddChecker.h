@@ -24,41 +24,15 @@ class SftBddChecker {
    public:
     using Bdd = sylvan::Bdd;
 
-    SftBddChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft,
-                  std::shared_ptr<storm::dft::storage::SylvanBddManager> sylvanBddManager = std::make_shared<storm::dft::storage::SylvanBddManager>());
-
+    /*!
+     * Constructor.
+     * @param builder BDD builder for SFT.
+     */
     SftBddChecker(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder);
 
-    /**
-     * \return The internal SFT
-     */
-    std::shared_ptr<storm::dft::storage::DFT<ValueType> const> getSft() const noexcept;
-
-    /**
-     * \return The internal sylvanBddManager
-     */
-    storm::dft::storage::SylvanBddManager const &getSylvanBddManager() const noexcept;
-
-    /**
-     * \return The internal BddSftModelBuilder
-     */
-    std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> getBuilder() const noexcept;
-
-    /**
-     * Exports the Bdd that represents the top level event to a file
-     * in the dot format.
-     *
-     * \param filename
-     * The name of the file the dot graph is written to
-     */
-    void exportBddToDot(std::string const &filename) {
-        getSylvanBddManager().exportBddToDot(getTopLevelElementBdd(), filename);
-    }
-
-    /**
-     * \return
-     * A set of minimal cut sets,
-     * where the basic events are identified by their name
+    /*!
+     * Get the set of minimal cut sets (MCS) by the element names.
+     * @return List of MCS given by the names of the SFT elements.
      */
     std::vector<std::vector<std::string>> getMinimalCutSets();
 
@@ -74,7 +48,7 @@ class SftBddChecker {
      * @return
      */
     ValueType getProbabilityAtTimebound(ValueType timebound) {
-        return getProbabilityAtTimebound(getTopLevelElementBdd(), timebound);
+        return getProbabilityAtTimebound(builder->getBddForTopLevelElement(), timebound);
     }
 
     /*!
@@ -93,7 +67,7 @@ class SftBddChecker {
      * @return List of probabilities corresponding to given timepoints.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(std::vector<ValueType> const &timepoints, size_t const chunksize = 0) {
-        return getProbabilitiesAtTimepoints(getTopLevelElementBdd(), timepoints, chunksize);
+        return getProbabilitiesAtTimepoints(builder->getBddForTopLevelElement(), timepoints, chunksize);
     }
 
     /*!
@@ -399,12 +373,6 @@ class SftBddChecker {
 
     template<typename FuncType>
     std::vector<std::vector<ValueType>> getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func);
-
-    /**
-     * \return
-     * Generated Bdd that represents the formula of the top level event
-     */
-    Bdd getTopLevelElementBdd();
 
     std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder;
 };
