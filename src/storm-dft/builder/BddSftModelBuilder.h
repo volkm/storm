@@ -41,11 +41,19 @@ class BddSftModelBuilder {
 
     /*!
      * Get the BDD representing the function of the top level element.
-     * Calls buildBdds() if the BDD for the top level element is not already present.
+     * Assumes that buildBdds() was called before.
      *
      * @return BDD for top level element.
      */
-    Bdd const& getBddForTopLevelElement();
+    Bdd const& getBddForTopLevelElement() const;
+
+    /*!
+     * Get the BDD representing the function of the top level element.
+     * Calls buildBdds() to create the BDD for the top level element if it was not already present.
+     *
+     * @return BDD for top level element.
+     */
+    Bdd const& getOrCreateBddForTopLevelElement();
 
     /*!
      * Return SFT.

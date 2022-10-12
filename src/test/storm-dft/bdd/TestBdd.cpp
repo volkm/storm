@@ -4,10 +4,10 @@
 #include <vector>
 
 #include "storm-config.h"
-#include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
+#include "storm-dft/transformations/PropertyToBddTransformer.h"
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
@@ -73,7 +73,7 @@ class SftBddTest : public testing::TestWithParam<SftTestData> {
 
 TEST_P(SftBddTest, bddHash) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_EQ(builder->getBddForTopLevelElement().GetShaHash(), param.bddHash);
+    EXPECT_EQ(builder->getOrCreateBddForTopLevelElement().GetShaHash(), param.bddHash);
 }
 
 TEST_P(SftBddTest, ProbabilityAtTimeOne) {
@@ -218,9 +218,9 @@ TEST(TestBdd, AndOrFormulaFail) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     auto const props{storm::api::extractFormulasFromProperties(storm::api::parseProperties("P=? [F < 1 !\"F2_failed\"];"))};
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, props};
+    storm::dft::modelchecker::SftBddChecker checker{builder};
 
-    STORM_SILENT_EXPECT_THROW(checker.check(), storm::exceptions::NotSupportedException);
+    STORM_SILENT_EXPECT_THROW(checker.check(props), storm::exceptions::NotSupportedException);
 }
 
 TEST(TestBdd, AndOrFormula) {
@@ -235,12 +235,16 @@ TEST(TestBdd, AndOrFormula) {
                                                                               "P=? [F <= 1 \"F1_failed\"];"
                                                                               "P=? [F <= 1 \"F2_failed\"];"))};
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{builder, props};
 
-    auto const resultProbs{checker.check()};
-    auto const result{checker.formulasToBdd()};
+    storm::dft::modelchecker::SftBddChecker checker{builder};
+    auto const resultProbs{checker.check(props)};
 
-    EXPECT_EQ(result.size(), 8ul);
+    std::vector<storm::dft::builder::BddSftModelBuilder<double>::Bdd> bdds;
+    for (auto const &formula : props) {
+        bdds.push_back(storm::dft::transformations::PropertyToBddTransformer<double>::translate(*formula, builder));
+    }
+
+    EXPECT_EQ(bdds.size(), 8ul);
 
     EXPECT_EQ(resultProbs[0], resultProbs[1]);
     EXPECT_EQ(resultProbs[1], resultProbs[2]);
@@ -254,33 +258,33 @@ TEST(TestBdd, AndOrFormula) {
     EXPECT_EQ(resultProbs[4], resultProbs[5]);
     EXPECT_NEAR(resultProbs[4], 1 - resultProbs[6], 1e-6);
 
-    EXPECT_EQ(result[0], result[1]);
-    EXPECT_EQ(result[1], result[2]);
-    EXPECT_EQ(result[2], result[0]);
+    EXPECT_EQ(bdds[0], bdds[1]);
+    EXPECT_EQ(bdds[1], bdds[2]);
+    EXPECT_EQ(bdds[2], bdds[0]);
 
-    EXPECT_EQ(result[0].GetBDD(), result[1].GetBDD());
-    EXPECT_EQ(result[1].GetBDD(), result[2].GetBDD());
-    EXPECT_EQ(result[2].GetBDD(), result[0].GetBDD());
+    EXPECT_EQ(bdds[0].GetBDD(), bdds[1].GetBDD());
+    EXPECT_EQ(bdds[1].GetBDD(), bdds[2].GetBDD());
+    EXPECT_EQ(bdds[2].GetBDD(), bdds[0].GetBDD());
 
-    EXPECT_EQ(result[0].GetBDD(), (!result[3]).GetBDD());
-    EXPECT_NE(result[0].GetBDD(), result[3].GetBDD());
+    EXPECT_EQ(bdds[0].GetBDD(), (!bdds[3]).GetBDD());
+    EXPECT_NE(bdds[0].GetBDD(), bdds[3].GetBDD());
 
-    EXPECT_EQ(result[6].GetBDD(), (!result[4]).GetBDD());
-    EXPECT_NE(result[6].GetBDD(), result[4].GetBDD());
+    EXPECT_EQ(bdds[6].GetBDD(), (!bdds[4]).GetBDD());
+    EXPECT_NE(bdds[6].GetBDD(), bdds[4].GetBDD());
 
-    EXPECT_EQ(result[7].GetBDD(), (!result[5]).GetBDD());
-    EXPECT_NE(result[7].GetBDD(), result[5].GetBDD());
+    EXPECT_EQ(bdds[7].GetBDD(), (!bdds[5]).GetBDD());
+    EXPECT_NE(bdds[7].GetBDD(), bdds[5].GetBDD());
 
-    EXPECT_NE(result[3].GetBDD(), result[4].GetBDD());
+    EXPECT_NE(bdds[3].GetBDD(), bdds[4].GetBDD());
 
-    EXPECT_EQ(result[0].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(result[1].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(result[2].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(result[3].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(result[4].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
-    EXPECT_EQ(result[5].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
-    EXPECT_EQ(result[6].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
-    EXPECT_EQ(result[7].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
+    EXPECT_EQ(bdds[0].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
+    EXPECT_EQ(bdds[1].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
+    EXPECT_EQ(bdds[2].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
+    EXPECT_EQ(bdds[3].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
+    EXPECT_EQ(bdds[4].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
+    EXPECT_EQ(bdds[5].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
+    EXPECT_EQ(bdds[6].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
+    EXPECT_EQ(bdds[7].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
 }
 
 }  // namespace

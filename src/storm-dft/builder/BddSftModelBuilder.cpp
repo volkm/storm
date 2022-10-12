@@ -21,7 +21,7 @@ template<typename ValueType>
 void BddSftModelBuilder<ValueType>::buildBdds(storm::dft::utility::RelevantEvents relevantEvents) {
     this->relevantEvents = relevantEvents;
     relevantEventBdds.clear();
-    relevantEventBdds[this->sft->getTopLevelElement()->name()] = translate(sft->getTopLevelElement());
+    relevantEventBdds[getSft()->getTopLevelElement()->name()] = translate(sft->getTopLevelElement());
 }
 template<typename ValueType>
 typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getBddForElement(std::string const& element) const {
@@ -30,7 +30,12 @@ typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>
 }
 
 template<typename ValueType>
-typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getBddForTopLevelElement() {
+typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getBddForTopLevelElement() const {
+    return this->getBddForElement(getSft()->getTopLevelElement()->name());
+}
+
+template<typename ValueType>
+typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getOrCreateBddForTopLevelElement() {
     std::string topName = getSft()->getTopLevelElement()->name();
     if (relevantEventBdds.count(topName) == 0) {
         // Build BDDs
