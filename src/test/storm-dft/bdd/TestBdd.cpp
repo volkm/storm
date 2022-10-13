@@ -62,11 +62,12 @@ class SftBddTest : public testing::TestWithParam<SftTestData> {
    protected:
     void SetUp() override {
         auto const &param{TestWithParam::GetParam()};
-        auto dft{storm::dft::api::loadDFTGalileoFile<double>(param.filepath)};
-        builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+        sft = storm::dft::api::loadDFTGalileoFile<double>(param.filepath);
+        builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(sft);
         checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<double>>(builder);
     }
 
+    std::shared_ptr<storm::dft::storage::DFT<double>> sft;
     std::shared_ptr<storm::dft::builder::BddSftModelBuilder<double>> builder;
     std::shared_ptr<storm::dft::modelchecker::SftBddChecker<double>> checker;
 };
@@ -83,8 +84,8 @@ TEST_P(SftBddTest, ProbabilityAtTimeOne) {
 
 TEST_P(SftBddTest, MTTF) {
     auto const &param{TestWithParam::GetParam()};
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(builder->getSft()), param.mttf, 1e-5);
-    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(builder->getSft()), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperProceeding(sft), param.mttf, 1e-5);
+    EXPECT_NEAR(storm::dft::utility::MTTFHelperVariableChange(sft), param.mttf, 1e-5);
 }
 
 template<typename T1, typename T2>

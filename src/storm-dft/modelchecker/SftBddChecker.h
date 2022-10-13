@@ -23,6 +23,7 @@ template<typename ValueType>
 class SftBddChecker {
    public:
     using Bdd = sylvan::Bdd;
+    using BEPointer = std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>;
 
     /*!
      * Constructor.
@@ -96,7 +97,7 @@ class SftBddChecker {
      * The birnbaum importance factor of the given basic event
      * at the given timebound
      */
-    ValueType getBirnbaumFactorAtTimebound(std::string const &beName, ValueType timebound);
+    ValueType getBirnbaumFactorAtTimebound(BEPointer be, ValueType timebound);
 
     /**
      * \return
@@ -120,7 +121,7 @@ class SftBddChecker {
      * Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
      */
-    std::vector<ValueType> getBirnbaumFactorsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
+    std::vector<ValueType> getBirnbaumFactorsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
     /**
      * \return
@@ -141,7 +142,7 @@ class SftBddChecker {
      * at the given timebound as defined in
      * 10.1016/S0951-8320(01)00004-7
      */
-    ValueType getCIFAtTimebound(std::string const &beName, ValueType timebound);
+    ValueType getCIFAtTimebound(BEPointer be, ValueType timebound);
 
     /**
      * \return
@@ -165,7 +166,7 @@ class SftBddChecker {
      * Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
      */
-    std::vector<ValueType> getCIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
+    std::vector<ValueType> getCIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
     /**
      * \return
@@ -185,7 +186,7 @@ class SftBddChecker {
      * at the given timebound as defined in
      * 10.1016/S0951-8320(01)00004-7
      */
-    ValueType getDIFAtTimebound(std::string const &beName, ValueType timebound);
+    ValueType getDIFAtTimebound(BEPointer be, ValueType timebound);
 
     /**
      * \return
@@ -209,7 +210,7 @@ class SftBddChecker {
      * Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
      */
-    std::vector<ValueType> getDIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
+    std::vector<ValueType> getDIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
     /**
      * \return
@@ -229,7 +230,7 @@ class SftBddChecker {
      * at the given timebound as defined in
      * 10.1016/S0951-8320(01)00004-7
      */
-    ValueType getRAWAtTimebound(std::string const &beName, ValueType timebound);
+    ValueType getRAWAtTimebound(BEPointer be, ValueType timebound);
 
     /**
      * \return
@@ -253,7 +254,7 @@ class SftBddChecker {
      * Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
      */
-    std::vector<ValueType> getRAWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
+    std::vector<ValueType> getRAWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
     /**
      * \return
@@ -273,7 +274,7 @@ class SftBddChecker {
      * at the given timebound as defined in
      * 10.1016/S0951-8320(01)00004-7
      */
-    ValueType getRRWAtTimebound(std::string const &beName, ValueType timebound);
+    ValueType getRRWAtTimebound(BEPointer be, ValueType timebound);
 
     /**
      * \return
@@ -297,7 +298,7 @@ class SftBddChecker {
      * Splits the timepoints array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
      */
-    std::vector<ValueType> getRRWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
+    std::vector<ValueType> getRRWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
     /**
      * \return
@@ -373,14 +374,13 @@ class SftBddChecker {
     void chunkCalculationTemplate(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func) const;
 
     template<typename FuncType>
-    ValueType getImportanceMeasureAtTimebound(std::string const &beName, ValueType timebound, FuncType func);
+    ValueType getImportanceMeasureAtTimebound(BEPointer be, ValueType timebound, FuncType func);
 
     template<typename FuncType>
     std::vector<ValueType> getAllImportanceMeasuresAtTimebound(ValueType timebound, FuncType func);
 
     template<typename FuncType>
-    std::vector<ValueType> getImportanceMeasuresAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize,
-                                                             FuncType func);
+    std::vector<ValueType> getImportanceMeasuresAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func);
 
     template<typename FuncType>
     std::vector<std::vector<ValueType>> getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func);
