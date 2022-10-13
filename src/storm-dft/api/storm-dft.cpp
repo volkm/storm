@@ -94,9 +94,8 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             std::cout << "{\n";
             for (auto const& minimalCutSet : minimalCutSets) {
                 std::cout << '{';
-                for (auto const& be : minimalCutSet) {
-                    // TODO make more efficient
-                    std::cout << builder->getSylvanBddManager().getName(be) << ' ';
+                for (auto const& beIndex : minimalCutSet) {
+                    std::cout << builder->getName(beIndex) << ' ';
                 }
                 std::cout << "},\n";
             }

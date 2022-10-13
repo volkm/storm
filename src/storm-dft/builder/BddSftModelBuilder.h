@@ -17,6 +17,7 @@ template<typename ValueType>
 class BddSftModelBuilder {
    public:
     using Bdd = sylvan::Bdd;
+    using BEPointer = std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const>;
 
     /*!
      * Constructor.
@@ -56,16 +57,32 @@ class BddSftModelBuilder {
     Bdd const& getOrCreateBddForTopLevelElement();
 
     /*!
-     * Return SFT.
-     * @return SFT.
+     * Get index of variable for given BE.
+     * @param be Basic event.
+     * @return Index.
      */
-    std::shared_ptr<storm::dft::storage::DFT<ValueType> const> getSft() const;
+    uint32_t getIndex(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> be) const;
+
+    /*!
+     * Get name of BE corresponding to given variable index.
+     * @param index Variable index.
+     * @return Name of BE.
+     */
+    std::string getName(uint32_t const index) const;
+
+    /*!
+     * Get list of BEs and the index of their corresponding BDD variables.
+     * @return List of tuples (BE, index of corresponding BDD variable).
+     */
+    std::vector<std::pair<BEPointer, uint32_t>> const& getBeVariables() const;
 
     /*!
      * Return manager for Sylvan BDDs.
      * @return Manager.
      */
-    storm::dft::storage::SylvanBddManager const& getSylvanBddManager() const;
+    storm::dft::storage::SylvanBddManager const& getSylvanBddManager() const {
+        return sylvanBddManager;
+    }
 
    private:
     /*!
@@ -103,7 +120,7 @@ class BddSftModelBuilder {
     std::shared_ptr<storm::dft::storage::DFT<ValueType>> sft;
     storm::dft::utility::RelevantEvents relevantEvents;
     storm::dft::storage::SylvanBddManager sylvanBddManager;
-    std::vector<uint32_t> variables{};
+    std::vector<std::pair<BEPointer, uint32_t>> beVariables{};
     std::map<std::string, Bdd> relevantEventBdds{};
 };
 

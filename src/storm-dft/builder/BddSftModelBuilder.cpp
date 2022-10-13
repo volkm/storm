@@ -13,16 +13,18 @@ BddSftModelBuilder<ValueType>::BddSftModelBuilder(std::shared_ptr<storm::dft::st
     for (auto const& be : this->sft->getBasicElements()) {
         // Filter constantBeTrigger
         if (be->name() != "constantBeTrigger") {
-            variables.push_back(this->sylvanBddManager.createVariable(be->name()));
+            beVariables.push_back(std::make_pair<BEPointer, uint32_t>(be, sylvanBddManager.createVariable(be->name())));
         }
     }
 }
+
 template<typename ValueType>
 void BddSftModelBuilder<ValueType>::buildBdds(storm::dft::utility::RelevantEvents relevantEvents) {
     this->relevantEvents = relevantEvents;
     relevantEventBdds.clear();
-    relevantEventBdds[getSft()->getTopLevelElement()->name()] = translate(sft->getTopLevelElement());
+    relevantEventBdds[sft->getTopLevelElement()->name()] = translate(sft->getTopLevelElement());
 }
+
 template<typename ValueType>
 typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getBddForElement(std::string const& element) const {
     STORM_LOG_THROW(relevantEventBdds.count(element) > 0, storm::exceptions::InvalidArgumentException, "BDD for element '" << element << "' was not built.");
@@ -31,18 +33,33 @@ typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>
 
 template<typename ValueType>
 typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getBddForTopLevelElement() const {
-    return this->getBddForElement(getSft()->getTopLevelElement()->name());
+    return getBddForElement(sft->getTopLevelElement()->name());
 }
 
 template<typename ValueType>
 typename BddSftModelBuilder<ValueType>::Bdd const& BddSftModelBuilder<ValueType>::getOrCreateBddForTopLevelElement() {
-    std::string topName = getSft()->getTopLevelElement()->name();
+    std::string topName = sft->getTopLevelElement()->name();
     if (relevantEventBdds.count(topName) == 0) {
         // Build BDDs
         storm::dft::utility::RelevantEvents relevantEvents{};
-        this->buildBdds(relevantEvents);
+        buildBdds(relevantEvents);
     }
-    return this->getBddForElement(topName);
+    return getBddForElement(topName);
+}
+
+template<typename ValueType>
+uint32_t BddSftModelBuilder<ValueType>::getIndex(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> be) const {
+    return sylvanBddManager.getIndex(be->name());
+}
+
+template<typename ValueType>
+std::string BddSftModelBuilder<ValueType>::getName(uint32_t const index) const {
+    return sylvanBddManager.getName(index);
+}
+
+template<typename ValueType>
+std::vector<std::pair<typename BddSftModelBuilder<ValueType>::BEPointer, uint32_t>> const& BddSftModelBuilder<ValueType>::getBeVariables() const {
+    return beVariables;
 }
 
 template<typename ValueType>
@@ -131,16 +148,6 @@ typename BddSftModelBuilder<ValueType>::Bdd BddSftModelBuilder<ValueType>::trans
     auto const chosenBdd{translateVot(currentIndex + 1, threshold - 1, bdds)};
 
     return bdds[currentIndex].Ite(chosenBdd, notChosenBdd);
-}
-
-template<typename ValueType>
-std::shared_ptr<storm::dft::storage::DFT<ValueType> const> BddSftModelBuilder<ValueType>::getSft() const {
-    return sft;
-}
-
-template<typename ValueType>
-storm::dft::storage::SylvanBddManager const& BddSftModelBuilder<ValueType>::getSylvanBddManager() const {
-    return sylvanBddManager;
 }
 
 // Explicitly instantiate the class.

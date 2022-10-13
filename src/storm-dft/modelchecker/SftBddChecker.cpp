@@ -208,8 +208,8 @@ std::vector<std::vector<std::string>> SftBddChecker<ValueType>::getMinimalCutSet
     while (!mcsIndices.empty()) {
         std::vector<std::string> tmp{};
         tmp.reserve(mcsIndices.back().size());
-        for (auto const &be : mcsIndices.back()) {
-            tmp.push_back(builder->getSylvanBddManager().getName(be));
+        for (auto const &beIndex : mcsIndices.back()) {
+            tmp.push_back(builder->getName(beIndex));
         }
         mcs.push_back(std::move(tmp));
         mcsIndices.pop_back();
@@ -237,7 +237,6 @@ void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &
     }
 
     // caches
-    auto const basicElements{builder->getSft()->getBasicElements()};
     std::map<uint32_t, Eigen::ArrayXd> indexToProbabilities{};
 
     // The current timepoints we calculate with
@@ -256,12 +255,11 @@ void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &
         }
 
         // Update the probabilities of the basic elements
-        for (auto const &be : basicElements) {
-            auto const beIndex{builder->getSylvanBddManager().getIndex(be->name())};
+        for (auto const &[be, beIndex] : builder->getBeVariables()) {
             // Vectorize known BETypes
             // fallback to getUnreliability() otherwise
             if (be->beType() == storm::dft::storage::elements::BEType::EXPONENTIAL) {
-                auto const failureRate{std::static_pointer_cast<storm::dft::storage::elements::BEExponential<double>>(be)->activeFailureRate()};
+                auto const failureRate{std::static_pointer_cast<storm::dft::storage::elements::BEExponential<double> const>(be)->activeFailureRate()};
 
                 // exponential distribution
                 // p(T <= t) = 1 - exp(-lambda*t)
@@ -288,9 +286,8 @@ void SftBddChecker<ValueType>::chunkCalculationTemplate(std::vector<ValueType> c
 template<typename ValueType>
 ValueType SftBddChecker<ValueType>::getProbabilityAtTimebound(Bdd bdd, ValueType timebound) const {
     std::map<uint32_t, ValueType> indexToProbability{};
-    for (auto const &be : builder->getSft()->getBasicElements()) {
-        auto const currentIndex{builder->getSylvanBddManager().getIndex(be->name())};
-        indexToProbability[currentIndex] = be->getUnreliability(timebound);
+    for (auto const &[be, beIndex] : builder->getBeVariables()) {
+        indexToProbability[beIndex] = be->getUnreliability(timebound);
     }
 
     std::map<uint64_t, ValueType> bddToProbability{};
@@ -325,20 +322,19 @@ std::vector<ValueType> SftBddChecker<ValueType>::getProbabilitiesAtTimepoints(Bd
 
 template<typename ValueType>
 template<typename FuncType>
-ValueType SftBddChecker<ValueType>::getImportanceMeasureAtTimebound(std::string const &beName, ValueType timebound, FuncType func) {
+ValueType SftBddChecker<ValueType>::getImportanceMeasureAtTimebound(BEPointer be, ValueType timebound, FuncType func) {
     std::map<uint32_t, ValueType> indexToProbability{};
-    for (auto const &be : builder->getSft()->getBasicElements()) {
-        auto const currentIndex{builder->getSylvanBddManager().getIndex(be->name())};
-        indexToProbability[currentIndex] = be->getUnreliability(timebound);
+    for (auto const &[beIt, beItIndex] : builder->getBeVariables()) {
+        indexToProbability[beItIndex] = beIt->getUnreliability(timebound);
     }
 
     auto const bdd{builder->getOrCreateBddForTopLevelElement()};
-    auto const index{builder->getSylvanBddManager().getIndex(beName)};
+    auto const beIndex{builder->getIndex(be)};
     std::map<uint64_t, ValueType> bddToProbability{};
     std::map<uint64_t, ValueType> bddToBirnbaumFactor{};
     auto const probability{recursiveProbability(bdd, indexToProbability, bddToProbability)};
-    auto const birnbaumFactor{recursiveBirnbaumFactor(index, bdd, indexToProbability, bddToProbability, bddToBirnbaumFactor)};
-    auto const &beProbability{indexToProbability[index]};
+    auto const birnbaumFactor{recursiveBirnbaumFactor(beIndex, bdd, indexToProbability, bddToProbability, bddToBirnbaumFactor)};
+    auto const &beProbability{indexToProbability[beIndex]};
 
     return func(beProbability, probability, birnbaumFactor);
 }
@@ -349,22 +345,20 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimeb
     auto const bdd{builder->getOrCreateBddForTopLevelElement()};
 
     std::vector<ValueType> resultVector{};
-    resultVector.reserve(builder->getSft()->getBasicElements().size());
+    resultVector.reserve(builder->getBeVariables().size());
 
     std::map<uint32_t, ValueType> indexToProbability{};
-    for (auto const &be : builder->getSft()->getBasicElements()) {
-        auto const currentIndex{builder->getSylvanBddManager().getIndex(be->name())};
-        indexToProbability[currentIndex] = be->getUnreliability(timebound);
+    for (auto const &[be, beIndex] : builder->getBeVariables()) {
+        indexToProbability[beIndex] = be->getUnreliability(timebound);
     }
     std::map<uint64_t, ValueType> bddToProbability{};
 
     auto const probability{recursiveProbability(bdd, indexToProbability, bddToProbability)};
 
-    for (auto const &be : builder->getSft()->getBasicElements()) {
-        auto const index{builder->getSylvanBddManager().getIndex(be->name())};
+    for (auto const &[be, beIndex] : builder->getBeVariables()) {
         std::map<uint64_t, ValueType> bddToBirnbaumFactor{};
-        auto const birnbaumFactor{recursiveBirnbaumFactor(index, bdd, indexToProbability, bddToProbability, bddToBirnbaumFactor)};
-        auto const &beProbability{indexToProbability[index]};
+        auto const birnbaumFactor{recursiveBirnbaumFactor(beIndex, bdd, indexToProbability, bddToProbability, bddToBirnbaumFactor)};
+        auto const &beProbability{indexToProbability[beIndex]};
         resultVector.push_back(func(beProbability, probability, birnbaumFactor));
     }
     return resultVector;
@@ -372,8 +366,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimeb
 
 template<typename ValueType>
 template<typename FuncType>
-std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints,
-                                                                                   size_t chunksize, FuncType func) {
+std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize,
+                                                                                   FuncType func) {
     auto const bdd{builder->getOrCreateBddForTopLevelElement()};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToBirnbaumFactors{};
@@ -390,7 +384,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoin
         }
 
         // Great care was made so that the pointer returned is always valid
-        auto const index{builder->getSylvanBddManager().getIndex(beName)};
+        auto const index{builder->getIndex(be)};
         auto const &probabilitiesArray{*recursiveProbabilities(currentChunksize, bdd, indexToProbabilities, bddToProbabilities)};
         auto const &birnbaumFactorsArray{
             *recursiveBirnbaumFactors(currentChunksize, index, bdd, indexToProbabilities, bddToProbabilities, bddToBirnbaumFactors)};
@@ -412,12 +406,12 @@ template<typename FuncType>
 std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMeasuresAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize,
                                                                                                    FuncType func) {
     auto const bdd{builder->getOrCreateBddForTopLevelElement()};
-    auto const basicElements{builder->getSft()->getBasicElements()};
+    auto const basicElements{builder->getBeVariables()};
 
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToProbabilities{};
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> bddToBirnbaumFactors{};
     std::vector<std::vector<ValueType>> resultVector{};
-    resultVector.resize(builder->getSft()->getBasicElements().size());
+    resultVector.resize(basicElements.size());
     for (auto &i : resultVector) {
         i.reserve(timepoints.size());
     }
@@ -430,8 +424,9 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMe
 
         auto const &probabilitiesArray{*recursiveProbabilities(currentChunksize, bdd, indexToProbabilities, bddToProbabilities)};
 
-        for (size_t basicElementIndex{0}; basicElementIndex < basicElements.size(); ++basicElementIndex) {
-            auto const &be{basicElements[basicElementIndex]};
+        size_t resultIndex = 0;
+        for (auto const &[be, beIndex] : basicElements) {
+            STORM_LOG_ASSERT(beIndex == resultIndex, "Indices should be equal.");
             // Invalidate bdd cache
             for (auto &i : bddToBirnbaumFactors) {
                 i.second.first = false;
@@ -439,18 +434,18 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMe
 
             // Great care was made so that the pointer returned is always
             // valid and points to an element in bddToProbabilities
-            auto const index{builder->getSylvanBddManager().getIndex(be->name())};
             auto const &birnbaumFactorsArray{
-                *recursiveBirnbaumFactors(currentChunksize, index, bdd, indexToProbabilities, bddToProbabilities, bddToBirnbaumFactors)};
+                *recursiveBirnbaumFactors(currentChunksize, beIndex, bdd, indexToProbabilities, bddToProbabilities, bddToBirnbaumFactors)};
 
-            auto const &beProbabilitiesArray{indexToProbabilities.at(index)};
+            auto const &beProbabilitiesArray{indexToProbabilities.at(beIndex)};
 
             auto const ImportanceMeasureArray{func(beProbabilitiesArray, probabilitiesArray, birnbaumFactorsArray)};
 
             // Update result Probabilities
             for (size_t i{0}; i < currentChunksize; ++i) {
-                resultVector[basicElementIndex].push_back(ImportanceMeasureArray(i));
+                resultVector[resultIndex].push_back(ImportanceMeasureArray(i));
             }
+            ++resultIndex;
         }
     });
 
@@ -497,8 +492,8 @@ struct RRWFunctor {
 }  // namespace
 
 template<typename ValueType>
-ValueType SftBddChecker<ValueType>::getBirnbaumFactorAtTimebound(std::string const &beName, ValueType timebound) {
-    return getImportanceMeasureAtTimebound(beName, timebound, BirnbaumFunctor{});
+ValueType SftBddChecker<ValueType>::getBirnbaumFactorAtTimebound(BEPointer be, ValueType timebound) {
+    return getImportanceMeasureAtTimebound(be, timebound, BirnbaumFunctor{});
 }
 
 template<typename ValueType>
@@ -507,9 +502,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllBirnbaumFactorsAtTimeboun
 }
 
 template<typename ValueType>
-std::vector<ValueType> SftBddChecker<ValueType>::getBirnbaumFactorsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints,
-                                                                                size_t chunksize) {
-    return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, BirnbaumFunctor{});
+std::vector<ValueType> SftBddChecker<ValueType>::getBirnbaumFactorsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize) {
+    return getImportanceMeasuresAtTimepoints(be, timepoints, chunksize, BirnbaumFunctor{});
 }
 
 template<typename ValueType>
@@ -518,8 +512,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllBirnbaumFact
 }
 
 template<typename ValueType>
-ValueType SftBddChecker<ValueType>::getCIFAtTimebound(std::string const &beName, ValueType timebound) {
-    return getImportanceMeasureAtTimebound(beName, timebound, CIFFunctor{});
+ValueType SftBddChecker<ValueType>::getCIFAtTimebound(BEPointer be, ValueType timebound) {
+    return getImportanceMeasureAtTimebound(be, timebound, CIFFunctor{});
 }
 
 template<typename ValueType>
@@ -528,8 +522,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllCIFsAtTimebound(ValueType
 }
 
 template<typename ValueType>
-std::vector<ValueType> SftBddChecker<ValueType>::getCIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
-    return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, CIFFunctor{});
+std::vector<ValueType> SftBddChecker<ValueType>::getCIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize) {
+    return getImportanceMeasuresAtTimepoints(be, timepoints, chunksize, CIFFunctor{});
 }
 
 template<typename ValueType>
@@ -538,8 +532,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllCIFsAtTimepo
 }
 
 template<typename ValueType>
-ValueType SftBddChecker<ValueType>::getDIFAtTimebound(std::string const &beName, ValueType timebound) {
-    return getImportanceMeasureAtTimebound(beName, timebound, DIFFunctor{});
+ValueType SftBddChecker<ValueType>::getDIFAtTimebound(BEPointer be, ValueType timebound) {
+    return getImportanceMeasureAtTimebound(be, timebound, DIFFunctor{});
 }
 
 template<typename ValueType>
@@ -548,8 +542,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllDIFsAtTimebound(ValueType
 }
 
 template<typename ValueType>
-std::vector<ValueType> SftBddChecker<ValueType>::getDIFsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
-    return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, DIFFunctor{});
+std::vector<ValueType> SftBddChecker<ValueType>::getDIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize) {
+    return getImportanceMeasuresAtTimepoints(be, timepoints, chunksize, DIFFunctor{});
 }
 
 template<typename ValueType>
@@ -558,8 +552,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllDIFsAtTimepo
 }
 
 template<typename ValueType>
-ValueType SftBddChecker<ValueType>::getRAWAtTimebound(std::string const &beName, ValueType timebound) {
-    return getImportanceMeasureAtTimebound(beName, timebound, RAWFunctor{});
+ValueType SftBddChecker<ValueType>::getRAWAtTimebound(BEPointer be, ValueType timebound) {
+    return getImportanceMeasureAtTimebound(be, timebound, RAWFunctor{});
 }
 
 template<typename ValueType>
@@ -568,8 +562,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllRAWsAtTimebound(ValueType
 }
 
 template<typename ValueType>
-std::vector<ValueType> SftBddChecker<ValueType>::getRAWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
-    return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, RAWFunctor{});
+std::vector<ValueType> SftBddChecker<ValueType>::getRAWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize) {
+    return getImportanceMeasuresAtTimepoints(be, timepoints, chunksize, RAWFunctor{});
 }
 
 template<typename ValueType>
@@ -578,8 +572,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllRAWsAtTimepo
 }
 
 template<typename ValueType>
-ValueType SftBddChecker<ValueType>::getRRWAtTimebound(std::string const &beName, ValueType timebound) {
-    return getImportanceMeasureAtTimebound(beName, timebound, RRWFunctor{});
+ValueType SftBddChecker<ValueType>::getRRWAtTimebound(BEPointer be, ValueType timebound) {
+    return getImportanceMeasureAtTimebound(be, timebound, RRWFunctor{});
 }
 
 template<typename ValueType>
@@ -588,8 +582,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getAllRRWsAtTimebound(ValueType
 }
 
 template<typename ValueType>
-std::vector<ValueType> SftBddChecker<ValueType>::getRRWsAtTimepoints(std::string const &beName, std::vector<ValueType> const &timepoints, size_t chunksize) {
-    return getImportanceMeasuresAtTimepoints(beName, timepoints, chunksize, RRWFunctor{});
+std::vector<ValueType> SftBddChecker<ValueType>::getRRWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize) {
+    return getImportanceMeasuresAtTimepoints(be, timepoints, chunksize, RRWFunctor{});
 }
 
 template<typename ValueType>
