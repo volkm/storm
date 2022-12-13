@@ -1,9 +1,6 @@
-#include <gmm/gmm_std.h>
+#include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include <vector>
-
-#include "storm-config.h"
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
@@ -11,11 +8,6 @@
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
-#include "storm/settings/SettingMemento.h"
-#include "storm/settings/SettingsManager.h"
-#include "storm/settings/modules/BuildSettings.h"
-#include "storm/utility/vector.h"
-#include "test/storm_gtest.h"
 
 namespace {
 
@@ -189,7 +181,7 @@ static std::vector<SftTestData> sftTestData{
 };
 INSTANTIATE_TEST_SUITE_P(SFTs, SftBddTest, testing::ValuesIn(sftTestData), [](auto const &info) { return info.param.testname; });
 
-TEST(TestBdd, AndOrRelevantEvents) {
+TEST(SftBddCheckerTest, AndOrRelevantEvents) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     storm::dft::utility::RelevantEvents relevantEvents{"F", "F1", "F2", "x1"};
     storm::dft::builder::BddSftModelBuilder<double> builder(dft);
@@ -201,7 +193,7 @@ TEST(TestBdd, AndOrRelevantEvents) {
     EXPECT_EQ(builder.getBddForElement("x1").GetShaHash(), "b0d991484e405a391b6d3d241fed9c00d4a2e5bf6f57300512394d819253893d");
 }
 
-TEST(TestBdd, AndOrRelevantEventsChecked) {
+TEST(SftBddCheckerTest, AndOrRelevantEventsChecked) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
     storm::dft::modelchecker::SftBddChecker checker{builder};
@@ -215,7 +207,7 @@ TEST(TestBdd, AndOrRelevantEventsChecked) {
     EXPECT_NEAR(checker.getProbabilityAtTimebound(builder->getBddForElement("x1"), 1), 0.5, 1e-6);
 }
 
-TEST(TestBdd, AndOrFormulaFail) {
+TEST(SftBddCheckerTest, AndOrFormulaFail) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     auto const props{storm::api::extractFormulasFromProperties(storm::api::parseProperties("P=? [F < 1 !\"F2_failed\"];"))};
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
@@ -224,7 +216,7 @@ TEST(TestBdd, AndOrFormulaFail) {
     STORM_SILENT_EXPECT_THROW(checker.check(props), storm::exceptions::NotSupportedException);
 }
 
-TEST(TestBdd, AndOrFormula) {
+TEST(SftBddCheckerTest, AndOrFormula) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(STORM_TEST_RESOURCES_DIR "/dft/bdd/AndOrTest.dft");
     auto const props{
         storm::api::extractFormulasFromProperties(storm::api::parseProperties("P=? [F <= 1 \"failed\"];"

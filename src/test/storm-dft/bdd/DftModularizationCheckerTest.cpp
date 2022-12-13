@@ -65,6 +65,7 @@ static std::vector<ModularizerTestData> modularizerTestData{
         0.9984947969,
     },
 };
-INSTANTIATE_TEST_SUITE_P(BddModularizer, BddModularizerTest, testing::ValuesIn(modularizerTestData), [](auto const &info) { return info.param.testname; });
+INSTANTIATE_TEST_SUITE_P(DftModularizationCheckerTest, BddModularizerTest, testing::ValuesIn(modularizerTestData),
+                         [](auto const &info) { return info.param.testname; });
 
 }  // namespace
