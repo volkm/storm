@@ -53,9 +53,9 @@ double PropertyToBddTransformer<ValueType>::getTimebound(storm::logic::Formula c
 
 template<typename ValueType>
 typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<ValueType>::translate(storm::logic::StateFormula const& stateFormula,
-                                                                                                 BuilderPointer builder, bool const enableNegation) {
+                                                                                                 BuilderPointer builder, bool enableNegation) {
     if (stateFormula.isBinaryBooleanStateFormula()) {
-        return translate(stateFormula.asBinaryBooleanStateFormula(), builder);
+        return translate(stateFormula.asBinaryBooleanStateFormula(), builder, enableNegation);
     } else if (stateFormula.isAtomicLabelFormula()) {
         return translate(stateFormula.asAtomicLabelFormula(), builder);
     } else if (stateFormula.isUnaryBooleanStateFormula()) {
@@ -67,9 +67,9 @@ typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<Value
 
 template<typename ValueType>
 typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<ValueType>::translate(storm::logic::BinaryBooleanStateFormula const& stateFormula,
-                                                                                                 BuilderPointer builder) {
-    auto const leftBdd{translate(stateFormula.getLeftSubformula().asStateFormula(), builder)};
-    auto const rightBdd{translate(stateFormula.getRightSubformula().asStateFormula(), builder)};
+                                                                                                 BuilderPointer builder, bool enableNegation) {
+    auto const leftBdd{translate(stateFormula.getLeftSubformula().asStateFormula(), builder, enableNegation)};
+    auto const rightBdd{translate(stateFormula.getRightSubformula().asStateFormula(), builder, enableNegation)};
 
     if (stateFormula.isAnd()) {
         return leftBdd & rightBdd;
@@ -81,12 +81,12 @@ typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<Value
 }
 template<typename ValueType>
 typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<ValueType>::translate(storm::logic::UnaryBooleanStateFormula const& stateFormula,
-                                                                                                 BuilderPointer builder, bool const enableNegation) {
+                                                                                                 BuilderPointer builder, bool enableNegation) {
     if (!enableNegation) {
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException,
                         "Illegal UnaryStateFormula '" << stateFormula << "'. Can only use negation with a formula of the form 'P=? [F=t phi]'");
     }
-    auto const subBdd{translate(stateFormula.getSubformula().asStateFormula(), builder)};
+    auto const subBdd{translate(stateFormula.getSubformula().asStateFormula(), builder, enableNegation)};
     if (stateFormula.isNot()) {
         return !subBdd;
     } else {

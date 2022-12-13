@@ -228,56 +228,17 @@ TEST(SftBddCheckerTest, AndOrFormula) {
                                                                               "P=? [F <= 1 \"F1_failed\"];"
                                                                               "P=? [F <= 1 \"F2_failed\"];"))};
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
-
     storm::dft::modelchecker::SftBddChecker checker{builder};
     auto const resultProbs{checker.check(props)};
-
-    std::vector<storm::dft::builder::BddSftModelBuilder<double>::Bdd> bdds;
-    for (auto const &formula : props) {
-        bdds.push_back(storm::dft::transformations::PropertyToBddTransformer<double>::translate(*formula, builder));
-    }
-
-    EXPECT_EQ(bdds.size(), 8ul);
 
     EXPECT_EQ(resultProbs[0], resultProbs[1]);
     EXPECT_EQ(resultProbs[1], resultProbs[2]);
     EXPECT_NEAR(resultProbs[0], 0.5625, 1e-6);
-
     EXPECT_NEAR(resultProbs[3], 1 - resultProbs[0], 1e-6);
-
     EXPECT_EQ(resultProbs[6], resultProbs[7]);
     EXPECT_NEAR(resultProbs[6], 0.75, 1e-6);
-
     EXPECT_EQ(resultProbs[4], resultProbs[5]);
     EXPECT_NEAR(resultProbs[4], 1 - resultProbs[6], 1e-6);
-
-    EXPECT_EQ(bdds[0], bdds[1]);
-    EXPECT_EQ(bdds[1], bdds[2]);
-    EXPECT_EQ(bdds[2], bdds[0]);
-
-    EXPECT_EQ(bdds[0].GetBDD(), bdds[1].GetBDD());
-    EXPECT_EQ(bdds[1].GetBDD(), bdds[2].GetBDD());
-    EXPECT_EQ(bdds[2].GetBDD(), bdds[0].GetBDD());
-
-    EXPECT_EQ(bdds[0].GetBDD(), (!bdds[3]).GetBDD());
-    EXPECT_NE(bdds[0].GetBDD(), bdds[3].GetBDD());
-
-    EXPECT_EQ(bdds[6].GetBDD(), (!bdds[4]).GetBDD());
-    EXPECT_NE(bdds[6].GetBDD(), bdds[4].GetBDD());
-
-    EXPECT_EQ(bdds[7].GetBDD(), (!bdds[5]).GetBDD());
-    EXPECT_NE(bdds[7].GetBDD(), bdds[5].GetBDD());
-
-    EXPECT_NE(bdds[3].GetBDD(), bdds[4].GetBDD());
-
-    EXPECT_EQ(bdds[0].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(bdds[1].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(bdds[2].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(bdds[3].GetShaHash(), "fc1e9a418e3c207e81ffa7fde7768f027b6996732c4216c1ed5de6861dbc86ae");
-    EXPECT_EQ(bdds[4].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
-    EXPECT_EQ(bdds[5].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
-    EXPECT_EQ(bdds[6].GetShaHash(), "c5cf2304417926961c3e1ce1d876fc2886ece1365fd946bfd3e1abd71401696d");
-    EXPECT_EQ(bdds[7].GetShaHash(), "a4f129fa27c6cd32625b088811d4b12f8059ae0547ee035c083deed9ef9d2c59");
 }
 
 }  // namespace

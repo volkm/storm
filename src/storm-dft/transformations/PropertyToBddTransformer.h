@@ -54,16 +54,17 @@ class PropertyToBddTransformer {
      * @param enableNegation Whether negation is enabled. Note that negation only works with timepoints but not time bounds.
      * @return BDD.
      */
-    static Bdd translate(storm::logic::StateFormula const& stateFormula, BuilderPointer builder, bool const enableNegation = false);
+    static Bdd translate(storm::logic::StateFormula const& stateFormula, BuilderPointer builder, bool enableNegation);
 
     /*!
      * Translate binary Boolean state formula to BDD.
      *
      * @param stateFormula Binary Boolean state formula.
      * @param builder BDD builder for SFTs.
+     * * @param enableNegation Whether negation is enabled. Note that negation only works with timepoints but not time bounds.
      * @return BDD.
      */
-    static Bdd translate(storm::logic::BinaryBooleanStateFormula const& stateFormula, BuilderPointer builder);
+    static Bdd translate(storm::logic::BinaryBooleanStateFormula const& stateFormula, BuilderPointer builder, bool enableNegation);
 
     /*!
      * Translate unary Boolean state formula to BDD.
@@ -72,7 +73,7 @@ class PropertyToBddTransformer {
      * @param enableNot Whether negation is enabled. Note that negation only works with timepoints but not time bounds.
      * @return BDD.
      */
-    static Bdd translate(storm::logic::UnaryBooleanStateFormula const& stateFormula, BuilderPointer builder, bool const enableNegation = false);
+    static Bdd translate(storm::logic::UnaryBooleanStateFormula const& stateFormula, BuilderPointer builder, bool enableNegation);
 
     /*!
      * Translate atomic label formula to BDD.
