@@ -101,10 +101,10 @@ class RelevantEvents {
                 // Get name of event
                 if (boost::ends_with(label, "_failed")) {
                     // length of "_failed" = 7
-                    this->names.insert(label.substr(0, label.size() - 7));
+                    this->insert(label.substr(0, label.size() - 7));
                 } else if (boost::ends_with(label, "_dc")) {
                     // length of "_dc" = 3
-                    this->names.insert(label.substr(0, label.size() - 3));
+                    this->insert(label.substr(0, label.size() - 3));
                 } else if (label.find("_claimed_") != std::string::npos) {
                     STORM_LOG_THROW(storm::settings::getModule<storm::dft::settings::modules::FaultTreeSettings>().isAddLabelsClaiming(),
                                     storm::exceptions::InvalidArgumentException,
@@ -123,9 +123,14 @@ class RelevantEvents {
      * @param name Name of relevant event.
      */
     void insert(std::string const& name) {
+        if (this->allRelevant) {
+            return;
+        }
         if (name == "all") {
             setAllRelevant();
+            return;
         }
+
         names.insert(name);
     }
 
@@ -138,6 +143,9 @@ class RelevantEvents {
      */
     template<typename ForwardIt>
     void insert(ForwardIt first, ForwardIt last) {
+        if (this->allRelevant) {
+            return;
+        }
         // check if the name "all" occurs
         if (std::any_of(first, last, [](auto const& name) { return name == "all"; })) {
             setAllRelevant();
