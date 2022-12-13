@@ -7,8 +7,6 @@ The following contains some general guidelines for developers.
 - Storm consists of the core library `lib/libstorm` resulting from the source code in `src/storm`.
 - Several additional libraries `lib/libstorm-xyz` provide additional features (parametric models, POMPD, DFT, etc.) and are built from the corresponding code in `src/storm-xyz`.
 - For each library, a corresponding binary `/bin/storm-xyz` is built from the source in `src/storm-xyz-cli`.
-- Functionality is accompanied by tests (`src/test`) whenever possible.
-  The complete test suite can be executed by `make test` and individual tests can be executed via the corresponding binaries `bin/test-xyz`.
 - Storm is heavily templated.
   In particular, it features the template argument `ValueType` representing the underlying number type.
   The most commonly used types are `double`, `storm::RationalNumber` and `storm::RationalFunction`.
@@ -32,6 +30,10 @@ The following contains some general guidelines for developers.
 - For line breaks, we use `'\n'` instead of `std::endl` to avoid unnecessary flushing.
   See [PR 178](https://github.com/moves-rwth/storm/pull/178) for details.
 
+## Tests
+- Functionality is accompanied by tests (`src/test`) whenever possible.
+  The complete test suite can be executed by `make test` and individual tests can be executed via the corresponding binaries `bin/test-xyz`.
+- Test files should be named `XyzTest.cpp` and follow the same file structure as the main libraries.
 
 ## Contributing
 - Check that all tests run successfully: `make test`.
