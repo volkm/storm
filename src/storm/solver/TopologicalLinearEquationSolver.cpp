@@ -2,6 +2,7 @@
 
 #include "storm/environment/solver/TopologicalSolverEnvironment.h"
 
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/InvalidEnvironmentException.h"
 #include "storm/exceptions/InvalidStateException.h"
 #include "storm/exceptions/UnexpectedException.h"
@@ -88,7 +89,12 @@ bool TopologicalLinearEquationSolver<ValueType>::internalSolveEquations(Environm
     // Handle the case where there is just one large SCC
     bool returnValue = true;
     if (this->sortedSccDecomposition->size() == 1) {
-        returnValue = solveFullyConnectedEquationSystem(sccSolverEnvironment, x, b);
+        if (auto const& scc = *this->sortedSccDecomposition->begin(); scc.size() == 1) {
+            // Catch the trivial case where the whole system is just a single state.
+            returnValue = solveTrivialScc(*scc.begin(), x, b);
+        } else {
+            returnValue = solveFullyConnectedEquationSystem(sccSolverEnvironment, x, b);
+        }
     } else {
         // Solve each SCC individually
         storm::storage::BitVector sccAsBitVector(x.size(), false);

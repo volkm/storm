@@ -3,10 +3,10 @@
 
 #include <algorithm>
 #include <functional>
-#include <iostream>
+#include <iosfwd>
 #include <numeric>
 #include "storm/adapters/IntelTbbAdapter.h"
-#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/adapters/RationalNumberAdapter.h"
 
 #include <boost/optional.hpp>
 
@@ -1092,6 +1092,7 @@ std::vector<T> getConstrainedOffsetVector(std::vector<T> const& offsetVector, st
 /*!
  * Converts the given vector to the given ValueType
  * Assumes that both, TargetType and SourceType are numeric
+ * @return the resulting vector
  */
 template<typename TargetType, typename SourceType>
 std::vector<TargetType> convertNumericVector(std::vector<SourceType> const& oldVector) {
@@ -1101,6 +1102,21 @@ std::vector<TargetType> convertNumericVector(std::vector<SourceType> const& oldV
         resultVector.push_back(storm::utility::convertNumber<TargetType>(oldValue));
     }
     return resultVector;
+}
+
+/*!
+ * Converts the given vector to the given ValueType
+ * Assumes that both, TargetType and SourceType are numeric
+ *
+ * @param inputVector the vector that needs to be converted
+ * @param targetVector the vector where the result is written to. Should have the same size as inputVector
+ *
+ * @note this does not allocate new memory
+ */
+template<typename TargetType, typename SourceType>
+void convertNumericVector(std::vector<SourceType> const& inputVector, std::vector<TargetType>& targetVector) {
+    assert(inputVector.size() == targetVector.size());
+    applyPointwise(inputVector, targetVector, [](SourceType const& v) { return storm::utility::convertNumber<TargetType>(v); });
 }
 
 /*!
@@ -1224,14 +1240,6 @@ bool hasZeroEntry(std::vector<T> const& v) {
 template<typename T>
 bool hasInfinityEntry(std::vector<T> const& v) {
     return std::any_of(v.begin(), v.end(), [](T value) { return storm::utility::isInfinity(value); });
-}
-
-inline std::set<storm::RationalFunctionVariable> getVariables(std::vector<storm::RationalFunction> const& vector) {
-    std::set<storm::RationalFunctionVariable> result;
-    for (auto const& entry : vector) {
-        entry.gatherVariables(result);
-    }
-    return result;
 }
 
 template<typename T>

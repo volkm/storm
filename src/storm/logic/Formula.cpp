@@ -1,3 +1,4 @@
+#include <boost/any.hpp>
 #include <sstream>
 #include "storm/logic/Formulas.h"
 
@@ -12,6 +13,10 @@
 
 namespace storm {
 namespace logic {
+boost::any Formula::accept(FormulaVisitor const& visitor) const {
+    return accept(visitor, boost::any());
+}
+
 bool Formula::isPathFormula() const {
     return false;
 }
@@ -491,6 +496,11 @@ std::set<std::string> Formula::getReferencedRewardModels() const {
     std::set<std::string> referencedRewardModels;
     this->gatherReferencedRewardModels(referencedRewardModels);
     return referencedRewardModels;
+}
+
+std::shared_ptr<Formula> Formula::clone() const {
+    CloneVisitor cv;
+    return cv.clone(*this);
 }
 
 std::shared_ptr<Formula> Formula::substitute(std::map<storm::expressions::Variable, storm::expressions::Expression> const& substitution) const {

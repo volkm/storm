@@ -78,99 +78,101 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
                         "Try modularisation.");
     }
 
-    storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
-    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
-    storm::dft::modelchecker::SftBddChecker checker{builder};
+    auto sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()};
+    sylvanBddManager->execute([&]() {
+        storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
+        auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+        storm::dft::modelchecker::SftBddChecker checker{builder};
 
-    if (exportToDot) {
-        builder->buildBdds(relevantEvents);
-        exportBddToDot(builder->getBddForTopLevelElement(), filename);
-    }
+        if (exportToDot) {
+            builder->buildBdds(relevantEvents);
+            exportBddToDot(builder->getBddForTopLevelElement(), filename);
+        }
 
-    if (calculateMCS) {
-        auto const minimalCutSets{checker.getMinimalCutSetsAsIndices()};
+        if (calculateMCS) {
+            auto const minimalCutSets{checker.getMinimalCutSetsAsIndices()};
 
-        std::cout << "{\n";
-        for (auto const& minimalCutSet : minimalCutSets) {
-            std::cout << '{';
-            for (auto const& beIndex : minimalCutSet) {
-                std::cout << builder->getName(beIndex) << ' ';
+            std::cout << "{\n";
+            for (auto const& minimalCutSet : minimalCutSets) {
+                std::cout << '{';
+                for (auto const& beIndex : minimalCutSet) {
+                    std::cout << builder->getName(beIndex) << ' ';
+                }
+                std::cout << "},\n";
             }
-            std::cout << "},\n";
+            std::cout << "}\n";
         }
-        std::cout << "}\n";
-    }
 
-    if (calculateProbability) {
-        if (chunksize == 1) {
-            for (auto const& timebound : timepoints) {
-                auto const probability{checker.getProbabilityAtTimebound(timebound)};
-                std::cout << "System failure probability at timebound " << timebound << " is " << probability << '\n';
+        if (calculateProbability) {
+            if (chunksize == 1) {
+                for (auto const& timebound : timepoints) {
+                    auto const probability{checker.getProbabilityAtTimebound(timebound)};
+                    std::cout << "System failure probability at timebound " << timebound << " is " << probability << '\n';
+                }
+            } else {
+                auto const probabilities{checker.getProbabilitiesAtTimepoints(timepoints, chunksize)};
+                for (size_t i{0}; i < timepoints.size(); ++i) {
+                    auto const timebound{timepoints[i]};
+                    auto const probability{probabilities[i]};
+                    std::cout << "System failure probability at timebound " << timebound << " is " << probability << '\n';
+                }
             }
-        } else {
-            auto const probabilities{checker.getProbabilitiesAtTimepoints(timepoints, chunksize)};
-            for (size_t i{0}; i < timepoints.size(); ++i) {
-                auto const timebound{timepoints[i]};
-                auto const probability{probabilities[i]};
-                std::cout << "System failure probability at timebound " << timebound << " is " << probability << '\n';
-            }
-        }
 
-        if (!properties.empty()) {
-            auto const probabilities{checker.check(properties, chunksize, relevantEvents)};
-            for (size_t i{0}; i < probabilities.size(); ++i) {
-                std::cout << "Property \"" << properties.at(i)->toString() << "\" has result " << probabilities.at(i) << '\n';
-            }
-        }
-    }
-
-    if (importanceMeasureName != "" && timepoints.size() == 1) {
-        auto const bes{dft->getBasicElements()};
-        std::vector<double> values{};
-        if (importanceMeasureName == "MIF") {
-            values = checker.getAllBirnbaumFactorsAtTimebound(timepoints[0]);
-        }
-        if (importanceMeasureName == "CIF") {
-            values = checker.getAllCIFsAtTimebound(timepoints[0]);
-        }
-        if (importanceMeasureName == "DIF") {
-            values = checker.getAllDIFsAtTimebound(timepoints[0]);
-        }
-        if (importanceMeasureName == "RAW") {
-            values = checker.getAllRAWsAtTimebound(timepoints[0]);
-        }
-        if (importanceMeasureName == "RRW") {
-            values = checker.getAllRRWsAtTimebound(timepoints[0]);
-        }
-
-        for (size_t i{0}; i < bes.size(); ++i) {
-            std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[0] << " is " << values[i] << '\n';
-        }
-    } else if (importanceMeasureName != "") {
-        auto const bes{dft->getBasicElements()};
-        std::vector<std::vector<double>> values{};
-        if (importanceMeasureName == "MIF") {
-            values = checker.getAllBirnbaumFactorsAtTimepoints(timepoints, chunksize);
-        }
-        if (importanceMeasureName == "CIF") {
-            values = checker.getAllCIFsAtTimepoints(timepoints, chunksize);
-        }
-        if (importanceMeasureName == "DIF") {
-            values = checker.getAllDIFsAtTimepoints(timepoints, chunksize);
-        }
-        if (importanceMeasureName == "RAW") {
-            values = checker.getAllRAWsAtTimepoints(timepoints, chunksize);
-        }
-        if (importanceMeasureName == "RRW") {
-            values = checker.getAllRRWsAtTimepoints(timepoints, chunksize);
-        }
-        for (size_t i{0}; i < bes.size(); ++i) {
-            for (size_t j{0}; j < timepoints.size(); ++j) {
-                std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[j] << " is " << values[i][j]
-                          << '\n';
+            if (!properties.empty()) {
+                auto const probabilities{checker.check(properties, chunksize, relevantEvents)};
+                for (size_t i{0}; i < probabilities.size(); ++i) {
+                    std::cout << "Property \"" << properties.at(i)->toString() << "\" has result " << probabilities.at(i) << '\n';
+                }
             }
         }
-    }
+
+        if (importanceMeasureName != "" && timepoints.size() == 1) {
+            auto const bes{dft->getBasicElements()};
+            std::vector<double> values{};
+            if (importanceMeasureName == "MIF") {
+                values = checker.getAllBirnbaumFactorsAtTimebound(timepoints[0]);
+            }
+            if (importanceMeasureName == "CIF") {
+                values = checker.getAllCIFsAtTimebound(timepoints[0]);
+            }
+            if (importanceMeasureName == "DIF") {
+                values = checker.getAllDIFsAtTimebound(timepoints[0]);
+            }
+            if (importanceMeasureName == "RAW") {
+                values = checker.getAllRAWsAtTimebound(timepoints[0]);
+            }
+            if (importanceMeasureName == "RRW") {
+                values = checker.getAllRRWsAtTimebound(timepoints[0]);
+            }
+
+            for (size_t i{0}; i < bes.size(); ++i) {
+                std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[0] << " is " << values[i] << '\n';
+            }
+        } else if (importanceMeasureName != "") {
+            auto const bes{dft->getBasicElements()};
+            std::vector<std::vector<double>> values{};
+            if (importanceMeasureName == "MIF") {
+                values = checker.getAllBirnbaumFactorsAtTimepoints(timepoints, chunksize);
+            }
+            if (importanceMeasureName == "CIF") {
+                values = checker.getAllCIFsAtTimepoints(timepoints, chunksize);
+            }
+            if (importanceMeasureName == "DIF") {
+                values = checker.getAllDIFsAtTimepoints(timepoints, chunksize);
+            }
+            if (importanceMeasureName == "RAW") {
+                values = checker.getAllRAWsAtTimepoints(timepoints, chunksize);
+            }
+            if (importanceMeasureName == "RRW") {
+                values = checker.getAllRRWsAtTimepoints(timepoints, chunksize);
+            }
+            for (size_t i{0}; i < bes.size(); ++i) {
+                for (size_t j{0}; j < timepoints.size(); ++j) {
+                    std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[j] << " is " << values[i][j] << '\n';
+                }
+            }
+        }
+    });
 }
 
 template<>

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <iostream>
+#include <iosfwd>
 #include <iterator>
 #include <vector>
 
@@ -12,12 +12,11 @@
 
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/storage/BitVector.h"
+#include "storm/storage/sparse/StateType.h"
 
 #include "storm/adapters/IntelTbbAdapter.h"
-#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/utility/OsDetection.h"
 #include "storm/utility/constants.h"
-#include "storm/utility/macros.h"
 
 // Forward declaration for adapter classes.
 namespace storm {
@@ -40,7 +39,7 @@ namespace storage {
 template<typename T>
 class SparseMatrix;
 
-typedef uint64_t SparseMatrixIndexType;
+typedef storm::storage::sparse::state_type SparseMatrixIndexType;
 
 template<typename IndexType, typename ValueType>
 class MatrixEntry {
@@ -1242,10 +1241,6 @@ class SparseMatrix {
     // A vector indicating the row groups of the matrix. This needs to be mutible in case we create it on-the-fly.
     mutable boost::optional<std::vector<index_type>> rowGroupIndices;
 };
-
-#ifdef STORM_HAVE_CARL
-std::set<storm::RationalFunctionVariable> getVariables(SparseMatrix<storm::RationalFunction> const& matrix);
-#endif
 
 }  // namespace storage
 }  // namespace storm
