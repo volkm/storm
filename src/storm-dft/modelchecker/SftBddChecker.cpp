@@ -20,8 +20,6 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
     relevantEvents.insertNamesFromProperties(formulas.begin(), formulas.end());
     // Build relevant BDDs
     builder->buildBdds(relevantEvents);
-    // Init BDD-based checker
-    auto checker = std::make_shared<storm::dft::modelchecker::SftBddChecker<ValueType>>(builder);
 
     // Create BDDs for formulas
     std::vector<Bdd> bdds{};
@@ -48,7 +46,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
     std::map<uint64_t, std::vector<double>> bddToReversedProbabilities{};
     for (auto const &pair : bddToReversedTimepoints) {
         auto const bdd{bddMap.at(pair.first)};
-        bddToReversedProbabilities[pair.first] = checker->getProbabilitiesAtTimepoints(bdd, pair.second, chunksize);
+        bddToReversedProbabilities[pair.first] = getProbabilitiesAtTimepoints(bdd, pair.second, chunksize);
     }
 
     std::vector<ValueType> rval{};
