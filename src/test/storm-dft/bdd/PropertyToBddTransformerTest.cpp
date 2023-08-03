@@ -11,7 +11,7 @@ namespace {
 // Helper functions
 std::shared_ptr<storm::dft::builder::BddSftModelBuilder<double>> createBdds(std::string const& file) {
     auto dft = storm::dft::api::loadDFTGalileoFile<double>(file);
-    auto relevantEvents = storm::dft::api::computeRelevantEvents<double>(*dft, {}, {"all"});
+    auto relevantEvents = storm::dft::api::computeRelevantEvents({}, {"all"});
     auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
     builder->buildBdds(relevantEvents);
     return builder;

@@ -6,7 +6,27 @@ namespace storm::dft {
 namespace builder {
 
 template<typename ValueType>
-BddSftModelBuilder<ValueType>::BddSftModelBuilder(std::shared_ptr<storm::dft::storage::DFT<ValueType>> sft) : sft{std::move(sft)} {
+BddSftModelBuilder<ValueType>::BddSftModelBuilder(std::shared_ptr<storm::dft::storage::DFT<ValueType>> sft) : sylvanBddManager{}, sft{std::move(sft)} {}
+
+template<typename ValueType>
+storm::dft::storage::SylvanBddManager& BddSftModelBuilder<ValueType>::getBddManager() {
+    return sylvanBddManager;
+}
+
+template<typename ValueType>
+void BddSftModelBuilder<ValueType>::exportToDot(sylvan::Bdd const& bdd, std::string const& filename) {
+    FILE* filePointer = fopen(filename.c_str(), "w+");
+    // fopen returns a nullptr on failure
+    if (filePointer == nullptr) {
+        STORM_LOG_ERROR("Failure to open file: " << filename);
+    } else {
+        bdd.PrintDot(filePointer);
+        fclose(filePointer);
+    }
+}
+
+template<typename ValueType>
+void BddSftModelBuilder<ValueType>::buildBdds(storm::dft::utility::RelevantEvents relevantEvents) {
     STORM_LOG_THROW(this->sft->isStatic(), storm::exceptions::NotSupportedException, "Fault tree is not static and cannot be translated into BDDs.");
 
     // Create variables for the BEs
@@ -16,10 +36,8 @@ BddSftModelBuilder<ValueType>::BddSftModelBuilder(std::shared_ptr<storm::dft::st
             beVariables.push_back(std::make_pair<BEPointer, uint32_t>(be, sylvanBddManager.createVariable(be->name())));
         }
     }
-}
 
-template<typename ValueType>
-void BddSftModelBuilder<ValueType>::buildBdds(storm::dft::utility::RelevantEvents relevantEvents) {
+    // Create BDDs
     this->relevantEvents = relevantEvents;
     relevantEventBdds.clear();
     relevantEventBdds[sft->getTopLevelElement()->name()] = translate(sft->getTopLevelElement());

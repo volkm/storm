@@ -77,12 +77,17 @@ class BddSftModelBuilder {
     std::vector<std::pair<BEPointer, uint32_t>> const& getBeVariables() const;
 
     /*!
-     * Return manager for Sylvan BDDs.
-     * @return Manager.
+     * Get BDD manager associated with this builder.
+     * @return BDD manager.
      */
-    storm::dft::storage::SylvanBddManager const& getSylvanBddManager() const {
-        return sylvanBddManager;
-    }
+    storm::dft::storage::SylvanBddManager& getBddManager();
+
+    /*!
+     * Export the given BDD to a file in the dot format.
+     * @param bdd BDD.
+     * @param filename File to export to.
+     */
+    void exportToDot(sylvan::Bdd const& bdd, std::string const& filename);
 
    private:
     /*!
@@ -117,9 +122,9 @@ class BddSftModelBuilder {
      */
     Bdd translateVot(size_t currentIndex, size_t threshold, std::vector<Bdd> const& bdds) const;
 
+    storm::dft::storage::SylvanBddManager sylvanBddManager;
     std::shared_ptr<storm::dft::storage::DFT<ValueType>> sft;
     storm::dft::utility::RelevantEvents relevantEvents;
-    storm::dft::storage::SylvanBddManager sylvanBddManager;
     std::vector<std::pair<BEPointer, uint32_t>> beVariables{};
     std::map<std::string, Bdd> relevantEventBdds{};
 };

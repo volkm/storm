@@ -41,7 +41,7 @@ class SylvanBddManager {
      *
      * @param f the function that is executed
      */
-    void execute(std::function<void()> const &f) const {
+    void execute(std::function<void()> const& f) const {
         internalManager.execute(f);
     }
 
