@@ -14,22 +14,6 @@
 namespace storm::dft {
 namespace api {
 
-/*!
- * Export the given BDD to a file in the dot format.
- * @param bdd BDD.
- * @param filename File to export to.
- */
-void exportBddToDot(sylvan::Bdd const& bdd, std::string const& filename) {
-    FILE* filePointer = fopen(filename.c_str(), "w+");
-    // fopen returns a nullptr on failure
-    if (filePointer == nullptr) {
-        STORM_LOG_ERROR("Failure to open file: " << filename);
-    } else {
-        bdd.PrintDot(filePointer);
-        fclose(filePointer);
-    }
-}
-
 template<>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft, bool const exportToDot, std::string const& filename, bool const calculateMttf,
                    double const mttfPrecision, double const mttfStepsize, storm::dft::utility::MTTFApproximationAlgorithm const mttfAlgorithm,
@@ -78,15 +62,14 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
                         "Try modularisation.");
     }
 
-    auto sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()};
-    sylvanBddManager->execute([&]() {
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
+    builder->getBddManager().execute([&]() {
         storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
-        auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<double>>(dft);
         storm::dft::modelchecker::SftBddChecker checker{builder};
 
         if (exportToDot) {
             builder->buildBdds(relevantEvents);
-            exportBddToDot(builder->getBddForTopLevelElement(), filename);
+            builder->exportToDot(builder->getBddForTopLevelElement(), filename);
         }
 
         if (calculateMCS) {
@@ -146,7 +129,8 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             }
 
             for (size_t i{0}; i < bes.size(); ++i) {
-                std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[0] << " is " << values[i] << '\n';
+                std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[0] << " is " << values[i]
+                          << '\n';
             }
         } else if (importanceMeasureName != "") {
             auto const bes{dft->getBasicElements()};
@@ -168,7 +152,8 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
             }
             for (size_t i{0}; i < bes.size(); ++i) {
                 for (size_t j{0}; j < timepoints.size(); ++j) {
-                    std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[j] << " is " << values[i][j] << '\n';
+                    std::cout << importanceMeasureName << " for the basic event " << bes[i]->name() << " at timebound " << timepoints[j] << " is "
+                              << values[i][j] << '\n';
                 }
             }
         }
