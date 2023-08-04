@@ -40,8 +40,8 @@ DftIndependentModule::DftIndependentModule(size_t representative, std::set<size_
 }
 
 std::set<size_t> DftIndependentModule::getAllElements() const {
-    std::set<size_t> allElements = elements;
-    for (auto const& submodule : submodules) {
+    std::set<size_t> allElements = this->elements;
+    for (auto const& submodule : this->submodules) {
         allElements.merge(submodule.getAllElements());
     }
     return allElements;

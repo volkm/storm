@@ -6,12 +6,12 @@
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
+#include "storm-dft/transformations/DftModuleReplacer.h"
 #include "storm-dft/transformations/PropertyToBddTransformer.h"
 #include "storm-dft/utility/DftModularizer.h"
 
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
-#include "storm/exceptions/InvalidModelException.h"
 
 namespace storm::dft {
 namespace modelchecker {
@@ -59,67 +59,45 @@ std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector 
 
 template<typename ValueType>
 std::vector<ValueType> DftModularizationChecker<ValueType>::getProbabilitiesAtTimepoints(std::vector<ValueType> const& timepoints, size_t chunksize) {
-    auto newDft = replaceDynamicModules(timepoints);
-    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(newDft);
+    auto sft = replaceDynamicModules(timepoints);
+    auto builder = std::make_shared<storm::dft::builder::BddSftModelBuilder<ValueType>>(sft);
     storm::dft::modelchecker::SftBddChecker checker{builder};
     return checker.getProbabilitiesAtTimepoints(timepoints, chunksize);
 }
 
 template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<ValueType>::replaceDynamicModules(std::vector<ValueType> const& timepoints) {
-    // Map from module representatives to their sample points
-    std::map<size_t, std::map<ValueType, ValueType>> samplePoints;
+    // Store replacements of dynamic module by DFT consisting of single BE
+    std::vector<std::pair<storm::dft::storage::DftIndependentModule const&, std::shared_ptr<storm::dft::storage::DFT<ValueType> const>>> replacements;
 
-    // First analyse all dynamic modules
+    // Analyse all dynamic modules and create corresponding DFT consisting of a single BE
+    // Instead of building a DFT we could directly replace a module with a BE. However, this approach provides more flexibility.
     for (auto const& mod : dynamicModules) {
         STORM_LOG_DEBUG("Analyse dynamic module " << mod.toString(*dft));
         auto result = analyseDynamicModule(mod, timepoints);
-        // Remember probabilities for module
-        std::map<ValueType, ValueType> activeSamples{};
-        for (size_t i{0}; i < timepoints.size(); ++i) {
+        // Create single BE which has samples corresponding to the previously computed analysis results
+        std::map<ValueType, ValueType> probabilities{};
+        for (size_t i = 0; i < timepoints.size(); ++i) {
             auto const probability{boost::get<ValueType>(result[i])};
             auto const timebound{timepoints[i]};
-            activeSamples[timebound] = probability;
+            probabilities[timebound] = probability;
         }
-        samplePoints.insert({mod.getRepresentative(), activeSamples});
+        storm::dft::builder::DftBuilder<ValueType> builder;
+        std::string const& elementName = dft->getElement(mod.getRepresentative())->name();
+        builder.addBasicElementSamples(elementName, probabilities);
+        // Create DFT
+        builder.setTopLevel(elementName);
+        auto beDft = std::make_shared<storm::dft::storage::DFT<ValueType>>(builder.build());
+        STORM_LOG_ASSERT(beDft->nrElements() == 1 && beDft->getTopLevelElement()->isBasicElement(), "DFT should be single BE");
+        STORM_LOG_DEBUG("Replace module " << dft->getElement(mod.getRepresentative())->toString() << " by DFT with single BE: " << beDft->getElementsString());
+        replacements.push_back({mod, beDft});
     }
 
-    // Gather all elements contained in dynamic modules
-    std::set<size_t> dynamicElements;
-    for (auto const& mod : dynamicModules) {
-        dynamicElements.merge(mod.getAllElements());
-    }
-
-    // Replace each dynamic module by a single BE which has samples corresponding to the previously computed analysis results
-    storm::dft::builder::DftBuilder<ValueType> builder{};
-    std::unordered_set<std::string> depInConflict;
-    for (auto const id : dft->getAllIds()) {
-        auto const element{dft->getElement(id)};
-        auto it = samplePoints.find(id);
-        if (it != samplePoints.end()) {
-            // Replace element by BE
-            builder.addBasicElementSamples(element->name(), it->second);
-        } else if (dynamicElements.find(id) == dynamicElements.end()) {
-            // Element is not part of a dynamic module -> keep
-            builder.cloneElement(element);
-            // Remember dependency conflict
-            if (element->isDependency() && dft->isDependencyInConflict(id)) {
-                depInConflict.insert(element->name());
-            }
-        }
-    }
-    builder.setTopLevel(dft->getTopLevelElement()->name());
-
-    auto newDft = std::make_shared<storm::dft::storage::DFT<ValueType>>(builder.build());
-    // Update dependency conflicts
-    for (size_t id : newDft->getDependencies()) {
-        // Set dependencies not in conflict
-        if (depInConflict.find(newDft->getElement(id)->name()) == depInConflict.end()) {
-            newDft->setDependencyNotInConflict(id);
-        }
-    }
-    STORM_LOG_DEBUG("Remaining static FT: " << newDft->getElementsString());
-    return newDft;
+    // Perform replacements
+    auto sft = storm::dft::transformations::DftModuleReplacer<ValueType>::replaceModules(*dft, replacements);
+    STORM_LOG_ASSERT(sft->getDependencies().empty(), "SFT should have no dependencies.");
+    STORM_LOG_DEBUG("Remaining static FT: " << sft->getElementsString());
+    return sft;
 }
 
 template<typename ValueType>
@@ -138,6 +116,8 @@ typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results DftMo
     auto const props{storm::api::extractFormulasFromProperties(storm::api::parseProperties(propertyStream.str()))};
 
     storm::dft::modelchecker::DFTModelChecker<ValueType> modelchecker(true);
+    // Check DFT
+    // TODO activate symred and other optimizations
     return std::move(modelchecker.check(subDft, props, false, false, {}));
 }
 
