@@ -27,24 +27,28 @@ class SftBddChecker {
 
     /*!
      * Constructor.
+     *
      * @param builder BDD builder for SFT.
      */
     SftBddChecker(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<ValueType>> builder);
 
     /*!
      * Get the set of minimal cut sets (MCS) by the element names.
+     *
      * @return List of MCS given by the names of the SFT elements.
      */
     std::vector<std::vector<std::string>> getMinimalCutSets();
 
     /*!
      * Get the set of minimal cut sets (MCS) by the element indices in the BDD manager.
+     *
      * @return List of MCS given by indices of the SFT elements in the BDD manager.
      */
     std::vector<std::vector<uint32_t>> getMinimalCutSetsAsIndices();
 
     /*!
-     * Compute probability that the top level event fails within the given timebound.
+     * Compute probability that the top level event fails within the given time bound.
+     *
      * @param timebound Time bound.
      * @return Probability at time bound.
      */
@@ -53,7 +57,8 @@ class SftBddChecker {
     }
 
     /*!
-     * Compute probability that the given BDD fails within the given timebound.
+     * Compute probability that the given BDD fails within the given time bound.
+     *
      * @param bdd The BDD that represents an event in the DFT.
      * @param timebound Time bound.
      * @return Probability at time bound.
@@ -62,10 +67,11 @@ class SftBddChecker {
 
     /*!
      * Compute probabilities that the top level event fails within the given time points.
+     *
      * @param timepoints List of time points.
-     * @param chunksize Splits the timepoints array into chunksize chunks.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
-     * @return List of probabilities corresponding to given timepoints.
+     * @return List of probabilities corresponding to given time points.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(std::vector<ValueType> const &timepoints, size_t const chunksize = 0) {
         return getProbabilitiesAtTimepoints(builder->getOrCreateBddForTopLevelElement(), timepoints, chunksize);
@@ -73,248 +79,247 @@ class SftBddChecker {
 
     /*!
      * Compute probabilities that the given BDD fails within the given time points.
+     *
      * @param bdd The BDD that represents an event in the DFT.
      * @param timepoints List of time points.
-     * @param chunksize Splits the timepoints array into chunksize chunks.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
-     * @return List of probabilities corresponding to given timepoints.
+     * @return List of probabilities corresponding to given time points.
      */
     std::vector<ValueType> getProbabilitiesAtTimepoints(Bdd bdd, std::vector<ValueType> const &timepoints, size_t chunksize = 0) const;
 
     /*!
      * Check the given formulas.
+     *
      * @param formulas Formulas to check.
-     * @param chunksize Splits to timepoints array into chunksize chunks.
-     * @param relevantEvents Additional relevant events which should be considerd while building the BDDs.
+     * @param chunksize Splits to time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @param relevantEvents Additional relevant events which should be considered while building the BDDs.
      * @return List of values corresponding to the given formulas.
      */
     std::vector<ValueType> check(std::vector<std::shared_ptr<storm::logic::Formula const>> const &formulas, size_t const chunksize = 0,
                                  storm::dft::utility::RelevantEvents relevantEvents = {});
 
-    /**
-     * \return
-     * The birnbaum importance factor of the given basic event
-     * at the given timebound
+    /*!
+     * Compute Birnbaum importance index for given BE at given time bound.
+     *
+     * @param be BE.
+     * @param timebound Time bound.
+     * @return Birnbaum factor.
      */
     ValueType getBirnbaumFactorAtTimebound(BEPointer be, ValueType timebound);
 
-    /**
-     * \return
-     * The birnbaum importance factor of all basic events
-     * at the given timebound
+    /*!
+     * Compute Birnbaum importance indices for all BEs at given time bound.
+     * The method is faster than looping over getBirnbaumFactorAtTimebound().
      *
-     * \note
-     * Sorted after the order of dft->getBasicElements.
-     * Faster than looping over getBirnbaumFactorAtTimebound.
+     * @param timebound Time bound.
+     * @return List of Birnbaum factors corresponding to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getAllBirnbaumFactorsAtTimebound(ValueType timebound);
 
-    /**
-     * \return
-     * The birnbaum importance factors of the given basic event
+    /*!
+     * Compute Birnbaum imortance index for given BE at given time points.
      *
-     * \param timepoints
-     * Array of timebounds to calculate the factors for.
-     *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param be BE.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of Birnbaum factors corresponding to given time points.
      */
     std::vector<ValueType> getBirnbaumFactorsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The birnbaum importance factors of all basic events
+    /*!
+     * Compute Birnbaum importance indices for all BEs at given time points.
      *
-     * \param timepoints
-     * Array of timebounds to calculate the factors for.
-     *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Birnbaum factors for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<std::vector<ValueType>> getAllBirnbaumFactorsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The Critical importance factor of the given basic event
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute the Critical Importance Factor (CIF) for given BE at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     *
+     * @param be BE.
+     * @param timebound Time bound.
+     * @return Critical Importance Factor.
      */
     ValueType getCIFAtTimebound(BEPointer be, ValueType timebound);
 
-    /**
-     * \return
-     * The Critical importance factor of all basic events
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Critical Importance Factors (CIF) for all BEs at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     * The method is faster than looping over getCIFAtTimebound().
      *
-     * \note
-     * Sorted after the order of dft->getBasicElements.
-     * Faster than looping over getCIFAtTimebound.
+     * @param timebound Time bound.
+     * @return List of Critical Importance Factors corresponding to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getAllCIFsAtTimebound(ValueType timebound);
 
-    /**
-     * \return
-     * The Critical importance factor of the given basic event
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Critical Importance Factors (CIF) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Critical Importance Factors for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getCIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The Critical importance factor of all basic events
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Critical Importance Factors (CIF) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Critical Importance Factors for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<std::vector<ValueType>> getAllCIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The Diagnostic importance factor of the given basic event
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute the Diagnostic Importance Factor (DIF) for given BE at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     *
+     * @param be BE.
+     * @param timebound Time bound.
+     * @return Diagnostic Importance Factor.
      */
     ValueType getDIFAtTimebound(BEPointer be, ValueType timebound);
 
-    /**
-     * \return
-     * The Diagnostic importance factor of all basic events
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Diagnostic Importance Factors (DIF) for all BEs at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     * The method is faster than looping over getDIFAtTimebound().
      *
-     * \note
-     * Sorted after the order of dft->getBasicElements.
-     * Faster than looping over getDIFAtTimebound.
+     * @param timebound Time bound.
+     * @return List of Diagnostic Importance Factors corresponding to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getAllDIFsAtTimebound(ValueType timebound);
 
-    /**
-     * \return
-     * The Diagnostic importance factor of the given basic event
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Diagnostic Importance Factors (DIF) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Diagnostic Importance Factors for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getDIFsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The Diagnostic importance factor of all basic events
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Diagnostic Importance Factors (DIF) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Diagnostic Importance Factors for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<std::vector<ValueType>> getAllDIFsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The risk achievement worth of the given basic event
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute the Risk Achievement Worth (RAW) for given BE at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     *
+     * @param be BE.
+     * @param timebound Time bound.
+     * @return Risk Achievement Worth.
      */
     ValueType getRAWAtTimebound(BEPointer be, ValueType timebound);
 
-    /**
-     * \return
-     * The risk achievement worth of all basic events
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Achievement Worth (RAW) for all BEs at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     * The method is faster than looping over getRAWAtTimebound().
      *
-     * \note
-     * Sorted after the order of dft->getBasicElements.
-     * Faster than looping over getRAWAtTimebound.
+     * @param timebound Time bound.
+     * @return List of Risk Achievement Worth corresponding to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getAllRAWsAtTimebound(ValueType timebound);
 
-    /**
-     * \return
-     * The risk achievement worth of the given basic event
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Achievement Worth (RAW) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Risk Achievement Worth for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getRAWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The risk achievement worth of all basic events
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Achievement Worth (RAW) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Risk Achievement Worth for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<std::vector<ValueType>> getAllRAWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The risk reduction worth of the given basic event
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute the Risk Reduction Worth (RRW) for given BE at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     *
+     * @param be BE.
+     * @param timebound Time bound.
+     * @return Risk Reduction Worth.
      */
     ValueType getRRWAtTimebound(BEPointer be, ValueType timebound);
 
-    /**
-     * \return
-     * The risk reduction worth of all basic events
-     * at the given timebound as defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Reduction Worth (RRW) for all BEs at given time bound.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
+     * The method is faster than looping over getRRWAtTimebound().
      *
-     * \note
-     * Sorted after the order of dft->getBasicElements.
-     * Faster than looping over getRRWAtTimebound.
+     * @param timebound Time bound.
+     * @return List of Risk Reduction Worth corresponding to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getAllRRWsAtTimebound(ValueType timebound);
 
-    /**
-     * \return
-     * The risk reduction worth of the given basic event
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Reduction Worth (RRW) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Risk Reduction Worth for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<ValueType> getRRWsAtTimepoints(BEPointer be, std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
-    /**
-     * \return
-     * The risk reduction worth of all basic events
-     * defined in
-     * 10.1016/S0951-8320(01)00004-7
+    /*!
+     * Compute Risk Reduction Worth (RRW) for all BEs at given time points.
+     * Details on the definition are given in https://doi.org/10.1016/S0951-8320(01)00004-7.
      *
-     * \param chunksize
-     * Splits the timepoints array into chunksize chunks.
+     * @param timepoints List of time points.
+     * @param chunksize Splits the time-points array into chunksize chunks.
      * A value of 0 represents to calculate the whole array at once.
+     * @return List of list of Risk Reduction Worth for all time points per BE.
+     * The list corresponds to the order given by dft->getBasicElements().
      */
     std::vector<std::vector<ValueType>> getAllRRWsAtTimepoints(std::vector<ValueType> const &timepoints, size_t chunksize = 0);
 
    private:
     /*!
      * Recursively compute probability that the BDD is true given the probabilities that the variables are true.
+     *
      * @param bdd BDD.
      * @param indexToProbability Mapping from each variable in the BDD to a probability.
      * @param bddToProbability Cache for common sub-BDDs. It is either empty or filled from an earlier call with an ancestor BDD.
@@ -325,6 +330,7 @@ class SftBddChecker {
 
     /*!
      * Recursively compute Birnbaum importance factor for the given variable.
+     *
      * @param variableIndex Index of variable.
      * @param bdd BDD.
      * @param indexToProbability Mapping from each variable in the BDD to a probability.
@@ -337,6 +343,7 @@ class SftBddChecker {
 
     /*!
      * Recursively compute the (multiple) probabilities that the BDD is true given the probabilities that the variables are true.
+     *
      * @param chunksize The width of the Eigen arrays.
      * @param bdd BDD.
      * @param indexToProbabilities Mapping from each variable in the BDD to probabilities.
@@ -349,6 +356,7 @@ class SftBddChecker {
 
     /*!
      * Recursively compute (multiple) Birnbaum importance factors for the given variable.
+     *
      * @param chunksize The width of the Eigen arrays.
      * @param variableIndex Index of variable.
      * @param bdd BDD.
@@ -364,6 +372,7 @@ class SftBddChecker {
 
     /*!
      * Recursively traverse the given BDD and return the minimal cut sets.
+     *
      * @param bdd Current BDD.
      * @param buffer Reference to a vector that is used as a stack. The stack temporarily stores the positive variables encountered.
      * @param minimalCutSets Reference to a set of minimal cut sets. It will be populated by the function and contains the MCS in the end.

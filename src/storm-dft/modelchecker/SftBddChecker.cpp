@@ -34,7 +34,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
     std::map<uint64_t, std::vector<double>> bddToReversedTimepoints{};
     // A vector of timepoints is necessary as formula-BDDs can occur multiple times.
     // The vector is reversed as it later allows to pop the results from the back which is more efficient.
-    for (size_t i{0}; i < bdds.size(); ++i) {
+    for (size_t i = 0; i < bdds.size(); ++i) {
         auto const reversedIndex{bdds.size() - 1 - i};
         auto const &bdd{bdds[reversedIndex]};
         auto const &formula{formulas[reversedIndex]};
@@ -51,7 +51,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
 
     std::vector<ValueType> rval{};
     rval.reserve(bdds.size());
-    for (size_t i{0}; i < bdds.size(); ++i) {
+    for (size_t i = 0; i < bdds.size(); ++i) {
         auto const &bdd{bdds[i]};
         auto &tmpVec{bddToReversedProbabilities.at(bdd.GetBDD())};
         rval.push_back(tmpVec.back());
@@ -70,6 +70,7 @@ ValueType SftBddChecker<ValueType>::recursiveProbability(Bdd const bdd, std::map
         return storm::utility::zero<ValueType>();
     }
 
+    // Check if result was already computed before.
     auto const it{bddToProbability.find(bdd.GetBDD())};
     if (it != bddToProbability.end()) {
         return it->second;
@@ -96,6 +97,7 @@ ValueType SftBddChecker<ValueType>::recursiveBirnbaumFactor(uint32_t const varia
         return storm::utility::zero<ValueType>();
     }
 
+    // Check if result was already computed before.
     auto const it{bddToBirnbaumFactor.find(bdd.GetBDD())};
     if (it != bddToBirnbaumFactor.end()) {
         return it->second;
@@ -128,19 +130,17 @@ Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveProbabilities(
     size_t const chunksize, Bdd const bdd, std::map<uint32_t, Eigen::ArrayXd> const &indexToProbabilities,
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities) const {
     auto const bddId{bdd.GetBDD()};
+
+    // Check if result was already computed before.
     auto const it{bddToProbabilities.find(bddId)};
     if (it != bddToProbabilities.end() && it->second.first) {
         return &it->second.second;
     }
 
     auto &bddToProbabilitiesElement{bddToProbabilities[bddId]};
-    if (bdd.isOne()) {
+    if (bdd.isOne() || bdd.isZero()) {
         bddToProbabilitiesElement.first = true;
-        bddToProbabilitiesElement.second = Eigen::ArrayXd::Constant(chunksize, 1);
-        return &bddToProbabilitiesElement.second;
-    } else if (bdd.isZero()) {
-        bddToProbabilitiesElement.first = true;
-        bddToProbabilitiesElement.second = Eigen::ArrayXd::Constant(chunksize, 0);
+        bddToProbabilitiesElement.second = Eigen::ArrayXd::Constant(chunksize, bdd.isOne() ? 1 : 0);
         return &bddToProbabilitiesElement.second;
     }
 
@@ -162,6 +162,8 @@ Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveBirnbaumFactors(
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToProbabilities,
     std::unordered_map<uint64_t, std::pair<bool, Eigen::ArrayXd>> &bddToBirnbaumFactors) const {
     auto const bddId{bdd.GetBDD()};
+
+    // Check if result was already computed before.
     auto const it{bddToBirnbaumFactors.find(bddId)};
     if (it != bddToBirnbaumFactors.end() && it->second.first) {
         return &it->second.second;
@@ -169,7 +171,7 @@ Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveBirnbaumFactors(
 
     auto &bddToBirnbaumFactorsElement{bddToBirnbaumFactors[bddId]};
     if (bdd.isTerminal() || bdd.TopVar() > variableIndex) {
-        // return vector 0;
+        // Return zero vector
         bddToBirnbaumFactorsElement.second = Eigen::ArrayXd::Constant(chunksize, 0);
         return &bddToBirnbaumFactorsElement.second;
     }
@@ -195,6 +197,20 @@ Eigen::ArrayXd const *SftBddChecker<ValueType>::recursiveBirnbaumFactors(
     bddToBirnbaumFactorsElement.first = true;
     bddToBirnbaumFactorsElement.second = currentProbabilities * thenBirnbaumFactors + (1 - currentProbabilities) * elseBirnbaumFactors;
     return &bddToBirnbaumFactorsElement.second;
+}
+
+template<typename ValueType>
+void SftBddChecker<ValueType>::recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, std::vector<std::vector<uint32_t>> &minimalCutSets) const {
+    if (bdd.isOne()) {
+        minimalCutSets.push_back(buffer);
+    } else if (!bdd.isZero()) {
+        auto const currentVar{bdd.TopVar()};
+
+        buffer.push_back(currentVar);
+        recursiveMCS(bdd.Then(), buffer, minimalCutSets);
+        buffer.pop_back();
+        recursiveMCS(bdd.Else(), buffer, minimalCutSets);
+    }
 }
 
 template<typename ValueType>
@@ -234,13 +250,13 @@ void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &
         chunksize = timepoints.size();
     }
 
-    // caches
+    // Caches
     std::map<uint32_t, Eigen::ArrayXd> indexToProbabilities{};
 
     // The current timepoints we calculate with
     Eigen::ArrayXd timepointsArray{chunksize};
 
-    for (size_t currentIndex{0}; currentIndex < timepoints.size(); currentIndex += chunksize) {
+    for (size_t currentIndex = 0; currentIndex < timepoints.size(); currentIndex += chunksize) {
         auto const sizeLeft{timepoints.size() - currentIndex};
         if (sizeLeft < chunksize) {
             chunksize = sizeLeft;
@@ -248,23 +264,21 @@ void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &
         }
 
         // Update current timepoints
-        for (size_t i{currentIndex}; i < currentIndex + chunksize; ++i) {
-            timepointsArray(i - currentIndex) = timepoints[i];
+        for (size_t i = 0; i < chunksize; ++i) {
+            timepointsArray(i) = timepoints[i + currentIndex];
         }
 
         // Update the probabilities of the basic elements
         for (auto const &[be, beIndex] : builder->getBeVariables()) {
             // Vectorize known BETypes
-            // fallback to getUnreliability() otherwise
             if (be->beType() == storm::dft::storage::elements::BEType::EXPONENTIAL) {
+                // Vectorize exponential distribution p(T <= t) = 1 - exp(-lambda*t)
                 auto const failureRate{std::static_pointer_cast<storm::dft::storage::elements::BEExponential<double> const>(be)->activeFailureRate()};
-
-                // exponential distribution
-                // p(T <= t) = 1 - exp(-lambda*t)
                 indexToProbabilities[beIndex] = 1 - (-failureRate * timepointsArray).exp();
             } else {
+                // Fallback to getUnreliability()
                 auto probabilities{timepointsArray};
-                for (size_t i{0}; i < chunksize; ++i) {
+                for (size_t i = 0; i < chunksize; ++i) {
                     probabilities(i) = be->getUnreliability(timepointsArray(i));
                 }
                 indexToProbabilities[beIndex] = probabilities;
@@ -278,7 +292,7 @@ void SftBddChecker<double>::chunkCalculationTemplate(std::vector<double> const &
 template<typename ValueType>
 template<typename FuncType>
 void SftBddChecker<ValueType>::chunkCalculationTemplate(std::vector<ValueType> const &timepoints, size_t chunksize, FuncType func) const {
-    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Chunk calculation not supported for datatypes other than double.");
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Chunk calculation not supported for ValueTypes other than double.");
 }
 
 template<typename ValueType>
@@ -309,8 +323,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getProbabilitiesAtTimepoints(Bd
         // and points to an element in bddToProbabilities
         auto const &probabilitiesArray{*recursiveProbabilities(currentChunksize, bdd, indexToProbabilities, bddToProbabilities)};
 
-        // Update result Probabilities
-        for (size_t i{0}; i < currentChunksize; ++i) {
+        // Update result probabilities
+        for (size_t i = 0; i < currentChunksize; ++i) {
             resultProbabilities.push_back(probabilitiesArray(i));
         }
     });
@@ -373,7 +387,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoin
     resultVector.reserve(timepoints.size());
 
     chunkCalculationTemplate(timepoints, chunksize, [&](auto const currentChunksize, auto const &timepointsArray, auto const &indexToProbabilities) {
-        // Invalidate bdd caches
+        // Invalidate BDD caches
         for (auto &i : bddToProbabilities) {
             i.second.first = false;
         }
@@ -390,8 +404,8 @@ std::vector<ValueType> SftBddChecker<ValueType>::getImportanceMeasuresAtTimepoin
         auto const &beProbabilitiesArray{indexToProbabilities.at(index)};
         auto const ImportanceMeasureArray{func(beProbabilitiesArray, probabilitiesArray, birnbaumFactorsArray)};
 
-        // Update result Probabilities
-        for (size_t i{0}; i < currentChunksize; ++i) {
+        // Update result probabilities
+        for (size_t i = 0; i < currentChunksize; ++i) {
             resultVector.push_back(ImportanceMeasureArray(i));
         }
     });
@@ -415,7 +429,7 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMe
     }
 
     chunkCalculationTemplate(timepoints, chunksize, [&](auto const currentChunksize, auto const &timepointsArray, auto const &indexToProbabilities) {
-        // Invalidate bdd cache
+        // Invalidate BDD cache
         for (auto &i : bddToProbabilities) {
             i.second.first = false;
         }
@@ -439,8 +453,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllImportanceMe
 
             auto const ImportanceMeasureArray{func(beProbabilitiesArray, probabilitiesArray, birnbaumFactorsArray)};
 
-            // Update result Probabilities
-            for (size_t i{0}; i < currentChunksize; ++i) {
+            // Update result probabilities
+            for (size_t i = 0; i < currentChunksize; ++i) {
                 resultVector[resultIndex].push_back(ImportanceMeasureArray(i));
             }
             ++resultIndex;
@@ -589,24 +603,8 @@ std::vector<std::vector<ValueType>> SftBddChecker<ValueType>::getAllRRWsAtTimepo
     return getAllImportanceMeasuresAtTimepoints(timepoints, chunksize, RRWFunctor{});
 }
 
-template<typename ValueType>
-void SftBddChecker<ValueType>::recursiveMCS(Bdd const bdd, std::vector<uint32_t> &buffer, std::vector<std::vector<uint32_t>> &minimalCutSets) const {
-    if (bdd.isOne()) {
-        minimalCutSets.push_back(buffer);
-    } else if (!bdd.isZero()) {
-        auto const currentVar{bdd.TopVar()};
-
-        buffer.push_back(currentVar);
-        recursiveMCS(bdd.Then(), buffer, minimalCutSets);
-        buffer.pop_back();
-
-        recursiveMCS(bdd.Else(), buffer, minimalCutSets);
-    }
-}
-
-// Explicitly instantiate the class.
+// Explicitly instantiate the class
 template class SftBddChecker<double>;
-// template class SftBddChecker<storm::RationalFunction>;
 
 }  // namespace modelchecker
 }  // namespace storm::dft
