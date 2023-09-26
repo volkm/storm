@@ -21,6 +21,7 @@ const std::string DftIOSettings::propExpectedTimeOptionName = "expectedtime";
 const std::string DftIOSettings::propExpectedTimeOptionShortName = "mttf";
 const std::string DftIOSettings::propProbabilityOptionName = "probability";
 const std::string DftIOSettings::propTimeboundOptionName = "timebound";
+const std::string DftIOSettings::propTimeboundAllOptionName = "timebound-all";
 const std::string DftIOSettings::propTimepointsOptionName = "timepoints";
 const std::string DftIOSettings::minValueOptionName = "min";
 const std::string DftIOSettings::maxValueOptionName = "max";
@@ -53,6 +54,12 @@ DftIOSettings::DftIOSettings() : ModuleSettings(moduleName) {
                         .build());
     this->addOption(storm::settings::OptionBuilder(moduleName, propProbabilityOptionName, false, "Compute probability of system failure.").build());
     this->addOption(storm::settings::OptionBuilder(moduleName, propTimeboundOptionName, false, "Compute probability of system failure up to given timebound.")
+                        .addArgument(storm::settings::ArgumentBuilder::createDoubleArgument("time", "The timebound to use.")
+                                         .addValidatorDouble(storm::settings::ArgumentValidatorFactory::createDoubleGreaterValidator(0.0))
+                                         .build())
+                        .build());
+    this->addOption(storm::settings::OptionBuilder(moduleName, propTimeboundAllOptionName, false,
+                                                   "Compute probability of system failure up to given timebound for all DFT events.")
                         .addArgument(storm::settings::ArgumentBuilder::createDoubleArgument("time", "The timebound to use.")
                                          .addValidatorDouble(storm::settings::ArgumentValidatorFactory::createDoubleGreaterValidator(0.0))
                                          .build())
@@ -130,6 +137,14 @@ bool DftIOSettings::usePropTimebound() const {
 
 double DftIOSettings::getPropTimebound() const {
     return this->getOption(propTimeboundOptionName).getArgumentByName("time").getValueAsDouble();
+}
+
+bool DftIOSettings::usePropTimeboundAll() const {
+    return this->getOption(propTimeboundAllOptionName).getHasOptionBeenSet();
+}
+
+double DftIOSettings::getPropTimeboundAll() const {
+    return this->getOption(propTimeboundAllOptionName).getArgumentByName("time").getValueAsDouble();
 }
 
 bool DftIOSettings::usePropTimepoints() const {

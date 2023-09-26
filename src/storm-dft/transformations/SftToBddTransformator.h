@@ -71,7 +71,9 @@ class SftToBddTransformator {
 
         // we maintain the invariant that if relevantEventBdds is not empty
         // then we have calculated all relevant bdds
-        STORM_LOG_ASSERT(relevantEventBdds.size() == relevantEvents.count(getDFT()), "Not all relevantEvents where transformed into BDDs.");
+        // BDD for TLE is always built -> relevantEventBdds can be one more than relevantEvents
+        STORM_LOG_ASSERT(relevantEventBdds.size() == relevantEvents.count(getDFT()) || relevantEventBdds.size() == relevantEvents.count(getDFT()) + 1,
+                         "Not all relevantEvents where transformed into BDDs.");
 
         return relevantEventBdds;
     }

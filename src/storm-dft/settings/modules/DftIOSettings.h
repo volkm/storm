@@ -73,6 +73,20 @@ class DftIOSettings : public storm::settings::modules::ModuleSettings {
     double getPropTimebound() const;
 
     /*!
+     * Retrieves whether the property timebound for all events should be used.
+     *
+     * @return True iff the option was set.
+     */
+    bool usePropTimeboundAll() const;
+
+    /*!
+     * Retrieves the timebound for the timebound property for all events.
+     *
+     * @return The timebound.
+     */
+    double getPropTimeboundAll() const;
+
+    /*!
      * Retrieves whether the property timepoints should be used.
      *
      * @return True iff the option was set.
@@ -193,6 +207,7 @@ class DftIOSettings : public storm::settings::modules::ModuleSettings {
     static const std::string propExpectedTimeOptionShortName;
     static const std::string propProbabilityOptionName;
     static const std::string propTimeboundOptionName;
+    static const std::string propTimeboundAllOptionName;
     static const std::string propTimepointsOptionName;
     static const std::string minValueOptionName;
     static const std::string maxValueOptionName;

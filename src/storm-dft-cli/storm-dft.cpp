@@ -118,6 +118,7 @@ void processOptions() {
         std::string const mttfAlgorithm{faultTreeSettings.getMttfAlgorithm()};
         bool const isExportToBddDot{dftIOSettings.isExportToBddDot()};
         bool const isTimebound{dftIOSettings.usePropTimebound()};
+        bool const isTimeboundAll{dftIOSettings.usePropTimeboundAll()};
         bool const isTimepoints{dftIOSettings.usePropTimepoints()};
 
         bool const probabilityAnalysis{ioSettings.isPropertySet() || !isImportanceMeasureSet};
@@ -141,6 +142,19 @@ void processOptions() {
         std::vector<std::shared_ptr<storm::logic::Formula const>> manuallyInputtedProperties;
         if (ioSettings.isPropertySet()) {
             manuallyInputtedProperties = storm::api::extractFormulasFromProperties(storm::api::parseProperties(ioSettings.getProperty()));
+        }
+
+        // Create properties for all DFT events
+        if (isTimeboundAll) {
+            std::string additionalProperties;
+            std::stringstream stream;
+            stream << "P=? [F<=" << dftIOSettings.getPropTimeboundAll() << " \"";
+            std::string prefix = stream.str();
+            for (size_t i = 0; i < dft->nrElements(); ++i) {
+                additionalProperties += prefix + dft->getElement(i)->name() + "_failed\"];";
+            }
+            auto timeboundAllProperties = storm::api::extractFormulasFromProperties(storm::api::parseProperties(additionalProperties));
+            manuallyInputtedProperties.insert(manuallyInputtedProperties.end(), timeboundAllProperties.begin(), timeboundAllProperties.end());
         }
 
         std::string importanceMeasureName{""};
