@@ -64,7 +64,7 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
 
     auto sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()};
     sylvanBddManager->execute([&]() {
-        storm::dft::utility::RelevantEvents relevantEvents{additionalRelevantEventNames.begin(), additionalRelevantEventNames.end()};
+        storm::dft::utility::RelevantEvents relevantEvents = storm::dft::api::computeRelevantEvents<double>(*dft, properties, additionalRelevantEventNames);
         storm::dft::adapters::SFTBDDPropertyFormulaAdapter adapter{dft, properties, relevantEvents, sylvanBddManager};
         auto checker{adapter.getSFTBDDChecker()};
 
