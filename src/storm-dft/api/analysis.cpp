@@ -43,6 +43,13 @@ bool computeDependencyConflicts(storm::dft::storage::DFT<ValueType>& dft, bool u
     return !fdepConflicts.empty();
 }
 
+storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
+                                                          std::vector<std::string> const& additionalRelevantEventNames) {
+    storm::dft::utility::RelevantEvents events(additionalRelevantEventNames.begin(), additionalRelevantEventNames.end());
+    events.insertNamesFromProperties(properties.begin(), properties.end());
+    return events;
+}
+
 template<>
 void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft, bool exportToDot, std::string const& filename, bool calculateMttf,
                    double mttfPrecision, double mttfStepsize, storm::dft::utility::MTTFApproximationAlgorithm mttfAlgorithm, bool calculateMCS,

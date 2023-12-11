@@ -64,6 +64,11 @@ std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::d
     return std::make_pair(gspn, gspnTransformator.toplevelFailedPlaceId());
 }
 
+template<>
+std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<storm::RationalFunction> const& dft) {
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Transformation to GSPN not supported for this data type.");
+}
+
 std::shared_ptr<storm::jani::Model> transformToJani(storm::gspn::GSPN const& gspn, uint64_t toplevelFailedPlace) {
     // Build Jani model
     storm::builder::JaniGSPNBuilder builder(gspn);
@@ -86,11 +91,6 @@ std::shared_ptr<storm::jani::Model> transformToJani(storm::gspn::GSPN const& gsp
     }
 
     return model;
-}
-
-template<>
-std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<storm::RationalFunction> const& dft) {
-    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Transformation to GSPN not supported for this data type.");
 }
 
 // Explicitly instantiate methods
