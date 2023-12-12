@@ -117,7 +117,8 @@ IOSettings::IOSettings() : ModuleSettings(moduleName) {
         storm::settings::OptionBuilder(moduleName, exportExplicitOptionName, "",
                                        "If given, the loaded model will be written to the specified file in the drn format.")
             .setIsAdvanced()
-            .addArgument(storm::settings::ArgumentBuilder::createStringArgument("filename", "the name of the file to which the model is to be writen.").build())
+            .addArgument(
+                storm::settings::ArgumentBuilder::createStringArgument("filename", "the name of the file to which the model is to be written.").build())
             .build());
     this->addOption(storm::settings::OptionBuilder(moduleName, preventDRNPlaceholderOptionName, true, "If given, the exported DRN contains no placeholders")
                         .setIsAdvanced()
@@ -126,7 +127,8 @@ IOSettings::IOSettings() : ModuleSettings(moduleName) {
         storm::settings::OptionBuilder(moduleName, exportDdOptionName, "",
                                        "If given, the loaded model will be written to the specified file in the drdd format.")
             .setIsAdvanced()
-            .addArgument(storm::settings::ArgumentBuilder::createStringArgument("filename", "the name of the file to which the model is to be writen.").build())
+            .addArgument(
+                storm::settings::ArgumentBuilder::createStringArgument("filename", "the name of the file to which the model is to be written.").build())
             .build());
     this->addOption(storm::settings::OptionBuilder(moduleName, explicitOptionName, false, "Parses the model given in an explicit (sparse) representation.")
                         .setShortName(explicitOptionShortName)

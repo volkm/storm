@@ -28,7 +28,7 @@ class DirectEncodingParser {
      * @return A sparse model
      */
     static std::shared_ptr<storm::models::sparse::Model<ValueType, RewardModelType>> parseModel(
-        std::string const& fil, DirectEncodingParserOptions const& options = DirectEncodingParserOptions());
+        std::string const& file, DirectEncodingParserOptions const& options = DirectEncodingParserOptions());
 
    private:
     /*!

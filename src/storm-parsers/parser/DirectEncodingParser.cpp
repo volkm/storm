@@ -6,22 +6,12 @@
 #include <regex>
 #include <string>
 
-#include "storm/adapters/RationalFunctionAdapter.h"
-
 #include "storm-parsers/parser/ValueParser.h"
-
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/AbortException.h"
-#include "storm/exceptions/FileIoException.h"
-#include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/WrongFormatException.h"
-
-#include "storm/models/sparse/Ctmc.h"
-#include "storm/models/sparse/MarkovAutomaton.h"
-
 #include "storm/io/file.h"
-#include "storm/models/sparse/Ctmc.h"
-#include "storm/models/sparse/MarkovAutomaton.h"
 #include "storm/utility/SignalHandler.h"
 #include "storm/utility/builder.h"
 #include "storm/utility/constants.h"
@@ -140,7 +130,8 @@ std::shared_ptr<storm::storage::sparse::ModelComponents<ValueType, RewardModelTy
     bool nonDeterministic =
         (type == storm::models::ModelType::Mdp || type == storm::models::ModelType::MarkovAutomaton || type == storm::models::ModelType::Pomdp);
     bool continuousTime = (type == storm::models::ModelType::Ctmc || type == storm::models::ModelType::MarkovAutomaton);
-    storm::storage::SparseMatrixBuilder<ValueType> builder = storm::storage::SparseMatrixBuilder<ValueType>(0, 0, 0, false, nonDeterministic, 0);
+    storm::storage::SparseMatrixBuilder<ValueType> builder =
+        storm::storage::SparseMatrixBuilder<ValueType>(nrChoices, stateSize, 0, false, nonDeterministic, stateSize);
     modelComponents->stateLabeling = storm::models::sparse::StateLabeling(stateSize);
     modelComponents->observabilityClasses = std::vector<uint32_t>();
     modelComponents->observabilityClasses->resize(stateSize);
@@ -205,8 +196,6 @@ std::shared_ptr<storm::storage::sparse::ModelComponents<ValueType, RewardModelTy
             if (nonDeterministic) {
                 STORM_LOG_TRACE("new Row Group starts at " << row << ".");
                 builder.newRowGroup(row);
-                STORM_LOG_THROW(nrChoices == 0 || builder.getCurrentRowGroupCount() <= nrChoices, storm::exceptions::WrongFormatException,
-                                "More actions detected than declared (in @nr_choices).");
             }
 
             if (continuousTime) {
