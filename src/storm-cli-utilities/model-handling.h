@@ -614,6 +614,9 @@ void exportSparseModel(std::shared_ptr<storm::models::sparse::Model<ValueType>> 
 
     if (ioSettings.isExportBuildSet()) {
         switch (ioSettings.getExportBuildFormat()) {
+            case storm::exporter::ModelExportFormat::Aut:
+                storm::api::exportSparseModelAsAut(model, ioSettings.getExportBuildFilename());
+                break;
             case storm::exporter::ModelExportFormat::Dot:
                 storm::api::exportSparseModelAsDot(model, ioSettings.getExportBuildFilename(), ioSettings.getExportDotMaxWidth());
                 break;

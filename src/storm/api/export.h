@@ -2,6 +2,7 @@
 
 #include "storm/adapters/JsonForward.h"
 #include "storm/exceptions/NotSupportedException.h"
+#include "storm/io/AutExporter.h"
 #include "storm/io/DDEncodingExporter.h"
 #include "storm/io/DirectEncodingExporter.h"
 #include "storm/io/file.h"
@@ -30,6 +31,19 @@ void exportSparseModelAsDrn(std::shared_ptr<storm::models::sparse::Model<ValueTy
     options.allowPlaceholders = allowPlaceholders;
     storm::exporter::explicitExportSparseModel(stream, model, parameterNames, options);
     storm::utility::closeFile(stream);
+}
+
+template<typename ValueType>
+void exportSparseModelAsAut(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, std::string const& filename) {
+    std::ofstream stream;
+    storm::utility::openFile(filename, stream);
+    storm::exporter::exportModelAsAut(stream, model);
+    storm::utility::closeFile(stream);
+}
+
+template<>
+inline void exportSparseModelAsAut<storm::RationalFunction>(std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> const&, std::string const&) {
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Export in AUT format is not supported for rational functions.");
 }
 
 template<storm::dd::DdType Type, typename ValueType>

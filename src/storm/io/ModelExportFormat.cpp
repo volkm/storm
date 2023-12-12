@@ -7,7 +7,9 @@ namespace storm {
 namespace exporter {
 
 ModelExportFormat getModelExportFormatFromString(std::string const& input) {
-    if (input == "dot") {
+    if (input == "aut") {
+        return ModelExportFormat::Aut;
+    } else if (input == "dot") {
         return ModelExportFormat::Dot;
     } else if (input == "drdd") {
         return ModelExportFormat::Drdd;
@@ -21,6 +23,8 @@ ModelExportFormat getModelExportFormatFromString(std::string const& input) {
 
 std::string toString(ModelExportFormat const& input) {
     switch (input) {
+        case ModelExportFormat::Aut:
+            return "aut";
         case ModelExportFormat::Dot:
             return "dot";
         case ModelExportFormat::Drdd:
