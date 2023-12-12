@@ -31,6 +31,8 @@ const std::string IOSettings::explicitOptionName = "explicit";
 const std::string IOSettings::explicitOptionShortName = "exp";
 const std::string IOSettings::explicitDrnOptionName = "explicit-drn";
 const std::string IOSettings::explicitDrnOptionShortName = "drn";
+const std::string IOSettings::explicitAutOptionName = "explicit-aut";
+const std::string IOSettings::explicitAutOptionShortName = "aut";
 const std::string IOSettings::explicitImcaOptionName = "explicit-imca";
 const std::string IOSettings::explicitImcaOptionShortName = "imca";
 const std::string IOSettings::prismInputOptionName = "prism";
@@ -140,6 +142,12 @@ IOSettings::IOSettings() : ModuleSettings(moduleName) {
     this->addOption(storm::settings::OptionBuilder(moduleName, explicitDrnOptionName, false, "Parses the model given in the DRN format.")
                         .setShortName(explicitDrnOptionShortName)
                         .addArgument(storm::settings::ArgumentBuilder::createStringArgument("drn filename", "The name of the DRN file containing the model.")
+                                         .addValidatorString(ArgumentValidatorFactory::createExistingFileValidator())
+                                         .build())
+                        .build());
+    this->addOption(storm::settings::OptionBuilder(moduleName, explicitAutOptionName, false, "Parses the model given in the AUT format.")
+                        .setShortName(explicitAutOptionShortName)
+                        .addArgument(storm::settings::ArgumentBuilder::createStringArgument("aut filename", "The name of the AUT file containing the model.")
                                          .addValidatorString(ArgumentValidatorFactory::createExistingFileValidator())
                                          .build())
                         .build());
@@ -364,6 +372,14 @@ bool IOSettings::isExplicitDRNSet() const {
 
 std::string IOSettings::getExplicitDRNFilename() const {
     return this->getOption(explicitDrnOptionName).getArgumentByName("drn filename").getValueAsString();
+}
+
+bool IOSettings::isExplicitAUTSet() const {
+    return this->getOption(explicitAutOptionName).getHasOptionBeenSet();
+}
+
+std::string IOSettings::getExplicitAUTFilename() const {
+    return this->getOption(explicitAutOptionName).getArgumentByName("aut filename").getValueAsString();
 }
 
 bool IOSettings::isExplicitIMCASet() const {

@@ -5,6 +5,7 @@
 #include <string>
 #include <type_traits>
 
+#include "storm-parsers/parser/AutParser.h"
 #include "storm-parsers/parser/AutoParser.h"
 #include "storm-parsers/parser/DirectEncodingParser.h"
 #include "storm-parsers/parser/ImcaMarkovAutomatonParser.h"
@@ -30,6 +31,14 @@ template<typename ValueType>
 std::shared_ptr<storm::models::sparse::Model<ValueType>> buildExplicitDRNModel(
     std::string const& drnFile, storm::parser::DirectEncodingParserOptions const& options = storm::parser::DirectEncodingParserOptions()) {
     return storm::parser::DirectEncodingParser<ValueType>::parseModel(drnFile, options);
+}
+
+template<typename ValueType>
+std::shared_ptr<storm::models::sparse::Model<ValueType>> buildExplicitAUTModel(std::string const& autFile) {
+    if constexpr (std::is_same_v<ValueType, double> || std::is_same_v<ValueType, storm::RationalNumber>) {
+        return storm::parser::AutParser<ValueType>::parseModel(autFile);
+    }
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Parametric models are not supported by AUT format.");
 }
 
 template<typename ValueType>

@@ -494,6 +494,8 @@ std::shared_ptr<storm::models::ModelBase> buildModelExplicit(storm::settings::mo
         storm::parser::DirectEncodingParserOptions options;
         options.buildChoiceLabeling = buildSettings.isBuildChoiceLabelsSet();
         result = storm::api::buildExplicitDRNModel<ValueType>(ioSettings.getExplicitDRNFilename(), options);
+    } else if (ioSettings.isExplicitAUTSet()) {
+        result = storm::api::buildExplicitAUTModel<ValueType>(ioSettings.getExplicitAUTFilename());
     } else {
         STORM_LOG_THROW(ioSettings.isExplicitIMCASet(), storm::exceptions::InvalidSettingsException, "Unexpected explicit model input type.");
         result = storm::api::buildExplicitIMCAModel<ValueType>(ioSettings.getExplicitIMCAFilename());
@@ -515,7 +517,7 @@ std::shared_ptr<storm::models::ModelBase> buildModel(SymbolicInput const& input,
         } else if (builderType == storm::builder::BuilderType::Explicit) {
             result = buildModelSparse<ValueType>(input, buildSettings);
         }
-    } else if (ioSettings.isExplicitSet() || ioSettings.isExplicitDRNSet() || ioSettings.isExplicitIMCASet()) {
+    } else if (ioSettings.isExplicitSet() || ioSettings.isExplicitDRNSet() || ioSettings.isExplicitAUTSet() || ioSettings.isExplicitIMCASet()) {
         STORM_LOG_THROW(mpi.engine == storm::utility::Engine::Sparse, storm::exceptions::InvalidSettingsException,
                         "Can only use sparse engine with explicit input.");
         result = buildModelExplicit<ValueType>(ioSettings, buildSettings);
