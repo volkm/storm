@@ -40,7 +40,7 @@ std::vector<std::string> getParameters(std::shared_ptr<storm::models::sparse::Mo
  */
 template<typename ValueType>
 std::unordered_map<ValueType, std::string> generatePlaceholders(std::shared_ptr<storm::models::sparse::Model<ValueType>> sparseModel,
-                                                                std::vector<ValueType> exitRates);
+                                                                std::vector<ValueType> const& exitRates);
 
 /*!
  * Write value to stream while using the placeholders.

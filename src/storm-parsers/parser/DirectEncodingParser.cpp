@@ -59,7 +59,7 @@ std::shared_ptr<storm::models::sparse::Model<ValueType, RewardModelType>> Direct
             // Parse parameters
             STORM_LOG_THROW(!sawParameters, storm::exceptions::WrongFormatException, "Parameters declared twice");
             storm::utility::getline(file, line);
-            if (line != "") {
+            if (line.empty()) {
                 std::vector<std::string> parameters;
                 boost::split(parameters, line, boost::is_any_of(" "));
                 for (std::string const& parameter : parameters) {
@@ -183,7 +183,7 @@ std::shared_ptr<storm::storage::sparse::ModelComponents<ValueType, RewardModelTy
             // Parse state id
             line = line.substr(6);  // Remove "state "
             std::string curString = line;
-            size_t posEnd = line.find(" ");
+            size_t posEnd = line.find(' ');
             if (posEnd != std::string::npos) {
                 curString = line.substr(0, posEnd);
                 line = line.substr(posEnd + 1);

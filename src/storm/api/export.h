@@ -106,7 +106,7 @@ inline void exportCheckResultToJson(std::shared_ptr<storm::models::sparse::Model
 template<>
 inline void exportCheckResultToJson<storm::RationalFunction>(std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> const&,
                                                              std::unique_ptr<storm::modelchecker::CheckResult> const&, std::string const&) {
-    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Export of check results is not supported for rational functions. ");
+    STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Export of check results is not supported for rational functions.");
 }
 
 }  // namespace api

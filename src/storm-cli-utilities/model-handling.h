@@ -1,41 +1,21 @@
 #pragma once
 
-#include "storm/api/storm.h"
+#include <type_traits>
 
 #include "storm-counterexamples/api/counterexamples.h"
 #include "storm-gamebased-ar/api/verification.h"
 #include "storm-parsers/api/storm-parsers.h"
 #include "storm-parsers/parser/ExpressionParser.h"
-
-#include "storm/io/file.h"
-#include "storm/utility/AutomaticSettings.h"
-#include "storm/utility/Engine.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/SignalHandler.h"
-#include "storm/utility/macros.h"
-
-#include "storm/utility/Stopwatch.h"
-#include "storm/utility/initialize.h"
-
-#include <type_traits>
-
-#include "storm/storage/SymbolicModelDescription.h"
-#include "storm/storage/jani/Property.h"
-
+#include "storm/api/storm.h"
 #include "storm/builder/BuilderType.h"
-
-#include "storm/models/ModelBase.h"
-
 #include "storm/environment/Environment.h"
-
 #include "storm/exceptions/OptionParserException.h"
-
+#include "storm/io/file.h"
 #include "storm/modelchecker/results/SymbolicQualitativeCheckResult.h"
-
+#include "storm/models/ModelBase.h"
 #include "storm/models/sparse/StandardRewardModel.h"
 #include "storm/models/symbolic/MarkovAutomaton.h"
 #include "storm/models/symbolic/StandardRewardModel.h"
-
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/AbstractionSettings.h"
 #include "storm/settings/modules/BuildSettings.h"
@@ -47,10 +27,17 @@
 #include "storm/settings/modules/ResourceSettings.h"
 #include "storm/settings/modules/TransformationSettings.h"
 #include "storm/storage/Qvbs.h"
+#include "storm/storage/SymbolicModelDescription.h"
+#include "storm/storage/jani/Property.h"
 #include "storm/storage/jani/localeliminator/AutomaticAction.h"
 #include "storm/storage/jani/localeliminator/JaniLocalEliminator.h"
-
+#include "storm/utility/AutomaticSettings.h"
+#include "storm/utility/Engine.h"
+#include "storm/utility/NumberTraits.h"
+#include "storm/utility/SignalHandler.h"
 #include "storm/utility/Stopwatch.h"
+#include "storm/utility/initialize.h"
+#include "storm/utility/macros.h"
 
 namespace storm {
 namespace cli {

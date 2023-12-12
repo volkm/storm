@@ -1,17 +1,15 @@
-#include "storm/io/DirectEncodingExporter.h"
-#include <storm/exceptions/NotSupportedException.h>
+#include "DirectEncodingExporter.h"
 
 #include "storm/adapters/RationalFunctionAdapter.h"
-#include "storm/exceptions/NotImplementedException.h"
+#include "storm/exceptions/NotSupportedException.h"
 #include "storm/models/sparse/Ctmc.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/MarkovAutomaton.h"
 #include "storm/models/sparse/Mdp.h"
 #include "storm/models/sparse/Pomdp.h"
+#include "storm/models/sparse/StandardRewardModel.h"
 #include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
-
-#include "storm/models/sparse/StandardRewardModel.h"
 
 namespace storm {
 namespace exporter {
@@ -147,11 +145,11 @@ void explicitExportSparseModel(std::ostream& os, std::shared_ptr<storm::models::
             }
 
             // Write action rewards
-            bool first = true;
+            bool rfirst = true;
             for (auto const& rewardModelEntry : sparseModel->getRewardModels()) {
-                if (first) {
+                if (rfirst) {
                     os << " [";
-                    first = false;
+                    rfirst = false;
                 } else {
                     os << ", ";
                 }
@@ -162,7 +160,7 @@ void explicitExportSparseModel(std::ostream& os, std::shared_ptr<storm::models::
                     os << "0";
                 }
             }
-            if (!first) {
+            if (!rfirst) {
                 os << "]";
             }
             os << '\n';
@@ -198,7 +196,7 @@ std::vector<std::string> getParameters(std::shared_ptr<storm::models::sparse::Mo
 }
 
 template<typename ValueType>
-std::unordered_map<ValueType, std::string> generatePlaceholders(std::shared_ptr<storm::models::sparse::Model<ValueType>>, std::vector<ValueType>) {
+std::unordered_map<ValueType, std::string> generatePlaceholders(std::shared_ptr<storm::models::sparse::Model<ValueType>>, std::vector<ValueType> const&) {
     return {};
 }
 
@@ -222,7 +220,7 @@ void createPlaceholder(std::unordered_map<storm::RationalFunction, std::string>&
 
 template<>
 std::unordered_map<storm::RationalFunction, std::string> generatePlaceholders(
-    std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> sparseModel, std::vector<storm::RationalFunction> exitRates) {
+    std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> sparseModel, std::vector<storm::RationalFunction> const& exitRates) {
     std::unordered_map<storm::RationalFunction, std::string> placeholders;
     size_t i = 0;
 
