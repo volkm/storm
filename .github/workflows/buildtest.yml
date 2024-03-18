@@ -48,7 +48,7 @@ jobs:
       - name: Build tests
         run: docker exec ci bash -c "cd /opt/storm/build; make -j ${NR_JOBS}"
       - name: Run tests
-        run: docker exec ci bash -c "cd /opt/storm/build; ctest test --output-on-failure"
+        run: docker exec ci bash -c "cd /opt/storm/build; ctest test --verbose --output-on-failure"
 
   compilerTests:
     # Build and run with different compilers (GCC, Clang)
