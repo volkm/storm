@@ -22,10 +22,10 @@ jobs:
     strategy:
       matrix:
         config:
-          - {name: "GMP exact; GMP rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=OFF -DSTORM_USE_CLN_RF=OFF -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=OFF -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
-          - {name: "CLN exact; GMP rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=ON -DSTORM_USE_CLN_RF=OFF -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=OFF -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
-          - {name: "CLN exact; CLN rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=ON -DSTORM_USE_CLN_RF=ON -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=OFF -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
-          - {name: "GMP exact; CLN rational functions; No dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=OFF -DSTORM_USE_CLN_RF=ON -DSTORM_USE_SPOT_SYSTEM=OFF -DSTORM_USE_SOPLEX=OFF -DMSAT_ROOT= -DSTORM_COMPILE_WITH_ALL_SANITIZERS=OFF -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
+          - {name: "GMP exact; GMP rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=OFF -DSTORM_USE_CLN_RF=OFF -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=ON -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
+          - {name: "CLN exact; GMP rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=ON -DSTORM_USE_CLN_RF=OFF -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=ON -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
+          - {name: "CLN exact; CLN rational functions; All dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=ON -DSTORM_USE_CLN_RF=ON -DSTORM_USE_SPOT_SYSTEM=ON -DSTORM_USE_SOPLEX=ON -DMSAT_ROOT=/opt/mathsat5 -DSTORM_COMPILE_WITH_ALL_SANITIZERS=ON -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
+          - {name: "GMP exact; CLN rational functions; No dependencies", baseImg: "storm-dependencies:latest-debug", buildType: "Debug", cmakeArgs: "-DSTORM_USE_CLN_EA=OFF -DSTORM_USE_CLN_RF=ON -DSTORM_USE_SPOT_SYSTEM=OFF -DSTORM_USE_SOPLEX=OFF -DMSAT_ROOT= -DSTORM_COMPILE_WITH_ALL_SANITIZERS=ON -DSTORM_DEVELOPER=ON -DSTORM_PORTABLE=ON"}
     steps:
       - name: Git clone
         uses: actions/checkout@v4
@@ -48,7 +48,7 @@ jobs:
       - name: Build tests
         run: docker exec ci bash -c "cd /opt/storm/build; make -j ${NR_JOBS}"
       - name: Run tests
-        run: docker exec ci bash -c "cd /opt/storm/build; ctest test --verbose --output-on-failure"
+        run: docker exec ci bash -c "cd /opt/storm/build; ASAN_OPTIONS=detect_leaks=0,detect_odr_violation=0 ctest test --verbose --output-on-failure"
 
   compilerTests:
     # Build and run with different compilers (GCC, Clang)
