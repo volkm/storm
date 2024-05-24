@@ -41,9 +41,7 @@ option(STORM_USE_SPOT_SYSTEM "Sets whether the system version of Spot should be 
 option(STORM_USE_SPOT_SHIPPED "Sets whether Spot should be downloaded and installed (if system version is not available or not used)." OFF)
 set(SPOT_ROOT "" CACHE STRING "The hint to the root directory of Spot (optional).")
 MARK_AS_ADVANCED(SPOT_ROOT)
-option(XML_SUPPORT "Sets whether xml based format parsing should be included." ON)
-set(USE_XERCESC ${XML_SUPPORT})
-mark_as_advanced(USE_XERCESC)
+option(STORM_USE_XERCES "Sets whether Xerces (XML support for GSPN) should be used." ON)
 set(Z3_ROOT "" CACHE STRING "A hint to the root directory of Z3 (optional).")
 
 # Configurations

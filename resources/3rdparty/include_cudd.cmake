@@ -72,9 +72,10 @@ add_imported_library(cudd STATIC ${CUDD_STATIC_LIBRARY} ${CUDD_INCLUDE_DIR})
 add_dependencies(resources cudd3)
 
 if(BUILD_SHARED_LIBS)
-	list(APPEND STORM_DEP_TARGETS cudd_SHARED)
+    list(APPEND STORM_DEP_TARGETS cudd_SHARED)
+    message(STATUS "Storm - Linking with CUDD ${CUDD_VERSION_STRING} (library: ${CUDD_SHARED_LIBRARY}; include: ${CUDD_INCLUDE_DIR}).")
 else()
     list(APPEND STORM_DEP_TARGETS cudd_STATIC)
+    message(STATUS "Storm - Linking with CUDD ${CUDD_VERSION_STRING} (library: ${CUDD_STATIC_LIBRARY}; include: ${CUDD_INCLUDE_DIR}).")
 endif()
 
-message(STATUS "Storm - Linking with CUDD ${CUDD_VERSION_STRING}.")

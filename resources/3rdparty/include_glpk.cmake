@@ -32,7 +32,7 @@ endif()
 
 # Since there is a shipped version, always use GLPK
 set(STORM_HAVE_GLPK ON)
-message (STATUS "Storm - Linking with glpk ${GLPK_VERSION_STRING}")
+message (STATUS "Storm - Linking with glpk ${GLPK_VERSION_STRING} (library: ${GLPK_LIBRARIES}; include: ${GLPK_INCLUDE_DIR}).")
 
 add_imported_library(glpk SHARED ${GLPK_LIBRARIES} ${GLPK_INCLUDE_DIR})
 list(APPEND STORM_DEP_TARGETS glpk_SHARED)
