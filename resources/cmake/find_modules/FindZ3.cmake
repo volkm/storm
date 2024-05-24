@@ -4,44 +4,31 @@
 #  LIBZ3_INCLUDE_DIRS - The libz3 include directories
 #  LIBZ3_LIBRARIES - The libraries needed to use libz3
 
-# dependencies
-# -- TODO -- needed?
-
-# find include dir by searching for a concrete file, which definitely must be in it
-find_path(Z3_INCLUDE_DIR 
-            NAMES z3++.h 
-            PATHS ENV PATH INCLUDE "${Z3_ROOT}/include" "/usr/include/z3" "/usr/local/include/z3/"
-         )
-
-# find library
-find_library(Z3_LIBRARY 
-		NAMES z3
-                PATHS ENV PATH INCLUDE "${Z3_ROOT}/lib"
-            )
-
-find_program(Z3_EXEC
-                NAMES z3
-                PATHS ENV PATH INCLUDE "${Z3_ROOT}/bin"
+find_path(Z3_INCLUDE_DIRS NAMES z3++.h
+    PATHS ENV PATH INCLUDE "${Z3_ROOT}/include" "/usr/include/z3" "/usr/local/include/z3/"
 )
 
-# set up the final variables
-set(Z3_LIBRARIES ${Z3_LIBRARY})
-set(Z3_INCLUDE_DIRS ${Z3_INCLUDE_DIR})
-set(Z3_SOLVER ${Z3_EXEC})
+find_library(Z3_LIBRARIES NAMES z3
+    PATHS ENV PATH INCLUDE "${Z3_ROOT}/lib"
+)
+if(Z3_INCLUDE_DIRS AND EXISTS "${Z3_INCLUDE_DIRS}/z3_version.h")
+    file(STRINGS ${Z3_INCLUDE_DIRS}/z3_version.h Z3_VERSION_MAJOR REGEX "^#define[\t ]+Z3_MAJOR_VERSION .*")
+    file(STRINGS ${Z3_INCLUDE_DIRS}/z3_version.h Z3_VERSION_MINOR REGEX "^#define[\t ]+Z3_MINOR_VERSION .*")
+    file(STRINGS ${Z3_INCLUDE_DIRS}/z3_version.h Z3_VERSION_PATCH REGEX "^#define[\t ]+Z3_BUILD_NUMBER .*")
+    string(REGEX MATCH "[0-9]+$" Z3_VERSION_MAJOR "${Z3_VERSION_MAJOR}")
+    string(REGEX MATCH "[0-9]+$" Z3_VERSION_MINOR "${Z3_VERSION_MINOR}")
+    string(REGEX MATCH "[0-9]+$" Z3_VERSION_PATCH "${Z3_VERSION_PATCH}")
+    set(Z3_VERSION "${Z3_VERSION_MAJOR}.${Z3_VERSION_MINOR}.${Z3_VERSION_PATCH}")
+endif()
 
-# set the LIBZ3_FOUND variable by utilizing the following macro
-# (which also handles the REQUIRED and QUIET arguments)
+# handle the QUIETLY and REQUIRED arguments and set SPOT_FOUND to TRUE if
+# all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Z3 DEFAULT_MSG
-                                  Z3_LIBRARY Z3_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Z3
+	                          DEFAULT_MSG
+				  REQUIRED_VARS Z3_LIBRARIES Z3_INCLUDE_DIRS
+	                          VERSION_VAR Z3_VERSION
+)
 
-IF (NOT Z3_FIND_QUIETLY)
-      MESSAGE(STATUS "Found Z3: ${Z3_LIBRARY}")
-ENDIF (NOT Z3_FIND_QUIETLY)
 
-# debug output to see if everything went well
-#message(${Z3_INCLUDE_DIR})
-#message(${Z3_LIBRARY})
-
-# make the set variables only visible in advanced mode
-mark_as_advanced(Z3_LIBRARY Z3_INCLUDE_DIR Z3_SOLVER, Z3_EXEC)
+mark_as_advanced(Z3_LIBRARIES Z3_INCLUDE_DIRS)

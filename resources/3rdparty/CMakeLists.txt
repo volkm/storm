@@ -200,19 +200,6 @@ find_package(Z3 QUIET)
 set(STORM_HAVE_Z3 ${Z3_FOUND})
 
 if(Z3_FOUND)
-    if(NOT EXISTS "${Z3_INCLUDE_DIR}/z3_version.h")
-        message(FATAL_ERROR "No file z3_version.h found in ${Z3_INCLUDE_DIR}.")
-    endif()
-
-    # Parse z3 version from version file
-    file(STRINGS ${Z3_INCLUDE_DIR}/z3_version.h Z3_VERSION_MAJOR REGEX "^#define[\t ]+Z3_MAJOR_VERSION .*")
-    file(STRINGS ${Z3_INCLUDE_DIR}/z3_version.h Z3_VERSION_MINOR REGEX "^#define[\t ]+Z3_MINOR_VERSION .*")
-    file(STRINGS ${Z3_INCLUDE_DIR}/z3_version.h Z3_VERSION_PATCH REGEX "^#define[\t ]+Z3_BUILD_NUMBER .*")
-    string(REGEX MATCH "[0-9]+$" Z3_VERSION_MAJOR "${Z3_VERSION_MAJOR}")
-    string(REGEX MATCH "[0-9]+$" Z3_VERSION_MINOR "${Z3_VERSION_MINOR}")
-    string(REGEX MATCH "[0-9]+$" Z3_VERSION_PATCH "${Z3_VERSION_PATCH}")
-    set(Z3_VERSION "${Z3_VERSION_MAJOR}.${Z3_VERSION_MINOR}.${Z3_VERSION_PATCH}")
-
     if(Z3_VERSION)
         # Split Z3 version into its components
         string(REPLACE "." ";" Z3_VERSION_LIST ${Z3_VERSION})

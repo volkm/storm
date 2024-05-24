@@ -6,7 +6,6 @@
 #  SPOT_VERSION - The version of spot
 
 # use pkg-config to get the directories and then use these values
-
 # in the find_path() and find_library() calls
 find_package(PkgConfig QUIET)
 PKG_CHECK_MODULES(PC_SPOT QUIET spot)
@@ -15,13 +14,13 @@ find_path(SPOT_INCLUDE_DIR NAMES spot/misc/_config.h
    HINTS
    ${PC_SPOT_INCLUDEDIR}
    ${PC_SPOT_INCLUDE_DIRS}
-   )
+)
 
 find_library(SPOT_LIBRARIES NAMES spot
    HINTS
    ${PC_SPOT_LIBDIR}
    ${PC_SPOT_LIBRARY_DIRS}
-   )
+)
 
 if(PC_SPOT_VERSION)
     set(SPOT_VERSION ${PC_SPOT_VERSION})

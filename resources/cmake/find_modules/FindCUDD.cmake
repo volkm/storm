@@ -1,4 +1,4 @@
-# - Try to find libglpk
+# - Try to find libcudd
 # Once done this will define
 #  CUDD_FOUND - System has cudd
 #  CUDD_INCLUDE_DIR - The cudd include directory
@@ -15,13 +15,13 @@ find_path(CUDD_INCLUDE_DIR NAMES cudd.h
    ${PC_CUDD_INCLUDEDIR}
    ${PC_CUDD_INCLUDE_DIRS}
    PATH_SUFFIXES cudd
-   )
+)
 
 find_library(CUDD_LIBRARIES NAMES cudd
    HINTS
    ${PC_CUDD_LIBDIR}
    ${PC_CUDD_LIBRARY_DIRS}
-   )
+)
 
 if(PC_CUDD_VERSION)
     set(CUDD_VERSION_STRING ${PC_CUDD_VERSION})
@@ -33,7 +33,7 @@ elseif(CUDD_INCLUDE_DIR AND EXISTS "${CUDD_INCLUDE_DIR}/cudd.h")
     unset(cudd_version)
 endif()
 
-# handle the QUIETLY and REQUIRED arguments and set LIBXML2_FOUND to TRUE if
+# handle the QUIETLY and REQUIRED arguments and set CUDD_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(CUDD
