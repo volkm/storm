@@ -1,15 +1,13 @@
 find_package(GLPK QUIET)
-if(GLPK_FOUND)
-    message (STATUS "Storm - Using system version of glpk.")
-else()
-    message (STATUS "Storm - Using shipped version of glpk.")
+if(NOT GLPK_FOUND)
+    # Use shipped version
     set(GLPK_LIB_DIR ${STORM_3RDPARTY_BINARY_DIR}/glpk-4.65/lib)
 	
-	# Set sysroot to circumvent problems in macOS "Mojave" (or higher) where the header files are no longer in /usr/include
-	set(GLPK_INCLUDE_FLAGS "")
-	if (CMAKE_OSX_SYSROOT)
-	    set(GLPK_INCLUDE_FLAGS "CPPFLAGS=--sysroot=${CMAKE_OSX_SYSROOT}")
-	endif()
+    # Set sysroot to circumvent problems in macOS "Mojave" (or higher) where the header files are no longer in /usr/include
+    set(GLPK_INCLUDE_FLAGS "")
+    if (CMAKE_OSX_SYSROOT)
+        set(GLPK_INCLUDE_FLAGS "CPPFLAGS=--sysroot=${CMAKE_OSX_SYSROOT}")
+    endif()
 	
     ExternalProject_Add(glpk_ext
         DOWNLOAD_COMMAND ""

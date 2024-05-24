@@ -250,33 +250,15 @@ include(${STORM_3RDPARTY_SOURCE_DIR}/include_glpk.cmake)
 ##
 #############################################################
 
-if (STORM_USE_GUROBI)
-    find_package(GUROBI QUIET REQUIRED)
-    set(STORM_HAVE_GUROBI ${GUROBI_FOUND})
-    if (GUROBI_FOUND)
-		if (EXISTS ${GUROBI_LIBRARY})
-            message (STATUS "Storm - Linking with Gurobi (${GUROBI_CXX_LIBRARY}).")
-            add_imported_library(GUROBI SHARED ${GUROBI_LIBRARY} ${GUROBI_INCLUDE_DIRS})
-            list(APPEND STORM_DEP_TARGETS GUROBI_SHARED)
-        else()
-            # The FindGurobi.cmake script needs to be updated every now and then as the library file contains the version number...
-            message(FATAL_ERROR "Gurobi Library ${GUROBI_LIBRARY} not found. If your Gurobi Version is higher then 9.0.0, please contact the Storm developers.")
-        endif()
-    else()
-    	# The FindGurobi.cmake script needs to be updated every now and then as the library file contains the version number ...
-        message(FATAL_ERROR "Gurobi Library requested but was not found. Make sure that GUROBI_ROOT points to the correct directory (containing include/ and lib/ subdirectories). If your Gurobi Version is higher then 9.0.0, please contact the Storm developers.")
-    endif()
-else()
-    set(STORM_HAVE_GUROBI OFF)
-endif()
+include(${STORM_3RDPARTY_SOURCE_DIR}/include_gurobi.cmake)
 
 #############################################################
 ##
 ##	CUDD
 ##
 #############################################################
-include(${STORM_3RDPARTY_SOURCE_DIR}/include_cudd.cmake)
 
+include(${STORM_3RDPARTY_SOURCE_DIR}/include_cudd.cmake)
 
 #############################################################
 ##

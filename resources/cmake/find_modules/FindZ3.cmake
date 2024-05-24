@@ -11,6 +11,7 @@ find_path(Z3_INCLUDE_DIRS NAMES z3++.h
 find_library(Z3_LIBRARIES NAMES z3
     PATHS ENV PATH INCLUDE "${Z3_ROOT}/lib"
 )
+
 if(Z3_INCLUDE_DIRS AND EXISTS "${Z3_INCLUDE_DIRS}/z3_version.h")
     file(STRINGS ${Z3_INCLUDE_DIRS}/z3_version.h Z3_VERSION_MAJOR REGEX "^#define[\t ]+Z3_MAJOR_VERSION .*")
     file(STRINGS ${Z3_INCLUDE_DIRS}/z3_version.h Z3_VERSION_MINOR REGEX "^#define[\t ]+Z3_MINOR_VERSION .*")
@@ -25,7 +26,6 @@ endif()
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Z3
-	                          DEFAULT_MSG
 				  REQUIRED_VARS Z3_LIBRARIES Z3_INCLUDE_DIRS
 	                          VERSION_VAR Z3_VERSION
 )
