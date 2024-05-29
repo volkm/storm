@@ -34,7 +34,7 @@ jobs:
       - name: Build storm from Dockerfile
         run: |
           docker build -t movesrwth/storm:${{ github.event.inputs.tag }}${{ matrix.buildType.suffix }} . \
-            --build-arg BASE_IMG=movesrwth/storm-dependencies:latest-${{ matrix.buildType.suffix }} \
+            --build-arg BASE_IMG=movesrwth/storm-dependencies:latest${{ matrix.buildType.suffix }} \
             --build-arg build_type="${{ matrix.buildType.name }}" \
             --build-arg developer="${{ matrix.buildType.Developer }}" \
             --build-arg cmake_args="${{ matrix.buildType.cmakeArgs }}" \
