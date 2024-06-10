@@ -31,6 +31,9 @@ ARG all_sanitizers="OFF"
 # Specify additional CMake arguments for Storm
 ARG cmake_args=""
 
+# Install mold
+RUN apt-get update -qq && apt-get install -y --no-install-recommends mold
+
 
 # Build Storm
 #############
@@ -53,6 +56,7 @@ RUN cmake .. -DCMAKE_BUILD_TYPE=$build_type \
              -DSTORM_DEVELOPER=$developer \
              -DSTORM_USE_CLN_EA=$cln_exact \
              -DSTORM_USE_CLN_RF=$cln_ratfunc \
+             -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=mold" -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=mold" \
              $cmake_args
 
 # Build external dependencies of Storm
