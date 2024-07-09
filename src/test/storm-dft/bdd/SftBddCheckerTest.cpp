@@ -1,13 +1,13 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include "storm-dft/api/storm-dft.h"
+#include "storm-dft/api/io.h"
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
-#include "storm-dft/transformations/PropertyToBddTransformer.h"
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
+#include "storm/storage/jani/Property.h"
 
 namespace {
 

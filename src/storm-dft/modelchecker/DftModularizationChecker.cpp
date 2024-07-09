@@ -2,14 +2,12 @@
 
 #include <sstream>
 
-#include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
 #include "storm-dft/transformations/DftModuleReplacer.h"
 #include "storm-dft/transformations/PropertyToBddTransformer.h"
 #include "storm-dft/utility/DftModularizer.h"
-
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
 
