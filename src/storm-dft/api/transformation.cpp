@@ -1,14 +1,10 @@
 #include "transformation.h"
 
-#include "storm-conv/api/storm-conv.h"
-#include "storm-conv/settings/modules/JaniExportSettings.h"
-#include "storm-dft/settings/modules/DftGspnSettings.h"
-#include "storm-dft/settings/modules/FaultTreeSettings.h"
 #include "storm-dft/transformations/DftToGspnTransformator.h"
 #include "storm-dft/transformations/DftTransformer.h"
 #include "storm-dft/utility/DftValidator.h"
-#include "storm-gspn/api/storm-gspn.h"
-#include "storm/settings/SettingsManager.h"
+#include "storm-gspn/builder/JaniGSPNBuilder.h"
+#include "storm/storage/jani/Model.h"
 
 namespace storm::dft {
 namespace api {
@@ -38,17 +34,21 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> applyTransformations(storm:
     if (binaryFDEP && storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft)) {
         transformedDft = storm::dft::transformations::DftTransformer<ValueType>::transformBinaryDependencies(*transformedDft);
     }
+    STORM_LOG_ASSERT(!exponentialDistributions || storm::dft::transformations::DftTransformer<ValueType>::hasOnlyExponentialDistributions(*transformedDft),
+                     "DFT still has non-exponential distributions.");
+    STORM_LOG_ASSERT(!uniqueBE || storm::dft::transformations::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft),
+                     "DFT still has multiple failed BEs.");
+    STORM_LOG_ASSERT(!binaryFDEP || storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft),
+                     "DFT still has non-binary dependencies.");
     return transformedDft;
 }
 
 template<>
-std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<double> const& dft) {
-    storm::dft::settings::modules::FaultTreeSettings const& ftSettings = storm::settings::getModule<storm::dft::settings::modules::FaultTreeSettings>();
-    storm::dft::settings::modules::DftGspnSettings const& dftGspnSettings = storm::settings::getModule<storm::dft::settings::modules::DftGspnSettings>();
-
+std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<double> const& dft, bool disableDC, bool mergeDCFailed,
+                                                                        bool extendPriorities, bool smartTransformation) {
     // Set Don't Care elements
     std::set<uint64_t> dontCareElements;
-    if (!ftSettings.isDisableDC()) {
+    if (!disableDC) {
         // Insert all elements as Don't Care elements
         for (std::size_t i = 0; i < dft.nrElements(); i++) {
             dontCareElements.insert(dft.getElement(i)->id());
@@ -57,14 +57,14 @@ std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::d
 
     // Transform to GSPN
     storm::dft::transformations::DftToGspnTransformator<double> gspnTransformator(dft);
-    auto priorities = gspnTransformator.computePriorities(dftGspnSettings.isExtendPriorities());
-    gspnTransformator.transform(priorities, dontCareElements, !dftGspnSettings.isDisableSmartTransformation(), dftGspnSettings.isMergeDCFailed(),
-                                dftGspnSettings.isExtendPriorities());
+    auto priorities = gspnTransformator.computePriorities(extendPriorities);
+    gspnTransformator.transform(priorities, dontCareElements, smartTransformation, mergeDCFailed, extendPriorities);
     std::shared_ptr<storm::gspn::GSPN> gspn(gspnTransformator.obtainGSPN());
     return std::make_pair(gspn, gspnTransformator.toplevelFailedPlaceId());
 }
 
-std::shared_ptr<storm::jani::Model> transformToJani(storm::gspn::GSPN const& gspn, uint64_t toplevelFailedPlace) {
+std::pair<std::shared_ptr<storm::jani::Model>, std::vector<storm::jani::Property>> transformToJani(storm::gspn::GSPN const& gspn,
+                                                                                                   uint64_t toplevelFailedPlace) {
     // Build Jani model
     storm::builder::JaniGSPNBuilder builder(gspn);
     std::shared_ptr<storm::jani::Model> model(builder.build("dft_gspn"));
@@ -76,20 +76,12 @@ std::shared_ptr<storm::jani::Model> transformToJani(storm::gspn::GSPN const& gsp
     // Add variable for easier access to 'failed' state
     builder.addTransientVariable(model.get(), "failed", targetExpression);
     auto failedFormula = std::make_shared<storm::logic::AtomicExpressionFormula>(targetExpression);
-    auto properties = builder.getStandardProperties(model.get(), failedFormula, "Failed", "a failed state", true);
-
-    // Export Jani to file
-    storm::dft::settings::modules::DftGspnSettings const& dftGspnSettings = storm::settings::getModule<storm::dft::settings::modules::DftGspnSettings>();
-    if (dftGspnSettings.isWriteToJaniSet()) {
-        auto const& jani = storm::settings::getModule<storm::settings::modules::JaniExportSettings>();
-        storm::api::exportJaniToFile(*model, properties, dftGspnSettings.getWriteToJaniFilename(), jani.isCompactJsonSet());
-    }
-
-    return model;
+    std::vector<storm::jani::Property> properties = builder.getStandardProperties(model.get(), failedFormula, "Failed", "a failed state", true);
+    return std::make_pair(model, properties);
 }
 
 template<>
-std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<storm::RationalFunction> const& dft) {
+std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<storm::RationalFunction> const&, bool, bool, bool, bool) {
     STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Transformation to GSPN not supported for this data type.");
 }
 

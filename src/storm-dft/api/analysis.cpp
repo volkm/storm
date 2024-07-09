@@ -193,11 +193,9 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<double>> const& dft,
 }
 
 template<>
-void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<storm::RationalFunction>> const& dft, bool exportToDot, std::string const& filename,
-                   bool calculateMttf, double mttfPrecision, double mttfStepsize, storm::dft::utility::MTTFApproximationAlgorithm mttfAlgorithm,
-                   bool calculateMCS, bool calculateProbability, bool useModularisation, std::string const& importanceMeasureName,
-                   std::vector<double> const& timepoints, std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
-                   std::vector<std::string> const& additionalRelevantEventNames, size_t chunksize) {
+void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<storm::RationalFunction>> const&, bool, std::string const&, bool, double, double,
+                   storm::dft::utility::MTTFApproximationAlgorithm, bool, bool, bool, std::string const&, std::vector<double> const&,
+                   std::vector<std::shared_ptr<storm::logic::Formula const>> const&, std::vector<std::string> const&, size_t) {
     STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "BDD analysis is not supported for this data type.");
 }
 

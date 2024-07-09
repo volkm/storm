@@ -1,9 +1,5 @@
 #pragma once
 
-#include <type_traits>
-#include <utility>
-#include <vector>
-
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/utility/MTTFHelper.h"
@@ -12,9 +8,25 @@
 namespace storm::dft {
 namespace api {
 
+/*!
+ * Compute minimal/maximal number of BEs needed for TLE failure.
+ * @param dft DFT.
+ * @param useSMT Whether to use an SMT solver to obtain tighter bounds (with more computation time).
+ * @param solverTimeout Timeout for SMT solver (if useSMT).
+ * @return Minimal number of BE failures which can lead to a TLE failure, maximal number of BEs failures which definitely lead to a TLE failure.
+ */
 template<typename ValueType>
 std::pair<uint64_t, uint64_t> computeBEFailureBounds(storm::dft::storage::DFT<ValueType> const& dft, bool useSMT, double solverTimeout);
 
+/*!
+ * Compute dependencies which are in conflict and mark them in the DFT.
+ * Two dependencies are conflicting if their simultaneous triggering must be resolved non-deterministically.
+ *
+ * @param dft DFT.
+ * @param useSMT Whether to use an SMT solver to obtain better results (with more computation time).
+ * @param solverTimeout Timeout for SMT solver (if useSMT).
+ * @return True iff conflicts were found. The conflicts were added to the DFT.
+ */
 template<typename ValueType>
 bool computeDependencyConflicts(storm::dft::storage::DFT<ValueType>& dft, bool useSMT, double solverTimeout);
 
@@ -64,7 +76,7 @@ typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analy
 }
 
 /*!
- * Analyze the DFT using BDDs
+ * Analyze the DFT using BDDs.
  *
  * @param dft DFT
  *
@@ -120,11 +132,10 @@ void analyzeDFTBdd(std::shared_ptr<storm::dft::storage::DFT<ValueType>> const& d
                    size_t chunksize);
 
 /*!
- * Analyze the DFT using the SMT encoding
+ * Analyze the DFT using the SMT encoding.
  *
  * @param dft DFT.
- *
- * @return Result result vector
+ * @return Result vector.
  */
 template<typename ValueType>
 void analyzeDFTSMT(storm::dft::storage::DFT<ValueType> const& dft, bool printOutput);

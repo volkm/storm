@@ -1,14 +1,18 @@
 #pragma once
 
-#include <type_traits>
-#include <utility>
-#include <vector>
-
 #include "storm-dft/storage/DFT.h"
-#include "storm-gspn/storage/gspn/GSPN.h"
-#include "storm/storage/jani/Model.h"
 
-namespace storm::dft {
+namespace storm {
+
+namespace jani {
+class Property;
+class Model;
+}  // namespace jani
+namespace gspn {
+class GSPN;
+}  // namespace gspn
+
+namespace dft {
 namespace api {
 
 /*!
@@ -49,19 +53,26 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> prepareForMarkovAnalysis(st
  * Transform DFT to GSPN.
  *
  * @param dft DFT.
+ * @param disableDC Flag indicating if Don't Care propagation for DFT elements which should be disabled.
+ * @param mergeDCFailed Flag indicating if Don't Care places and Failed places should be merged.
+ * @param extendPriorities Flag indicating if the extended priority calculation is used.
+ * @param smartTransformation Flag indicating if smart semantics should be used.
+ *                            Smart semantics will only generate necessary parts of the GSPNs.
  * @return Pair of GSPN and id of failed place corresponding to the top level element.
  */
 template<typename ValueType>
-std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<ValueType> const& dft);
+std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<ValueType> const& dft, bool disableDC, bool mergeDCFailed,
+                                                                        bool extendPriorities, bool smartTransformation);
 
 /*!
  * Transform GSPN to Jani model.
  *
  * @param gspn GSPN.
  * @param toplevelFailedPlace Id of the failed place in the GSPN for the top level element in the DFT.
- * @return JANI model.
+ * @return Pair of JANI model and Jani properties.
  */
-std::shared_ptr<storm::jani::Model> transformToJani(storm::gspn::GSPN const& gspn, uint64_t toplevelFailedPlace);
+std::pair<std::shared_ptr<storm::jani::Model>, std::vector<storm::jani::Property>> transformToJani(storm::gspn::GSPN const& gspn, uint64_t toplevelFailedPlace);
 
 }  // namespace api
-}  // namespace storm::dft
+}  // namespace dft
+}  // namespace storm

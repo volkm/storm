@@ -4,6 +4,7 @@
 #include "storm-dft/parser/DFTGalileoParser.h"
 #include "storm-dft/parser/DFTJsonParser.h"
 #include "storm-dft/storage/DftJsonExporter.h"
+#include "storm/exceptions/NotSupportedException.h"
 
 namespace storm::dft {
 namespace api {
