@@ -20,7 +20,10 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModuleReplacer<ValueType
     for (auto const& replacements : moduleReplacements) {
         auto const& oldModule = replacements.first;
         auto allElements = oldModule.getAllElements();
-        representativeReplacements.insert({oldModule.getRepresentative(), replacements.second});
+        auto replaceDft = replacements.second;
+        STORM_LOG_THROW(dft.getElement(oldModule.getRepresentative())->name() == replaceDft->getTopLevelElement()->name(),
+                        storm::exceptions::InvalidArgumentException, "Replaced module and DFT must have the same toplevel name.");
+        representativeReplacements.insert({oldModule.getRepresentative(), replaceDft});
         replaceElements.merge(allElements);
         // After merge, all elements from allElements should be moved to replace Elements
         STORM_LOG_THROW(allElements.empty(), storm::exceptions::InvalidArgumentException, "Modules overlap and cannot be replaced.");
