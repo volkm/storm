@@ -2,15 +2,14 @@
 #include "test/storm_gtest.h"
 
 #include "storm-dft/api/io.h"
-#include "storm-dft/transformations/DftTransformer.h"
+#include "storm-dft/transformer/DftTransformer.h"
 
 namespace {
 
 TEST(DftTransformerTest, UniqueConstantFailedTest) {
     std::string file = STORM_TEST_RESOURCES_DIR "/dft/const_be_test.dft";
     std::shared_ptr<storm::dft::storage::DFT<double>> originalDft = storm::dft::api::loadDFTGalileoFile<double>(file);
-    std::shared_ptr<storm::dft::storage::DFT<double>> transformedDft =
-        storm::dft::transformations::DftTransformer<double>::transformUniqueFailedBE(*originalDft);
+    std::shared_ptr<storm::dft::storage::DFT<double>> transformedDft = storm::dft::transformer::DftTransformer<double>::transformUniqueFailedBE(*originalDft);
 
     // Count in original DFT
     auto bes = originalDft->getBasicElements();
@@ -49,7 +48,7 @@ TEST(DftTransformerTest, BinaryFDEPTest) {
     std::string file = STORM_TEST_RESOURCES_DIR "/dft/fdep5.dft";
     std::shared_ptr<storm::dft::storage::DFT<double>> originalDft = storm::dft::api::loadDFTGalileoFile<double>(file);
     std::shared_ptr<storm::dft::storage::DFT<double>> transformedDft =
-        storm::dft::transformations::DftTransformer<double>::transformBinaryDependencies(*originalDft);
+        storm::dft::transformer::DftTransformer<double>::transformBinaryDependencies(*originalDft);
 
     // Count in original DFT
     uint64_t dependencyCount = originalDft->getDependencies().size();
@@ -64,7 +63,7 @@ TEST(DftTransformerTest, PDEPTransformTest) {
     std::string file = STORM_TEST_RESOURCES_DIR "/dft/pdep4.dft";
     std::shared_ptr<storm::dft::storage::DFT<double>> originalDft = storm::dft::api::loadDFTGalileoFile<double>(file);
     std::shared_ptr<storm::dft::storage::DFT<double>> transformedDft =
-        storm::dft::transformations::DftTransformer<double>::transformBinaryDependencies(*originalDft);
+        storm::dft::transformer::DftTransformer<double>::transformBinaryDependencies(*originalDft);
 
     // Count in original DFT
     uint64_t fdepCount = 0;

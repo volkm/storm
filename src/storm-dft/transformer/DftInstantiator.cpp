@@ -3,7 +3,7 @@
 #include "storm/exceptions/NotImplementedException.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 template<typename ParametricType, typename ConstantType>
 DftInstantiator<ParametricType, ConstantType>::DftInstantiator(storm::dft::storage::DFT<ParametricType> const &dft) : dft(dft) {}
@@ -147,5 +147,5 @@ void DftInstantiator<ParametricType, ConstantType>::checkValid() const {
 // Explicitly instantiate the class.
 template class DftInstantiator<storm::RationalFunction, double>;
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

@@ -1,6 +1,6 @@
 #include "DftValidator.h"
 
-#include "storm-dft/transformations/DftTransformer.h"
+#include "storm-dft/transformer/DftTransformer.h"
 
 namespace storm::dft {
 namespace utility {
@@ -47,7 +47,7 @@ bool DftValidator<ValueType>::isDftValidForMarkovianAnalysis(storm::dft::storage
     }
 
     // 7. Restriction to exponential distributions
-    if (!storm::dft::transformations::DftTransformer<ValueType>::hasOnlyExponentialDistributions(dft)) {
+    if (!storm::dft::transformer::DftTransformer<ValueType>::hasOnlyExponentialDistributions(dft)) {
         stream << "DFT has BE distributions which are neither exponential nor constant failed/failsafe.";
         return false;
     }
@@ -108,13 +108,13 @@ bool DftValidator<ValueType>::isDftValidForMarkovianAnalysis(storm::dft::storage
     // was already checked in DFTBuilder::build()
 
     // 12. Unique constant failed BE
-    if (!storm::dft::transformations::DftTransformer<ValueType>::hasUniqueFailedBE(dft)) {
+    if (!storm::dft::transformer::DftTransformer<ValueType>::hasUniqueFailedBE(dft)) {
         stream << "DFT has more than one constant failed BE.";
         return false;
     }
 
     // Dependencies must be binary
-    if (storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(dft)) {
+    if (storm::dft::transformer::DftTransformer<ValueType>::hasNonBinaryDependency(dft)) {
         stream << "DFT has dependency with more than one dependent event.";
         return false;
     }

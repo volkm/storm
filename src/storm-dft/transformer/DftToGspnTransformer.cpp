@@ -1,21 +1,21 @@
-#include "DftToGspnTransformator.h"
+#include "DftToGspnTransformer.h"
 #include <memory>
 #include "storm/exceptions/NotImplementedException.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 // Prevent some magic constants
 static constexpr const uint64_t defaultCapacity = 1;
 
 template<typename ValueType>
-DftToGspnTransformator<ValueType>::DftToGspnTransformator(storm::dft::storage::DFT<ValueType> const &dft) : mDft(dft) {
+DftToGspnTransformer<ValueType>::DftToGspnTransformer(storm::dft::storage::DFT<ValueType> const &dft) : mDft(dft) {
     // Intentionally left empty.
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::transform(std::map<uint64_t, uint64_t> const &priorities, std::set<uint64_t> const &dontCareElements, bool smart,
-                                                  bool mergeDCFailed, bool extendPriorities) {
+void DftToGspnTransformer<ValueType>::transform(std::map<uint64_t, uint64_t> const &priorities, std::set<uint64_t> const &dontCareElements, bool smart,
+                                                bool mergeDCFailed, bool extendPriorities) {
     this->priorities = priorities;
     this->dontCareElements = dontCareElements;
     this->smart = smart;
@@ -32,7 +32,7 @@ void DftToGspnTransformator<ValueType>::transform(std::map<uint64_t, uint64_t> c
 }
 
 template<typename ValueType>
-std::map<uint64_t, uint64_t> DftToGspnTransformator<ValueType>::computePriorities(bool extendedPrio) {
+std::map<uint64_t, uint64_t> DftToGspnTransformer<ValueType>::computePriorities(bool extendedPrio) {
     std::map<uint64_t, uint64_t> priorities;
     if (!extendedPrio) {
         // Set priority for PDEP and FDEP according to Monolithic MA semantics
@@ -98,18 +98,18 @@ std::map<uint64_t, uint64_t> DftToGspnTransformator<ValueType>::computePrioritie
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::toplevelFailedPlaceId() {
+uint64_t DftToGspnTransformer<ValueType>::toplevelFailedPlaceId() {
     STORM_LOG_ASSERT(failedPlaces.size() > mDft.getTopLevelIndex(), "Failed place for top level element does not exist.");
     return failedPlaces.at(mDft.getTopLevelIndex());
 }
 
 template<typename ValueType>
-gspn::GSPN *DftToGspnTransformator<ValueType>::obtainGSPN() {
+gspn::GSPN *DftToGspnTransformer<ValueType>::obtainGSPN() {
     return builder.buildGspn();
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateGSPNElements() {
+void DftToGspnTransformer<ValueType>::translateGSPNElements() {
     // Loop through every DFT element and create its corresponding GSPN template.
     for (std::size_t i = 0; i < mDft.nrElements(); i++) {
         auto dftElement = mDft.getElement(i);
@@ -153,7 +153,7 @@ void DftToGspnTransformator<ValueType>::translateGSPNElements() {
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateBE(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> dftBE) {
+void DftToGspnTransformer<ValueType>::translateBE(std::shared_ptr<storm::dft::storage::elements::DFTBE<ValueType> const> dftBE) {
     switch (dftBE->beType()) {
         case storm::dft::storage::elements::BEType::CONSTANT:
             translateBEConst(std::static_pointer_cast<storm::dft::storage::elements::BEConst<ValueType> const>(dftBE));
@@ -168,7 +168,7 @@ void DftToGspnTransformator<ValueType>::translateBE(std::shared_ptr<storm::dft::
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateBEExponential(std::shared_ptr<storm::dft::storage::elements::BEExponential<ValueType> const> dftBE) {
+void DftToGspnTransformer<ValueType>::translateBEExponential(std::shared_ptr<storm::dft::storage::elements::BEExponential<ValueType> const> dftBE) {
     double xcenter = mDft.getElementLayoutInfo(dftBE->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftBE->id()).y;
 
@@ -242,7 +242,7 @@ void DftToGspnTransformator<ValueType>::translateBEExponential(std::shared_ptr<s
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateBEConst(std::shared_ptr<storm::dft::storage::elements::BEConst<ValueType> const> dftConst) {
+void DftToGspnTransformer<ValueType>::translateBEConst(std::shared_ptr<storm::dft::storage::elements::BEConst<ValueType> const> dftConst) {
     double xcenter = mDft.getElementLayoutInfo(dftConst->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftConst->id()).y;
 
@@ -270,7 +270,7 @@ void DftToGspnTransformator<ValueType>::translateBEConst(std::shared_ptr<storm::
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateAND(std::shared_ptr<storm::dft::storage::elements::DFTAnd<ValueType> const> dftAnd) {
+void DftToGspnTransformer<ValueType>::translateAND(std::shared_ptr<storm::dft::storage::elements::DFTAnd<ValueType> const> dftAnd) {
     double xcenter = mDft.getElementLayoutInfo(dftAnd->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftAnd->id()).y;
 
@@ -348,7 +348,7 @@ void DftToGspnTransformator<ValueType>::translateAND(std::shared_ptr<storm::dft:
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateOR(std::shared_ptr<storm::dft::storage::elements::DFTOr<ValueType> const> dftOr) {
+void DftToGspnTransformer<ValueType>::translateOR(std::shared_ptr<storm::dft::storage::elements::DFTOr<ValueType> const> dftOr) {
     double xcenter = mDft.getElementLayoutInfo(dftOr->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftOr->id()).y;
 
@@ -434,7 +434,7 @@ void DftToGspnTransformator<ValueType>::translateOR(std::shared_ptr<storm::dft::
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateVOT(std::shared_ptr<storm::dft::storage::elements::DFTVot<ValueType> const> dftVot) {
+void DftToGspnTransformer<ValueType>::translateVOT(std::shared_ptr<storm::dft::storage::elements::DFTVot<ValueType> const> dftVot) {
     // TODO: finish layouting
 
     double xcenter = mDft.getElementLayoutInfo(dftVot->id()).x;
@@ -526,7 +526,7 @@ void DftToGspnTransformator<ValueType>::translateVOT(std::shared_ptr<storm::dft:
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translatePAND(std::shared_ptr<storm::dft::storage::elements::DFTPand<ValueType> const> dftPand, bool inclusive) {
+void DftToGspnTransformer<ValueType>::translatePAND(std::shared_ptr<storm::dft::storage::elements::DFTPand<ValueType> const> dftPand, bool inclusive) {
     // TODO Layouting
     double xcenter = mDft.getElementLayoutInfo(dftPand->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftPand->id()).y;
@@ -640,7 +640,7 @@ void DftToGspnTransformator<ValueType>::translatePAND(std::shared_ptr<storm::dft
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translatePOR(std::shared_ptr<storm::dft::storage::elements::DFTPor<ValueType> const> dftPor, bool inclusive) {
+void DftToGspnTransformer<ValueType>::translatePOR(std::shared_ptr<storm::dft::storage::elements::DFTPor<ValueType> const> dftPor, bool inclusive) {
     double xcenter = mDft.getElementLayoutInfo(dftPor->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftPor->id()).y;
 
@@ -754,7 +754,7 @@ void DftToGspnTransformator<ValueType>::translatePOR(std::shared_ptr<storm::dft:
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateSPARE(std::shared_ptr<storm::dft::storage::elements::DFTSpare<ValueType> const> dftSpare) {
+void DftToGspnTransformer<ValueType>::translateSPARE(std::shared_ptr<storm::dft::storage::elements::DFTSpare<ValueType> const> dftSpare) {
     double xcenter = mDft.getElementLayoutInfo(dftSpare->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftSpare->id()).y;
 
@@ -901,7 +901,7 @@ void DftToGspnTransformator<ValueType>::translateSPARE(std::shared_ptr<storm::df
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translatePDEP(std::shared_ptr<storm::dft::storage::elements::DFTDependency<ValueType> const> dftDependency) {
+void DftToGspnTransformer<ValueType>::translatePDEP(std::shared_ptr<storm::dft::storage::elements::DFTDependency<ValueType> const> dftDependency) {
     double xcenter = mDft.getElementLayoutInfo(dftDependency->id()).x;
     double ycenter = mDft.getElementLayoutInfo(dftDependency->id()).y;
 
@@ -1009,7 +1009,7 @@ void DftToGspnTransformator<ValueType>::translatePDEP(std::shared_ptr<storm::dft
 }
 
 template<typename ValueType>
-void DftToGspnTransformator<ValueType>::translateSeq(std::shared_ptr<storm::dft::storage::elements::DFTSeq<ValueType> const> dftSeq) {
+void DftToGspnTransformer<ValueType>::translateSeq(std::shared_ptr<storm::dft::storage::elements::DFTSeq<ValueType> const> dftSeq) {
     STORM_LOG_THROW(dftSeq->allChildrenBEs(), storm::exceptions::NotImplementedException,
                     "Sequence enforcers with gates as children are currently not supported");
     double xcenter = mDft.getElementLayoutInfo(dftSeq->id()).x;
@@ -1065,8 +1065,8 @@ void DftToGspnTransformator<ValueType>::translateSeq(std::shared_ptr<storm::dft:
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::addFailedPlace(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement,
-                                                           storm::gspn::LayoutInfo const &layoutInfo, bool initialFailed) {
+uint64_t DftToGspnTransformer<ValueType>::addFailedPlace(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement,
+                                                         storm::gspn::LayoutInfo const &layoutInfo, bool initialFailed) {
     uint64_t failedPlace = builder.addPlace(defaultCapacity, initialFailed ? 1 : 0, dftElement->name() + STR_FAILED);
     assert(failedPlaces.size() == dftElement->id());
     failedPlaces.push_back(failedPlace);
@@ -1075,8 +1075,8 @@ uint64_t DftToGspnTransformator<ValueType>::addFailedPlace(std::shared_ptr<storm
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::addUnavailablePlace(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement,
-                                                                storm::gspn::LayoutInfo const &layoutInfo, bool initialAvailable) {
+uint64_t DftToGspnTransformer<ValueType>::addUnavailablePlace(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement,
+                                                              storm::gspn::LayoutInfo const &layoutInfo, bool initialAvailable) {
     unsigned int capacity = 2;  // Unavailable place has capacity 2
     uint64_t unavailablePlace = builder.addPlace(capacity, initialAvailable ? 0 : 1, dftElement->name() + "_unavail");
     unavailablePlaces.emplace(dftElement->id(), unavailablePlace);
@@ -1085,8 +1085,8 @@ uint64_t DftToGspnTransformator<ValueType>::addUnavailablePlace(std::shared_ptr<
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::addDisabledPlace(std::shared_ptr<const storm::dft::storage::elements::DFTBE<ValueType>> dftBe,
-                                                             storm::gspn::LayoutInfo const &layoutInfo) {
+uint64_t DftToGspnTransformer<ValueType>::addDisabledPlace(std::shared_ptr<const storm::dft::storage::elements::DFTBE<ValueType>> dftBe,
+                                                           storm::gspn::LayoutInfo const &layoutInfo) {
     uint64_t disabledPlace = builder.addPlace(dftBe->nrRestrictions(), dftBe->nrRestrictions(), dftBe->name() + "_dabled");
     disabledPlaces.emplace(dftBe->id(), disabledPlace);
     builder.setPlaceLayoutInfo(disabledPlace, layoutInfo);
@@ -1094,8 +1094,8 @@ uint64_t DftToGspnTransformator<ValueType>::addDisabledPlace(std::shared_ptr<con
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::addDontcareTransition(std::shared_ptr<const storm::dft::storage::elements::DFTElement<ValueType>> dftElement,
-                                                                  storm::gspn::LayoutInfo const &layoutInfo) {
+uint64_t DftToGspnTransformer<ValueType>::addDontcareTransition(std::shared_ptr<const storm::dft::storage::elements::DFTElement<ValueType>> dftElement,
+                                                                storm::gspn::LayoutInfo const &layoutInfo) {
     uint64_t dontcareTransition;
     dontcareTransition = builder.addImmediateTransition(dontCarePriority, 0.0, dftElement->name() + STR_DONTCARE + "_transition");
     dontcareTransitions.emplace(dftElement->id(), dontcareTransition);
@@ -1104,21 +1104,21 @@ uint64_t DftToGspnTransformator<ValueType>::addDontcareTransition(std::shared_pt
 }
 
 template<typename ValueType>
-bool DftToGspnTransformator<ValueType>::isActiveInitially(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement) {
+bool DftToGspnTransformer<ValueType>::isActiveInitially(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement) {
     // If element is in the top module, return true.
     return !mDft.hasRepresentant(dftElement->id());
 }
 
 template<typename ValueType>
-uint64_t DftToGspnTransformator<ValueType>::getFailPriority(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement) {
+uint64_t DftToGspnTransformer<ValueType>::getFailPriority(std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType> const> dftElement) {
     // Return the value given in the field
     return priorities.at(dftElement->id());
 }
 
 // Explicitly instantiate the class.
-template class DftToGspnTransformator<double>;
+template class DftToGspnTransformer<double>;
 
-// template class DftToGspnTransformator<storm::RationalFunction>;
+// template class DftToGspnTransformer<storm::RationalFunction>;
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

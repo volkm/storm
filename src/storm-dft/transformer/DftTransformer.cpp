@@ -6,7 +6,7 @@
 #include "storm-dft/builder/DftBuilder.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 template<typename ValueType>
 bool DftTransformer<ValueType>::hasUniqueFailedBE(storm::dft::storage::DFT<ValueType> const &dft) {
@@ -235,5 +235,5 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftTransformer<ValueType>::
 template class DftTransformer<double>;
 template class DftTransformer<RationalFunction>;
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

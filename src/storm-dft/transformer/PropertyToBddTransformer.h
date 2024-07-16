@@ -10,7 +10,7 @@
 #include "storm/logic/UnaryBooleanStateFormula.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 /*!
  * Transformer from logic properties to BDDs.
@@ -84,5 +84,5 @@ class PropertyToBddTransformer {
     static Bdd translate(storm::logic::AtomicLabelFormula const& atomicFormula, BuilderPointer builder);
 };
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

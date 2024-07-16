@@ -1,7 +1,7 @@
 #include "PropertyToBddTransformer.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 template<typename ValueType>
 bool PropertyToBddTransformer<ValueType>::canHandle(storm::logic::Formula const& formula) {
@@ -111,5 +111,5 @@ typename PropertyToBddTransformer<ValueType>::Bdd PropertyToBddTransformer<Value
 template class PropertyToBddTransformer<double>;
 template class PropertyToBddTransformer<RationalFunction>;
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

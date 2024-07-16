@@ -4,7 +4,7 @@
 #include "storm-dft/storage/DftModule.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 /*!
  * Replaces DFT modules.
@@ -25,5 +25,5 @@ class DftModuleReplacer {
             moduleReplacements);
 };
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

@@ -2,7 +2,7 @@
 #include "test/storm_gtest.h"
 
 #include "storm-dft/api/storm-dft.h"
-#include "storm-dft/transformations/PropertyToBddTransformer.h"
+#include "storm-dft/transformer/PropertyToBddTransformer.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
 
@@ -20,7 +20,7 @@ std::shared_ptr<storm::dft::builder::BddSftModelBuilder<double>> createBdds(std:
 typename storm::dft::builder::BddSftModelBuilder<double>::Bdd translate(std::shared_ptr<storm::dft::builder::BddSftModelBuilder<double>> builder,
                                                                         std::string const& formula) {
     auto const formulas{storm::api::extractFormulasFromProperties(storm::api::parseProperties(formula))};
-    return storm::dft::transformations::PropertyToBddTransformer<double>::translate(*formulas[0], builder);
+    return storm::dft::transformer::PropertyToBddTransformer<double>::translate(*formulas[0], builder);
 }
 
 TEST(PropertyToBddTransformerTest, AndOrFormula) {

@@ -3,7 +3,7 @@
 #include "storm-dft/storage/DFT.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 /*!
  * Transformer for operations on DFT.
@@ -61,5 +61,5 @@ class DftTransformer {
     static std::shared_ptr<storm::dft::storage::DFT<ValueType>> transformExponentialDistributions(storm::dft::storage::DFT<ValueType> const &dft);
 };
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

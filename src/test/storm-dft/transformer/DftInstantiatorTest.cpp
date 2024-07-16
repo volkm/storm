@@ -4,7 +4,7 @@
 #include <carl/core/VariablePool.h>
 #include <carl/numbers/numbers.h>
 #include "storm-dft/api/io.h"
-#include "storm-dft/transformations/DftInstantiator.h"
+#include "storm-dft/transformer/DftInstantiator.h"
 
 namespace {
 
@@ -16,7 +16,7 @@ TEST(DftInstantiatorTest, InstantiateSimple) {
     EXPECT_EQ(3ul, dft->nrElements());
     EXPECT_EQ(2ul, dft->nrBasicElements());
 
-    storm::dft::transformations::DftInstantiator<storm::RationalFunction, double> instantiator(*dft);
+    storm::dft::transformer::DftInstantiator<storm::RationalFunction, double> instantiator(*dft);
 
     std::map<storm::RationalFunctionVariable, storm::RationalFunctionCoefficient> valuation;
     storm::RationalFunctionVariable const& x = carl::VariablePool::getInstance().findVariableWithName("x");
@@ -44,7 +44,7 @@ TEST(DftInstantiatorTest, InstantiateSymmetry) {
     EXPECT_EQ(7ul, dft->nrElements());
     EXPECT_EQ(4ul, dft->nrBasicElements());
 
-    storm::dft::transformations::DftInstantiator<storm::RationalFunction, double> instantiator(*dft);
+    storm::dft::transformer::DftInstantiator<storm::RationalFunction, double> instantiator(*dft);
 
     std::map<storm::RationalFunctionVariable, storm::RationalFunctionCoefficient> valuation;
     storm::RationalFunctionVariable const& x = carl::VariablePool::getInstance().findVariableWithName("x");

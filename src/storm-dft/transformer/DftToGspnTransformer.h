@@ -5,20 +5,20 @@
 #include "storm-gspn/storage/gspn/GspnBuilder.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 /*!
- * Transformator for DFT -> GSPN.
+ * Transformer from DFT to GSPN.
  */
 template<typename ValueType>
-class DftToGspnTransformator {
+class DftToGspnTransformer {
    public:
     /*!
      * Constructor.
      *
      * @param dft DFT
      */
-    DftToGspnTransformator(storm::dft::storage::DFT<ValueType> const &dft);
+    DftToGspnTransformer(storm::dft::storage::DFT<ValueType> const &dft);
 
     /*!
      * Transform the DFT to a GSPN.
@@ -249,5 +249,5 @@ class DftToGspnTransformator {
     static constexpr const char *STR_DONTCARE = "_dontcare";  // Name standard for place which indicates Don't Care.
 };
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

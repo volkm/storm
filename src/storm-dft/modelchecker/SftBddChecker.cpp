@@ -5,7 +5,7 @@
 
 #include "storm-dft/builder/BddSftModelBuilder.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
-#include "storm-dft/transformations/PropertyToBddTransformer.h"
+#include "storm-dft/transformer/PropertyToBddTransformer.h"
 
 namespace storm::dft {
 namespace modelchecker {
@@ -26,7 +26,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
     bdds.reserve(formulas.size());
     std::map<uint64_t, Bdd> bddMap{};
     for (auto const &formula : formulas) {
-        auto const &bdd = storm::dft::transformations::PropertyToBddTransformer<ValueType>::translate(*formula, builder);
+        auto const &bdd = storm::dft::transformer::PropertyToBddTransformer<ValueType>::translate(*formula, builder);
         bdds.push_back(bdd);
         bddMap[bdd.GetBDD()] = bdd;
     }
@@ -38,7 +38,7 @@ std::vector<ValueType> SftBddChecker<ValueType>::check(std::vector<std::shared_p
         auto const reversedIndex{bdds.size() - 1 - i};
         auto const &bdd{bdds[reversedIndex]};
         auto const &formula{formulas[reversedIndex]};
-        auto const timebound{storm::dft::transformations::PropertyToBddTransformer<ValueType>::getTimebound(*formula)};
+        auto const timebound{storm::dft::transformer::PropertyToBddTransformer<ValueType>::getTimebound(*formula)};
 
         bddToReversedTimepoints[bdd.GetBDD()].push_back(timebound);
     }

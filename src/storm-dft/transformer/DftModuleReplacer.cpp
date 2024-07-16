@@ -5,7 +5,7 @@
 #include "storm/utility/macros.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModuleReplacer<ValueType>::replaceModules(
@@ -74,5 +74,5 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModuleReplacer<ValueType
 template class DftModuleReplacer<double>;
 template class DftModuleReplacer<RationalFunction>;
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft

@@ -5,8 +5,8 @@
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
-#include "storm-dft/transformations/DftModuleReplacer.h"
-#include "storm-dft/transformations/PropertyToBddTransformer.h"
+#include "storm-dft/transformer/DftModuleReplacer.h"
+#include "storm-dft/transformer/PropertyToBddTransformer.h"
 #include "storm-dft/utility/DftModularizer.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
@@ -43,7 +43,7 @@ std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector 
     // Gather all occurring time points
     std::set<ValueType> timepointSet;
     for (auto const& formula : formulas) {
-        timepointSet.insert(storm::dft::transformations::PropertyToBddTransformer<ValueType>::getTimebound(*formula));
+        timepointSet.insert(storm::dft::transformer::PropertyToBddTransformer<ValueType>::getTimebound(*formula));
     }
     std::vector<ValueType> timepoints(timepointSet.begin(), timepointSet.end());
 
@@ -92,7 +92,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
     }
 
     // Perform replacements
-    auto sft = storm::dft::transformations::DftModuleReplacer<ValueType>::replaceModules(*dft, replacements);
+    auto sft = storm::dft::transformer::DftModuleReplacer<ValueType>::replaceModules(*dft, replacements);
     STORM_LOG_ASSERT(sft->getDependencies().empty(), "SFT should have no dependencies.");
     STORM_LOG_DEBUG("Remaining static FT: " << sft->getElementsString());
     return sft;

@@ -1,7 +1,7 @@
 #include "transformation.h"
 
-#include "storm-dft/transformations/DftToGspnTransformator.h"
-#include "storm-dft/transformations/DftTransformer.h"
+#include "storm-dft/transformer/DftToGspnTransformer.h"
+#include "storm-dft/transformer/DftTransformer.h"
 #include "storm-dft/utility/DftValidator.h"
 #include "storm-gspn/builder/JaniGSPNBuilder.h"
 #include "storm/storage/jani/Model.h"
@@ -25,20 +25,19 @@ template<typename ValueType>
 std::shared_ptr<storm::dft::storage::DFT<ValueType>> applyTransformations(storm::dft::storage::DFT<ValueType> const& dft, bool uniqueBE, bool binaryFDEP,
                                                                           bool exponentialDistributions) {
     std::shared_ptr<storm::dft::storage::DFT<ValueType>> transformedDft = std::make_shared<storm::dft::storage::DFT<ValueType>>(dft);
-    if (exponentialDistributions && !storm::dft::transformations::DftTransformer<ValueType>::hasOnlyExponentialDistributions(*transformedDft)) {
-        transformedDft = storm::dft::transformations::DftTransformer<ValueType>::transformExponentialDistributions(*transformedDft);
+    if (exponentialDistributions && !storm::dft::transformer::DftTransformer<ValueType>::hasOnlyExponentialDistributions(*transformedDft)) {
+        transformedDft = storm::dft::transformer::DftTransformer<ValueType>::transformExponentialDistributions(*transformedDft);
     }
-    if (uniqueBE && !storm::dft::transformations::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft)) {
-        transformedDft = storm::dft::transformations::DftTransformer<ValueType>::transformUniqueFailedBE(*transformedDft);
+    if (uniqueBE && !storm::dft::transformer::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft)) {
+        transformedDft = storm::dft::transformer::DftTransformer<ValueType>::transformUniqueFailedBE(*transformedDft);
     }
-    if (binaryFDEP && storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft)) {
-        transformedDft = storm::dft::transformations::DftTransformer<ValueType>::transformBinaryDependencies(*transformedDft);
+    if (binaryFDEP && storm::dft::transformer::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft)) {
+        transformedDft = storm::dft::transformer::DftTransformer<ValueType>::transformBinaryDependencies(*transformedDft);
     }
-    STORM_LOG_ASSERT(!exponentialDistributions || storm::dft::transformations::DftTransformer<ValueType>::hasOnlyExponentialDistributions(*transformedDft),
+    STORM_LOG_ASSERT(!exponentialDistributions || storm::dft::transformer::DftTransformer<ValueType>::hasOnlyExponentialDistributions(*transformedDft),
                      "DFT still has non-exponential distributions.");
-    STORM_LOG_ASSERT(!uniqueBE || storm::dft::transformations::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft),
-                     "DFT still has multiple failed BEs.");
-    STORM_LOG_ASSERT(!binaryFDEP || !storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft),
+    STORM_LOG_ASSERT(!uniqueBE || storm::dft::transformer::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft), "DFT still has multiple failed BEs.");
+    STORM_LOG_ASSERT(!binaryFDEP || !storm::dft::transformer::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft),
                      "DFT still has non-binary dependencies.");
     return transformedDft;
 }
@@ -56,7 +55,7 @@ std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::d
     }
 
     // Transform to GSPN
-    storm::dft::transformations::DftToGspnTransformator<double> gspnTransformator(dft);
+    storm::dft::transformer::DftToGspnTransformer<double> gspnTransformator(dft);
     auto priorities = gspnTransformator.computePriorities(extendPriorities);
     gspnTransformator.transform(priorities, dontCareElements, smartTransformation, mergeDCFailed, extendPriorities);
     std::shared_ptr<storm::gspn::GSPN> gspn(gspnTransformator.obtainGSPN());

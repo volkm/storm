@@ -4,7 +4,7 @@
 #include "storm-pars/utility/parametric.h"
 
 namespace storm::dft {
-namespace transformations {
+namespace transformer {
 
 /*!
  * Instantiator to yield a concrete DFT from a parametric DFT (with parametric failure rates).
@@ -59,5 +59,5 @@ class DftInstantiator {
     std::vector<std::string> getChildrenVector(std::shared_ptr<storm::dft::storage::elements::DFTElement<ParametricType> const> element);
 };
 
-}  // namespace transformations
+}  // namespace transformer
 }  // namespace storm::dft
