@@ -82,8 +82,6 @@ class DFT {
     size_t performStateGenerationInfoDFS(DFTStateGenerationInfo& generationInfo, std::queue<size_t>& visitQueue, storm::storage::BitVector& visited,
                                          size_t stateIndex) const;
 
-    DFT<ValueType> optimize() const;
-
     void copyElements(std::vector<size_t> elements, storm::dft::builder::DftBuilder<ValueType> builder) const;
 
     size_t stateBitVectorSize() const {
@@ -333,8 +331,6 @@ class DFT {
     std::string getStateString(storm::storage::BitVector const& status, DFTStateGenerationInfo const& stateGenerationInfo, size_t id) const;
 
     std::vector<size_t> immediateFailureCauses(size_t index) const;
-
-    std::vector<size_t> findModularisationRewrite() const;
 
     void setElementLayoutInfo(size_t id, DFTLayoutInfo const& layoutInfo) {
         mLayoutInfo[id] = layoutInfo;

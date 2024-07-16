@@ -8,7 +8,6 @@
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/WrongFormatException.h"
-#include "storm/utility/vector.h"
 
 namespace storm::dft {
 namespace storage {
@@ -370,92 +369,6 @@ uint64_t DFT<ValueType>::maxRank() const {
 }
 
 template<typename ValueType>
-DFT<ValueType> DFT<ValueType>::optimize() const {
-    std::vector<size_t> modIdea = findModularisationRewrite();
-    STORM_LOG_DEBUG("Modularisation idea: " << storm::utility::vector::toString(modIdea));
-
-    if (modIdea.empty()) {
-        // No rewrite needed
-        return *this;
-    }
-
-    std::vector<std::vector<size_t>> rewriteIds;
-    rewriteIds.push_back(modIdea);
-
-    storm::dft::builder::DftBuilder<ValueType> builder;
-
-    // Accumulate elements which must be rewritten
-    std::set<size_t> rewriteSet;
-    for (std::vector<size_t> rewrites : rewriteIds) {
-        rewriteSet.insert(rewrites.front());
-    }
-    // Copy all other elements which do not change
-    for (auto elem : mElements) {
-        if (rewriteSet.count(elem->id()) == 0) {
-            builder.cloneElement(elem);
-        }
-    }
-
-    size_t uniqueIndex = 0;  // Counter to ensure unique names
-    // Add rewritten elements
-    for (std::vector<size_t> rewrites : rewriteIds) {
-        STORM_LOG_ASSERT(rewrites.size() > 1, "No rewritten elements.");
-        STORM_LOG_ASSERT(mElements[rewrites[1]]->hasParents(), "Rewritten elements has no parents.");
-        STORM_LOG_ASSERT(mElements[rewrites[1]]->parents().front()->isGate(), "Rewritten element has no parent gate.");
-        DFTGatePointer originalParent = std::static_pointer_cast<storm::dft::storage::elements::DFTGate<ValueType>>(mElements[rewrites[0]]);
-        STORM_LOG_ASSERT(std::find_if(mElements[rewrites[1]]->parents().begin(), mElements[rewrites[1]]->parents().end(),
-                                      [&originalParent](std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType>> const& p) {
-                                          return p->id() == originalParent->id();
-                                      }) != mElements[rewrites[1]]->parents().end(),
-                         "Rewritten element has not the same parent");
-        std::string newParentName = originalParent->name() + "_" + std::to_string(++uniqueIndex);
-
-        // Accumulate children names
-        std::vector<std::string> childrenNames;
-        for (size_t i = 1; i < rewrites.size(); ++i) {
-            STORM_LOG_ASSERT(std::find_if(mElements[rewrites[i]]->parents().begin(), mElements[rewrites[i]]->parents().end(),
-                                          [&originalParent](std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType>> const& p) {
-                                              return p->id() == originalParent->id();
-                                          }) != mElements[rewrites[i]]->parents().end(),
-                             "Children have not the same father for rewrite " << mElements[rewrites[i]]->name());
-
-            childrenNames.push_back(mElements[rewrites[i]]->name());
-        }
-
-        // Add element in-between parent and children
-        switch (originalParent->type()) {
-            case storm::dft::storage::elements::DFTElementType::AND:
-                builder.addAndGate(newParentName, childrenNames);
-                break;
-            case storm::dft::storage::elements::DFTElementType::OR:
-                builder.addOrGate(newParentName, childrenNames);
-                break;
-            default:
-                // Other elements are not supported
-                STORM_LOG_ASSERT(false, "Dft type " << originalParent->type() << " can not be rewritten.");
-                break;
-        }
-
-        // Add parent with the new child newParent and all its remaining children
-        childrenNames.clear();
-        childrenNames.push_back(newParentName);
-        for (auto const& child : originalParent->children()) {
-            if (std::find(rewrites.begin() + 1, rewrites.end(), child->id()) == rewrites.end()) {
-                // Child was not rewritten and must be kept
-                childrenNames.push_back(child->name());
-            }
-        }
-        builder.cloneElementWithNewChildren(originalParent, childrenNames);
-    }
-
-    builder.setTopLevel(mElements[mTopLevelIndex]->name());
-    // TODO use reference?
-    DFT<ValueType> newDft = builder.build();
-    STORM_LOG_TRACE(newDft.getElementsString());
-    return newDft.optimize();
-}
-
-template<typename ValueType>
 size_t DFT<ValueType>::nrDynamicElements() const {
     return std::count_if(mElements.begin(), mElements.end(), [](DFTElementPointer elem) { return !elem->isStaticElement(); });
 }
@@ -594,38 +507,6 @@ std::vector<size_t> DFT<ValueType>::immediateFailureCauses(size_t index) const {
 template<typename ValueType>
 bool DFT<ValueType>::canHaveNondeterminism() const {
     return !getDependencies().empty();
-}
-
-template<typename ValueType>
-std::vector<size_t> DFT<ValueType>::findModularisationRewrite() const {
-    for (auto const& e : mElements) {
-        if (e->isGate() &&
-            (e->type() == storm::dft::storage::elements::DFTElementType::AND || e->type() == storm::dft::storage::elements::DFTElementType::OR)) {
-            // suitable parent gate! - Lets check the independent submodules of the children
-            auto const& children = std::static_pointer_cast<storm::dft::storage::elements::DFTGate<ValueType>>(e)->children();
-            for (auto const& child : children) {
-                auto ISD = std::static_pointer_cast<storm::dft::storage::elements::DFTGate<ValueType>>(child)->independentSubDft(true);
-                // In the ISD, check for other children:
-
-                std::vector<size_t> rewrite = {e->id(), child->id()};
-                for (size_t isdElemId : ISD) {
-                    if (isdElemId == child->id())
-                        continue;
-                    if (std::find_if(children.begin(), children.end(),
-                                     [&isdElemId](std::shared_ptr<storm::dft::storage::elements::DFTElement<ValueType>> const& e) {
-                                         return e->id() == isdElemId;
-                                     }) != children.end()) {
-                        // element in subtree is also child
-                        rewrite.push_back(isdElemId);
-                    }
-                }
-                if (rewrite.size() > 2 && rewrite.size() < children.size() - 1) {
-                    return rewrite;
-                }
-            }
-        }
-    }
-    return {};
 }
 
 template<typename ValueType>

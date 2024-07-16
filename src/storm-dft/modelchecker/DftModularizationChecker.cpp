@@ -5,7 +5,7 @@
 #include "storm-dft/builder/DftBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SftBddChecker.h"
-#include "storm-dft/transformer/DftModuleReplacer.h"
+#include "storm-dft/transformer/DftModuleTransformer.h"
 #include "storm-dft/transformer/PropertyToBddTransformer.h"
 #include "storm-dft/utility/DftModularizer.h"
 #include "storm-parsers/api/properties.h"
@@ -16,10 +16,12 @@ namespace modelchecker {
 
 template<typename ValueType>
 DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType> const> dft) : dft{dft} {
+    this->dft = storm::dft::transformer::DftModuleTransformer<ValueType>::prepareModularisation(*dft);
+
     // Initialize modules
     storm::dft::utility::DftModularizer<ValueType> modularizer;
-    auto topModule = modularizer.computeModules(*dft);
-    STORM_LOG_DEBUG("Modularization found the following modules:\n" << topModule.toString(*dft));
+    auto topModule = modularizer.computeModules(*this->dft);
+    STORM_LOG_DEBUG("Modularization found the following modules:\n" << topModule.toString(*this->dft));
 
     // Gather all dynamic modules
     populateDynamicModules(topModule);
@@ -92,7 +94,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
     }
 
     // Perform replacements
-    auto sft = storm::dft::transformer::DftModuleReplacer<ValueType>::replaceModules(*dft, replacements);
+    auto sft = storm::dft::transformer::DftModuleTransformer<ValueType>::replaceModules(*dft, replacements);
     STORM_LOG_ASSERT(sft->getDependencies().empty(), "SFT should have no dependencies.");
     STORM_LOG_DEBUG("Remaining static FT: " << sft->getElementsString());
     return sft;

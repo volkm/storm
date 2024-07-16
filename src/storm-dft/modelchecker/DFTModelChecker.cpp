@@ -4,6 +4,7 @@
 #include "storm-dft/builder/ExplicitDFTModelBuilder.h"
 #include "storm-dft/settings/modules/DftIOSettings.h"
 #include "storm-dft/settings/modules/FaultTreeSettings.h"
+#include "storm-dft/transformer/DftModuleTransformer.h"
 #include "storm-dft/utility/SymmetryFinder.h"
 #include "storm/builder/ParallelCompositionBuilder.h"
 #include "storm/exceptions/InvalidModelException.h"
@@ -33,7 +34,7 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
     // Optimizing DFT for modularisation
     storm::dft::storage::DFT<ValueType> dft = origDft;
     if (allowModularisation) {
-        dft = origDft.optimize();
+        dft = *storm::dft::transformer::DftModuleTransformer<ValueType>::prepareModularisation(origDft);
     }
 
     // TODO: check that all paths reach the target state for approximation

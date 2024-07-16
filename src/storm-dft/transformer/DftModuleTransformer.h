@@ -10,7 +10,7 @@ namespace transformer {
  * Replaces DFT modules.
  */
 template<typename ValueType>
-class DftModuleReplacer {
+class DftModuleTransformer {
    public:
     /*!
      * Replace independent modules in DFT by new (sub-)DFTs.
@@ -23,6 +23,15 @@ class DftModuleReplacer {
         storm::dft::storage::DFT<ValueType> const& dft,
         std::vector<std::pair<storm::dft::storage::DftIndependentModule const&, std::shared_ptr<storm::dft::storage::DFT<ValueType> const>>> const&
             moduleReplacements);
+
+    /*!
+     *
+     * @param dft DFT.
+     * @return
+     */
+    static std::shared_ptr<storm::dft::storage::DFT<ValueType>> prepareModularisation(storm::dft::storage::DFT<ValueType> const& dft);
+
+    static std::vector<size_t> findModularisationRewrite(storm::dft::storage::DFT<ValueType> const& dft);
 };
 
 }  // namespace transformer
