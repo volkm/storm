@@ -70,7 +70,7 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
 
     // Try modularisation
     if (allowModularisation) {
-        switch (dft.getTopLevelType()) {
+        switch (dft.getTopLevelElement()->type()) {
             case storm::dft::storage::elements::DFTElementType::AND:
                 STORM_LOG_TRACE("top modularisation called AND");
                 dfts = dft.topModularisation();
@@ -166,7 +166,7 @@ std::shared_ptr<storm::models::sparse::Ctmc<ValueType>> DFTModelChecker<ValueTyp
 
     // Try modularisation
     if (allowModularisation) {
-        switch (dft.getTopLevelType()) {
+        switch (dft.getTopLevelElement()->type()) {
             case storm::dft::storage::elements::DFTElementType::AND:
                 STORM_LOG_TRACE("top modularisation called AND");
                 dfts = dft.topModularisation();

@@ -129,10 +129,6 @@ class DFT {
         return mTopLevelIndex;
     }
 
-    storm::dft::storage::elements::DFTElementType getTopLevelType() const {
-        return getTopLevelElement()->type();
-    }
-
     size_t getMaxSpareChildCount() const {
         return mMaxSpareChildCount;
     }

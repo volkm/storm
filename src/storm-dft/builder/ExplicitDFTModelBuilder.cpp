@@ -52,7 +52,7 @@ ExplicitDFTModelBuilder<ValueType, StateType>::ExplicitDFTModelBuilder(storm::df
     }
 
     // Compute independent subtrees
-    if (dft.getTopLevelType() == storm::dft::storage::elements::DFTElementType::OR) {
+    if (dft.getTopLevelElement()->type() == storm::dft::storage::elements::DFTElementType::OR) {
         // We only support this for approximation with top level element OR
         for (auto const& child : dft.getGate(dft.getTopLevelIndex())->children()) {
             // Consider all children of the top level gate
