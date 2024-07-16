@@ -38,7 +38,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> applyTransformations(storm:
                      "DFT still has non-exponential distributions.");
     STORM_LOG_ASSERT(!uniqueBE || storm::dft::transformations::DftTransformer<ValueType>::hasUniqueFailedBE(*transformedDft),
                      "DFT still has multiple failed BEs.");
-    STORM_LOG_ASSERT(!binaryFDEP || storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft),
+    STORM_LOG_ASSERT(!binaryFDEP || !storm::dft::transformations::DftTransformer<ValueType>::hasNonBinaryDependency(*transformedDft),
                      "DFT still has non-binary dependencies.");
     return transformedDft;
 }
