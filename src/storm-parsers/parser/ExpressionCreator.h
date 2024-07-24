@@ -4,7 +4,7 @@
 #include "storm-parsers/parser/SpiritParserDefinitions.h"
 
 #include <boost/optional.hpp>
-#include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/adapters/RationalNumberForward.h"
 
 namespace storm {
 

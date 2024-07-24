@@ -1,5 +1,6 @@
 #include "storm/storage/expressions/ToRationalNumberVisitor.h"
 
+#include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/utility/constants.h"

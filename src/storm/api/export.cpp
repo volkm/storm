@@ -1,4 +1,6 @@
 #include "storm/api/export.h"
+
+#include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/storage/jani/JaniLocationExpander.h"
 
 namespace storm {

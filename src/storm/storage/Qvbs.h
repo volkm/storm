@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "storm/adapters/JsonAdapter.h"
-#include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/adapters/RationalNumberForward.h"
 
 namespace storm {
 namespace storage {

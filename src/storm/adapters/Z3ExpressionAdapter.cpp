@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/ExpressionEvaluationException.h"
 #include "storm/exceptions/InvalidTypeException.h"
 #include "storm/exceptions/NotImplementedException.h"

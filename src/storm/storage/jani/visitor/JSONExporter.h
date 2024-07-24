@@ -1,7 +1,7 @@
 #pragma once
 
 #include "storm/adapters/JsonAdapter.h"
-#include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/adapters/RationalNumberForward.h"
 #include "storm/logic/FormulaVisitor.h"
 #include "storm/storage/expressions/ExpressionVisitor.h"
 #include "storm/storage/jani/Model.h"

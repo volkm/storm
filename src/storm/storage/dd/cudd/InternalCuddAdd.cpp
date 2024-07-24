@@ -1,15 +1,14 @@
 #include "storm/storage/dd/cudd/InternalCuddAdd.h"
 
+#include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/exceptions/NotImplementedException.h"
+#include "storm/exceptions/NotSupportedException.h"
+#include "storm/storage/BitVector.h"
+#include "storm/storage/SparseMatrix.h"
 #include "storm/storage/dd/Odd.h"
 #include "storm/storage/dd/cudd/CuddAddIterator.h"
 #include "storm/storage/dd/cudd/InternalCuddBdd.h"
 #include "storm/storage/dd/cudd/InternalCuddDdManager.h"
-
-#include "storm/storage/BitVector.h"
-#include "storm/storage/SparseMatrix.h"
-
-#include "storm/exceptions/NotImplementedException.h"
-#include "storm/exceptions/NotSupportedException.h"
 #include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 

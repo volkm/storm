@@ -1,12 +1,13 @@
 #include "storm/storage/dd/cudd/CuddAddIterator.h"
+
+#include <cmath>
+
+#include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/storage/dd/DdManager.h"
 #include "storm/storage/dd/DdMetaVariable.h"
 #include "storm/storage/expressions/ExpressionManager.h"
-#include "storm/utility/macros.h"
-
 #include "storm/utility/constants.h"
-
-#include <cmath>
+#include "storm/utility/macros.h"
 
 namespace storm {
 namespace dd {

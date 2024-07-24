@@ -1,5 +1,6 @@
 #include "storm/modelchecker/prctl/SymbolicMdpPrctlModelChecker.h"
 
+#include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/InvalidPropertyException.h"
 #include "storm/exceptions/InvalidStateException.h"
