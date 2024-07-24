@@ -1,6 +1,6 @@
 #pragma once
 #include <set>
-#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/adapters/RationalFunctionForward.h"
 #include "storm/storage/SparseMatrix.h"
 
 namespace storm::storage {

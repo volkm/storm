@@ -3,7 +3,9 @@
 
 #include "storm-parsers/parser/FormulaParser.h"
 #include "storm-parsers/parser/PrismParser.h"
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/builder/DdPrismModelBuilder.h"
+#include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/prctl/SymbolicDtmcPrctlModelChecker.h"
 #include "storm/modelchecker/results/SymbolicQualitativeCheckResult.h"
@@ -14,8 +16,6 @@
 #include "storm/solver/SymbolicEliminationLinearEquationSolver.h"
 #include "storm/storage/SymbolicModelDescription.h"
 #include "storm/utility/solver.h"
-
-#include "storm/environment/solver/SolverEnvironment.h"
 
 TEST(SymbolicDtmcPrctlModelCheckerTest, Die_RationalFunction_Sylvan) {
     storm::storage::SymbolicModelDescription modelDescription = storm::parser::PrismParser::parse(STORM_TEST_RESOURCES_DIR "/pdtmc/parametric_die.pm");

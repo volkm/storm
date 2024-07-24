@@ -2,17 +2,15 @@
 
 #include <random>
 
+#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/exceptions/InvalidSettingsException.h"
+#include "storm/exceptions/InvalidStateException.h"
+#include "storm/settings/SettingsManager.h"
 #include "storm/solver/stateelimination/DynamicStatePriorityQueue.h"
 #include "storm/solver/stateelimination/StatePriorityQueue.h"
 #include "storm/solver/stateelimination/StaticStatePriorityQueue.h"
-
 #include "storm/storage/BitVector.h"
 #include "storm/storage/FlexibleSparseMatrix.h"
-
-#include "storm/settings/SettingsManager.h"
-
-#include "storm/exceptions/InvalidSettingsException.h"
-#include "storm/exceptions/InvalidStateException.h"
 #include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 #include "storm/utility/macros.h"

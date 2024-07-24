@@ -1,12 +1,13 @@
 #include "AssumptionChecker.h"
-#include <storm/solver/Z3SmtSolver.h>
 
 #include "storm-pars/utility/ModelInstantiator.h"
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/modelchecker/CheckTask.h"
 #include "storm/modelchecker/prctl/SparseDtmcPrctlModelChecker.h"
 #include "storm/modelchecker/results/CheckResult.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
+#include "storm/solver/Z3SmtSolver.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/RationalFunctionToExpression.h"
 #include "storm/storage/expressions/SimpleValuation.h"

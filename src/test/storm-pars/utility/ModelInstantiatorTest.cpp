@@ -1,22 +1,16 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#ifdef STORM_HAVE_CARL
-
-#include <carl/core/VariablePool.h>
-#include <carl/numbers/numbers.h>
-#include "storm/adapters/RationalFunctionAdapter.h"
-
-#include "storm/settings/SettingsManager.h"
-#include "storm/settings/modules/GeneralSettings.h"
-
 #include "storm-pars/utility/ModelInstantiator.h"
 #include "storm-parsers/api/storm-parsers.h"
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/storm.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/Mdp.h"
 #include "storm/models/sparse/Model.h"
+#include "storm/settings/SettingsManager.h"
+#include "storm/settings/modules/GeneralSettings.h"
 #include "storm/storage/jani/Property.h"
 
 TEST(ModelInstantiatorTest, BrpProb) {
@@ -267,5 +261,3 @@ TEST(ModelInstantiatorTest, Consensus) {
     EXPECT_NEAR(0.3526577219, quantitativeChkResult[*instantiated.getInitialStates().begin()],
                 storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision());
 }
-
-#endif

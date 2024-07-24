@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/adapters/RationalFunctionForward.h"
 #include "storm/storage/expressions/Expression.h"
 #include "storm/storage/expressions/ExprtkExpressionEvaluator.h"
 #include "storm/storage/expressions/ToRationalFunctionVisitor.h"

@@ -1,5 +1,7 @@
 #include "AssumptionMaker.h"
 
+#include "storm/adapters/RationalFunctionAdapter.h"
+
 namespace storm {
 namespace analysis {
 template<typename ValueType, typename ConstantType>

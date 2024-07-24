@@ -2,7 +2,8 @@
 
 #include <cstdint>
 #include <set>
-#include "adapters/RationalFunctionAdapter.h"
+
+#include "adapters/RationalFunctionForward.h"
 #include "modelchecker/CheckTask.h"
 #include "models/sparse/Dtmc.h"
 #include "models/sparse/StateLabeling.h"

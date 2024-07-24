@@ -1,4 +1,5 @@
-#include "storm/solver/SmtratSmtSolver.h"
+#include "SmtratSmtSolver.h"
+
 #include "storm/exceptions/InvalidStateException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/utility/macros.h"

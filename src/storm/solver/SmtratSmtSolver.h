@@ -1,12 +1,10 @@
-#ifndef STORM_SOLVER_SMTRATSMTSOLVER
-#define STORM_SOLVER_SMTRATSMTSOLVER
+#pragma once
 #include "storm-config.h"
 #include "storm/solver/SmtSolver.h"
 
 #ifdef STORM_HAVE_SMTRAT
 #ifdef SMTRATDOESNTWORK  // Does not compile with current version of smtrat.
 
-#include "../adapters/RationalFunctionAdapter.h"
 #include "lib/smtrat.h"
 
 namespace storm {
@@ -42,5 +40,3 @@ class SmtratSmtSolver : public SmtSolver {
 }  // namespace storm
 #endif
 #endif
-
-#endif  // STORM_SOLVER_SMTRATSMTSOLVER

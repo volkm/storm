@@ -1,47 +1,9 @@
-#include "storm/modelchecker/prctl/helper/SparseMdpPrctlHelper.h"
+#include "SparseMdpPrctlHelper.h"
 
 #include <boost/container/flat_map.hpp>
 
-#include "storm/modelchecker/prctl/helper/SemanticSolutionType.h"
-
-#include "storm/modelchecker/hints/ExplicitModelCheckerHint.h"
-#include "storm/modelchecker/prctl/helper/BaierUpperRewardBoundsComputer.h"
-#include "storm/modelchecker/prctl/helper/DsMpiUpperRewardBoundsComputer.h"
-#include "storm/modelchecker/prctl/helper/SparseMdpEndComponentInformation.h"
-#include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
-
-#include "storm/models/sparse/StandardRewardModel.h"
-
-#include "storm/storage/MaximalEndComponentDecomposition.h"
-
-#include "storm/utility/graph.h"
-#include "storm/utility/macros.h"
-#include "storm/utility/vector.h"
-
-#include "storm/storage/Scheduler.h"
-#include "storm/storage/expressions/Expression.h"
-#include "storm/storage/expressions/Variable.h"
-
-#include "storm/solver/LpSolver.h"
-#include "storm/solver/MinMaxLinearEquationSolver.h"
-#include "storm/solver/multiplier/Multiplier.h"
-
-#include "storm/settings/SettingsManager.h"
-#include "storm/settings/modules/CoreSettings.h"
-#include "storm/settings/modules/GeneralSettings.h"
-#include "storm/settings/modules/IOSettings.h"
-#include "storm/settings/modules/ModelCheckerSettings.h"
-
-#include "storm/io/export.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/ProgressMeasurement.h"
-#include "storm/utility/SignalHandler.h"
-#include "storm/utility/Stopwatch.h"
-
-#include "storm/transformer/EndComponentEliminator.h"
-
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
-
 #include "storm/exceptions/IllegalArgumentException.h"
 #include "storm/exceptions/IllegalFunctionCallException.h"
 #include "storm/exceptions/InvalidPropertyException.h"
@@ -49,6 +11,34 @@
 #include "storm/exceptions/InvalidStateException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/UncheckedRequirementException.h"
+#include "storm/io/export.h"
+#include "storm/modelchecker/hints/ExplicitModelCheckerHint.h"
+#include "storm/modelchecker/prctl/helper/BaierUpperRewardBoundsComputer.h"
+#include "storm/modelchecker/prctl/helper/DsMpiUpperRewardBoundsComputer.h"
+#include "storm/modelchecker/prctl/helper/SemanticSolutionType.h"
+#include "storm/modelchecker/prctl/helper/SparseMdpEndComponentInformation.h"
+#include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
+#include "storm/models/sparse/StandardRewardModel.h"
+#include "storm/settings/SettingsManager.h"
+#include "storm/settings/modules/CoreSettings.h"
+#include "storm/settings/modules/GeneralSettings.h"
+#include "storm/settings/modules/IOSettings.h"
+#include "storm/settings/modules/ModelCheckerSettings.h"
+#include "storm/solver/LpSolver.h"
+#include "storm/solver/MinMaxLinearEquationSolver.h"
+#include "storm/solver/multiplier/Multiplier.h"
+#include "storm/storage/MaximalEndComponentDecomposition.h"
+#include "storm/storage/Scheduler.h"
+#include "storm/storage/expressions/Expression.h"
+#include "storm/storage/expressions/Variable.h"
+#include "storm/transformer/EndComponentEliminator.h"
+#include "storm/utility/NumberTraits.h"
+#include "storm/utility/ProgressMeasurement.h"
+#include "storm/utility/SignalHandler.h"
+#include "storm/utility/Stopwatch.h"
+#include "storm/utility/graph.h"
+#include "storm/utility/macros.h"
+#include "storm/utility/vector.h"
 
 namespace storm {
 namespace modelchecker {

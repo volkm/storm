@@ -1,6 +1,5 @@
 #include "TimeTravelling.h"
-#include <carl/core/Variable.h>
-#include <carl/core/VariablePool.h>
+
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -12,6 +11,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+
 #include "adapters/RationalFunctionAdapter.h"
 #include "adapters/RationalNumberAdapter.h"
 #include "logic/UntilFormula.h"

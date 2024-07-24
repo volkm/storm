@@ -1,15 +1,12 @@
 #pragma once
 
+#include <boost/optional.hpp>
 #include <memory>
 #include <vector>
 
-#include <boost/optional.hpp>
-
-#include "storm/storage/sparse/StateType.h"
-
-#include "storm/adapters/RationalFunctionAdapter.h"
-
+#include "storm/adapters/RationalFunctionForward.h"
 #include "storm/settings/modules/EliminationSettings.h"
+#include "storm/storage/sparse/StateType.h"
 
 namespace storm {
 namespace solver {

@@ -1,5 +1,6 @@
-
 #include "storm/storage/SparseMatrixOperations.h"
+
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/storage/SparseMatrix.h"
 
 namespace storm::storage {

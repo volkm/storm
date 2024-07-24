@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/ToRationalFunctionVisitor.h"
+#include "ToRationalFunctionVisitor.h"
 
 #include <sstream>
 

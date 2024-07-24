@@ -1,11 +1,10 @@
-#ifndef STORM_SOLVER_SMT2SMTSOLVER
-#define STORM_SOLVER_SMT2SMTSOLVER
+#pragma once
 
 #include <fstream>
 #include <iostream>
 
 #include "storm-config.h"
-#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/adapters/RationalFunctionForward.h"
 #include "storm/adapters/Smt2ExpressionAdapter.h"
 #include "storm/solver/SmtSolver.h"
 
@@ -142,4 +141,3 @@ class SmtlibSmtSolver : public SmtSolver {
 };
 }  // namespace solver
 }  // namespace storm
-#endif  // STORM_SOLVER_SMT2SMTSOLVER

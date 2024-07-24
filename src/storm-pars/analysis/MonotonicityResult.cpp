@@ -1,5 +1,6 @@
 #include "MonotonicityResult.h"
 
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/NotImplementedException.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/Mdp.h"

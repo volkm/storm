@@ -1,5 +1,7 @@
 #include "LocalMonotonicityResult.h"
 
+#include "storm/adapters/RationalFunctionAdapter.h"
+
 namespace storm {
 namespace analysis {
 

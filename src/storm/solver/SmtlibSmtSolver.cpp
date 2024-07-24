@@ -7,7 +7,9 @@
 #include <unistd.h>
 #endif
 
-#include "storm/solver/SmtlibSmtSolver.h"
+#include "SmtlibSmtSolver.h"
+
+#include <boost/algorithm/string.hpp>
 
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/IllegalArgumentException.h"
@@ -20,8 +22,6 @@
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/Smt2SmtSolverSettings.h"
 #include "storm/utility/macros.h"
-
-#include <boost/algorithm/string.hpp>
 
 namespace storm {
 namespace solver {
