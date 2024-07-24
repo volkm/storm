@@ -1,9 +1,9 @@
 #pragma once
 
-#include "storm/environment/Environment.h"
-
 #include "storm-gamebased-ar/modelchecker/abstraction/BisimulationAbstractionRefinementModelChecker.h"
 #include "storm-gamebased-ar/modelchecker/abstraction/GameBasedMdpModelChecker.h"
+#include "storm/environment/Environment.h"
+#include "storm/exceptions/NotSupportedException.h"
 
 namespace storm::gbar {
 namespace api {

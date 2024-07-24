@@ -21,6 +21,7 @@
 #include "storm-pomdp/transformer/PomdpMemoryUnfolder.h"
 #include "storm/analysis/GraphConditions.h"
 #include "storm/api/storm.h"
+#include "storm/exceptions/InvalidPropertyException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/UnexpectedException.h"
 #include "storm/exceptions/WrongFormatException.h"
