@@ -9,7 +9,7 @@
 #include "storm-pomdp/analysis/OneShotPolicySearch.h"
 #include "storm-pomdp/analysis/QualitativeAnalysisOnGraphs.h"
 #include "storm-pomdp/transformer/MakePOMDPCanonic.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
 #include "storm/builder/ExplicitModelBuilder.h"
 #include "storm/models/sparse/StandardRewardModel.h"
 

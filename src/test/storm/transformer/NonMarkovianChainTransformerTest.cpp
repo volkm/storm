@@ -4,7 +4,10 @@
 #include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/DirectEncodingParser.h"
 #include "storm-parsers/parser/PrismParser.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/properties.h"
+#include "storm/api/transformation.h"
+#include "storm/api/verification.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 
 TEST(NonMarkovianChainTransformerTest, StreamExampleTest) {

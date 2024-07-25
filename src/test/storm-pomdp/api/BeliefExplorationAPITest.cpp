@@ -8,7 +8,8 @@
 #include "storm-pomdp/transformer/GlobalPOMDPSelfLoopEliminator.h"
 #include "storm-pomdp/transformer/KnownProbabilityTransformer.h"
 #include "storm-pomdp/transformer/MakePOMDPCanonic.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/verification.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 
 class DefaultDoubleVIEnvironment {

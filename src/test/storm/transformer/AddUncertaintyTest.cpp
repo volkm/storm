@@ -3,7 +3,8 @@
 
 #include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/properties.h"
 #include "storm/transformer/AddUncertainty.h"
 
 TEST(AddUncertaintyTransformerTest, BrpTest) {

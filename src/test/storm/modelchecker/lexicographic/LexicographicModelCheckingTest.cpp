@@ -3,10 +3,12 @@
 
 #include "storm-parsers/api/model_descriptions.h"
 #include "storm-parsers/api/properties.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/properties.h"
 #include "storm/environment/Environment.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/logic/Formulas.h"
+#include "storm/modelchecker/CheckTask.h"
 #include "storm/modelchecker/lexicographic/lexicographicModelChecking.h"
 #include "storm/modelchecker/results/LexicographicCheckResult.h"
 

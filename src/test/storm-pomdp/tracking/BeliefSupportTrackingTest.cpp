@@ -6,8 +6,7 @@
 #include "storm-pomdp/analysis/FormulaInformation.h"
 #include "storm-pomdp/generator/BeliefSupportTracker.h"
 #include "storm-pomdp/transformer/MakePOMDPCanonic.h"
-#include "storm/api/storm.h"
-#include "storm/builder/ExplicitModelBuilder.h"
+#include "storm/api/builder.h"
 #include "storm/models/sparse/StandardRewardModel.h"
 
 // TODO

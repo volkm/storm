@@ -3,7 +3,9 @@
 
 #include "storm-parsers/api/model_descriptions.h"
 #include "storm-parsers/api/properties.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/properties.h"
+#include "storm/api/verification.h"
 #include "storm/environment/Environment.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/modelchecker/multiobjective/multiObjectiveModelChecking.h"

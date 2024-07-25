@@ -9,7 +9,7 @@
 #include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/builder.h"
-#include "storm/api/storm.h"
+#include "storm/api/properties.h"
 #include "storm/environment/solver/GmmxxSolverEnvironment.h"
 #include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/environment/solver/TopologicalSolverEnvironment.h"

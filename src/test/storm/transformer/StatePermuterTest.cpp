@@ -3,7 +3,9 @@
 
 #include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
-#include "storm/api/storm.h"
+#include "storm/api/builder.h"
+#include "storm/api/properties.h"
+#include "storm/api/verification.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/transformer/StatePermuter.h"
 #include "storm/utility/permutation.h"

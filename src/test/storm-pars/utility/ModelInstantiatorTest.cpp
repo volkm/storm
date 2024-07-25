@@ -5,7 +5,11 @@
 #include "storm-parsers/api/model_descriptions.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
-#include "storm/api/storm.h"
+#include "storm/api/properties.h"
+#include "storm/builder/ExplicitModelBuilder.h"
+#include "storm/generator/NextStateGenerator.h"
+#include "storm/modelchecker/prctl/SparseDtmcPrctlModelChecker.h"
+#include "storm/modelchecker/prctl/SparseMdpPrctlModelChecker.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/Mdp.h"
@@ -13,6 +17,7 @@
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/storage/jani/Property.h"
+#include "storm/storage/prism/Program.h"
 
 TEST(ModelInstantiatorTest, BrpProb) {
     carl::VariablePool::getInstance().clear();
