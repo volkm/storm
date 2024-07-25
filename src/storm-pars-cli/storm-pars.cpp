@@ -27,7 +27,6 @@
 #include "storm-pars/utility/parametric.h"
 #include "storm-parsers/parser/KeyValueParser.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
-#include "storm/api/storm.h"
 #include "storm/exceptions/BaseException.h"
 #include "storm/exceptions/InvalidSettingsException.h"
 #include "storm/exceptions/NotSupportedException.h"

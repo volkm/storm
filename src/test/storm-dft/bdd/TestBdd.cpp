@@ -7,6 +7,7 @@
 #include "storm-dft/transformations/SftToBddTransformator.h"
 #include "storm-dft/utility/MTTFHelper.h"
 #include "storm-parsers/api/properties.h"
+#include "storm/api/properties.h"
 #include "storm/settings/SettingMemento.h"
 #include "storm/settings/modules/BuildSettings.h"
 

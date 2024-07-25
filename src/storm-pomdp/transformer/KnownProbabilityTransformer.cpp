@@ -1,5 +1,7 @@
 #include "KnownProbabilityTransformer.h"
 
+#include "storm/adapters/RationalNumberAdapter.h"
+
 namespace storm {
 namespace pomdp {
 namespace transformer {

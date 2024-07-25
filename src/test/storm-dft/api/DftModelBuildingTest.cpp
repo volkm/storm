@@ -4,6 +4,7 @@
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/ExplicitDFTModelBuilder.h"
 #include "storm-parsers/api/properties.h"
+#include "storm/api/properties.h"
 
 namespace {
 

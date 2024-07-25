@@ -1,4 +1,3 @@
-#include "storm/api/storm.h"
 #include "storm/models/sparse/Pomdp.h"
 
 namespace storm {
