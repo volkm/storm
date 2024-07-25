@@ -10,6 +10,7 @@
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/CheckTask.h"
 #include "storm/modelchecker/lexicographic/lexicographicModelChecking.h"
+#include "storm/modelchecker/prctl/SparseMdpPrctlModelChecker.h"
 #include "storm/modelchecker/results/LexicographicCheckResult.h"
 
 TEST(LexicographicModelCheckingTest, prob_sched1) {
