@@ -2,7 +2,8 @@
 #include "test/storm_gtest.h"
 
 #include "storm-pars/utility/ModelInstantiator.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/storm.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"

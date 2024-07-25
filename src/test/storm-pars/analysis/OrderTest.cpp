@@ -1,9 +1,10 @@
-#include <storm/storage/StronglyConnectedComponentDecomposition.h>
 #include "storm-config.h"
+#include "test/storm_gtest.h"
+
 #include "storm-pars/api/analysis.h"
 #include "storm/storage/BitVector.h"
+#include "storm/storage/StronglyConnectedComponentDecomposition.h"
 #include "storm/utility/graph.h"
-#include "test/storm_gtest.h"
 
 TEST(OrderTest, Simple) {
     auto numberOfStates = 7;

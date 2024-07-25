@@ -1,14 +1,14 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm-pomdp/analysis/QualitativeAnalysisOnGraphs.h"
 #include "storm-pomdp/api/verification.h"
 #include "storm-pomdp/transformer/GlobalPOMDPSelfLoopEliminator.h"
 #include "storm-pomdp/transformer/KnownProbabilityTransformer.h"
 #include "storm-pomdp/transformer/MakePOMDPCanonic.h"
 #include "storm/api/storm.h"
-
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 
 class DefaultDoubleVIEnvironment {

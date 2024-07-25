@@ -1,23 +1,19 @@
-#include <storm/storage/StronglyConnectedComponentDecomposition.h>
 #include "storm-config.h"
+#include "test/storm_gtest.h"
 
 #include "storm-pars/api/analysis.h"
 #include "storm-pars/api/region.h"
 #include "storm-pars/transformer/SparseParametricDtmcSimplifier.h"
-
-#include "storm-parsers/api/storm-parsers.h"
-#include "storm-parsers/parser/AutoParser.h"
-#include "storm-parsers/parser/PrismParser.h"
-
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/api/builder.h"
 #include "storm/api/storm.h"
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/prctl/SparseDtmcPrctlModelChecker.h"
+#include "storm/storage/StronglyConnectedComponentDecomposition.h"
 #include "storm/storage/expressions/BinaryRelationExpression.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/utility/graph.h"
-
-#include "test/storm_gtest.h"
 
 TEST(AssumptionCheckerTest, Brp_no_bisimulation) {
     std::string programFile = STORM_TEST_RESOURCES_DIR "/pdtmc/brp16_2.pm";

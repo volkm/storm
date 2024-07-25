@@ -1,8 +1,9 @@
+#include "storm-config.h"
 #include "test/storm_gtest.h"
 
 #include "storm-dft/api/storm-dft.h"
 #include "storm-dft/modelchecker/SFTBDDChecker.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-parsers/api/properties.h"
 
 namespace {
 

@@ -1,5 +1,7 @@
 #include "storm-config.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "test/storm_gtest.h"
+
+#include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
 #include "storm-pomdp/analysis/FormulaInformation.h"
 #include "storm-pomdp/analysis/QualitativeAnalysisOnGraphs.h"
@@ -7,7 +9,6 @@
 #include "storm/api/storm.h"
 #include "storm/builder/ExplicitModelBuilder.h"
 #include "storm/models/sparse/StandardRewardModel.h"
-#include "test/storm_gtest.h"
 
 TEST(MakeCanonic, Simple) {
     storm::prism::Program program = storm::parser::PrismParser::parse(STORM_TEST_RESOURCES_DIR "/pomdp/simple.prism");

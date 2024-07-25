@@ -1,9 +1,10 @@
 #include "storm-config.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "test/storm_gtest.h"
+
+#include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
 #include "storm/api/storm.h"
 #include "storm/transformer/AddUncertainty.h"
-#include "test/storm_gtest.h"
 
 TEST(AddUncertaintyTransformerTest, BrpTest) {
     storm::prism::Program program = storm::parser::PrismParser::parse(STORM_TEST_RESOURCES_DIR "/dtmc/brp-16-2.pm");

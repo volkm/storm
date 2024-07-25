@@ -2,7 +2,9 @@
 #include "test/storm_gtest.h"
 
 #include "storm-gamebased-ar/modelchecker/abstraction/GameBasedMdpModelChecker.h"
+#include "storm-parsers/api/model_descriptions.h"
 #include "storm-parsers/parser/FormulaParser.h"
+#include "storm/api/storm.h"
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/Model.h"
@@ -10,10 +12,6 @@
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/settings/modules/NativeEquationSolverSettings.h"
-
-#include "storm/api/storm.h"
-
-#include "storm-parsers/api/storm-parsers.h"
 
 #if defined STORM_HAVE_MSAT
 TEST(GameBasedMdpModelCheckerTest, Dice_Cudd) {

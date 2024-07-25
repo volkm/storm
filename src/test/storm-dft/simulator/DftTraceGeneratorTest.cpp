@@ -6,8 +6,6 @@
 #include "storm-dft/simulator/DFTTraceSimulator.h"
 #include "storm-dft/utility/SymmetryFinder.h"
 
-#include "storm-parsers/api/storm-parsers.h"
-
 namespace {
 
 // Configurations for DFT traces

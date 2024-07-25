@@ -1,17 +1,17 @@
 #include "storm-config.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "test/storm_gtest.h"
+
+#include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
 #include "storm-pomdp/analysis/FormulaInformation.h"
 #include "storm-pomdp/analysis/IterativePolicySearch.h"
 #include "storm-pomdp/analysis/JaniBeliefSupportMdpGenerator.h"
 #include "storm-pomdp/analysis/OneShotPolicySearch.h"
 #include "storm-pomdp/analysis/QualitativeAnalysisOnGraphs.h"
+#include "storm-pomdp/transformer/MakePOMDPCanonic.h"
 #include "storm/api/storm.h"
 #include "storm/builder/ExplicitModelBuilder.h"
 #include "storm/models/sparse/StandardRewardModel.h"
-#include "test/storm_gtest.h"
-
-#include "storm-pomdp/transformer/MakePOMDPCanonic.h"
 
 void graphalgorithm_test(std::string const& path, std::string const& constants, std::string formulaString) {
     storm::prism::Program program = storm::parser::PrismParser::parse(path);

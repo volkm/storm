@@ -1,6 +1,13 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
+#include "storm-pars/analysis/OrderExtender.h"
+#include "storm-pars/api/storm-pars.h"
+#include "storm-pars/derivative/GradientDescentInstantiationSearcher.h"
+#include "storm-pars/transformer/SparseParametricDtmcSimplifier.h"
+#include "storm-pars/utility/FeasibilitySynthesisTask.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/builder.h"
 #include "storm/api/storm.h"
@@ -11,21 +18,9 @@
 #include "storm/modelchecker/prctl/SparseDtmcPrctlModelChecker.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/StandardRewardModel.h"
-#include "storm/solver/EliminationLinearEquationSolver.h"
 #include "storm/storage/SparseMatrix.h"
 #include "storm/storage/expressions/BinaryRelationExpression.h"
 #include "storm/storage/expressions/ExpressionManager.h"
-
-#include "storm-parsers/api/storm-parsers.h"
-#include "storm-parsers/parser/AutoParser.h"
-#include "storm-parsers/parser/FormulaParser.h"
-#include "storm-parsers/parser/PrismParser.h"
-
-#include "storm-pars/analysis/OrderExtender.h"
-#include "storm-pars/api/storm-pars.h"
-#include "storm-pars/derivative/GradientDescentInstantiationSearcher.h"
-#include "storm-pars/transformer/SparseParametricDtmcSimplifier.h"
-#include "storm-pars/utility/FeasibilitySynthesisTask.h"
 
 using namespace storm::pars;
 

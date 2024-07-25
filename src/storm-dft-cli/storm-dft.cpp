@@ -4,7 +4,7 @@
 #include "storm-dft/settings/modules/DftGspnSettings.h"
 #include "storm-dft/settings/modules/DftIOSettings.h"
 #include "storm-dft/settings/modules/FaultTreeSettings.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/exceptions/UnmetRequirementException.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/settings/modules/IOSettings.h"

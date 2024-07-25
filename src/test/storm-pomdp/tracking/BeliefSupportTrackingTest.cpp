@@ -1,5 +1,6 @@
 #include "storm-config.h"
-#include "storm-parsers/api/model_descriptions.h"
+#include "test/storm_gtest.h"
+
 #include "storm-parsers/api/properties.h"
 #include "storm-parsers/parser/PrismParser.h"
 #include "storm-pomdp/analysis/FormulaInformation.h"
@@ -8,7 +9,6 @@
 #include "storm/api/storm.h"
 #include "storm/builder/ExplicitModelBuilder.h"
 #include "storm/models/sparse/StandardRewardModel.h"
-#include "test/storm_gtest.h"
 
 // TODO
 // These tests depend on the interpretation of action and observation numbers and those may change.
