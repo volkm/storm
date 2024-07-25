@@ -776,10 +776,6 @@ void printFilteredResult(std::unique_ptr<storm::modelchecker::CheckResult> const
     STORM_PRINT('\n');
 }
 
-void printModelCheckingProperty(storm::jani::Property const& property) {
-    STORM_PRINT("\nModel checking property \"" << property.getName() << "\": " << *property.getRawFormula() << " ...\n");
-}
-
 template<typename ValueType>
 void printResult(std::unique_ptr<storm::modelchecker::CheckResult> const& result, storm::jani::Property const& property, storm::utility::Stopwatch* watch) {
     if (result) {

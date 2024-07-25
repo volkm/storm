@@ -1,29 +1,19 @@
-#include "storm-pars-cli/monotonicity.h"
+#include "monotonicity.h"
 
-#include "storm-cli-utilities/model-handling.h"
-#include "storm-pars-cli/feasibility.h"
-#include "storm-pars-cli/monotonicity.h"
 #include "storm-pars-cli/print.h"
-#include "storm-pars-cli/sampling.h"
-
 #include "storm-pars/analysis/MonotonicityHelper.h"
 #include "storm-pars/api/region.h"
-#include "storm-pars/api/storm-pars.h"
-
+#include "storm-pars/settings/modules/MonotonicitySettings.h"
+#include "storm-pars/settings/modules/ParametricSettings.h"
+#include "storm-pars/settings/modules/RegionSettings.h"
 #include "storm-pars/utility/parametric.h"
-
-#include "storm-parsers/parser/KeyValueParser.h"
 #include "storm/api/storm.h"
-
 #include "storm/exceptions/BaseException.h"
-#include "storm/exceptions/InvalidSettingsException.h"
-#include "storm/exceptions/NotSupportedException.h"
-
-#include "storm/models/ModelBase.h"
-
-#include "storm/settings/SettingsManager.h"
-
 #include "storm/io/file.h"
+#include "storm/models/ModelBase.h"
+#include "storm/settings/SettingsManager.h"
+#include "storm/settings/modules/GeneralSettings.h"
+#include "storm/storage/jani/Property.h"
 #include "storm/utility/Engine.h"
 #include "storm/utility/Stopwatch.h"
 #include "storm/utility/initialize.h"
@@ -31,7 +21,7 @@
 
 namespace storm::pars {
 template<typename ValueType>
-void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, cli::SymbolicInput const& input,
+void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, std::vector<storm::jani::Property> const& properties,
                          std::vector<storm::storage::ParameterRegion<ValueType>> const& regions) {
     std::ofstream outfile;
     auto monSettings = storm::settings::getModule<storm::settings::modules::MonotonicitySettings>();
@@ -39,7 +29,7 @@ void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<ValueType>
     if (monSettings.isExportMonotonicitySet()) {
         storm::utility::openFile(monSettings.getExportMonotonicityFilename(), outfile);
     }
-    std::vector<std::shared_ptr<storm::logic::Formula const>> formulas = storm::api::extractFormulasFromProperties(input.properties);
+    std::vector<std::shared_ptr<storm::logic::Formula const>> formulas = storm::api::extractFormulasFromProperties(properties);
     storm::utility::Stopwatch monotonicityWatch(true);
     STORM_LOG_THROW(regions.size() <= 1, storm::exceptions::InvalidArgumentException, "Monotonicity analysis only allowed on single region");
     if (!monSettings.isMonSolutionSet()) {
@@ -67,7 +57,7 @@ void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<ValueType>
             return result;
         };
 
-        for (auto& property : input.properties) {
+        for (auto& property : properties) {
             auto result = verificationCallback(property.getRawFormula())->asExplicitQuantitativeCheckResult<ValueType>().getValueVector();
             ValueType valuation;
 
@@ -107,6 +97,7 @@ void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<ValueType>
     return;
 }
 
-template void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> const& model, cli::SymbolicInput const& input,
+template void analyzeMonotonicity(std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> const& model,
+                                  std::vector<storm::jani::Property> const& properties,
                                   std::vector<storm::storage::ParameterRegion<storm::RationalFunction>> const& regions);
 }  // namespace storm::pars

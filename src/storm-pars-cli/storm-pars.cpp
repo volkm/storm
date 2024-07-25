@@ -452,7 +452,7 @@ void processInputWithValueTypeAndDdlib(cli::SymbolicInput& input, storm::cli::Mo
     } else if (mode == storm::pars::utility::ParametricMode::Monotonicity) {
         STORM_LOG_INFO("Monotonicity mode started.");
         STORM_LOG_THROW(model->isSparseModel(), storm::exceptions::InvalidSettingsException, "Monotonicity analysis is only supported on sparse models.");
-        analyzeMonotonicity(model->as<storm::models::sparse::Model<ValueType>>(), input, regions);
+        analyzeMonotonicity(model->as<storm::models::sparse::Model<ValueType>>(), input.properties, regions);
     } else if (mode == storm::pars::utility::ParametricMode::Feasibility) {
         STORM_LOG_INFO("Feasibility mode started.");
         STORM_LOG_THROW(model->isSparseModel(), storm::exceptions::InvalidSettingsException, "Feasibility analysis is only supported on sparse models.");
@@ -497,10 +497,11 @@ void processInputWithValueTypeAndDdlib(cli::SymbolicInput& input, storm::cli::Mo
             STORM_LOG_TRACE("Sampling the model at given points.");
 
             if (samples.exact) {
-                verifyPropertiesAtSamplePointsWithSparseEngine<ValueType, storm::RationalNumber>(model->as<storm::models::sparse::Model<ValueType>>(), input,
-                                                                                                 samples);
+                verifyPropertiesAtSamplePointsWithSparseEngine<ValueType, storm::RationalNumber>(model->as<storm::models::sparse::Model<ValueType>>(),
+                                                                                                 input.properties, samples);
             } else {
-                verifyPropertiesAtSamplePointsWithSparseEngine<ValueType, double>(model->as<storm::models::sparse::Model<ValueType>>(), input, samples);
+                verifyPropertiesAtSamplePointsWithSparseEngine<ValueType, double>(model->as<storm::models::sparse::Model<ValueType>>(), input.properties,
+                                                                                  samples);
             }
         }
     } else {

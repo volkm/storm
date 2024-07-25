@@ -1,15 +1,15 @@
 #include "print.h"
 
-#include "storm-version-info/storm-version.h"
-#include "storm/utility/cli.h"
-#include "storm/utility/macros.h"
-
 #include <boost/algorithm/string/replace.hpp>
 #include <ctime>
 
+#include "storm-version-info/storm-version.h"
+#include "storm/storage/jani/Property.h"
+#include "storm/utility/cli.h"
+#include "storm/utility/macros.h"
+
 // Includes for the linked libraries and versions header.
 #include "storm/adapters/IntelTbbAdapter.h"
-
 #ifdef STORM_HAVE_GLPK
 #include "glpk.h"
 #endif
@@ -160,6 +160,10 @@ void printTimeAndMemoryStatistics(uint64_t wallclockMilliseconds) {
         std::cout << "  * wallclock time: " << (wallclockMilliseconds / 1000) << "." << std::setw(3) << (wallclockMilliseconds % 1000) << "s\n";
     }
     std::cout.fill(oldFillChar);
+}
+
+void printModelCheckingProperty(storm::jani::Property const& property) {
+    STORM_PRINT("\nModel checking property \"" << property.getName() << "\": " << *property.getRawFormula() << " ...\n");
 }
 
 }  // namespace cli

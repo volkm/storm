@@ -3,7 +3,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "storm-cli-utilities/cli.h"
-#include "storm-cli-utilities/model-handling.h"
+#include "storm-cli-utilities/print.h"
 #include "storm-pars-cli/print.h"
 #include "storm-pars/analysis/MonotonicityHelper.h"
 #include "storm-pars/api/region.h"
@@ -37,7 +37,6 @@
 #include "storm/settings/modules/TransformationSettings.h"
 #include "storm/solver/stateelimination/NondeterministicModelStateEliminator.h"
 #include "storm/storage/StronglyConnectedComponentDecomposition.h"
-#include "storm/storage/SymbolicModelDescription.h"
 #include "storm/utility/Engine.h"
 #include "storm/utility/Stopwatch.h"
 #include "storm/utility/initialize.h"
@@ -63,11 +62,11 @@ struct SampleInformation {
 };
 
 template<template<typename, typename> class ModelCheckerType, typename ModelType, typename ValueType, typename SolveValueType = double>
-void verifyPropertiesAtSamplePoints(ModelType const& model, cli::SymbolicInput const& input, SampleInformation<ValueType> const& samples) {
+void verifyPropertiesAtSamplePoints(ModelType const& model, std::vector<storm::jani::Property> const& properties, SampleInformation<ValueType> const& samples) {
     // When samples are provided, we create an instantiation model checker.
     ModelCheckerType<ModelType, SolveValueType> modelchecker(model);
 
-    for (auto const& property : input.properties) {
+    for (auto const& property : properties) {
         storm::cli::printModelCheckingProperty(property);
 
         modelchecker.specifyFormula(storm::api::createTask<ValueType>(property.getRawFormula(), true));
@@ -131,17 +130,17 @@ void verifyPropertiesAtSamplePoints(ModelType const& model, cli::SymbolicInput c
 }
 
 template<typename ValueType, typename SolveValueType = double>
-void verifyPropertiesAtSamplePointsWithSparseEngine(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, cli::SymbolicInput const& input,
-                                                    SampleInformation<ValueType> const& samples) {
+void verifyPropertiesAtSamplePointsWithSparseEngine(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model,
+                                                    std::vector<storm::jani::Property> const& properties, SampleInformation<ValueType> const& samples) {
     if (model->isOfType(storm::models::ModelType::Dtmc)) {
         verifyPropertiesAtSamplePoints<storm::modelchecker::SparseDtmcInstantiationModelChecker, storm::models::sparse::Dtmc<ValueType>, ValueType,
-                                       SolveValueType>(*model->template as<storm::models::sparse::Dtmc<ValueType>>(), input, samples);
+                                       SolveValueType>(*model->template as<storm::models::sparse::Dtmc<ValueType>>(), properties, samples);
     } else if (model->isOfType(storm::models::ModelType::Ctmc)) {
         verifyPropertiesAtSamplePoints<storm::modelchecker::SparseCtmcInstantiationModelChecker, storm::models::sparse::Ctmc<ValueType>, ValueType,
-                                       SolveValueType>(*model->template as<storm::models::sparse::Ctmc<ValueType>>(), input, samples);
+                                       SolveValueType>(*model->template as<storm::models::sparse::Ctmc<ValueType>>(), properties, samples);
     } else if (model->isOfType(storm::models::ModelType::Mdp)) {
         verifyPropertiesAtSamplePoints<storm::modelchecker::SparseMdpInstantiationModelChecker, storm::models::sparse::Mdp<ValueType>, ValueType,
-                                       SolveValueType>(*model->template as<storm::models::sparse::Mdp<ValueType>>(), input, samples);
+                                       SolveValueType>(*model->template as<storm::models::sparse::Mdp<ValueType>>(), properties, samples);
     } else {
         STORM_LOG_THROW(false, storm::exceptions::NotSupportedException, "Sampling is currently only supported for DTMCs, CTMCs and MDPs.");
     }
@@ -219,13 +218,13 @@ SampleInformation<ValueType> parseSamples(std::shared_ptr<storm::models::ModelBa
 }
 
 template<typename ValueType>
-void sampleDerivatives(std::shared_ptr<storm::models::sparse::Model<ValueType>> model, cli::SymbolicInput const& input,
+void sampleDerivatives(std::shared_ptr<storm::models::sparse::Model<ValueType>> model, std::vector<storm::jani::Property> const& properties,
                        std::string const& instantiationString) {
     STORM_LOG_THROW(model->isOfType(storm::models::ModelType::Dtmc), storm::exceptions::NotSupportedException,
                     "Gradient descent is currently only supported for DTMCs.");
     std::shared_ptr<storm::models::sparse::Dtmc<ValueType>> dtmc = model->template as<storm::models::sparse::Dtmc<ValueType>>();
 
-    std::vector<std::shared_ptr<storm::logic::Formula const>> formulas = storm::api::extractFormulasFromProperties(input.properties);
+    std::vector<std::shared_ptr<storm::logic::Formula const>> formulas = storm::api::extractFormulasFromProperties(properties);
     auto formula = formulas[0];
 
     STORM_LOG_THROW(formula->isProbabilityOperatorFormula() || formula->isRewardOperatorFormula(), storm::exceptions::NotSupportedException,

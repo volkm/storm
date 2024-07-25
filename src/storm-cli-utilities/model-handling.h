@@ -2,6 +2,7 @@
 
 #include <type_traits>
 
+#include "storm-cli-utilities/print.h"
 #include "storm-counterexamples/settings/modules/CounterexampleGeneratorSettings.h"
 #include "storm/api/bisimulation.h"
 #include "storm/builder/BuilderOptions.h"
@@ -220,8 +221,6 @@ std::pair<std::shared_ptr<storm::models::ModelBase>, bool> preprocessModel(std::
 
 template<typename ValueType>
 void generateCounterexamples(std::shared_ptr<storm::models::ModelBase> const&, SymbolicInput const&);
-
-void printModelCheckingProperty(storm::jani::Property const& property);
 
 template<typename ValueType>
 void printResult(std::unique_ptr<storm::modelchecker::CheckResult> const& result, storm::jani::Property const& property,

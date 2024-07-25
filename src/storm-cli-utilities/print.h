@@ -4,6 +4,11 @@
 #include <string>
 
 namespace storm {
+// Forward declaration
+namespace jani {
+class Property;
+}
+
 namespace cli {
 
 /*!
@@ -18,6 +23,8 @@ void printHeader(std::string const& name, const int argc, const char** argv);
 void printVersion();
 
 void printTimeAndMemoryStatistics(uint64_t wallclockMilliseconds = 0);
+
+void printModelCheckingProperty(storm::jani::Property const& property);
 
 }  // namespace cli
 }  // namespace storm
