@@ -1,15 +1,11 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#ifdef STORM_HAVE_CARL
-
-#include "storm/adapters/RationalFunctionAdapter.h"
-
 #include "storm-pars/api/storm-pars.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/storm.h"
-
-#include "storm-parsers/api/storm-parsers.h"
-
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/storage/jani/Property.h"
 
@@ -405,5 +401,3 @@ TYPED_TEST(SparseMdpParameterLiftingTest, Brp_Rew_4Par) {
 }
 
 }  // namespace
-
-#endif

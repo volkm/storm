@@ -1,12 +1,14 @@
 #include "storm-config.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "test/storm_gtest.h"
+
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/api/storm.h"
 #include "storm/environment/Environment.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/lexicographic/lexicographicModelChecking.h"
 #include "storm/modelchecker/results/LexicographicCheckResult.h"
-#include "test/storm_gtest.h"
 
 TEST(LexicographicModelCheckingTest, prob_sched1) {
     typedef double ValueType;

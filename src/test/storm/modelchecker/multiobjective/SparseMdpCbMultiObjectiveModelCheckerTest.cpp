@@ -1,8 +1,10 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
 #include "storm/api/storm.h"
+#include "storm/environment/Environment.h"
 #include "storm/environment/modelchecker/MultiObjectiveModelCheckerEnvironment.h"
 #include "storm/modelchecker/multiobjective/multiObjectiveModelChecking.h"
 #include "storm/modelchecker/results/ExplicitQualitativeCheckResult.h"
@@ -10,8 +12,6 @@
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/storage/jani/Property.h"
-
-#include "storm/environment/Environment.h"
 
 TEST(SparseMdpCbMultiObjectiveModelCheckerTest, consensus) {
     storm::Environment env;

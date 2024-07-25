@@ -1,23 +1,18 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
+#include "storm-parsers/parser/AutoParser.h"
 #include "storm-parsers/parser/FormulaParser.h"
+#include "storm/builder/ExplicitModelBuilder.h"
+#include "storm/environment/solver/EigenSolverEnvironment.h"
+#include "storm/environment/solver/GmmxxSolverEnvironment.h"
+#include "storm/environment/solver/LongRunAverageSolverEnvironment.h"
+#include "storm/environment/solver/NativeSolverEnvironment.h"
 #include "storm/logic/Formulas.h"
 #include "storm/modelchecker/prctl/SparseDtmcPrctlModelChecker.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/StandardRewardModel.h"
 #include "storm/settings/SettingMemento.h"
-#include "storm/settings/SettingsManager.h"
-#include "storm/settings/modules/GeneralSettings.h"
-#include "storm/solver/NativeLinearEquationSolver.h"
-
-#include "storm/environment/solver/EigenSolverEnvironment.h"
-#include "storm/environment/solver/GmmxxSolverEnvironment.h"
-#include "storm/environment/solver/LongRunAverageSolverEnvironment.h"
-#include "storm/environment/solver/NativeSolverEnvironment.h"
-
-#include "storm-parsers/parser/AutoParser.h"
-#include "storm/builder/ExplicitModelBuilder.h"
 
 namespace {
 

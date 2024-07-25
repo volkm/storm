@@ -13,7 +13,6 @@
 #include "storm/models/symbolic/Dtmc.h"
 #include "storm/models/symbolic/StandardRewardModel.h"
 #include "storm/settings/SettingsManager.h"
-#include "storm/solver/SymbolicEliminationLinearEquationSolver.h"
 #include "storm/storage/SymbolicModelDescription.h"
 #include "storm/utility/solver.h"
 

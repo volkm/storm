@@ -22,7 +22,6 @@
 #include "storm/models/symbolic/Ctmc.h"
 #include "storm/models/symbolic/StandardRewardModel.h"
 #include "storm/settings/modules/CoreSettings.h"
-#include "storm/solver/EigenLinearEquationSolver.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 
 namespace {

@@ -1,18 +1,13 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#ifdef STORM_HAVE_CARL
-
-#include "storm/adapters/RationalFunctionAdapter.h"
-
 #include "storm-pars/api/storm-pars.h"
-#include "storm/api/storm.h"
-
-#include "storm-parsers/api/storm-parsers.h"
-
 #include "storm-pars/transformer/SparseParametricDtmcSimplifier.h"
+#include "storm-parsers/api/model_descriptions.h"
+#include "storm-parsers/api/properties.h"
+#include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/api/storm.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
-#include "storm/solver/stateelimination/NondeterministicModelStateEliminator.h"
 #include "storm/storage/StronglyConnectedComponentDecomposition.h"
 #include "storm/storage/jani/Property.h"
 
@@ -601,4 +596,3 @@ TYPED_TEST(SparseDtmcParameterLiftingMonotonicityTest, Casestudy3_Mon) {
                                               storm::modelchecker::RegionResult::Unknown, true, monRes));
 }
 }  // namespace
-#endif

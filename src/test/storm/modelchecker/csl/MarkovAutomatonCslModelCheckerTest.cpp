@@ -1,14 +1,11 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include "test/storm_gtest.h"
-
 #include "storm-conv/api/storm-conv.h"
 #include "storm-parsers/api/model_descriptions.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/api/builder.h"
 #include "storm/api/properties.h"
-
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/environment/solver/TopologicalSolverEnvironment.h"
 #include "storm/exceptions/UncheckedRequirementException.h"
