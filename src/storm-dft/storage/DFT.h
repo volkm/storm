@@ -264,6 +264,16 @@ class DFT {
         return mRepresentants.find(id)->second;
     }
 
+    /*!
+     * Return subtree under the given root node.
+     * The method only returns the subtree consisting of the (transitive) children of the root node,
+     * but does not include dependencies or restrictors.
+     *
+     * @param rootId Id of DFT element which should be the root of the subtree.
+     * @return Sub-DFT from given root node.
+     */
+    storm::dft::storage::DFT<ValueType> getSubtree(size_t rootId) const;
+
     bool hasFailed(DFTStatePointer const& state) const {
         return state->hasFailed(mTopLevelIndex);
     }

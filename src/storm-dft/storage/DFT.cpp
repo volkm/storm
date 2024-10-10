@@ -675,6 +675,29 @@ std::set<size_t> DFT<ValueType>::getAllIds() const {
 }
 
 template<typename ValueType>
+storm::dft::storage::DFT<ValueType> DFT<ValueType>::getSubtree(size_t rootId) const {
+    storm::dft::builder::DFTBuilder<ValueType> builder;
+    std::queue<size_t> visitQueue;
+    visitQueue.push(rootId);
+
+    while (!visitQueue.empty()) {
+        size_t id = visitQueue.front();
+        visitQueue.pop();
+        auto const curElement = getElement(id);
+        builder.cloneElement(curElement);
+        if (curElement->isGate()) {
+            // Add children as well
+            for (auto const& child : std::static_pointer_cast<storm::dft::storage::elements::DFTGate<ValueType> const>(curElement)->children()) {
+                visitQueue.push(child->id());
+            }
+        }
+    }
+    builder.setTopLevel(getElement(rootId)->name());
+    // Dependency conflicts are not present because dependencies are not part of the subtree
+    return builder.build();
+}
+
+template<typename ValueType>
 bool DFT<ValueType>::existsName(std::string const& name) const {
     return std::find_if(mElements.begin(), mElements.end(), [&name](DFTElementPointer const& e) { return e->name() == name; }) != mElements.end();
 }
