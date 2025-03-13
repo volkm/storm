@@ -1,6 +1,7 @@
 #include "BddSftModelBuilder.h"
 
 #include "storm/exceptions/NotSupportedException.h"
+#include "storm/io/file.h"
 
 namespace storm::dft {
 namespace builder {
@@ -14,7 +15,7 @@ storm::dft::storage::SylvanBddManager& BddSftModelBuilder<ValueType>::getBddMana
 }
 
 template<typename ValueType>
-void BddSftModelBuilder<ValueType>::exportToDot(sylvan::Bdd const& bdd, std::string const& filename) {
+void BddSftModelBuilder<ValueType>::exportToDot(sylvan::Bdd const& bdd, std::string const& filename) const {
     FILE* filePointer = fopen(filename.c_str(), "w+");
     // fopen returns a nullptr on failure
     if (filePointer == nullptr) {
@@ -22,6 +23,13 @@ void BddSftModelBuilder<ValueType>::exportToDot(sylvan::Bdd const& bdd, std::str
     } else {
         bdd.PrintDot(filePointer);
         fclose(filePointer);
+        std::ofstream filestream;
+        storm::io::openFile(filename.c_str(), filestream, true);
+        filestream << "// Mapping from BDD nodes to DFT BEs as follows: \n";
+        for (auto const& [be, index] : beVariables) {
+            filestream << "// " << index << " -> " << be->name() << '\n';
+        }
+        storm::io::closeFile(filestream);
     }
 }
 

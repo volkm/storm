@@ -87,7 +87,7 @@ class BddSftModelBuilder {
      * @param bdd BDD.
      * @param filename File to export to.
      */
-    void exportToDot(sylvan::Bdd const& bdd, std::string const& filename);
+    void exportToDot(sylvan::Bdd const& bdd, std::string const& filename) const;
 
    private:
     /*!
