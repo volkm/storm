@@ -1,17 +1,20 @@
 #include "storm/storage/dd/bisimulation/InternalSylvanSignatureRefiner.h"
 
-#ifdef STORM_HAVE_SYLVAN
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/storage/dd/DdManager.h"
 #include "storm/storage/dd/bisimulation/Partition.h"
 #include "storm/storage/dd/bisimulation/Signature.h"
 #include "storm/storage/dd/sylvan/InternalSylvanBdd.h"
+
+#ifdef STORM_HAVE_SYLVAN
 #include "sylvan_cache.h"
+#endif
 
 namespace storm {
 namespace dd {
 namespace bisimulation {
 
+#ifdef STORM_HAVE_SYLVAN
 static const uint64_t NO_ELEMENT_MARKER = -1ull;
 
 InternalSylvanSignatureRefinerBase::InternalSylvanSignatureRefinerBase(storm::dd::DdManager<storm::dd::DdType::Sylvan> const& manager,
@@ -366,6 +369,38 @@ TASK_5(BDD, sylvan_refine_partition, BDD, dd, BDD, previous_partition, BDD, nond
 #pragma GCC diagnostic pop
 #pragma clang diagnostic pop
 
+#else
+InternalSylvanSignatureRefinerBase::InternalSylvanSignatureRefinerBase(storm::dd::DdManager<storm::dd::DdType::Sylvan> const& manager,
+                                                                       storm::expressions::Variable const& blockVariable,
+                                                                       std::set<storm::expressions::Variable> const& stateVariables,
+                                                                       storm::dd::Bdd<storm::dd::DdType::Sylvan> const& nondeterminismVariables,
+                                                                       storm::dd::Bdd<storm::dd::DdType::Sylvan> const& nonBlockVariables,
+                                                                       InternalSignatureRefinerOptions const& options) {
+    STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
+                    "This version of Storm was compiled without support for Sylvan. Yet, a method was called that requires this support. Please choose a "
+                    "version of Storm with Sylvan support.");
+}
+
+template<typename ValueType>
+InternalSignatureRefiner<storm::dd::DdType::Sylvan, ValueType>::InternalSignatureRefiner(
+    storm::dd::DdManager<storm::dd::DdType::Sylvan> const& manager, storm::expressions::Variable const& blockVariable,
+    std::set<storm::expressions::Variable> const& stateVariables, storm::dd::Bdd<storm::dd::DdType::Sylvan> const& nondeterminismVariables,
+    storm::dd::Bdd<storm::dd::DdType::Sylvan> const& nonBlockVariables, InternalSignatureRefinerOptions const& options)
+    : storm::dd::bisimulation::InternalSylvanSignatureRefinerBase(manager, blockVariable, stateVariables, nondeterminismVariables, nonBlockVariables, options) {
+    STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
+                    "This version of Storm was compiled without support for Sylvan. Yet, a method was called that requires this support. Please choose a "
+                    "version of Storm with Sylvan support.");
+}
+
+template<typename ValueType>
+Partition<storm::dd::DdType::Sylvan, ValueType> InternalSignatureRefiner<storm::dd::DdType::Sylvan, ValueType>::refine(
+    Partition<storm::dd::DdType::Sylvan, ValueType> const& oldPartition, Signature<storm::dd::DdType::Sylvan, ValueType> const& signature) {
+    STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
+                    "This version of Storm was compiled without support for Sylvan. Yet, a method was called that requires this support. Please choose a "
+                    "version of Storm with Sylvan support.");
+}
+#endif
+
 template class InternalSignatureRefiner<storm::dd::DdType::Sylvan, double>;
 template class InternalSignatureRefiner<storm::dd::DdType::Sylvan, storm::RationalNumber>;
 template class InternalSignatureRefiner<storm::dd::DdType::Sylvan, storm::RationalFunction>;
@@ -373,4 +408,3 @@ template class InternalSignatureRefiner<storm::dd::DdType::Sylvan, storm::Ration
 }  // namespace bisimulation
 }  // namespace dd
 }  // namespace storm
-#endif

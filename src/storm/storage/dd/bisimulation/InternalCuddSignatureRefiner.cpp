@@ -8,6 +8,7 @@
 namespace storm {
 namespace dd {
 namespace bisimulation {
+
 #ifdef STORM_HAVE_CUDD
 template<typename ValueType>
 InternalSignatureRefiner<storm::dd::DdType::CUDD, ValueType>::InternalSignatureRefiner(storm::dd::DdManager<storm::dd::DdType::CUDD> const& manager,
@@ -417,7 +418,6 @@ Partition<storm::dd::DdType::CUDD, ValueType> InternalSignatureRefiner<storm::dd
                     "This version of Storm was compiled without support for CUDD. Yet, a method was called that requires this support. Please choose a version "
                     "of Storm with CUDD support.");
 }
-
 #endif
 
 template class InternalSignatureRefiner<storm::dd::DdType::CUDD, double>;

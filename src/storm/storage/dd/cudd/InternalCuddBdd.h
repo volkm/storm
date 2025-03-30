@@ -563,14 +563,16 @@ class InternalBdd<DdType::CUDD> {
 namespace std {
 template<>
 struct hash<storm::dd::InternalBdd<storm::dd::DdType::CUDD>> {
-    std::size_t operator()(storm::dd::InternalBdd<storm::dd::DdType::CUDD> const& key) const {
 #ifdef STORM_HAVE_CUDD
+    std::size_t operator()(storm::dd::InternalBdd<storm::dd::DdType::CUDD> const& key) const {
         return reinterpret_cast<std::size_t>(key.cuddBdd.getNode());
+    }
 #else
+    std::size_t operator()(storm::dd::InternalBdd<storm::dd::DdType::CUDD> const&) const {
         STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
                         "This version of Storm was compiled without support for CUDD. Yet, a method was called that requires this support. Please choose a "
                         "version of Storm with CUDD support.");
-#endif
     }
+#endif
 };
 }  // namespace std

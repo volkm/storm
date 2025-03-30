@@ -1,10 +1,8 @@
 #pragma once
 
-#include "storm-config.h"
-
-#ifdef STORM_HAVE_SYLVAN
 #include <unordered_map>
 
+#include "storm-config.h"
 #include "storm/adapters/sylvan.h"
 #include "storm/storage/dd/AddIterator.h"
 #include "storm/storage/expressions/SimpleValuation.h"
@@ -66,6 +64,7 @@ class AddIterator<DdType::Sylvan, ValueType> {
     bool operator!=(AddIterator<DdType::Sylvan, ValueType> const& other) const;
 
    private:
+#ifdef STORM_HAVE_SYLVAN
     /*!
      * Constructs a forward iterator using the given generator with the given set of relevant meta variables.
      *
@@ -157,8 +156,7 @@ class AddIterator<DdType::Sylvan, ValueType> {
 
     // The current valuation of meta variables.
     storm::expressions::SimpleValuation currentValuation;
+#endif
 };
 }  // namespace dd
 }  // namespace storm
-
-#endif
