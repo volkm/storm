@@ -58,8 +58,8 @@ set(STORM_QVBS_ROOT "" CACHE STRING "The root directory of the Quantitative Veri
 MARK_AS_ADVANCED(STORM_QVBS_ROOT)
 
 ## Configuring dependencies
-set(STORM_CARL_GIT_REPO "https://github.com/sjunges/carl-storm.git" CACHE STRING "For fetching carl: which git repo to use")
-set(STORM_CARL_GIT_TAG "e16e865a934853459d68d30e13e494b74db1fc0b" CACHE STRING "For fetching carl: which git tag to use")
+set(STORM_CARL_GIT_REPO "https://github.com/moves-rwth/carl-storm.git" CACHE STRING "For fetching carl: which git repo to use")
+set(STORM_CARL_GIT_TAG "8f4f6ff" CACHE STRING "For fetching carl: which git tag to use")
 option(STORM_DISABLE_GUROBI "Sets whether linking with Gurobi should be disabled." OFF)
 set(GUROBI_ROOT "" CACHE STRING "A hint to the root directory of Gurobi.")
 option(STORM_DISABLE_MATHSAT "Sets whether linking with MathSat should be disabled." OFF)
