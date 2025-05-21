@@ -77,7 +77,7 @@ jobs:
             # Omitting arguments cmake_args, gurobi_support, soplex_support, spot_support, cln_exact, cln_ratfunc, all_sanitizers
           platforms: ${{ matrix.platform.name }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true
       - name: Export digest
         run: |
           mkdir -p ${{ runner.temp }}/digests/${{ matrix.image.tag }}
