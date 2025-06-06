@@ -22,21 +22,21 @@ runs:
   steps:
     # Docker
     - name: Checkout starter-project
-      if: ${{ (inputs.docker == 'true') && stormDir != '' }}
+      if: ${{ (inputs.docker == 'true') && (inputs.stormDir != '') }}
       run: |
         docker exec ci bash -c "git clone https://github.com/sjunges/storm-project-starter-cpp /opt/storm-starter" 
         docker exec ci bash -c "cd /opt/storm-starter; git checkout cmakeupdates"
       shell: bash
 
     - name: Configure and make starter project (intree Storm)
-      if: ${{ (inputs.docker == 'true') && stormDir != '' }}
+      if: ${{ (inputs.docker == 'true') && (inputs.stormDir != '') }}
       run: |
         docker exec ci bash -c "cd /opt/storm-starter; mkdir build-intree; cd build-intree; cmake -DNEVER_FETCH_STORM=TRUE -DSTORM_ROOT='/opt/storm/build' .."
         docker exec ci bash -c "cd /opt/storm-starter/build-intree; make -j ${NR_JOBS}"
         docker exec ci bash -c "/opt/storm-starter/build-intree/bin/starter-project ${{ inputs.command }}"
       shell: bash
     - name: Configure and make starter project (installed Storm)
-      if: ${{ (inputs.docker == 'true') && stormDir == '' }}
+      if: ${{ (inputs.docker == 'true') && (inputs.stormDir == '') }}
       run: |
         docker exec ci bash -c "cd /opt/storm-starter; mkdir build-installed; cd build-installed; cmake -DNEVER_FETCH_STORM=TRUE .."
         docker exec ci bash -c "cd /opt/storm-starter/build-installed; make -j ${NR_JOBS}"
@@ -45,21 +45,21 @@ runs:
    
     # macOS
     - name: Checkout starter-project
-      if: ${{ (inputs.docker == 'false') && stormDir != '' }}
+      if: ${{ (inputs.docker == 'false') && (inputs.stormDir != '') }}
       run: |
         cd ..; git clone https://github.com/sjunges/storm-project-starter-cpp storm-starter
         cd storm-starter; git checkout cmakeupdates
       shell: bash
 
     - name: Configure and make starter project (intree Storm)
-      if: ${{ (inputs.docker == 'false') && stormDir != '' }}
+      if: ${{ (inputs.docker == 'false') && (inputs.stormDir != '') }}
       run: |
         cd ../storm-starter; mkdir build-intree; cd build-intree; cmake -DNEVER_FETCH_STORM=TRUE -DSTORM_ROOT="${GITHUB_WORKSPACE}/build"  ..
         make -j ${NR_JOBS}
         ./bin/starter-project ${{ inputs.command }}
       shell: bash
     - name: Configure and make starter project (installed Storm)
-      if: ${{ (inputs.docker == 'false') && stormDir == '' }}
+      if: ${{ (inputs.docker == 'false') && (inputs.stormDir == '') }}
       run: |
         cd ../storm-starter; mkdir build-installed; cd build-installed; cmake -DNEVER_FETCH_STORM=TRUE  ..
         make -j ${NR_JOBS}
