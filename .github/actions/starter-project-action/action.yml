@@ -19,6 +19,7 @@ inputs:
 
 runs:
   using: "composite"
+  steps:
     # Docker
     - name: Checkout starter-project
       if: ${{ (inputs.docker == 'true') && stormDir != '' }}
