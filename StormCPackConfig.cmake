@@ -2,6 +2,11 @@ include(InstallRequiredSystemLibraries)
 
 ### General settings
 # General project information is taken from the project() variables
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${CMAKE_PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${CMAKE_PROJECT_VERSION_PATCH})
 set(CPACK_PACKAGE_VENDOR "Storm Developers")
 set(CPACK_PACKAGE_CONTACT "support@stormchecker.org")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
@@ -10,9 +15,10 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSI
 
 set(CPACK_GENERATOR "DEB")
 
-### Source package settings
+### Source package configuration
+# The support is limited and we recommend to use "git archive" instead
 set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;/[.]git/;.gitignore;/build/;tags;cscope.*")
+set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]git/;.gitignore;/build/;tags;cscope.*")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-src")
 
 # Debian package
