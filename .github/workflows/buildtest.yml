@@ -20,6 +20,7 @@ jobs:
     name: Indepth Tests (${{ matrix.config.name }}, ${{ matrix.config.buildType }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {name: "GMP exact; GMP rational functions; All dependencies",
@@ -168,6 +169,7 @@ jobs:
     name: Compiler Tests (${{ matrix.config.name }}, ${{ matrix.config.buildType }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {name: "GCC",
@@ -236,6 +238,7 @@ jobs:
     name: Linux Tests (${{ matrix.distro }}, ${{ matrix.buildType }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         distro: ["debian-12", "ubuntu-24.04", "debian-13"]
         buildType: ["Release"]
@@ -286,6 +289,7 @@ jobs:
   macTests:
     name: macOS Tests (${{ matrix.config.name }}, ${{ matrix.config.buildType }})
     strategy:
+      fail-fast: false
       matrix:
         config:
           - {name: "XCode 14.3, Intel",
@@ -360,6 +364,7 @@ jobs:
     name: Test and Deploy (${{ matrix.buildType.name }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         buildType:
           - {name: "Debug",
