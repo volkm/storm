@@ -18,6 +18,7 @@ on:
         type: string
         default: 'x.y'
 
+jobs:
   update_storm:
     runs-on: ubuntu-latest
     permissions:
