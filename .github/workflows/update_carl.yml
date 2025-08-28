@@ -43,7 +43,6 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT }}
           branch: ci/update-carl-storm
           delete-branch: true
           title: 'Update carl-storm ${{ inputs.carl_version }}'
