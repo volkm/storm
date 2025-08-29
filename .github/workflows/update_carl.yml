@@ -9,6 +9,9 @@ on:
         required: true
         type: string
         default: 'x.y'
+    secrets:
+      personal_access_token:
+        required: true
   # needed to trigger the workflow manually
   workflow_dispatch:
     inputs:
@@ -21,9 +24,6 @@ on:
 jobs:
   update_storm:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - name: Git clone
         uses: actions/checkout@v5
@@ -46,6 +46,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.personal_access_token }}
           branch: ci/update-carl-storm
           delete-branch: true
           title: 'Update carl-storm ${{ inputs.carl_version }}'
