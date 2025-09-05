@@ -55,3 +55,34 @@ jobs:
       storm_version: ${{ github.event.release.tag_name }}
     secrets:
       personal_access_token: ${{ secrets.CI_token }}
+
+  set_storm_dev:
+    # Update Storm version again to reflect fufure development version
+    needs: [deploy_docker, deploy_docker_stable]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v5
+        with:
+          repository: moves-rwth/storm
+          ref: master
+      - name: Set Storm dev version
+        run: |
+          # Add .1 suffix  to Storm version
+          sed -i -E 's/(\s+)VERSION ([0-9]+\.[0-9]+\.[0-9]+)\)/\1VERSION \2.1\)/' CMakeLists.txt
+      - name: Commit update
+        run: |
+          git diff
+          git config user.name 'Stormchecker bot'
+          git config user.email 'dev@stormchecker.org'
+          git commit -am "Set development version of Storm"
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ci/storm-dev-version
+          delete-branch: true
+          title: 'Set development version of Storm'
+          body: |
+            Auto-generated pull request triggered by a new Storm version.
+            - Manually close and reopen this PR to trigger the CI.
