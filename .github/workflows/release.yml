@@ -50,7 +50,7 @@ jobs:
   update_stormpy:
     # Trigger generation of PR in stormpy which updates the Storm version
     needs: [deploy_docker, deploy_docker_stable]
-    uses: moves-rwth/stormpy/.github/workflows/update_storm.yml@master
+    uses: volkm/stormpy/.github/workflows/update_storm.yml@master
     with:
       storm_version: ${{ github.event.release.tag_name }}
     secrets:
@@ -58,13 +58,12 @@ jobs:
 
   set_storm_dev:
     # Update Storm version again to reflect fufure development version
-    needs: [deploy_docker, deploy_docker_stable]
     runs-on: ubuntu-latest
     steps:
       - name: Git clone
         uses: actions/checkout@v5
         with:
-          repository: moves-rwth/storm
+          repository: volkm/storm
           ref: master
       - name: Set Storm dev version
         run: |
