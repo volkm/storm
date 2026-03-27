@@ -1,4 +1,5 @@
 #pragma once
+
 #include "storm/solver/stateelimination/PrioritizedStateEliminator.h"
 
 namespace storm {

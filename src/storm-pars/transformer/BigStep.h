@@ -176,7 +176,7 @@ std::ostream& operator<<(std::ostream& os, const Annotation& annotation);
 class BigStep {
    public:
     /**
-     * This class re-orders parameteric transitions of a pMC so bounds computed by Parameter Lifting will eventually be better.
+     * This class re-orders parametric transitions of a pMC so bounds computed by Parameter Lifting will eventually be better.
      * The parametric reachability probability for the given check task will be the same in the time-travelled and in the original model.
      */
     BigStep() : polynomialCache(std::make_shared<PolynomialCache>()) {

@@ -18,7 +18,6 @@ NondeterministicModelStateEliminator<ValueType>::NondeterministicModelStateElimi
         transitionMatrix.getRowCount() == backwardTransitions.getColumnCount() && transitionMatrix.getColumnCount() == backwardTransitions.getRowCount(),
         storm::exceptions::InvalidArgumentException, "Invalid matrix dimensions of forward/backwards transition matrices.");
     STORM_LOG_THROW(rowValues.size() == transitionMatrix.getRowCount(), storm::exceptions::InvalidArgumentException, "Invalid size of row value vector");
-    // Intentionally left empty
 }
 
 template<typename ValueType>
