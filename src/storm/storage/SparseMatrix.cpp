@@ -726,6 +726,8 @@ typename SparseMatrix<ValueType>::index_type SparseMatrix<ValueType>::getRowGrou
 
 template<typename ValueType>
 typename SparseMatrix<ValueType>::index_type SparseMatrix<ValueType>::getRowGroupSize(index_type group) const {
+    STORM_LOG_ASSERT(group < this->getRowGroupCount(),
+                     "Invalid row group index:" << group << ". Only " << this->getRowGroupCount() << " row groups available.");
     return this->getRowGroupIndices()[group + 1] - this->getRowGroupIndices()[group];
 }
 
@@ -2141,7 +2143,8 @@ typename SparseMatrix<ValueType>::const_rows SparseMatrix<ValueType>::getRow(ind
     if (!this->hasTrivialRowGrouping()) {
         return getRow(this->getRowGroupIndices()[rowGroup] + offset);
     } else {
-        return getRow(this->getRowGroupIndices()[rowGroup] + offset);
+        STORM_LOG_ASSERT(offset == 0, "Invalid offset.");
+        return getRow(rowGroup + offset);
     }
 }
 
