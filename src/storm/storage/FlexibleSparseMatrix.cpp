@@ -6,12 +6,13 @@
 #include "storm/storage/SparseMatrix.h"
 #include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
+#include "storm/utility/vector.h"
 
 namespace storm {
 namespace storage {
 template<typename ValueType>
 FlexibleSparseMatrix<ValueType>::FlexibleSparseMatrix(index_type rows) : data(rows), columnCount(0), nonzeroEntryCount(0) {
-    // Intentionally left empty.
+    rowGroupIndices.push_back(0);
 }
 
 template<typename ValueType>
@@ -24,6 +25,8 @@ FlexibleSparseMatrix<ValueType>::FlexibleSparseMatrix(storm::storage::SparseMatr
 
     if (!trivialRowGrouping) {
         rowGroupIndices = matrix.getRowGroupIndices();
+    } else {
+        rowGroupIndices = this->rowGroupIndices = storm::utility::vector::buildVectorForRange(static_cast<index_type>(0), this->getRowCount() + 1);
     }
     for (index_type rowIndex = 0; rowIndex < matrix.getRowCount(); ++rowIndex) {
         typename storm::storage::SparseMatrix<ValueType>::const_rows row = matrix.getRow(rowIndex);
@@ -67,32 +70,40 @@ void FlexibleSparseMatrix<ValueType>::reserveInRow(index_type row, index_type nu
 }
 
 template<typename ValueType>
-typename FlexibleSparseMatrix<ValueType>::row_type& FlexibleSparseMatrix<ValueType>::getRow(index_type index) {
-    return this->data[index];
+typename FlexibleSparseMatrix<ValueType>::row_type& FlexibleSparseMatrix<ValueType>::getRow(index_type row) {
+    return this->data[row];
 }
 
 template<typename ValueType>
-typename FlexibleSparseMatrix<ValueType>::row_type const& FlexibleSparseMatrix<ValueType>::getRow(index_type index) const {
-    return this->data[index];
+typename FlexibleSparseMatrix<ValueType>::row_type const& FlexibleSparseMatrix<ValueType>::getRow(index_type row) const {
+    return this->data[row];
 }
 
 template<typename ValueType>
 typename FlexibleSparseMatrix<ValueType>::row_type& FlexibleSparseMatrix<ValueType>::getRow(index_type rowGroup, index_type offset) {
-    STORM_LOG_ASSERT(rowGroup < this->getRowGroupCount(), "Invalid rowGroup.");
-    STORM_LOG_ASSERT(offset < this->getRowGroupSize(rowGroup), "Invalid offset.");
-    return getRow(rowGroupIndices[rowGroup] + offset);
+    STORM_LOG_ASSERT(rowGroup < this->getRowGroupCount(), "Row group is out-of-bounds.");
+    STORM_LOG_ASSERT(offset < this->getRowGroupSize(rowGroup), "Row offset in row-group is out-of-bounds.");
+    return getRow(this->getRowGroupIndices()[rowGroup] + offset);
 }
 
 template<typename ValueType>
 typename FlexibleSparseMatrix<ValueType>::row_type const& FlexibleSparseMatrix<ValueType>::getRow(index_type rowGroup, index_type offset) const {
-    STORM_LOG_ASSERT(rowGroup < this->getRowGroupCount(), "Invalid rowGroup.");
-    STORM_LOG_ASSERT(offset < this->getRowGroupSize(rowGroup), "Invalid offset.");
-    return getRow(rowGroupIndices[rowGroup] + offset);
+    STORM_LOG_ASSERT(rowGroup < this->getRowGroupCount(), "Row group is out-of-bounds.");
+    STORM_LOG_ASSERT(offset < this->getRowGroupSize(rowGroup), "Row offset in row-group is out-of-bounds.");
+    return getRow(this->getRowGroupIndices()[rowGroup] + offset);
 }
 
 template<typename ValueType>
 std::vector<typename FlexibleSparseMatrix<ValueType>::index_type> const& FlexibleSparseMatrix<ValueType>::getRowGroupIndices() const {
+    // In contrast to SparseMatrix, we always have row group indices.
     return rowGroupIndices;
+}
+
+template<typename ValueType>
+boost::integer_range<typename FlexibleSparseMatrix<ValueType>::index_type> FlexibleSparseMatrix<ValueType>::getRowGroupIndices(index_type group) const {
+    STORM_LOG_ASSERT(group < this->getRowGroupCount(),
+                     "Invalid row group index:" << group << ". Only " << this->getRowGroupCount() << " row groups available.");
+    return boost::irange(rowGroupIndices[group], rowGroupIndices[group + 1]);
 }
 
 template<typename ValueType>
@@ -117,7 +128,9 @@ typename FlexibleSparseMatrix<ValueType>::index_type FlexibleSparseMatrix<ValueT
 
 template<typename ValueType>
 typename FlexibleSparseMatrix<ValueType>::index_type FlexibleSparseMatrix<ValueType>::getRowGroupSize(index_type group) const {
-    return rowGroupIndices[group + 1] - rowGroupIndices[group];
+    STORM_LOG_ASSERT(group < this->getRowGroupCount(),
+                     "Invalid row group index:" << group << ". Only " << this->getRowGroupCount() << " row groups available.");
+    return this->getRowGroupIndices()[group + 1] - this->getRowGroupIndices()[group];
 }
 
 template<typename ValueType>
@@ -177,38 +190,53 @@ void FlexibleSparseMatrix<ValueType>::filterEntries(storm::storage::BitVector co
 }
 
 template<typename ValueType>
-typename FlexibleSparseMatrix<ValueType>::index_type FlexibleSparseMatrix<ValueType>::insertNewRowsAtEnd(
-    typename FlexibleSparseMatrix<ValueType>::index_type numRows) {
-    STORM_LOG_ERROR_COND(this->columnCount == this->getRowCount(), "insertNewRowsAtEnd only works when the FlexibleMatrix is square but column count is "
-                                                                       << columnCount << " and row count is " << this->getRowCount());
-    // ... because otherwise assumptions break when creating the SparseMatrix and we get weird entries for some reason
-    index_type newRowsIndex = data.size();
-    for (index_type i = 0; i < numRows; i++) {
-        row_type newRow;
-        this->data.push_back(newRow);
+typename FlexibleSparseMatrix<ValueType>::index_type FlexibleSparseMatrix<ValueType>::addNewRowsToRowGroup(
+    typename FlexibleSparseMatrix<ValueType>::index_type group, typename FlexibleSparseMatrix<ValueType>::index_type numRows) {
+    STORM_LOG_ASSERT(group < this->getRowGroupCount(), "Row group " << group << " is invalid.");
+    // Insert rows at starting row of next row group
+    index_type newRowsIndex = this->rowGroupIndices[group + 1];
+    // Insert new rows
+    row_type newRow;
+    this->data.insert(this->data.begin() + newRowsIndex, numRows, newRow);
+    // Update all subsequent row groups
+    for (auto itGroups = this->rowGroupIndices.begin() + group + 1; itGroups != this->rowGroupIndices.end(); ++itGroups) {
+        *itGroups += numRows;
     }
-    this->columnCount = getRowCount();
+    return newRowsIndex;
+}
+
+template<typename ValueType>
+typename FlexibleSparseMatrix<ValueType>::index_type FlexibleSparseMatrix<ValueType>::addNewRowGroup(
+    typename FlexibleSparseMatrix<ValueType>::index_type numRows) {
+    index_type newRowsIndex = data.size();
+    // Insert new rows
+    row_type newRow;
+    this->data.insert(this->data.begin() + newRowsIndex, numRows, newRow);
+    // Add new row group
+    this->rowGroupIndices.push_back(this->data.size());
+    STORM_LOG_ASSERT(newRowsIndex + numRows == this->data.size(), "Inserted row not at the end.");
     return newRowsIndex;
 }
 
 template<typename ValueType>
 storm::storage::SparseMatrix<ValueType> FlexibleSparseMatrix<ValueType>::createSparseMatrix() {
-    uint_fast64_t numEntries = 0;
-    for (auto const& row : this->data) {
-        numEntries += row.size();
-    }
+    // Update columnCount and numEntries
+    updateDimensions();
 
-    storm::storage::SparseMatrixBuilder<ValueType> matrixBuilder(getRowCount(), getColumnCount(), numEntries, hasTrivialRowGrouping(),
+    storm::storage::SparseMatrixBuilder<ValueType> matrixBuilder(getRowCount(), getColumnCount(), getNonzeroEntryCount(), true, !hasTrivialRowGrouping(),
                                                                  hasTrivialRowGrouping() ? 0 : getRowGroupCount());
     uint_fast64_t currRowIndex = 0;
     auto rowGroupIndexIt = getRowGroupIndices().begin();
     for (auto const& row : this->data) {
         if (!hasTrivialRowGrouping()) {
+            // Set row group
             while (currRowIndex >= *rowGroupIndexIt) {
                 matrixBuilder.newRowGroup(currRowIndex);
                 ++rowGroupIndexIt;
+                STORM_LOG_ASSERT(rowGroupIndexIt != getRowGroupIndices().end(), "Row group index is invalid");
             }
         }
+        // Set row entries
         for (auto const& entry : row) {
             matrixBuilder.addNextValue(currRowIndex, entry.getColumn(), entry.getValue());
         }
@@ -216,7 +244,11 @@ storm::storage::SparseMatrix<ValueType> FlexibleSparseMatrix<ValueType>::createS
     }
     // The matrix might end with one or more empty row groups
     if (!hasTrivialRowGrouping()) {
-        while (currRowIndex >= *rowGroupIndexIt) {
+        while (currRowIndex >= *rowGroupIndexIt && rowGroupIndexIt != getRowGroupIndices().end()) {
+            if (rowGroupIndexIt + 1 == getRowGroupIndices().end()) {
+                // Matrix builder adds ending row group by itself
+                break;
+            }
             matrixBuilder.newRowGroup(currRowIndex);
             ++rowGroupIndexIt;
         }
@@ -328,9 +360,9 @@ std::ostream& operator<<(std::ostream& out, FlexibleSparseMatrix<ValueType> cons
             // Iterate over all rows.
             for (FlexibleIndex row = matrix.rowGroupIndices[rowGroup]; row < endRow; ++row) {
                 // Print the actual row.
-                out << rowGroup << "\t(\t";
+                out << row << "\t(\t";
                 matrix.printRow(out, row);
-                out << "\t)\t" << rowGroup << '\n';
+                out << "\t)\t" << row << '\n';
             }
         }
 

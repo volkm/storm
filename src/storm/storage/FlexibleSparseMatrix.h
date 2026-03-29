@@ -8,6 +8,8 @@
 
 namespace storm {
 namespace storage {
+
+// Forward declarations.
 template<typename IndexType, typename ValueType>
 class MatrixEntry;
 
@@ -22,7 +24,7 @@ class FlexibleSparseMatrix {
     // TODO: make this class a bit more consistent with the big sparse matrix and improve it:
     // * add stuff like iterator, clearRow, multiplyRowWithScalar
 
-    typedef uint_fast64_t index_type;
+    typedef storm::storage::sparse::state_type index_type;
     typedef ValueType value_type;
     typedef std::vector<storm::storage::MatrixEntry<index_type, value_type>> row_type;
     typedef typename row_type::iterator iterator;
@@ -35,21 +37,23 @@ class FlexibleSparseMatrix {
 
     /*!
      * Constructs a flexible sparse matrix with rows many rows.
-     * @param rows number of rows.
+     *
+     * @param rows Number of rows.
      */
     FlexibleSparseMatrix(index_type rows);
 
     /*!
      * Constructs a flexible sparse matrix from a sparse matrix.
+     *
      * @param matrix Sparse matrix to construct from.
      * @param setAllValuesToOne If true, all set entries are set to one. Default is false.
-     * @param revertEquationSystem If true, the matrix that will be created is the matrix (1-A), where A is the
-     * provided matrix.
+     * @param revertEquationSystem If true, the matrix that will be created is the matrix (1-A), where A is the provided matrix.
      */
     FlexibleSparseMatrix(storm::storage::SparseMatrix<ValueType> const& matrix, bool setAllValuesToOne = false, bool revertEquationSystem = false);
 
     /*!
      * Reserves space for elements in row.
+     *
      * @param row Row to reserve in.
      * @param numberOfElements Number of elements to reserve space for.
      */
@@ -61,7 +65,7 @@ class FlexibleSparseMatrix {
      * @param row The row to get.
      * @return An object representing the given row.
      */
-    row_type& getRow(index_type);
+    row_type& getRow(index_type row);
 
     /*!
      * Returns an object representing the given row.
@@ -69,7 +73,7 @@ class FlexibleSparseMatrix {
      * @param row The row to get.
      * @return An object representing the given row.
      */
-    row_type const& getRow(index_type) const;
+    row_type const& getRow(index_type row) const;
 
     /*!
      * Returns an object representing the offset'th row in the rowgroup
@@ -85,7 +89,7 @@ class FlexibleSparseMatrix {
      * @param offset which row in the group
      * @return An object representing the given row.
      */
-    row_type const& getRow(index_type rowGroup, index_type entryInGroup) const;
+    row_type const& getRow(index_type rowGroup, index_type offset) const;
 
     /*!
      * Returns the grouping of rows of this matrix.
@@ -93,6 +97,11 @@ class FlexibleSparseMatrix {
      * @return The grouping of rows of this matrix.
      */
     std::vector<index_type> const& getRowGroupIndices() const;
+
+    /*!
+     * Returns the row indices within the given group
+     */
+    boost::integer_range<index_type> getRowGroupIndices(index_type group) const;
 
     /*!
      * Returns the number of rows of the matrix.
@@ -145,14 +154,15 @@ class FlexibleSparseMatrix {
 
     /*!
      * Checks if the matrix has no elements.
+     *
      * @return True, if the matrix is empty.
      */
     bool empty() const;
 
     /*!
-     * Retrieves whether the matrix has a (possibly) trivial row grouping.
+     * Retrieves whether the matrix has a trivial row grouping.
      *
-     * @return True iff the matrix has a (possibly) trivial row grouping.
+     * @return True iff the matrix has a trivial row grouping.
      */
     bool hasTrivialRowGrouping() const;
 
@@ -165,11 +175,22 @@ class FlexibleSparseMatrix {
     void filterEntries(storm::storage::BitVector const& rowConstraint, storm::storage::BitVector const& columnConstraint);
 
     /*!
-     * Inserts new, empty rows at the end of the FlexibleSparseMatrix.
+     * Inserts new, empty rows into the given row group index (after the existing rows in the same group).
+     * Also updates the row group indices.
+     *
+     * @note: This operation is linear in the number of following rows.
      *
      * @return The index of the first newly inserted row.
      */
-    index_type insertNewRowsAtEnd(index_type numRows);
+    index_type addNewRowsToRowGroup(index_type rowGroupIndex, index_type numRows = 1);
+
+    /*!
+     * Inserts new, empty rows at the end of the FlexibleSparseMatrix.
+     * Also adds a corresponding new row group.
+     *
+     * @return The index of the first newly inserted row.
+     */
+    index_type addNewRowGroup(index_type numRows = 1);
 
     /*!
      * Creates a sparse matrix from the flexible sparse matrix.
