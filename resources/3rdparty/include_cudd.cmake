@@ -66,7 +66,7 @@ ExternalProject_Add(
 set(CUDD_INCLUDE_DIR ${STORM_3RDPARTY_BINARY_DIR}/cudd/include)
 set(CUDD_STATIC_LIBRARY ${CUDD_LIB_DIR}/libcudd${STATIC_EXT})
 set(CUDD_VERSION_STRING 3.0.0)
-set(CUDD_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/cudd/)
+set(CUDD_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/cudd)
 
 
 file(MAKE_DIRECTORY ${CUDD_INCLUDE_DIR}) # Workaround https://gitlab.kitware.com/cmake/cmake/-/issues/15052

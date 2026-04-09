@@ -105,7 +105,7 @@ if(NOT STORM_DISABLE_GMM)
             $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>
     )
     install(TARGETS gmm EXPORT storm_Targets)
-    install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/gmm/include/
+    install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/gmm/include/gmm
             DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
     list(APPEND STORM_DEP_TARGETS gmm)
@@ -122,7 +122,7 @@ endif()
 #############################################################
 
 # Checkout Eigen
-# https://gitlab.com/libeigen/eigen/
+# https://gitlab.com/libeigen/eigen
 set(STORM_EIGEN_GIT_TAG "bc3b39870ecb690a623a3f49149a358b95c5781d")
 message(STATUS "Storm - Including Eigen commit ${STORM_EIGEN_GIT_TAG} (Version 5.0.1).")
 ExternalProject_Add(
@@ -151,7 +151,7 @@ target_include_directories(eigenstorm INTERFACE
         $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/StormEigen>
 )
 install(TARGETS eigenstorm EXPORT storm_Targets)
-install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/StormEigen/
+install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/StormEigen/StormEigen
         DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
 add_dependencies(storm_resources eigenstorm)
@@ -190,12 +190,12 @@ if(${Boost_VERSION} VERSION_LESS "1.75.0") # Debian 12 ships with Boost 1.74.0
     add_library(boost_pfr INTERFACE) # Not imported, we are in control of the sources.
     add_dependencies(boost_pfr boost_pfr_src)
     target_include_directories(boost_pfr INTERFACE
-            $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}/boost_pfr/include>
-            $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/boost_pfr>
+            $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}/boost_pfr/include/boost>
+            $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/boost>
     )
     install(TARGETS boost_pfr EXPORT storm_Targets)
-    install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/boost_pfr/include/
-            DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/boost_pfr
+    install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/boost_pfr/include/boost
+            DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
             PATTERN ".git" EXCLUDE)
     add_dependencies(storm_resources boost_pfr)
     list(APPEND STORM_DEP_TARGETS boost_pfr)
@@ -212,16 +212,14 @@ list(APPEND STORM_DEP_IMP_TARGETS Boost::boost)
 
 # Use the shipped version of ExprTK
 message(STATUS "Storm - Including ExprTk.")
-set(exprTk_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/exprtk)
-set(exprTk_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/exprtk)
 add_library(exprTk INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(exprTk INTERFACE
-        $<BUILD_INTERFACE:${exprTk_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${exprTk_INSTALL_DIR}>
+        $<BUILD_INTERFACE:${STORM_3RDPARTY_SOURCE_DIR}/exprtk>
+        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/exprtk>
 )
 install(TARGETS exprTk EXPORT storm_Targets)
-install(DIRECTORY ${exprTk_SOURCE_DIR}
-        DESTINATION ${exprTk_INSTALL_DIR}
+install(DIRECTORY ${STORM_3RDPARTY_SOURCE_DIR}/exprtk
+        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.hpp" PATTERN ".git" EXCLUDE)
 list(APPEND STORM_DEP_TARGETS exprTk)
 
@@ -233,15 +231,13 @@ list(APPEND STORM_DEP_TARGETS exprTk)
 
 # Use the shipped version of Parallel Hashmap
 message(STATUS "Storm - Including Parallel Hashmap.")
-set(phmap_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/parallel-hashmap)
-set(phmap_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR})
 add_library(phmap INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(phmap INTERFACE
-        $<BUILD_INTERFACE:${phmap_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${phmap_INSTALL_DIR}>)
+        $<BUILD_INTERFACE:${STORM_3RDPARTY_SOURCE_DIR}/parallel-hashmap>
+        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/parallel_hashmap>)
 install(TARGETS phmap EXPORT storm_Targets)
-install(DIRECTORY ${phmap_SOURCE_DIR}
-        DESTINATION ${phmap_INSTALL_DIR}
+install(DIRECTORY ${STORM_3RDPARTY_SOURCE_DIR}/parallel-hashmap/parallel_hashmap
+        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
 list(APPEND STORM_DEP_TARGETS phmap)
 
@@ -253,15 +249,13 @@ list(APPEND STORM_DEP_TARGETS phmap)
 
 # Use the shipped version of cpphoafparser
 message(STATUS "Storm - Including cpphoafparser")
-set(cppHOAparser_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser/include)
-set(cppHOAparser_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR})
 add_library(cppHOAparser INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(cppHOAparser INTERFACE
-        $<BUILD_INTERFACE:${cppHOAparser_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${cppHOAparser_INSTALL_DIR}>)
+        $<BUILD_INTERFACE:${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser/include>
+        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>)
 install(TARGETS cppHOAparser EXPORT storm_Targets)
-install(DIRECTORY ${cppHOAparser_SOURCE_DIR}
-        DESTINATION ${cppHOAparser_INSTALL_DIR}
+install(DIRECTORY ${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser/include/cpphoafparser
+        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
 list(APPEND STORM_DEP_TARGETS cppHOAparser)
 
@@ -273,15 +267,13 @@ list(APPEND STORM_DEP_TARGETS cppHOAparser)
 
 #use the shipped version of modernjson
 message(STATUS "Storm - Including ModernJSON.")
-set(ModernJSON_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/modernjson/include)
-set(ModernJSON_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/modernjson)
 add_library(ModernJSON INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(ModernJSON INTERFACE
-        $<BUILD_INTERFACE:${ModernJSON_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${ModernJSON_INSTALL_DIR}>)
+        $<BUILD_INTERFACE:${STORM_3RDPARTY_SOURCE_DIR}/modernjson/include>
+        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>)
 install(TARGETS ModernJSON EXPORT storm_Targets)
-install(DIRECTORY ${ModernJSON_SOURCE_DIR}
-        DESTINATION ${ModernJSON_INSTALL_DIR}
+install(DIRECTORY ${STORM_3RDPARTY_SOURCE_DIR}/modernjson/include/nlohmann
+        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
         FILES_MATCHING PATTERN "*.hpp" PATTERN ".git" EXCLUDE)
 list(APPEND STORM_DEP_TARGETS ModernJSON)
 
