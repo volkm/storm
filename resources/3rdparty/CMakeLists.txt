@@ -252,8 +252,8 @@ list(APPEND STORM_DEP_TARGETS phmap)
 #############################################################
 
 # Use the shipped version of cpphoafparser
-message(STATUS "Storm - Including cpphoafparser 0.99.2")
-set(cppHOAparser_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser-0.99.2/include)
+message(STATUS "Storm - Including cpphoafparser")
+set(cppHOAparser_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser/include)
 set(cppHOAparser_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/cpphoafparser/)
 add_library(cppHOAparser INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(cppHOAparser INTERFACE
