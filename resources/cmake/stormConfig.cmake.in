@@ -34,8 +34,8 @@ if(@STORM_HAVE_CUDD@)  # STORM_HAVE_CUDD
     set_target_properties(
             cudd
             PROPERTIES
-            IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/cudd/lib/libcudd@STATIC_EXT@
-            INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/cudd/include/
+            IMPORTED_LOCATION @STORM_3RDPARTY_BINARY_DIR@/cudd/lib/libcudd@STATIC_EXT@
+            INTERFACE_INCLUDE_DIRECTORIES "@STORM_3RDPARTY_BINARY_DIR@/cudd/include/"
     )
 endif()
 

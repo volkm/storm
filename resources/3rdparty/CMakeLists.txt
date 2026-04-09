@@ -102,11 +102,11 @@ if(NOT STORM_DISABLE_GMM)
     add_dependencies(gmm gmm_src)
     target_include_directories(gmm INTERFACE
             $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}/gmm/include>
-            $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/gmm>
+            $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>
     )
     install(TARGETS gmm EXPORT storm_Targets)
     install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/gmm/include/
-            DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/gmm
+            DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
     list(APPEND STORM_DEP_TARGETS gmm)
     set(STORM_HAVE_GMM ON)
@@ -129,7 +129,7 @@ ExternalProject_Add(
         eigen_src
         GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
         GIT_TAG ${STORM_EIGEN_GIT_TAG}
-        SOURCE_DIR ${STORM_3RDPARTY_BINARY_DIR}/StormEigen
+        SOURCE_DIR ${STORM_3RDPARTY_BINARY_DIR}/StormEigen/StormEigen
         # First check whether patch was already applied (--reverse --check), otherwise apply patch
         PATCH_COMMAND git apply ${STORM_3RDPARTY_SOURCE_DIR}/patches/eigen501.patch --reverse --check -q || git apply ${STORM_3RDPARTY_SOURCE_DIR}/patches/eigen501.patch
         UPDATE_COMMAND ""
@@ -147,13 +147,13 @@ if(STORM_WARNING_AS_ERROR AND STORM_COMPILER_GCC)
 endif()
 # note that we include without StormEigen
 target_include_directories(eigenstorm INTERFACE
-        $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}>
-        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>
+        $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}/StormEigen>
+        $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/StormEigen>
 )
 install(TARGETS eigenstorm EXPORT storm_Targets)
 install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/StormEigen/
-        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/StormEigen
-        PATTERN ".git" EXCLUDE)
+        DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
+        FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
 add_dependencies(storm_resources eigenstorm)
 list(APPEND STORM_DEP_TARGETS eigenstorm)
 
@@ -217,7 +217,7 @@ set(exprTk_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/exprtk)
 add_library(exprTk INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(exprTk INTERFACE
         $<BUILD_INTERFACE:${exprTk_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${exprTk_INSTALL_DIR}/exprtk>
+        $<INSTALL_INTERFACE:${exprTk_INSTALL_DIR}>
 )
 install(TARGETS exprTk EXPORT storm_Targets)
 install(DIRECTORY ${exprTk_SOURCE_DIR}
@@ -234,7 +234,7 @@ list(APPEND STORM_DEP_TARGETS exprTk)
 # Use the shipped version of Parallel Hashmap
 message(STATUS "Storm - Including Parallel Hashmap.")
 set(phmap_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/parallel-hashmap)
-set(phmap_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/parallel-hashmap)
+set(phmap_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR})
 add_library(phmap INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(phmap INTERFACE
         $<BUILD_INTERFACE:${phmap_SOURCE_DIR}>
@@ -254,7 +254,7 @@ list(APPEND STORM_DEP_TARGETS phmap)
 # Use the shipped version of cpphoafparser
 message(STATUS "Storm - Including cpphoafparser")
 set(cppHOAparser_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/cpphoafparser/include)
-set(cppHOAparser_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/cpphoafparser/)
+set(cppHOAparser_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR})
 add_library(cppHOAparser INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(cppHOAparser INTERFACE
         $<BUILD_INTERFACE:${cppHOAparser_SOURCE_DIR}>
@@ -273,8 +273,8 @@ list(APPEND STORM_DEP_TARGETS cppHOAparser)
 
 #use the shipped version of modernjson
 message(STATUS "Storm - Including ModernJSON.")
-set(ModernJSON_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/modernjson/include/)
-set(ModernJSON_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/modernjson/)
+set(ModernJSON_SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/modernjson/include)
+set(ModernJSON_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/modernjson)
 add_library(ModernJSON INTERFACE) # Not imported, we are in control of the sources.
 target_include_directories(ModernJSON INTERFACE
         $<BUILD_INTERFACE:${ModernJSON_SOURCE_DIR}>
@@ -454,7 +454,7 @@ SET(CARL_EXPORT_TO_CMAKE OFF)
 
 # Override carl's install dirs to match system conventions
 SET(CARL_LIB_INSTALL_DIR ${STORM_RESOURCE_LIBRARY_INSTALL_DIR})
-SET(CARL_INCLUDE_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/carl)
+SET(CARL_INCLUDE_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR})
 SET(CARL_CMAKE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/carl)
 
 FETCHCONTENT_MAKEAVAILABLE(carl)
