@@ -644,6 +644,7 @@ if(STORM_BUILD_TESTS)
             URL https://github.com/google/googletest/archive/${GTEST_VERSION}.zip
             #URL https://github.com/google/googletest/archive/refs/tags/v${GTEST_VERSION}.zip
     )
+    set(INSTALL_GTEST OFF)
     FETCHCONTENT_MAKEAVAILABLE(googletest)
 
     set(GTEST_LIBRARIES GTest::gtest_main GTest::gmock)
