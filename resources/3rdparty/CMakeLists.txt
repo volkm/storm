@@ -232,6 +232,7 @@ list(APPEND STORM_DEP_TARGETS exprTk)
 # Use the shipped version of Parallel Hashmap
 message(STATUS "Storm - Including Parallel Hashmap.")
 add_library(phmap INTERFACE) # Not imported, we are in control of the sources.
+# Note that include directory is parallel-hashmap/parallel_hashmap/
 target_include_directories(phmap INTERFACE
         $<BUILD_INTERFACE:${STORM_3RDPARTY_SOURCE_DIR}/parallel-hashmap>
         $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/parallel_hashmap>)
@@ -644,6 +645,7 @@ if(STORM_BUILD_TESTS)
             URL https://github.com/google/googletest/archive/${GTEST_VERSION}.zip
             #URL https://github.com/google/googletest/archive/refs/tags/v${GTEST_VERSION}.zip
     )
+    # Tests are not installed
     set(INSTALL_GTEST OFF)
     FETCHCONTENT_MAKEAVAILABLE(googletest)
 
