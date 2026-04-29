@@ -12,7 +12,7 @@ foreach (TOOL_VAR AUTORECONF ACLOCAL AUTOMAKE AUTOCONF AUTOHEADER)
 	string(APPEND CUDD_AUTOTOOLS_LOCATIONS "${TOOL_VAR}=${${TOOL_VAR}};")
 endforeach()
 
-set(CUDD_LIB_DIR ${STORM_3RDPARTY_BINARY_DIR}/cudd/lib)
+set(CUDD_LIB_DIR ${STORM_3RDPARTY_BINARY_DIR}/storm-cudd/lib)
 
 # create CUDD compilation flags
 if (NOT STORM_DEBUG_CUDD)
@@ -47,10 +47,10 @@ endif()
 ExternalProject_Add(
         cudd_src
         DOWNLOAD_COMMAND ""
-        SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/cudd
-        PREFIX ${STORM_3RDPARTY_BINARY_DIR}/cudd
+        SOURCE_DIR ${STORM_3RDPARTY_SOURCE_DIR}/storm-cudd
+        PREFIX ${STORM_3RDPARTY_BINARY_DIR}/storm-cudd
         PATCH_COMMAND ${CMAKE_COMMAND} -E env ${CUDD_AUTOTOOLS_LOCATIONS} ${AUTORECONF}
-        CONFIGURE_COMMAND ${STORM_3RDPARTY_SOURCE_DIR}/cudd/configure --enable-obj --with-pic=yes --prefix=${STORM_3RDPARTY_BINARY_DIR}/cudd --libdir=${CUDD_LIB_DIR} CC=${CMAKE_C_COMPILER} CXX=${CUDD_CXX_COMPILER} ${CUDD_INCLUDE_FLAGS}
+        CONFIGURE_COMMAND ${STORM_3RDPARTY_SOURCE_DIR}/storm-cudd/configure --enable-obj --with-pic=yes --prefix=${STORM_3RDPARTY_BINARY_DIR}/storm-cudd --libdir=${CUDD_LIB_DIR} CC=${CMAKE_C_COMPILER} CXX=${CUDD_CXX_COMPILER} ${CUDD_INCLUDE_FLAGS}
 	# Multi-threaded compilation could lead to compile issues
         BUILD_COMMAND make -j1 ${STORM_CUDD_FLAGS} ${CUDD_AUTOTOOLS_LOCATIONS}
         INSTALL_COMMAND make install -j1 ${CUDD_AUTOTOOLS_LOCATIONS}
@@ -63,26 +63,26 @@ ExternalProject_Add(
 )
 
 # Do not use system CUDD, Storm has a modified version
-set(CUDD_INCLUDE_DIR ${STORM_3RDPARTY_BINARY_DIR}/cudd/include)
+set(CUDD_INCLUDE_DIR ${STORM_3RDPARTY_BINARY_DIR}/storm-cudd/include)
 set(CUDD_STATIC_LIBRARY ${CUDD_LIB_DIR}/libcudd${STATIC_EXT})
 set(CUDD_VERSION_STRING 3.0.0)
-set(CUDD_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/cudd/)
+set(CUDD_INSTALL_DIR ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}/storm-cudd/)
 
 
 file(MAKE_DIRECTORY ${CUDD_INCLUDE_DIR}) # Workaround https://gitlab.kitware.com/cmake/cmake/-/issues/15052
-add_library(cudd STATIC IMPORTED)
+add_library(Storm::Cudd STATIC IMPORTED)
 set_target_properties(
-		cudd
-		PROPERTIES
-		IMPORTED_LOCATION ${CUDD_STATIC_LIBRARY}
-		INTERFACE_INCLUDE_DIRECTORIES ${CUDD_INCLUDE_DIR}
+        Storm::Cudd
+        PROPERTIES
+        IMPORTED_LOCATION ${CUDD_STATIC_LIBRARY}
+        INTERFACE_INCLUDE_DIRECTORIES ${CUDD_INCLUDE_DIR}
 )
 install(FILES ${CUDD_STATIC_LIBRARY} DESTINATION ${STORM_RESOURCE_LIBRARY_INSTALL_DIR})
 install(DIRECTORY ${CUDD_INCLUDE_DIR}/ DESTINATION ${CUDD_INSTALL_DIR}
 		FILES_MATCHING PATTERN "*.h" PATTERN "*.hh" PATTERN ".git" EXCLUDE)
 
-add_dependencies(storm_resources cudd)
-add_dependencies(cudd cudd_src)
-list(APPEND STORM_DEP_IMP_TARGETS cudd)
+add_dependencies(storm_resources Storm::Cudd)
+add_dependencies(Storm::Cudd cudd_src)
+list(APPEND STORM_DEP_IMP_TARGETS Storm::Cudd)
 
 message(STATUS "Storm - Linking with CUDD ${CUDD_VERSION_STRING}.")

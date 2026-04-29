@@ -30,12 +30,12 @@ find_dependency(Boost QUIET NO_MODULE)
 find_dependency(Threads)
 
 if(@STORM_HAVE_CUDD@)  # STORM_HAVE_CUDD
-    add_library(cudd STATIC IMPORTED)
+    add_library(Storm::Cudd STATIC IMPORTED)
     set_target_properties(
-            cudd
+            Storm::Cudd
             PROPERTIES
-            IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/cudd/lib/libcudd@STATIC_EXT@
-            INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/cudd/include/
+            IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/storm-cudd/lib/libcudd@STATIC_EXT@
+            INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/resources/3rdparty/storm-cudd/include/
     )
 endif()
 
