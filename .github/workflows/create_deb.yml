@@ -54,7 +54,7 @@ jobs:
       - name: Git clone
         uses: actions/checkout@v6
         with:
-          repository: stormchecker/stormpy
+          repository: stormchecker/storm
       - name: Replace CMake version
         run: perl -i -pe 's/^(\s*VERSION\s+)[0-9][0-9.]+/${1}${{ inputs.version }}/' CMakeLists.txt
       #- name: Verify CMake version is updated
