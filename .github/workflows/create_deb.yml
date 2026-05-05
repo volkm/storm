@@ -25,11 +25,28 @@ env:
 
 jobs:
   build_deb:
-    name: Build Debian package on ${{ matrix.platform.name }}
+    name: Build Debian package on ${{ matrix.distro.name }}-${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       fail-fast: false
       matrix:
+        distro:
+          - {name: "debian:12",
+             tag: "debian-12",
+             build_type: "Release"
+            }
+          - {name: "debian:13",
+             tag: "debian-13",
+             build_type: "Release"
+            }
+          - {name: "ubuntu:24.04",
+             tag: "ubuntu-24.04",
+             build_type: "Release"
+            }
+          - {name: "ubuntu:rolling",
+             tag: "latest",
+             build_type: "Release"
+            }
         platform:
           - { name: amd64, runner: "ubuntu-latest" }
           - { name: arm64, runner: "ubuntu-24.04-arm" }
@@ -42,8 +59,8 @@ jobs:
       - name: Build Storm from Dockerfile
         run: |
           docker build -t movesrwth/storm:ci . \
-            --build-arg BASE_IMAGE=movesrwth/storm-basesystem:debian-12 \
-            --build-arg build_type="Release" \
+            --build-arg BASE_IMAGE=movesrwth/storm-basesystem:${{ matrix.distro.tag }} \
+            --build-arg build_type="${{ matrix.distro.build_type }}" \
             --build-arg carl_tag=master \
             --build-arg cmake_args="-DSTORM_BUILD_TESTS=OFF -DCPACK_DEBIAN_PACKAGE_VERSION=${{ inputs.version }}" \
             --build-arg no_threads=${NR_JOBS}
@@ -63,7 +80,7 @@ jobs:
       - name: Upload Debian package artifact
         uses: actions/upload-artifact@v7
         with:
-          name: storm-deb-${{ matrix.platform.name }}
+          name: storm-deb-${{ matrix.distro.tag }}-${{ matrix.platform.name }}
           path: ./package/*.deb
 
 
@@ -87,7 +104,7 @@ jobs:
       - name: Download .deb artifact
         uses: actions/download-artifact@v8
         with:
-          name: storm-deb-${{ matrix.platform.name }}
+          name: storm-deb-${{matrix.distro.tag }}-${{ matrix.platform.name }}
           path: package
 
       - name: Install and test package
