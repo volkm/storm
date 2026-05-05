@@ -67,7 +67,7 @@ jobs:
           path: ./package/*.deb
 
 
-test_deb:
+  test_deb:
     name: Test Debian package on ${{ matrix.distro.name }}-${{ matrix.platform.name }}
     needs: build_deb
     runs-on: ${{ matrix.platform.runner }}
