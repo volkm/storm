@@ -92,10 +92,18 @@ jobs:
       fail-fast: false
       matrix:
         distro:
-          - { name: "debian:12" }
-          - { name: "debian:13" }
-          - { name: "ubuntu:24.04" }
-          - { name: "ubuntu:rolling" }
+          - {name: "debian:12",
+             tag: "debian-12",
+            }
+          - {name: "debian:13",
+             tag: "debian-13",
+            }
+          - {name: "ubuntu:24.04",
+             tag: "ubuntu-24.04",
+            }
+          - {name: "ubuntu:rolling",
+             tag: "latest",
+            }
         platform:
           - { name: amd64, runner: "ubuntu-latest" }
           - { name: arm64, runner: "ubuntu-24.04-arm" }
