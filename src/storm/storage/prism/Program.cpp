@@ -577,7 +577,7 @@ std::vector<storm::storage::PlayerIndex> Program::buildModuleIndexToPlayerIndexM
     for (storm::storage::PlayerIndex i = 0; i < this->getPlayers().size(); ++i) {
         for (auto const& module : this->getPlayers()[i].getModules()) {
             STORM_LOG_ASSERT(hasModule(module), "Module " << module << " not found.");
-            STORM_LOG_ASSERT(moduleToIndexMap.at(module) < this->getModules().size(), "module index " << moduleToIndexMap.at(module) << " out of range.");
+            STORM_LOG_ASSERT(moduleToIndexMap.at(module) < this->getModules().size(), "Module index " << moduleToIndexMap.at(module) << " out of range.");
             result[moduleToIndexMap.at(module)] = i;
         }
     }

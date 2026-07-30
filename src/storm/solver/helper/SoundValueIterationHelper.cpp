@@ -64,14 +64,14 @@ class SVIBackend {
 
     void nextRow(std::pair<ValueType, ValueType>&& value, [[maybe_unused]] uint64_t rowGroup, [[maybe_unused]] uint64_t row) {
         STORM_LOG_ASSERT(!TrivialRowGrouping, "Expected non-trivial row grouping.");
-        STORM_LOG_ASSERT(currRowValuesIndex < currRowValues.size(), "currRowValuesIndex out of range.");
+        STORM_LOG_ASSERT(currRowValuesIndex < currRowValues.size(), "CurrRowValuesIndex out of range.");
         if (Stage == SVIStage::Initial && bValue.empty()) {
             if (value.second > best.second || (value.second == best.second && better(value.first, best.first))) {
                 std::swap(value, best);
             }
             currRowValues[currRowValuesIndex++] = std::move(value);
         } else {
-            STORM_LOG_ASSERT(!bValue.empty(), "bValue should not be empty.");
+            STORM_LOG_ASSERT(!bValue.empty(), "BValue should not be empty.");
             auto const& b = Stage == SVIStage::b_eq_d ? *dValue : *bValue;
             if (bestValue.empty()) {
                 bestValue = best.first + b * best.second;
@@ -352,7 +352,7 @@ typename SoundValueIterationHelper<ValueType, TrivialRowGrouping>::SVIData Sound
                         return SVI(xy, offsets, numIterations, relative, precision, backend.template createBackendForNextStage<SVIStage::b_eq_d>(),
                                    iterationCallback, relevantValues, convergenceCheckState);
                     default:
-                        STORM_LOG_ASSERT(false, "Unexpected next stage");
+                        STORM_LOG_ASSERT(false, "Unexpected next stage.");
                 }
             }
         }

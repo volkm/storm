@@ -123,7 +123,7 @@ uint_fast64_t PredicateExpression::getArity() const {
 }
 
 std::shared_ptr<BaseExpression const> PredicateExpression::getOperand(uint_fast64_t operandIndex) const {
-    STORM_LOG_ASSERT(operandIndex < this->getArity(), "Invalid operand access");
+    STORM_LOG_ASSERT(operandIndex < this->getArity(), "Invalid operand access.");
     return operands[operandIndex];
 }
 

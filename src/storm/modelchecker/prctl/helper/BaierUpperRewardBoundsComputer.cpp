@@ -128,8 +128,8 @@ std::vector<ValueType> BaierUpperRewardBoundsComputer<ValueType>::computeUpperBo
     auto const candidateStateItEnd = candidateStates.rend();
     while (true) {
         // Assert invariant: all states with index >= unprocessedEnd are processed and state (unprocessedEnd - 1) is not processed
-        STORM_LOG_ASSERT(processedStates.getNextUnsetIndex(unprocessedEnd) == processedStates.size(), "Invalid index for last unexplored state");
-        STORM_LOG_ASSERT(candidateStates.isSubsetOf(~processedStates), "");
+        STORM_LOG_ASSERT(processedStates.getNextUnsetIndex(unprocessedEnd) == processedStates.size(), "Invalid index for last unexplored state.");
+        STORM_LOG_ASSERT(candidateStates.isSubsetOf(~processedStates), "Candidate states should be subset of unprocessed states.");
         uint64_t const state = *candidateStateIt;
         auto const group = transitionMatrix.getRowGroupIndices(state);
         if (std::all_of(group.begin(), group.end(), [&isValidChoice](auto const& choice) { return isValidChoice(choice); })) {
@@ -144,7 +144,7 @@ std::vector<ValueType> BaierUpperRewardBoundsComputer<ValueType>::computeUpperBo
             if (state == unprocessedEnd - 1) {
                 unprocessedEnd = processedStates.getStartOfOneSequenceBefore(unprocessedEnd - 1);
                 if (unprocessedEnd == 0) {
-                    STORM_LOG_ASSERT(processedStates.full(), "Expected all states to be processed");
+                    STORM_LOG_ASSERT(processedStates.full(), "Expected all states to be processed.");
                     break;
                 }
             }

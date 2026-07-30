@@ -131,7 +131,7 @@ std::vector<typename Polytope<storm::RationalNumber>::Point> Polytope<storm::Rat
         }
     }
     STORM_LOG_ASSERT(neighborsOfVertices[currentVertex].getNumberOfSetBits() == 2,
-                     "For 2D Polytopes with at least 3 vertices, each vertex should have exactly 2 neighbors");
+                     "For 2D Polytopes with at least 3 vertices, each vertex should have exactly 2 neighbors.");
     uint_fast64_t firstNeighbor = neighborsOfVertices[currentVertex].getNextSetIndex(0);
     uint_fast64_t secondNeighbor = neighborsOfVertices[currentVertex].getNextSetIndex(firstNeighbor + 1);
     uint_fast64_t previousVertex = vertices[firstNeighbor].back() <= vertices[secondNeighbor].back() ? firstNeighbor : secondNeighbor;
@@ -140,7 +140,7 @@ std::vector<typename Polytope<storm::RationalNumber>::Point> Polytope<storm::Rat
         result.push_back(std::move(vertices[currentVertex]));
 
         STORM_LOG_ASSERT(neighborsOfVertices[currentVertex].getNumberOfSetBits() == 2,
-                         "For 2D Polytopes with at least 3 vertices, each vertex should have exactly 2 neighbors");
+                         "For 2D Polytopes with at least 3 vertices, each vertex should have exactly 2 neighbors.");
         firstNeighbor = neighborsOfVertices[currentVertex].getNextSetIndex(0);
         secondNeighbor = neighborsOfVertices[currentVertex].getNextSetIndex(firstNeighbor + 1);
         uint_fast64_t nextVertex = firstNeighbor != previousVertex ? firstNeighbor : secondNeighbor;

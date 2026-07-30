@@ -179,7 +179,7 @@ std::vector<storm::storage::BitVector> GlobalPomdpMecChoiceEliminator<ValueType>
                     mecChoices = localChoiceIndices;
                 } else {
                     STORM_LOG_ASSERT(mecChoices.size() == localChoiceIndices.size(),
-                                     "Observation action count does not match for two states with the same observation");
+                                     "Observation action count does not match for two states with the same observation.");
                     mecChoices &= localChoiceIndices;
                 }
             }

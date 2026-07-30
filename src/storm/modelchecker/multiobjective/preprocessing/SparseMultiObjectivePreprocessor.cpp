@@ -581,7 +581,7 @@ void SparseMultiObjectivePreprocessor<SparseModelType>::preprocessEventuallyForm
                     .extract();
             // Reduce potential transition branch rewards to state-action rewards.
             objectiveRewards.reduceToStateBasedRewards(data.model->getTransitionMatrix(), false);
-            STORM_LOG_ASSERT(!objectiveRewards.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards");
+            STORM_LOG_ASSERT(!objectiveRewards.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards.");
             // clear state-rewards
             if (objectiveRewards.hasStateRewards()) {
                 storm::utility::vector::setVectorValues(objectiveRewards.getStateRewardVector(), reachableFromGoal,
@@ -691,7 +691,7 @@ void SparseMultiObjectivePreprocessor<SparseModelType>::preprocessCumulativeRewa
     // Clear potential transition rewards.
     auto& rewardModel = data.model->getRewardModel(rewardModelName);
     rewardModel.reduceToStateBasedRewards(data.model->getTransitionMatrix(), false);
-    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards");
+    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards.");
 
     std::vector<storm::logic::TimeBoundReference> newTimeBoundReferences;
     bool onlyRewardBounds = true;
@@ -740,7 +740,7 @@ void SparseMultiObjectivePreprocessor<SparseModelType>::preprocessTotalRewardFor
     // Reduce potential transition branch rewards to state-action rewards
     auto& rewardModel = data.model->getRewardModel(rewardModelName);
     rewardModel.reduceToStateBasedRewards(data.model->getTransitionMatrix(), false);
-    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards");
+    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards.");
 
     data.objectives.back()->formula = std::make_shared<storm::logic::RewardOperatorFormula>(formula.stripRewardAccumulation(), rewardModelName, opInfo);
     data.finiteRewardCheckObjectives.set(data.objectives.size() - 1, true);
@@ -760,7 +760,7 @@ void SparseMultiObjectivePreprocessor<SparseModelType>::preprocessLongRunAverage
     // Reduce potential transition branch rewards to state-action rewards
     auto& rewardModel = data.model->getRewardModel(rewardModelName);
     rewardModel.reduceToStateBasedRewards(data.model->getTransitionMatrix(), false);
-    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards");
+    STORM_LOG_ASSERT(!rewardModel.hasTransitionRewards(), "Expected no transition rewards after reducing to state-based rewards.");
 
     data.objectives.back()->formula = std::make_shared<storm::logic::RewardOperatorFormula>(formula.stripRewardAccumulation(), rewardModelName, opInfo);
 }

@@ -24,7 +24,7 @@ Automaton::Automaton(std::string const& name, storm::expressions::Variable const
 
 storm::expressions::Variable cloneVariable(storm::expressions::ExpressionManager& manager, storm::expressions::Variable const& var,
                                            std::string const& variablePrefix) {
-    STORM_LOG_ASSERT(var.getManager() == manager, "expected same manager.");
+    STORM_LOG_ASSERT(var.getManager() == manager, "Expected same manager.");
     return manager.declareVariable(variablePrefix + var.getName(), var.getType());
 }
 

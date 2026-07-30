@@ -625,7 +625,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::comp
             steadyStateDistr[state] = *bsccDistrIt;
             ++bsccDistrIt;
         }
-        STORM_LOG_ASSERT(bsccDistrIt == bsccDistr.end(), "Unexpected number of entries in bscc distribution");
+        STORM_LOG_ASSERT(bsccDistrIt == bsccDistr.end(), "Unexpected number of entries in bscc distribution.");
     }
     return steadyStateDistr;
 }

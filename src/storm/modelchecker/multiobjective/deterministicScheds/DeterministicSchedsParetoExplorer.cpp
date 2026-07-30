@@ -29,13 +29,13 @@ namespace multiobjective {
 template<class SparseModelType, typename GeometryValueType>
 DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Point::Point(std::vector<GeometryValueType> const& coordinates)
     : coordinates(coordinates), onFacet(false), paretoOptimal(false) {
-    STORM_LOG_ASSERT(!this->coordinates.empty(), "Points with dimension 0 are not supported");
+    STORM_LOG_ASSERT(!this->coordinates.empty(), "Points with dimension 0 are not supported.");
 }
 
 template<class SparseModelType, typename GeometryValueType>
 DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Point::Point(std::vector<GeometryValueType>&& coordinates)
     : coordinates(std::move(coordinates)), onFacet(false), paretoOptimal(false) {
-    STORM_LOG_ASSERT(!this->coordinates.empty(), "Points with dimension 0 are not supported");
+    STORM_LOG_ASSERT(!this->coordinates.empty(), "Points with dimension 0 are not supported.");
 }
 
 template<class SparseModelType, typename GeometryValueType>
@@ -50,7 +50,7 @@ std::vector<GeometryValueType> const& DeterministicSchedsParetoExplorer<SparseMo
 
 template<class SparseModelType, typename GeometryValueType>
 uint64_t DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Point::dimension() const {
-    STORM_LOG_ASSERT(!coordinates.empty(), "Points with dimension 0 are not supported");
+    STORM_LOG_ASSERT(!coordinates.empty(), "Points with dimension 0 are not supported.");
     return coordinates.size();
 }
 
@@ -286,7 +286,7 @@ DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Facet::ge
     // This facet might lie at the 'border', which means that the downward closure has to be taken in some directions
     storm::storage::BitVector dimensionsForDownwardClosure = storm::utility::vector::filterZero(this->halfspace.normalVector());
     STORM_LOG_ASSERT(dimensionsForDownwardClosure.getNumberOfSetBits() + vertices.size() >= halfspace.normalVector().size() + 1,
-                     "The number of points on the facet is insufficient");
+                     "The number of points on the facet is insufficient.");
     if (dimensionsForDownwardClosure.empty()) {
         return storm::storage::geometry::Polytope<GeometryValueType>::create(vertices);
     } else {

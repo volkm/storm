@@ -27,8 +27,8 @@ Order::Order(storm::storage::BitVector const& topStates, storm::storage::BitVect
         this->nodes[i] = bottom;
         numberOfAddedStates++;
     }
-    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states");
-    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == (topStates.getNumberOfSetBits() + bottomStates.getNumberOfSetBits()), "Done states bits mismatch");
+    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states.");
+    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == (topStates.getNumberOfSetBits() + bottomStates.getNumberOfSetBits()), "Done states bits mismatch.");
     if (numberOfAddedStates == numberOfStates) {
         doneBuilding = doneStates.full();
     }
@@ -50,10 +50,10 @@ Order::Order(uint_fast64_t topState, uint_fast64_t bottomState, uint_fast64_t nu
     this->bottom->states.insert(bottomState);
     this->nodes[bottomState] = bottom;
     this->numberOfAddedStates = 2;
-    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states");
+    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states.");
 
     this->statesSorted = statesSorted;
-    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == 2, "Done states bits should be 2");
+    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == 2, "Done states bits should be 2.");
     if (numberOfAddedStates == numberOfStates) {
         doneBuilding = doneStates.full();
     }
@@ -66,7 +66,7 @@ Order::Order() {
 /*** Modifying the order ***/
 
 void Order::add(uint_fast64_t state) {
-    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node");
+    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node.");
     addBetween(state, top, bottom);
     addStateToHandle(state);
 }
@@ -74,7 +74,7 @@ void Order::add(uint_fast64_t state) {
 void Order::addAbove(uint_fast64_t state, Node* node) {
     STORM_LOG_INFO("Add " << state << " above " << *node->states.begin() << '\n');
 
-    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node");
+    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node.");
     Node* newNode = new Node();
     nodes[state] = newNode;
 
@@ -94,7 +94,7 @@ void Order::addAbove(uint_fast64_t state, Node* node) {
 void Order::addBelow(uint_fast64_t state, Node* node) {
     STORM_LOG_INFO("Add " << state << " below " << *node->states.begin() << '\n');
 
-    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node");
+    STORM_LOG_ASSERT(nodes[state] == nullptr, "State already has a node.");
     Node* newNode = new Node();
     nodes[state] = newNode;
     newNode->states.insert(state);
@@ -108,14 +108,14 @@ void Order::addBelow(uint_fast64_t state, Node* node) {
     if (numberOfAddedStates == numberOfStates) {
         doneBuilding = doneStates.full();
     }
-    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states");
+    STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states.");
 }
 
 void Order::addBetween(uint_fast64_t state, Node* above, Node* below) {
     STORM_LOG_INFO("Add " << state << " between (above) " << *above->states.begin() << " and " << *below->states.begin() << '\n');
 
     STORM_LOG_ASSERT(compare(above, below) == ABOVE, "Comparison result is not ABOVE");
-    STORM_LOG_ASSERT(above != nullptr && below != nullptr, "Above or below is null");
+    STORM_LOG_ASSERT(above != nullptr && below != nullptr, "Above or below is null.");
     if (nodes[state] == nullptr) {
         // State is not in the order yet
         Node* newNode = new Node();
@@ -132,7 +132,7 @@ void Order::addBetween(uint_fast64_t state, Node* above, Node* below) {
         if (numberOfAddedStates == numberOfStates) {
             doneBuilding = doneStates.full();
         }
-        STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states");
+        STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states.");
     } else {
         // State is in the order already, so we add the new relations
         addRelationNodes(above, nodes[state]);
@@ -142,14 +142,14 @@ void Order::addBetween(uint_fast64_t state, Node* above, Node* below) {
 
 void Order::addBetween(uint_fast64_t state, uint_fast64_t above, uint_fast64_t below) {
     STORM_LOG_ASSERT(compare(above, below) == ABOVE, "Comparison result is not ABOVE");
-    STORM_LOG_ASSERT(getNode(below)->states.find(below) != getNode(below)->states.end(), "Below state not found in its node");
-    STORM_LOG_ASSERT(getNode(above)->states.find(above) != getNode(above)->states.end(), "Above state not found in its node");
+    STORM_LOG_ASSERT(getNode(below)->states.find(below) != getNode(below)->states.end(), "Below state not found in its node.");
+    STORM_LOG_ASSERT(getNode(above)->states.find(above) != getNode(above)->states.end(), "Above state not found in its node.");
 
     addBetween(state, getNode(above), getNode(below));
 }
 
 void Order::addRelation(uint_fast64_t above, uint_fast64_t below, bool allowMerge) {
-    STORM_LOG_ASSERT(getNode(above) != nullptr && getNode(below) != nullptr, "Above or below node is null");
+    STORM_LOG_ASSERT(getNode(above) != nullptr && getNode(below) != nullptr, "Above or below node is null.");
     addRelationNodes(getNode(above), getNode(below), allowMerge);
 }
 
@@ -182,7 +182,7 @@ void Order::addToNode(uint_fast64_t state, Node* node) {
         if (numberOfAddedStates == numberOfStates) {
             doneBuilding = doneStates.full();
         }
-        STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states");
+        STORM_LOG_ASSERT(numberOfAddedStates <= numberOfStates, "Number of added states exceeds total states.");
 
     } else {
         // State is in the order already, so we merge the nodes
@@ -296,7 +296,7 @@ Order::Node* Order::getBottom() const {
 }
 
 bool Order::getDoneBuilding() const {
-    STORM_LOG_ASSERT(!doneStates.full() || numberOfAddedStates == numberOfStates, "Done states full but not all states added");
+    STORM_LOG_ASSERT(!doneStates.full() || numberOfAddedStates == numberOfStates, "Done states full but not all states added.");
     return doneStates.full();
 }
 
@@ -305,7 +305,7 @@ uint_fast64_t Order::getNextDoneState(uint_fast64_t state) const {
 }
 
 Order::Node* Order::getNode(uint_fast64_t stateNumber) const {
-    STORM_LOG_ASSERT(stateNumber < numberOfStates, "State number exceeds total states");
+    STORM_LOG_ASSERT(stateNumber < numberOfStates, "State number exceeds total states.");
     return nodes[stateNumber];
 }
 
@@ -344,7 +344,7 @@ bool Order::isOnlyBottomTopOrder() const {
 }
 
 std::vector<uint_fast64_t> Order::sortStates(std::vector<uint_fast64_t>* states) {
-    STORM_LOG_ASSERT(states != nullptr, "States pointer is null");
+    STORM_LOG_ASSERT(states != nullptr, "States pointer is null.");
     uint_fast64_t numberOfStatesToSort = states->size();
     std::vector<uint_fast64_t> result;
     // Go over all states
@@ -377,7 +377,7 @@ std::vector<uint_fast64_t> Order::sortStates(std::vector<uint_fast64_t>* states)
     while (result.size() < numberOfStatesToSort) {
         result.push_back(numberOfStates);
     }
-    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch");
+    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch.");
     return result;
 }
 
@@ -425,7 +425,7 @@ std::pair<std::pair<uint_fast64_t, uint_fast64_t>, std::vector<uint_fast64_t>> O
         }
     }
     if (!unknown && oneUnknown) {
-        STORM_LOG_ASSERT(statesSorted.size() == states.size(), "States sorted size mismatch");
+        STORM_LOG_ASSERT(statesSorted.size() == states.size(), "States sorted size mismatch.");
         s2 = numberOfStates;
     }
     STORM_LOG_ASSERT(s1 == numberOfStates || (s1 != numberOfStates && s2 == numberOfStates && statesSorted.size() == states.size()) ||
@@ -436,7 +436,7 @@ std::pair<std::pair<uint_fast64_t, uint_fast64_t>, std::vector<uint_fast64_t>> O
 }
 
 std::pair<std::pair<uint_fast64_t, uint_fast64_t>, std::vector<uint_fast64_t>> Order::sortStatesUnorderedPair(const std::vector<uint_fast64_t>* states) {
-    STORM_LOG_ASSERT(states != nullptr, "States pointer is null");
+    STORM_LOG_ASSERT(states != nullptr, "States pointer is null.");
     [[maybe_unused]] uint_fast64_t numberOfStatesToSort = states->size();
     std::vector<uint_fast64_t> result;
     // Go over all states
@@ -466,7 +466,7 @@ std::pair<std::pair<uint_fast64_t, uint_fast64_t>, std::vector<uint_fast64_t>> O
         }
     }
 
-    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch");
+    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch.");
     return {{numberOfStates, numberOfStates}, std::move(result)};
 }
 
@@ -503,14 +503,14 @@ std::vector<uint_fast64_t> Order::sortStates(storm::storage::BitVector* states) 
     while (result.size() < numberOfStatesToSort) {
         result.push_back(numberOfStates);
     }
-    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch");
+    STORM_LOG_ASSERT(result.size() == numberOfStatesToSort, "Result size mismatch.");
     return result;
 }
 
 /*** Checking on helpfunctionality for building of order ***/
 
 std::shared_ptr<Order> Order::copy() const {
-    STORM_LOG_ASSERT(!isInvalid(), "Order is invalid");
+    STORM_LOG_ASSERT(!isInvalid(), "Order is invalid.");
     std::shared_ptr<Order> copiedOrder = std::make_shared<Order>();
     copiedOrder->nodes = std::vector<Node*>(numberOfStates, nullptr);
     copiedOrder->onlyBottomTopOrder = this->isOnlyBottomTopOrder();
@@ -536,17 +536,17 @@ std::shared_ptr<Order> Order::copy() const {
                 }
                 newNode->statesAbove = storm::storage::BitVector(oldNode->statesAbove);
                 for (size_t i = 0; i < oldNode->statesAbove.size(); ++i) {
-                    STORM_LOG_ASSERT(newNode->statesAbove[i] == oldNode->statesAbove[i], "StatesAbove mismatch during copy");
+                    STORM_LOG_ASSERT(newNode->statesAbove[i] == oldNode->statesAbove[i], "StatesAbove mismatch during copy.");
                 }
                 for (auto const& i : oldNode->states) {
-                    STORM_LOG_ASSERT(!seenStates[i], "State already seen during copy");
+                    STORM_LOG_ASSERT(!seenStates[i], "State already seen during copy.");
                     newNode->states.insert(i);
                     seenStates.set(i);
                     copiedOrder->nodes[i] = newNode;
                 }
             }
         } else {
-            STORM_LOG_ASSERT(copiedOrder->nodes[state] == nullptr, "Copied order node already exists");
+            STORM_LOG_ASSERT(copiedOrder->nodes[state] == nullptr, "Copied order node already exists.");
         }
     }
 
@@ -656,7 +656,7 @@ void Order::init(uint_fast64_t numberOfStates, storage::Decomposition<storage::S
     this->invalid = false;
     this->nodes = std::vector<Node*>(numberOfStates, nullptr);
     this->doneStates = storm::storage::BitVector(numberOfStates, false);
-    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == 0, "Done states should be empty initially");
+    STORM_LOG_ASSERT(doneStates.getNumberOfSetBits() == 0, "Done states should be empty initially.");
     if (decomposition.size() == 0) {
         this->trivialStates = storm::storage::BitVector(numberOfStates, true);
     } else {
@@ -762,7 +762,7 @@ std::pair<uint_fast64_t, bool> Order::getNextStateNumber() {
 }
 
 std::pair<uint_fast64_t, bool> Order::getStateToHandle() {
-    STORM_LOG_ASSERT(existsStateToHandle(), "No state to handle");
+    STORM_LOG_ASSERT(existsStateToHandle(), "No state to handle.");
     auto state = statesToHandle.back();
     statesToHandle.pop_back();
     return {state, false};

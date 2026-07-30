@@ -857,7 +857,7 @@ storm::storage::BitVector SparseMatrix<ValueType>::getRowFilter(storm::storage::
 
 template<typename ValueType>
 storm::storage::BitVector SparseMatrix<ValueType>::getRowGroupFilter(storm::storage::BitVector const& rowConstraint, bool setIfForAllRowsInGroup) const {
-    STORM_LOG_ASSERT(!this->hasTrivialRowGrouping(), "Tried to get a row group filter but this matrix does not have row groups");
+    STORM_LOG_ASSERT(!this->hasTrivialRowGrouping(), "Tried to get a row group filter but this matrix does not have row groups.");
     storm::storage::BitVector result(this->getRowGroupCount(), false);
     auto const& groupIndices = this->getRowGroupIndices();
     if (setIfForAllRowsInGroup) {

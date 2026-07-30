@@ -39,7 +39,7 @@ std::shared_ptr<storm::automata::DeterministicAutomaton> ltl2daSpotProduct(storm
     // iterate over all subformulae
     for (const std::shared_ptr<const storm::logic::Formula>& subFormula : formula.getSubformulas()) {
         // get the formula in the right format
-        STORM_LOG_ASSERT(subFormula->isProbabilityOperatorFormula(), "subformula " << *subFormula << " has unexpected type.");
+        STORM_LOG_ASSERT(subFormula->isProbabilityOperatorFormula(), "Subformula " << *subFormula << " has unexpected type.");
         auto const& pathFormula = subFormula->asProbabilityOperatorFormula().getSubformula().asPathFormula();
 
         // get map of state-expressions to propositions

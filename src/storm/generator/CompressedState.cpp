@@ -227,7 +227,7 @@ storm::json<ValueType> unpackStateIntoJson(CompressedState const& state, Variabl
         if (onlyObservable && !integerVariable.observable) {
             continue;
         }
-        STORM_LOG_ASSERT(integerVariable.bitWidth <= 63, "Only integer variables with at most 63 bits are supported");
+        STORM_LOG_ASSERT(integerVariable.bitWidth <= 63, "Only integer variables with at most 63 bits are supported.");
         result[integerVariable.getName()] =
             static_cast<int64_t>(state.getAsInt(integerVariable.bitOffset, integerVariable.bitWidth)) + integerVariable.lowerBound;
     }

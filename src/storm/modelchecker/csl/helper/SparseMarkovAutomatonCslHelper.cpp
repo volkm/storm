@@ -221,7 +221,7 @@ class UnifPlusHelper {
                     // This has to be done after updating the Markovian state values since we needed the 'old' target value above.
                     if (computeLowerBound && static_cast<uint64_t>(k) >= foxGlynnResult.left) {
                         STORM_LOG_ASSERT(static_cast<uint64_t>(k) <= foxGlynnResult.right,
-                                         "k exceeds left bound.");  // has to hold since this iteration is relevant
+                                         "K exceeds left bound.");  // has to hold since this iteration is relevant
                         targetValue += foxGlynnResult.weights[k - foxGlynnResult.left];
                     }
 
@@ -245,7 +245,7 @@ class UnifPlusHelper {
                         // Add the scaled values to the actual result vector
                         uint64_t i = N - 1 - k;
                         if (i >= foxGlynnResult.left) {
-                            STORM_LOG_ASSERT(i <= foxGlynnResult.right, "i exceeds right bound.");  // has to hold since this iteration is considered relevant.
+                            STORM_LOG_ASSERT(i <= foxGlynnResult.right, "I exceeds right bound.");  // has to hold since this iteration is considered relevant.
                             ValueType const& weight = foxGlynnResult.weights[i - foxGlynnResult.left];
                             storm::utility::vector::addScaledVector(maybeStatesValuesUpper, maybeStatesValuesWeightedUpper, weight);
                         }
@@ -330,7 +330,7 @@ class UnifPlusHelper {
         } else {
             // Set the values for Markovian "maybe" states
             STORM_LOG_ASSERT(markovianMaybeStates.getNumberOfSetBits() == markovianStatesModMaybeStates.getNumberOfSetBits(),
-                             "Unexpected number of Markovian maybe states");
+                             "Unexpected number of Markovian maybe states.");
             auto subStateIt = markovianStatesModMaybeStates.begin();
             for (auto const markovianState : markovianMaybeStates) {
                 result[markovianState] = (maybeStatesValuesLower[*subStateIt] + maybeStatesValuesUpper[*subStateIt]) / two;

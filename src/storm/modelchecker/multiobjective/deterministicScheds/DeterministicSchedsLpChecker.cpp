@@ -184,7 +184,7 @@ std::vector<storm::expressions::Expression> classicConstraints(storm::solver::Lp
         for (auto const& state : objectiveHelper.getRewMinusInfEStates()) {
             reachVars[state] = lpModel.addBinaryVariable("c_" + std::to_string(objIndex) + "_" + std::to_string(state));
         }
-        STORM_LOG_ASSERT(objectiveHelper.getRewMinusInfEStates().get(initialState), "");
+        STORM_LOG_ASSERT(objectiveHelper.getRewMinusInfEStates().get(initialState), "Initial state must be in RewMinusInfEStates.");
         lpModel.update();
         lpModel.addConstraint("", reachVars[initialState] == lpModel.getConstant(storm::utility::one<ValueType>()));
     }
@@ -632,7 +632,7 @@ void DeterministicSchedsLpChecker<ModelType, GeometryValueType>::checkRecursive(
                                                                                 storm::storage::geometry::PolytopeTree<GeometryValueType>& polytopeTree,
                                                                                 Point const& eps, std::vector<Point>& foundPoints,
                                                                                 std::vector<Polytope>& infeasableAreas, uint64_t const& depth) {
-    STORM_LOG_ASSERT(!polytopeTree.isEmpty(), "Tree node is empty");
+    STORM_LOG_ASSERT(!polytopeTree.isEmpty(), "Tree node is empty.");
     STORM_LOG_ASSERT(!polytopeTree.getPolytope()->isEmpty(), "Tree node is empty.");
     STORM_LOG_TRACE("Checking at depth " << depth << ": " << polytopeTree.toString());
 
@@ -746,7 +746,7 @@ void DeterministicSchedsLpChecker<ModelType, GeometryValueType>::checkRecursive(
             }
             uint64_t newPointIndex = foundPoints.size();
             checkRecursive(env, polytopeTree.getChildren()[childId], eps, foundPoints, infeasableAreas, depth + 1);
-            STORM_LOG_ASSERT(polytopeTree.getChildren()[childId].isEmpty(), "expected empty children.");
+            STORM_LOG_ASSERT(polytopeTree.getChildren()[childId].isEmpty(), "Expected empty children.");
             // Make the new points known to the right siblings
             for (; newPointIndex < foundPoints.size(); ++newPointIndex) {
                 for (uint64_t siblingId = childId + 1; siblingId < polytopeTree.getChildren().size(); ++siblingId) {

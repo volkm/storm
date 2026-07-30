@@ -714,7 +714,7 @@ template<typename ValueType, bool SingleObjectiveMode>
 template<bool SO, typename std::enable_if<SO, int>::type>
 void MultiDimensionalRewardUnfolding<ValueType, SingleObjectiveMode>::setSolutionEntry(SolutionType& solution, uint64_t objIndex,
                                                                                        ValueType const& value) const {
-    STORM_LOG_ASSERT(objIndex == 0, "Invalid objective index in single objective mode");
+    STORM_LOG_ASSERT(objIndex == 0, "Invalid objective index in single objective mode.");
     solution = value;
 }
 

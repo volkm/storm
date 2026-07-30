@@ -257,7 +257,7 @@ TASK_3(BDD, sylvan_assign_block, BDD, sig, BDD, previous_block, InternalSylvanSi
 
     if (refiner->options.reuseBlockNumbers) {
         // try to claim previous block number
-        STORM_LOG_ASSERT(previous_block != sylvan_false, "previous_block is sylvan_false.");
+        STORM_LOG_ASSERT(previous_block != sylvan_false, "Previous_block is sylvan_false.");
         const uint64_t p_b = CALL(sylvan_decode_block, previous_block);
         STORM_LOG_ASSERT(p_b < refiner->signatures.size(), "Block index out of range.");
 

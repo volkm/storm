@@ -433,7 +433,7 @@ bool IterativePolicySearch<ValueType>::analyze(uint64_t k, storm::storage::BitVe
     }
     std::vector<storm::expressions::Expression> atLeastOneOfStates;
     for (uint64_t state : oneOfTheseStates) {
-        STORM_LOG_ASSERT(reachVarExpressions.size() > state, "state id " << state << " exceeds number of states (" << reachVarExpressions.size() << ")");
+        STORM_LOG_ASSERT(reachVarExpressions.size() > state, "State id " << state << " exceeds number of states (" << reachVarExpressions.size() << ")");
         atLeastOneOfStates.push_back(reachVarExpressions[state]);
     }
     if (!atLeastOneOfStates.empty()) {
@@ -763,7 +763,7 @@ bool IterativePolicySearch<ValueType>::analyze(uint64_t k, storm::storage::BitVe
                 }
             }
         }
-        STORM_LOG_ASSERT(!updated.empty(), "The strategy should be new in at least one place");
+        STORM_LOG_ASSERT(!updated.empty(), "The strategy should be new in at least one place.");
         if (options.computeDebugOutput()) {
             winningRegion.print();
         }

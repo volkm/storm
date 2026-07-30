@@ -393,8 +393,8 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::getCurrentStateWasTruncated() const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
     STORM_LOG_ASSERT(getCurrentMdpState() != noState(), "Method 'actionAtCurrentStateWasOptimal' called but there is no current state.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior");
-    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior.");
+    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available.");
     return exploredMdp->getStateLabeling().getStateHasLabel("truncated", getCurrentMdpState());
 }
 
@@ -402,8 +402,8 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::getCurrentStateWasClipped() const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
     STORM_LOG_ASSERT(getCurrentMdpState() != noState(), "Method 'actionAtCurrentStateWasOptimal' called but there is no current state.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior");
-    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior.");
+    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available.");
     return exploredMdp->getStateLabeling().getStateHasLabel("clipped", getCurrentMdpState());
 }
 
@@ -426,7 +426,7 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::currentStateIsOptimalSchedulerReachable() const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
     STORM_LOG_ASSERT(getCurrentMdpState() != noState(), "Method 'currentStateIsOptimalSchedulerReachable' called but there is no current state.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'currentStateIsOptimalSchedulerReachable' called but current state has no old behavior");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'currentStateIsOptimalSchedulerReachable' called but current state has no old behavior.");
     STORM_LOG_ASSERT(optimalChoicesReachableMdpStates.has_value(),
                      "Method 'currentStateIsOptimalSchedulerReachable' called but 'computeOptimalChoicesAndReachableMdpStates' was not called before.");
     return optimalChoicesReachableMdpStates->get(getCurrentMdpState());
@@ -436,7 +436,7 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::actionAtCurrentStateWasOptimal(uint64_t const &localActionIndex) const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
     STORM_LOG_ASSERT(getCurrentMdpState() != noState(), "Method 'actionAtCurrentStateWasOptimal' called but there is no current state.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior.");
     STORM_LOG_ASSERT(optimalChoices.has_value(),
                      "Method 'currentStateIsOptimalSchedulerReachable' called but 'computeOptimalChoicesAndReachableMdpStates' was not called before.");
     uint64_t choice = previousChoiceIndices.at(getCurrentMdpState()) + localActionIndex;
@@ -447,8 +447,8 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::getCurrentStateActionExplorationWasDelayed(uint64_t const &localActionIndex) const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
     STORM_LOG_ASSERT(getCurrentMdpState() != noState(), "Method 'actionAtCurrentStateWasOptimal' called but there is no current state.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior");
-    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method 'actionAtCurrentStateWasOptimal' called but current state has no old behavior.");
+    STORM_LOG_ASSERT(exploredMdp, "No 'old' mdp available.");
     uint64_t choice = exploredMdp->getNondeterministicChoiceIndices()[getCurrentMdpState()] + localActionIndex;
     return exploredMdp->hasChoiceLabeling() && exploredMdp->getChoiceLabeling().getLabels().count("delayed") > 0 &&
            exploredMdp->getChoiceLabeling().getChoiceHasLabel("delayed", choice);
@@ -731,7 +731,7 @@ void BeliefMdpExplorer<PomdpType, BeliefValueType>::dropUnexploredStates() {
                 ++belIdToMdpStateIt;
             } else {
                 STORM_LOG_ASSERT(!exploredBeliefIds.get(belIdToMdpStateIt->first),
-                                 "Inconsistent exploration information: Unexplored MDPState corresponds to explored beliefId");
+                                 "Inconsistent exploration information: Unexplored MDPState corresponds to explored beliefId.");
                 // Delete current entry and move on to the next one.
                 // This works because std::map::erase does not invalidate other iterators within the map!
                 beliefIdToMdpStateMap.erase(belIdToMdpStateIt++);
@@ -913,7 +913,7 @@ BeliefMdpExplorer<PomdpType, BeliefValueType>::computeFMSchedulerValueForMemoryN
 template<typename PomdpType, typename BeliefValueType>
 void BeliefMdpExplorer<PomdpType, BeliefValueType>::computeValuesOfExploredMdp(storm::Environment const &env, storm::solver::OptimizationDirection const &dir) {
     STORM_LOG_ASSERT(status == Status::ModelFinished, "Method call is invalid in current status.");
-    STORM_LOG_ASSERT(exploredMdp, "Tried to compute values but the MDP is not explored");
+    STORM_LOG_ASSERT(exploredMdp, "Tried to compute values but the MDP is not explored.");
     auto property = createStandardProperty(dir, exploredMdp->hasRewardModel());
     auto task = createStandardCheckTask(property);
 
@@ -969,7 +969,7 @@ template<typename PomdpType, typename BeliefValueType>
 void BeliefMdpExplorer<PomdpType, BeliefValueType>::gatherSuccessorObservationInformationAtCurrentState(
     uint64_t localActionIndex, std::map<uint32_t, SuccessorObservationInformation> &gatheredSuccessorObservations) {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method call is invalid since the current state has no old behavior");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method call is invalid since the current state has no old behavior.");
     uint64_t mdpChoice = getStartOfCurrentRowGroup() + localActionIndex;
     gatherSuccessorObservationInformationAtMdpChoice(mdpChoice, gatheredSuccessorObservations);
 }
@@ -977,7 +977,7 @@ void BeliefMdpExplorer<PomdpType, BeliefValueType>::gatherSuccessorObservationIn
 template<typename PomdpType, typename BeliefValueType>
 void BeliefMdpExplorer<PomdpType, BeliefValueType>::gatherSuccessorObservationInformationAtMdpChoice(
     uint64_t mdpChoice, std::map<uint32_t, SuccessorObservationInformation> &gatheredSuccessorObservations) {
-    STORM_LOG_ASSERT(exploredMdp, "Method call is invalid if no MDP has been explored before");
+    STORM_LOG_ASSERT(exploredMdp, "Method call is invalid if no MDP has been explored before.");
     for (auto const &entry : exploredMdp->getTransitionMatrix().getRow(mdpChoice)) {
         auto const &beliefId = getBeliefId(entry.getColumn());
         if (beliefId != beliefManager->noId()) {
@@ -997,7 +997,7 @@ template<typename PomdpType, typename BeliefValueType>
 bool BeliefMdpExplorer<PomdpType, BeliefValueType>::currentStateHasSuccessorObservationInObservationSet(uint64_t localActionIndex,
                                                                                                         storm::storage::BitVector const &observationSet) {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
-    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method call is invalid since the current state has no old behavior");
+    STORM_LOG_ASSERT(currentStateHasOldBehavior(), "Method call is invalid since the current state has no old behavior.");
     uint64_t mdpChoice = previousChoiceIndices.at(getCurrentMdpState()) + localActionIndex;
     return std::any_of(exploredMdp->getTransitionMatrix().getRow(mdpChoice).begin(), exploredMdp->getTransitionMatrix().getRow(mdpChoice).end(),
                        [this, &observationSet](typename storm::storage::MatrixEntry<uint_fast64_t, ValueType> i) {

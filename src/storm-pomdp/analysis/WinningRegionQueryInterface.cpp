@@ -20,14 +20,14 @@ WinningRegionQueryInterface<ValueType>::WinningRegionQueryInterface(storm::model
 
 template<typename ValueType>
 bool WinningRegionQueryInterface<ValueType>::isInWinningRegion(storm::storage::BitVector const& beliefSupport) const {
-    STORM_LOG_ASSERT(beliefSupport.getNumberOfSetBits() > 0, "One cannot think one is literally nowhere");
+    STORM_LOG_ASSERT(beliefSupport.getNumberOfSetBits() > 0, "One cannot think one is literally nowhere.");
     uint64_t observation = pomdp.getObservation(beliefSupport.getNextSetIndex(0));
     // TODO consider optimizations after testing.
     storm::storage::BitVector queryVector(statesPerObservation[observation].size());
     auto stateWithObsIt = statesPerObservation[observation].begin();
     uint64_t offset = 0;
     for (uint64_t possibleState : beliefSupport) {
-        STORM_LOG_ASSERT(pomdp.getObservation(possibleState) == observation, "Support must be observation-consistent");
+        STORM_LOG_ASSERT(pomdp.getObservation(possibleState) == observation, "Support must be observation-consistent.");
         while (possibleState > *stateWithObsIt) {
             stateWithObsIt++;
             offset++;
@@ -41,7 +41,7 @@ bool WinningRegionQueryInterface<ValueType>::isInWinningRegion(storm::storage::B
 
 template<typename ValueType>
 bool WinningRegionQueryInterface<ValueType>::staysInWinningRegion(storm::storage::BitVector const& currentBeliefSupport, uint64_t actionIndex) const {
-    STORM_LOG_ASSERT(currentBeliefSupport.getNumberOfSetBits() > 0, "One cannot think one is literally nowhere");
+    STORM_LOG_ASSERT(currentBeliefSupport.getNumberOfSetBits() > 0, "One cannot think one is literally nowhere.");
     std::map<uint32_t, storm::storage::BitVector> successors;
     STORM_LOG_DEBUG("Stays in winning region? (" << currentBeliefSupport << ", " << actionIndex << ")");
     for (uint64_t oldState : currentBeliefSupport) {

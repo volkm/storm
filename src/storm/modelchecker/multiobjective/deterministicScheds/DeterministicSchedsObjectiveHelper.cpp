@@ -210,9 +210,9 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
                 }
             }
         }
-        STORM_LOG_ASSERT(!negativeEcStates.empty(), "Expected some negative ec");
+        STORM_LOG_ASSERT(!negativeEcStates.empty(), "Expected some negative ec.");
         rewMinusInfEStates = storm::utility::graph::performProbGreater0E(backwardTransitions, getMaybeStates(), negativeEcStates);
-        STORM_LOG_ASSERT(model.getInitialStates().isSubsetOf(rewMinusInfEStates), "Initial state does not reach all maybestates");
+        STORM_LOG_ASSERT(model.getInitialStates().isSubsetOf(rewMinusInfEStates), "Initial state does not reach all maybestates.");
     }
 }
 
@@ -223,7 +223,7 @@ storm::storage::BitVector const& DeterministicSchedsObjectiveHelper<ModelType>::
 
 template<typename ModelType>
 storm::storage::BitVector const& DeterministicSchedsObjectiveHelper<ModelType>::getRewMinusInfEStates() const {
-    STORM_LOG_ASSERT(getInfinityCase() == InfinityCase::HasNegativeInfinite, "Tried to get -inf states, but there are none");
+    STORM_LOG_ASSERT(getInfinityCase() == InfinityCase::HasNegativeInfinite, "Tried to get -inf states, but there are none.");
     return rewMinusInfEStates;
 }
 
@@ -251,14 +251,14 @@ storm::storage::BitVector const& DeterministicSchedsObjectiveHelper<ModelType>::
 template<typename ModelType>
 typename ModelType::ValueType const& DeterministicSchedsObjectiveHelper<ModelType>::getUpperValueBoundAtState(uint64_t state) const {
     STORM_LOG_ASSERT(maybeStates.get(state), "Expected a maybestate.");
-    STORM_LOG_ASSERT(upperResultBounds.has_value(), "requested upper value bounds but they were not computed.");
+    STORM_LOG_ASSERT(upperResultBounds.has_value(), "Requested upper value bounds but they were not computed.");
     return upperResultBounds->at(state);
 }
 
 template<typename ModelType>
 typename ModelType::ValueType const& DeterministicSchedsObjectiveHelper<ModelType>::getLowerValueBoundAtState(uint64_t state) const {
     STORM_LOG_ASSERT(maybeStates.get(state), "Expected a maybestate.");
-    STORM_LOG_ASSERT(lowerResultBounds.has_value(), "requested lower value bounds but they were not computed.");
+    STORM_LOG_ASSERT(lowerResultBounds.has_value(), "Requested lower value bounds but they were not computed.");
     return lowerResultBounds->at(state);
 }
 
@@ -279,7 +279,7 @@ bool DeterministicSchedsObjectiveHelper<ModelType>::hasThreshold() const {
 
 template<typename ModelType>
 typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicSchedsObjectiveHelper<ModelType>::getThreshold() const {
-    STORM_LOG_ASSERT(hasThreshold(), "Trying to get a threshold but there is none");
+    STORM_LOG_ASSERT(hasThreshold(), "Trying to get a threshold but there is none.");
     STORM_LOG_THROW(!storm::logic::isStrict(objective.formula->getBound().comparisonType), storm::exceptions::NotSupportedException,
                     "Objective " << *objective.originalFormula << ":  Strict objective thresholds are not supported.");
     ValueType threshold = objective.formula->template getThresholdAs<ValueType>();
@@ -306,7 +306,7 @@ void setLowerUpperTotalRewardBoundsToSolver(storm::solver::AbstractEquationSolve
     if (!reqLower && !reqUpper) {
         return;  // nothing to be done!
     }
-    STORM_LOG_ASSERT(!rewards.empty(), "empty reward vector,");
+    STORM_LOG_ASSERT(!rewards.empty(), "Empty reward vector,.");
 
     auto [minIt, maxIt] = std::minmax_element(rewards.begin(), rewards.end());
     bool const hasNegativeValues = *minIt < storm::utility::zero<ValueType>();
@@ -625,7 +625,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
     Environment const& env, storm::storage::BitVector const& selectedChoices) const {
     STORM_LOG_ASSERT(model.getInitialStates().getNumberOfSetBits() == 1u, "Expected a single initial state.");
     STORM_LOG_ASSERT(model.getInitialStates().isSubsetOf(getMaybeStates()), "Expected initial state to be maybestate.");
-    STORM_LOG_ASSERT(selectedChoices.getNumberOfSetBits() == model.getNumberOfStates(), "invalid choice selection.");
+    STORM_LOG_ASSERT(selectedChoices.getNumberOfSetBits() == model.getNumberOfStates(), "Invalid choice selection.");
     storm::storage::BitVector allStates(model.getNumberOfStates(), true);
     auto selectedMatrix = model.getTransitionMatrix().getSubmatrix(false, selectedChoices, allStates);
     STORM_LOG_ASSERT(selectedMatrix.getRowCount() == selectedMatrix.getRowGroupCount(), "Selected matrix row/group count mismatch.");
@@ -656,7 +656,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
         auto const& allRewards = getChoiceRewards();
         for (auto const& state : getMaybeStates()) {
             auto choice = selectedChoices.getNextSetIndex(model.getTransitionMatrix().getRowGroupIndices()[state]);
-            STORM_LOG_ASSERT(choice < model.getTransitionMatrix().getRowGroupIndices()[state + 1], " no choice selected at state" << state);
+            STORM_LOG_ASSERT(choice < model.getTransitionMatrix().getRowGroupIndices()[state + 1], "No choice selected at state " << state << ".");
             if (subMaybeStates.get(state)) {
                 if (auto findRes = allRewards.find(choice); findRes != allRewards.end()) {
                     rewards.push_back(findRes->second);
@@ -664,7 +664,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
                     rewards.push_back(storm::utility::zero<ValueType>());
                 }
             } else {
-                STORM_LOG_ASSERT(!bsccCandidates.get(state) || allRewards.count(choice) == 0, "Strategy selected a bscc with rewards");
+                STORM_LOG_ASSERT(!bsccCandidates.get(state) || allRewards.count(choice) == 0, "Strategy selected a bscc with rewards.");
             }
         }
         if (useEqSysFormat) {

@@ -132,7 +132,7 @@ storm::storage::MemoryStructure ProductModel<ValueType>::computeMemoryStructure(
         storm::storage::BitVector constraintStates(model.getNumberOfStates(), true);
         for (auto dim : objectiveDimensions[objIndex]) {
             auto const& dimension = dimensions[dim];
-            STORM_LOG_ASSERT(dimension.formula->isBoundedUntilFormula(), "Unexpected Formula type");
+            STORM_LOG_ASSERT(dimension.formula->isBoundedUntilFormula(), "Unexpected Formula type.");
             constraintStates &= (mc.check(dimension.formula->asBoundedUntilFormula().getLeftSubformula())
                                      ->template asExplicitQualitativeCheckResult<ValueType>()
                                      .getTruthValuesVector() |
@@ -475,7 +475,7 @@ std::vector<std::vector<ValueType>> ProductModel<ValueType>::computeObjectiveRew
 
 template<typename ValueType>
 storm::storage::BitVector const& ProductModel<ValueType>::getInStates(EpochClass const& epochClass) const {
-    STORM_LOG_ASSERT(inStates.find(epochClass) != inStates.end(), "Could not find InStates for the given epoch class");
+    STORM_LOG_ASSERT(inStates.find(epochClass) != inStates.end(), "Could not find InStates for the given epoch class.");
     return inStates.find(epochClass)->second;
 }
 
@@ -649,7 +649,7 @@ typename ProductModel<ValueType>::MemoryState ProductModel<ValueType>::transform
                 bool dimUpperBounded = dimension.boundType == DimensionBoundType::UpperBound;
                 bool dimBottom = epochManager.isBottomDimensionEpochClass(epochClass, dim);
                 if (dimUpperBounded && dimBottom && memoryStateManager.isRelevantDimension(predecessorMemoryState, dim)) {
-                    STORM_LOG_ASSERT(objDimensions == dimension.dependentDimensions, "Unexpected set of dependent dimensions");
+                    STORM_LOG_ASSERT(objDimensions == dimension.dependentDimensions, "Unexpected set of dependent dimensions.");
                     memoryStateManager.setRelevantDimensions(memoryStatePrime, objDimensions, false);
                     break;
                 } else if (!dimUpperBounded && !dimBottom && memoryStateManager.isRelevantDimension(predecessorMemoryState, dim)) {

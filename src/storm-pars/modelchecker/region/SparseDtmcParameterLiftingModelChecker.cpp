@@ -776,7 +776,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
             std::unique_ptr<storm::modelchecker::CheckResult> result = instantiationModelChecker.check(env, center);
             auto const reachabilityProbabilities = result->asExplicitQuantitativeCheckResult<ConstantType>().getValueVector();
 
-            STORM_LOG_ASSERT(this->derivativeChecker, "Derivative checker not intialized");
+            STORM_LOG_ASSERT(this->derivativeChecker, "Derivative checker not intialized.");
 
             for (auto const& param : region.getVariables()) {
                 auto result = this->derivativeChecker->check(env, center, param, reachabilityProbabilities);
