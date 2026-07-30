@@ -62,9 +62,9 @@ std::vector<ValueType> BaierUpperRewardBoundsComputer<ValueType>::computeUpperBo
     // While they only consider processed states from a previous iteration step, we immediately consider them once they are processed
 
     auto const numStates = transitionMatrix.getRowGroupCount();
-    assert(transitionMatrix.getRowCount() == oneStepTargetProbabilities.size());
-    assert(backwardTransitions.getRowCount() == numStates);
-    assert(backwardTransitions.getColumnCount() == numStates);
+    STORM_LOG_ASSERT(transitionMatrix.getRowCount() == oneStepTargetProbabilities.size(), "Row count mismatch.");
+    STORM_LOG_ASSERT(backwardTransitions.getRowCount() == numStates, "Backward transition row count mismatch.");
+    STORM_LOG_ASSERT(backwardTransitions.getColumnCount() == numStates, "Backward transition column count mismatch.");
     auto const& rowGroupIndices = transitionMatrix.getRowGroupIndices();
 
     // Initialize the 'valid' choices.

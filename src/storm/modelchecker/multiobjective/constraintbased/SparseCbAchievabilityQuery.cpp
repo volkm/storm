@@ -132,7 +132,7 @@ void SparseCbAchievabilityQuery<SparseModelType>::initializeConstraintSystem() {
         }
         solver->add(storm::expressions::sum(valueSummands) == zero);
     }
-    assert(bottomStateVariableIt == bottomStateVariables.end());
+    STORM_LOG_ASSERT(bottomStateVariableIt == bottomStateVariables.end(), "Unexpected bottom state variable.");
 }
 
 template<class SparseModelType>

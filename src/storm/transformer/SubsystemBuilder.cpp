@@ -158,7 +158,7 @@ SubsystemBuilderReturnType<ValueType, RewardModelType> internalBuildSubsystem(st
 
     if (hasDeadlockStates) {
         auto subDeadlockStates = deadlockStates % subsystemStates;
-        assert(deadlockStates.getNumberOfSetBits() == subDeadlockStates.getNumberOfSetBits());
+        STORM_LOG_ASSERT(deadlockStates.getNumberOfSetBits() == subDeadlockStates.getNumberOfSetBits(), "Deadlock states count mismatch.");
         // erase rewards, choice labels, choice origins
         for (auto& rewModel : components.rewardModels) {
             for (auto state : subDeadlockStates) {

@@ -80,7 +80,7 @@ DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Point::ge
         }
         return DominanceResult::Dominates;
     } else {
-        assert(*thisIt < *otherIt);
+        STORM_LOG_ASSERT(*thisIt < *otherIt, "Expected iterator value less than other.");
         // *this might be dominated by other
         for (++thisIt, ++otherIt; thisIt != thisItE; ++thisIt, ++otherIt) {
             if (*thisIt > *otherIt) {
@@ -620,13 +620,13 @@ bool DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::opti
                     auto vertexIt = vertices.begin();
                     ++vertexIt;
                     for (auto const& pId : f.getPoints()) {
-                        assert(pointset.getPoint(pId).get() == *vertexIt);
+                        STORM_LOG_ASSERT(pointset.getPoint(pId).get() == *vertexIt, "Vertex mismatch.");
                         if (fNew.getHalfspace().isPointOnBoundary(*vertexIt)) {
                             fNew.addPoint(pId, pointset.getPoint(pId));
                         }
                         ++vertexIt;
                     }
-                    assert(vertexIt == vertices.end());
+                    STORM_LOG_ASSERT(vertexIt == vertices.end(), "Vertex iterator not at end.");
                     unprocessedFacets.push(std::move(fNew));
                 }
             }

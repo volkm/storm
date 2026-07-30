@@ -47,7 +47,7 @@ bool WinningRegionQueryInterface<ValueType>::staysInWinningRegion(storm::storage
     for (uint64_t oldState : currentBeliefSupport) {
         uint64_t row = pomdp.getTransitionMatrix().getRowGroupIndices()[oldState] + actionIndex;
         for (auto const& successor : pomdp.getTransitionMatrix().getRow(row)) {
-            assert(!storm::utility::isZero(successor.getValue()));
+            STORM_LOG_ASSERT(!storm::utility::isZero(successor.getValue()), "Unexpected zero successor probability.");
             uint32_t obs = pomdp.getObservation(successor.getColumn());
             if (successors.count(obs) == 0) {
                 successors[obs] = storm::storage::BitVector(pomdp.getNumberOfStates());
@@ -104,7 +104,7 @@ void WinningRegionQueryInterface<ValueType>::validateIsMaximal(storm::storage::B
                     states.set(statesPerObservation[obs][offset]);
                 }
                 states.set(statesPerObservation[obs][additional]);
-                assert(states.getNumberOfSetBits() == winningBelief.getNumberOfSetBits() + 1);
+                STORM_LOG_ASSERT(states.getNumberOfSetBits() == winningBelief.getNumberOfSetBits() + 1, "Set bit count mismatch.");
 
                 bool safeActionExists = false;
                 for (uint64_t actionIndex = 0; actionIndex < pomdp.getTransitionMatrix().getRowGroupSize(statesPerObservation[obs][0]); ++actionIndex) {

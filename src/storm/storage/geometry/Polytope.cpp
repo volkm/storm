@@ -57,7 +57,7 @@ std::shared_ptr<Polytope<ValueType>> Polytope<ValueType>::createSelectiveDownwar
     if (selectedDimensions.empty()) {
         return create(points);
     }
-    assert(points.front().size() == selectedDimensions.size());
+    STORM_LOG_ASSERT(points.front().size() == selectedDimensions.size(), "Point dimensions do not match selected dimensions.");
 
     std::vector<Halfspace<ValueType>> halfspaces;
     // We build the convex hull of the given points.

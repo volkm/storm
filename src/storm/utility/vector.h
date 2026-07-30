@@ -983,7 +983,7 @@ std::vector<TargetType> convertNumericVector(std::vector<SourceType> const& oldV
  */
 template<typename TargetType, typename SourceType>
 void convertNumericVector(std::vector<SourceType> const& inputVector, std::vector<TargetType>& targetVector) {
-    assert(inputVector.size() == targetVector.size());
+    STORM_LOG_ASSERT(inputVector.size() == targetVector.size(), "Vector size mismatch.");
     applyPointwise(inputVector, targetVector, [](SourceType const& v) { return storm::utility::convertNumber<TargetType>(v); });
 }
 

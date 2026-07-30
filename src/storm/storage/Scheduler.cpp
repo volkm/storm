@@ -47,13 +47,13 @@ void Scheduler<ValueType>::setChoice(SchedulerChoice<ValueType> const& choice, u
         }
     } else {
         if (choice.isDefined()) {
-            assert(numOfUndefinedChoices > 0);
+            STORM_LOG_ASSERT(numOfUndefinedChoices > 0, "No undefined choices left.");
             --numOfUndefinedChoices;
         }
     }
     if (schedulerChoice.isDeterministic()) {
         if (!choice.isDeterministic()) {
-            assert(numOfDeterministicChoices > 0);
+            STORM_LOG_ASSERT(numOfDeterministicChoices > 0, "No deterministic choices left.");
             --numOfDeterministicChoices;
         }
     } else {

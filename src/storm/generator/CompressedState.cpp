@@ -236,7 +236,7 @@ storm::json<ValueType> unpackStateIntoJson(CompressedState const& state, Variabl
 
 CompressedState createOutOfBoundsState(VariableInformation const& varInfo, bool roundTo64Bit) {
     CompressedState result(varInfo.getTotalBitOffset(roundTo64Bit));
-    assert(varInfo.hasOutOfBoundsBit());
+    STORM_LOG_ASSERT(varInfo.hasOutOfBoundsBit(), "Variable info has no out-of-bounds bit.");
     result.set(varInfo.getOutOfBoundsBit());
     return result;
 }

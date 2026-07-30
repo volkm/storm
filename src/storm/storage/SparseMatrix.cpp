@@ -187,7 +187,7 @@ void SparseMatrixBuilder<ValueType>::addNextValue(index_type row, index_type col
         // If we switched to another row, we have to adjust the missing entries in the row indices vector.
         if (row != lastRow) {
             // Otherwise, we need to push the correct values to the vectors, which might trigger reallocations.
-            assert(rowIndications.size() == lastRow + 1);
+            STORM_LOG_ASSERT(rowIndications.size() == lastRow + 1, "Row indications size mismatch.");
             rowIndications.resize(row + 1, currentEntryCount);
             lastRow = row;
         }
@@ -267,7 +267,7 @@ void SparseMatrixBuilder<ValueType>::newRowGroup(index_type startingRow) {
     // Handle the case where the previous row group ends with one or more empty rows
     if (lastRow + 1 < startingRow) {
         // Close all rows from the most recent one to the starting row.
-        assert(rowIndications.size() == lastRow + 1);
+        STORM_LOG_ASSERT(rowIndications.size() == lastRow + 1, "Row indications size mismatch.");
         rowIndications.resize(startingRow, currentEntryCount);
         // Reset the most recently seen row/column to allow for proper insertion of the following elements.
         lastRow = startingRow - 1;
@@ -445,7 +445,7 @@ void SparseMatrixBuilder<ValueType>::addDiagonalEntry(index_type row, ValueType 
     }
     pendingDiagonalEntry = value;
     if (lastRow != row) {
-        assert(rowIndications.size() == lastRow + 1);
+        STORM_LOG_ASSERT(rowIndications.size() == lastRow + 1, "Row indications size mismatch.");
         rowIndications.resize(row + 1, currentEntryCount);
         lastRow = row;
         lastColumn = 0;
@@ -1820,7 +1820,7 @@ void SparseMatrix<ValueType>::performSuccessiveOverRelaxationStep(ValueType omeg
                 diagonalElement += it->getValue();
             }
         }
-        assert(!storm::utility::isZero(diagonalElement));
+        STORM_LOG_ASSERT(!storm::utility::isZero(diagonalElement), "Diagonal element is zero.");
         *resultIterator = ((storm::utility::one<ValueType>() - omega) * *resultIterator) + (omega / diagonalElement) * (*bIt - tmpValue);
     }
 }

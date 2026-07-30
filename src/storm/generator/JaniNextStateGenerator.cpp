@@ -1236,7 +1236,7 @@ std::vector<ValueType> JaniNextStateGenerator<ValueType, StateType>::evaluateRew
 
 template<typename ValueType, typename StateType>
 void JaniNextStateGenerator<ValueType, StateType>::addEvaluatedRewardExpressions(std::vector<ValueType>& rewards, ValueType const& factor) const {
-    assert(rewards.size() == rewardExpressions.size());
+    STORM_LOG_ASSERT(rewards.size() == rewardExpressions.size(), "Reward count mismatch.");
     auto rewIt = rewards.begin();
     for (auto const& rewardExpression : rewardExpressions) {
         (*rewIt) += factor * this->evaluator->asRational(rewardExpression.second);

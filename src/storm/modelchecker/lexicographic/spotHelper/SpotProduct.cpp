@@ -101,7 +101,7 @@ std::shared_ptr<storm::automata::DeterministicAutomaton> ltl2daSpotProduct(storm
                 {
                     p.first->second = res->new_state();
                     todo.emplace_back(x, p.first->second);
-                    assert(p.first->second == v->size());
+                    STORM_LOG_ASSERT(p.first->second == v->size(), "State size mismatch.");
                     v->emplace_back(x);
                 }
                 return p.first->second;
@@ -123,7 +123,7 @@ std::shared_ptr<storm::automata::DeterministicAutomaton> ltl2daSpotProduct(storm
             }
 
             if (res->acc().is_f()) {
-                assert(res->num_edges() == 0);
+                STORM_LOG_ASSERT(res->num_edges() == 0, "Expected no edges.");
                 res->prop_universal(true);
                 res->prop_complete(false);
                 res->prop_stutter_invariant(true);

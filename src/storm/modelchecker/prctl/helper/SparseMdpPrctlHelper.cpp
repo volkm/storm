@@ -569,7 +569,7 @@ void extractSchedulerChoices(storm::storage::Scheduler<SolutionType>& scheduler,
             scheduler.setChoice(*subChoiceIt, maybeState);
             ++subChoiceIt;
         }
-        assert(subChoiceIt == subChoices.end());
+        STORM_LOG_ASSERT(subChoiceIt == subChoices.end(), "Subchoice iterator not at end.");
     } else {
         // See computeFixedPointSystemUntilProbabilities, where we create a different equation system.
         // Consequentially, we run a slightly different code here for interval-based models.
@@ -1206,7 +1206,7 @@ void extractSchedulerChoices(storm::storage::Scheduler<SolutionType>& scheduler,
             ++subChoiceIt;
         }
     }
-    assert(subChoiceIt == subChoices.end());
+    STORM_LOG_ASSERT(subChoiceIt == subChoices.end(), "Subchoice iterator not at end.");
 }
 
 template<typename ValueType, typename SolutionType>

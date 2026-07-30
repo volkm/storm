@@ -377,7 +377,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::comp
         }
         ++row;
     }
-    assert(row == auxMatrix.getRowCount());
+    STORM_LOG_ASSERT(row == auxMatrix.getRowCount(), "Row count mismatch after processing.");
 
     // We need to consider A^t. This will not delete diagonal entries since they are non-zero.
     auxMatrix = auxMatrix.transpose();
@@ -469,7 +469,7 @@ std::pair<ValueType, std::vector<ValueType>> SparseDeterministicInfiniteHorizonH
         }
         ++solIt;
     }
-    assert(solIt == steadyStateDistr.end());
+    STORM_LOG_ASSERT(solIt == steadyStateDistr.end(), "Expected to have reached end of steady state distribution.");
 
     return std::pair<ValueType, std::vector<ValueType>>(std::move(result), std::move(steadyStateDistr));
 }

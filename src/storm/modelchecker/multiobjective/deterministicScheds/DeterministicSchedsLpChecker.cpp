@@ -444,7 +444,7 @@ std::vector<storm::expressions::Expression> expVisitsConstraints(storm::solver::
     storm::storage::BitVector allZeroRewardChoices(matrix.getRowCount(), true);
     for (auto const& oh : objectiveHelper) {
         for (auto const& rew : oh.getChoiceRewards()) {
-            assert(!storm::utility::isZero(rew.second));
+            STORM_LOG_ASSERT(!storm::utility::isZero(rew.second), "Reward value is zero.");
             allZeroRewardChoices.set(rew.first, false);
         }
     }
@@ -464,7 +464,7 @@ std::vector<storm::expressions::Expression> expVisitsConstraints(storm::solver::
     std::vector<storm::expressions::Expression> choiceVisitsVars(matrix.getRowCount()), botVisitsVars(matrix.getRowGroupCount()),
         bsccVars(matrix.getRowGroupCount());
     for (auto state : anyMaybeStates) {
-        assert(indicatorConstraints || maxVisits[state] >= storm::utility::zero<ValueType>());
+        STORM_LOG_ASSERT(indicatorConstraints || maxVisits[state] >= storm::utility::zero<ValueType>(), "Unexpected negative max visits.");
         for (auto choice : matrix.getRowGroupIndices(state)) {
             choiceVisitsVars[choice] =
                 lpModel.addLowerBoundedContinuousVariable("y_" + std::to_string(choice), storm::utility::zero<ValueType>()).getExpression();
@@ -511,7 +511,7 @@ std::vector<storm::expressions::Expression> expVisitsConstraints(storm::solver::
             visitsSummands.push_back(lpModel.getConstant(storm::utility::one<ValueType>()));
         }
         for (auto const& preEntry : backwardChoices.getRow(state)) {
-            assert(choiceVisitsVars[preEntry.getColumn()].isInitialized());
+            STORM_LOG_ASSERT(choiceVisitsVars[preEntry.getColumn()].isInitialized(), "Choice visit variable not initialized.");
             visitsSummands.push_back(lpModel.getConstant(preEntry.getValue()) * choiceVisitsVars[preEntry.getColumn()]);
         }
         lpModel.addConstraint("", storm::expressions::sum(visitsSummands) == lpModel.getConstant(storm::utility::zero<ValueType>()));
@@ -528,7 +528,7 @@ std::vector<storm::expressions::Expression> expVisitsConstraints(storm::solver::
                         if (storm::utility::isZero(succ.getValue())) {
                             continue;
                         }
-                        assert(mecStates.get(succ.getColumn()));
+                        STORM_LOG_ASSERT(mecStates.get(succ.getColumn()), "MEC state not set for successor.");
                         lpModel.addConstraint("", bsccVars[state] <= bsccVars[succ.getColumn()] + lpModel.getConstant(storm::utility::one<ValueType>()) -
                                                                          choiceVariables[choice]);
                     }
@@ -547,7 +547,7 @@ std::vector<storm::expressions::Expression> expVisitsConstraints(storm::solver::
             lpModel.update();
             std::vector<storm::expressions::Expression> summands;
             for (auto const& objRew : objectiveHelper[objIndex].getChoiceRewards()) {
-                assert(choiceVisitsVars[objRew.first].isInitialized());
+                STORM_LOG_ASSERT(choiceVisitsVars[objRew.first].isInitialized(), "Choice visit variable not initialized.");
                 summands.push_back(choiceVisitsVars[objRew.first] * lpModel.getConstant(objRew.second));
             }
             lpModel.addConstraint("", objectiveValueVariables.back() == storm::expressions::sum(summands));
@@ -774,7 +774,7 @@ typename DeterministicSchedsLpChecker<ModelType, GeometryValueType>::Point Deter
         } else {
             bool choiceFound = false;
             for (auto choice : choices) {
-                assert(choiceVariables[choice].isVariable());
+                STORM_LOG_ASSERT(choiceVariables[choice].isVariable(), "Choice variable is not a variable.");
                 if (lpModel->getBinaryValue(choiceVariables[choice].getBaseExpression().asVariableExpression().getVariable())) {
                     STORM_LOG_THROW(!choiceFound, storm::exceptions::UnexpectedException, "Multiple choices selected at state " << state);
                     selectedChoices.set(choice, true);

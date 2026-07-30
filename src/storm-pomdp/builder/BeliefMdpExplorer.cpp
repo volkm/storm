@@ -464,8 +464,8 @@ void BeliefMdpExplorer<PomdpType, BeliefValueType>::restoreOldBehaviorAtCurrentS
         internalAddRowGroupIndex();
     }
 
-    assert(getCurrentMdpState() < previousChoiceIndices.size());
-    assert(getCurrentMdpState() < exploredChoiceIndices.size());
+    STORM_LOG_ASSERT(getCurrentMdpState() < previousChoiceIndices.size(), "MDP state out of range for previous choices.");
+    STORM_LOG_ASSERT(getCurrentMdpState() < exploredChoiceIndices.size(), "MDP state out of range for explored choices.");
     uint64_t oldChoiceIndex = previousChoiceIndices.at(getCurrentMdpState()) + localActionIndex;
     uint64_t newChoiceIndex = exploredChoiceIndices.at(getCurrentMdpState()) + localActionIndex;
 
@@ -753,11 +753,11 @@ void BeliefMdpExplorer<PomdpType, BeliefValueType>::dropUnexploredStates() {
     }
     {  // exploredChoiceIndices
         MdpStateType newState = 0;
-        assert(exploredChoiceIndices[0] == 0u);
+        STORM_LOG_ASSERT(exploredChoiceIndices[0] == 0u, "First explored choice index should be 0.");
         // Loop invariant: all indices up to exploredChoiceIndices[newState] consider the new row indices and all other entries are not touched.
         for (auto const oldState : relevantMdpStates) {
             if (oldState != newState) {
-                assert(oldState > newState);
+                STORM_LOG_ASSERT(oldState > newState, "Expected oldState > newState.");
                 uint64_t groupSize = getRowGroupSizeOfState(oldState);
                 exploredChoiceIndices.at(newState + 1) = exploredChoiceIndices.at(newState) + groupSize;
             }
@@ -817,21 +817,21 @@ typename BeliefMdpExplorer<PomdpType, BeliefValueType>::MdpStateType BeliefMdpEx
 template<typename PomdpType, typename BeliefValueType>
 typename BeliefMdpExplorer<PomdpType, BeliefValueType>::MdpStateType BeliefMdpExplorer<PomdpType, BeliefValueType>::getStartOfCurrentRowGroup() const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
-    assert(getCurrentMdpState() < exploredChoiceIndices.size());
+    STORM_LOG_ASSERT(getCurrentMdpState() < exploredChoiceIndices.size(), "MDP state index out of range.");
     return exploredChoiceIndices.at(getCurrentMdpState());
 }
 
 template<typename PomdpType, typename BeliefValueType>
 uint64_t BeliefMdpExplorer<PomdpType, BeliefValueType>::getSizeOfCurrentRowGroup() const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
-    assert(getCurrentMdpState() < exploredChoiceIndices.size() - 1);
+    STORM_LOG_ASSERT(getCurrentMdpState() < exploredChoiceIndices.size() - 1, "MDP state index out of range.");
     return exploredChoiceIndices.at(getCurrentMdpState() + 1) - exploredChoiceIndices.at(getCurrentMdpState());
 }
 
 template<typename PomdpType, typename BeliefValueType>
 uint64_t BeliefMdpExplorer<PomdpType, BeliefValueType>::getRowGroupSizeOfState(uint64_t state) const {
     STORM_LOG_ASSERT(status == Status::Exploring, "Method call is invalid in current status.");
-    assert(state < exploredChoiceIndices.size());
+    STORM_LOG_ASSERT(state < exploredChoiceIndices.size(), "State index out of range.");
     if (state < exploredChoiceIndices.size() - 1) {
         return exploredChoiceIndices.at(state + 1) - exploredChoiceIndices.at(state);
     } else if (state == exploredChoiceIndices.size() - 1) {
@@ -1214,7 +1214,7 @@ typename BeliefMdpExplorer<PomdpType, BeliefValueType>::MdpStateType BeliefMdpEx
         }
         // At this point we need to add a new MDP state
         MdpStateType result = getCurrentNumberOfMdpStates();
-        assert(getCurrentNumberOfMdpStates() == mdpStateToBeliefIdMap.size());
+        STORM_LOG_ASSERT(getCurrentNumberOfMdpStates() == mdpStateToBeliefIdMap.size(), "MDP state count mismatch with belief map size.");
         mdpStateToBeliefIdMap.push_back(beliefId);
         beliefIdToMdpStateMap[beliefId] = result;
         insertValueHints(computeLowerValueBoundAtBelief(beliefId), computeUpperValueBoundAtBelief(beliefId));
@@ -1368,7 +1368,7 @@ std::vector<BeliefValueType> BeliefMdpExplorer<PomdpType, BeliefValueType>::comp
 template<typename PomdpType, typename BeliefValueType>
 void BeliefMdpExplorer<PomdpType, BeliefValueType>::adjustActions(uint64_t totalNumberOfActions) {
     uint64_t currentRowGroupSize = getSizeOfCurrentRowGroup();
-    assert(totalNumberOfActions != currentRowGroupSize);
+    STORM_LOG_ASSERT(totalNumberOfActions != currentRowGroupSize, "Total actions equals current row group size.");
     if (totalNumberOfActions > currentRowGroupSize) {
         uint64_t numberOfActionsToAdd = totalNumberOfActions - currentRowGroupSize;
         exploredMdpTransitions.insert(exploredMdpTransitions.begin() + (exploredChoiceIndices[getCurrentMdpState() + 1]), numberOfActionsToAdd,

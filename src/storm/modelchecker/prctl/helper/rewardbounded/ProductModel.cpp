@@ -36,7 +36,7 @@ ProductModel<ValueType>::ProductModel(storm::models::sparse::Model<ValueType> co
     }
 
     storm::storage::MemoryStructure memory = computeMemoryStructure(model, objectives);
-    assert(memoryStateManager.getMemoryStateCount() == memory.getNumberOfStates());
+    STORM_LOG_ASSERT(memoryStateManager.getMemoryStateCount() == memory.getNumberOfStates(), "Memory state count mismatch.");
     std::vector<MemoryState> memoryStateMap = computeMemoryStateMap(memory);
 
     storm::storage::SparseModelMemoryProduct<ValueType> productBuilder(memory.product(model));
@@ -85,7 +85,8 @@ ProductModel<ValueType>::ProductModel(storm::models::sparse::Model<ValueType> co
                     if (productStateExists(modelState, memoryState)) {
                         uint64_t productState = getProductState(modelState, memoryState);
                         uint64_t productChoice = getProduct().getTransitionMatrix().getRowGroupIndices()[productState] + choiceOffset;
-                        assert(productChoice < getProduct().getTransitionMatrix().getRowGroupIndices()[productState + 1]);
+                        STORM_LOG_ASSERT(productChoice < getProduct().getTransitionMatrix().getRowGroupIndices()[productState + 1],
+                                         "Product choice out of range.");
                         steps[productChoice] = step;
                     }
                 }
@@ -122,7 +123,7 @@ storm::storage::MemoryStructure ProductModel<ValueType>::computeMemoryStructure(
             objMemStates.push_back(~m);
         }
         objMemStates.push_back(~m);
-        assert(objMemStates.size() == 1ull << dimensionIndexMap.size());
+        STORM_LOG_ASSERT(objMemStates.size() == 1ull << dimensionIndexMap.size(), "Memory states size mismatch.");
 
         // build objective memory
         auto objMemoryBuilder = storm::storage::MemoryStructureBuilder<ValueType>(objMemStates.size(), model);
@@ -263,7 +264,7 @@ void ProductModel<ValueType>::setReachableProductStates(storm::storage::SparseMo
             reachableProductStates[transformedMemoryState].set(initState, true);
             ++memStateIt;
         }
-        assert(memStateIt == memory.getInitialMemoryStates().end());
+        STORM_LOG_ASSERT(memStateIt == memory.getInitialMemoryStates().end(), "Memory state iterator not at end.");
     }
 
     // Find the reachable epoch classes

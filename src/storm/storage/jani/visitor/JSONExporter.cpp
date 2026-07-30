@@ -1130,7 +1130,7 @@ ExportJsonType buildInitialLocations(storm::jani::Automaton const& automaton) {
 ExportJsonType buildDestinations(std::vector<EdgeDestination> const& destinations, std::map<uint64_t, std::string> const& locationNames,
                                  std::vector<storm::jani::Constant> const& constants, VariableSet const& globalVariables, VariableSet const& localVariables,
                                  bool commentExpressions) {
-    assert(destinations.size() > 0);
+    STORM_LOG_ASSERT(destinations.size() > 0, "Expected at least one destination.");
     ExportJsonType destDeclarations = std::vector<ExportJsonType>();
     for (auto const& destination : destinations) {
         ExportJsonType destEntry;

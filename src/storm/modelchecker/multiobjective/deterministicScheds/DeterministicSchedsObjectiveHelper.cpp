@@ -56,7 +56,7 @@ std::vector<ValueType> getTotalRewardVector(storm::models::sparse::MarkovAutomat
         }
         return rewardModel.getTotalActionRewardVector(model.getTransitionMatrix(), stateRewardWeights);
     } else {
-        assert(formula.isTimeOperatorFormula());
+        STORM_LOG_ASSERT(formula.isTimeOperatorFormula(), "Expected time operator formula.");
         std::vector<ValueType> result(model.getNumberOfChoices(), storm::utility::zero<ValueType>());
         for (auto const markovianState : model.getMarkovianStates()) {
             for (auto const& choice : model.getTransitionMatrix().getRowGroupIndices(markovianState)) {
@@ -75,7 +75,7 @@ std::vector<ValueType> getTotalRewardVector(storm::models::sparse::Mdp<ValueType
             rewardModelName.is_initialized() ? model.getRewardModel(rewardModelName.get()) : model.getUniqueRewardModel();
         return rewardModel.getTotalRewardVector(model.getTransitionMatrix());
     } else {
-        assert(formula.isTimeOperatorFormula());
+        STORM_LOG_ASSERT(formula.isTimeOperatorFormula(), "Expected time operator formula.");
         return std::vector<ValueType>(model.getNumberOfChoices(), storm::utility::one<ValueType>());
     }
 }
@@ -185,7 +185,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         if (rew.second > storm::utility::zero<ValueType>()) {
             positiveRewardChoices.set(rew.first, true);
         } else {
-            assert(rew.second < storm::utility::zero<ValueType>());
+            STORM_LOG_ASSERT(rew.second < storm::utility::zero<ValueType>(), "Expected negative reward.");
             negativeRewardChoices.set(rew.first, true);
         }
     }
@@ -234,7 +234,7 @@ bool DeterministicSchedsObjectiveHelper<ModelType>::hasConstantInitialStateValue
 
 template<typename ModelType>
 typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicSchedsObjectiveHelper<ModelType>::getConstantInitialStateValue() const {
-    assert(hasConstantInitialStateValue());
+    STORM_LOG_ASSERT(hasConstantInitialStateValue(), "Expected constant initial state value.");
     return *constantInitialStateValue;
 }
 
@@ -403,7 +403,7 @@ std::vector<ValueType> computeValuesOfReducedSystem(Environment const& env, stor
                     break;
                 }
             }
-            assert(statesWithChoice.get(state));
+            STORM_LOG_ASSERT(statesWithChoice.get(state), "State does not have expected choice.");
             for (auto const& predecessor : backwardsTransitions.getRow(state)) {
                 if (!foundStates.get(predecessor.getColumn())) {
                     stack.push_back(predecessor.getColumn());
@@ -411,7 +411,7 @@ std::vector<ValueType> computeValuesOfReducedSystem(Environment const& env, stor
                 }
             }
         }
-        assert(statesWithChoice.full());
+        STORM_LOG_ASSERT(statesWithChoice.full(), "Not all states have a choice.");
         minMaxSolver->setInitialScheduler(std::move(initSched));
         req.clearValidInitialScheduler();
     }
@@ -488,7 +488,7 @@ ValueType getLowerBoundForNonZeroReachProb(storm::storage::SparseMatrix<ValueTyp
 
 template<typename ModelType>
 void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Environment const& env) const {
-    assert(!upperResultBounds.has_value() && !lowerResultBounds.has_value());
+    STORM_LOG_ASSERT(!upperResultBounds.has_value() && !lowerResultBounds.has_value(), "Bounds already computed.");
     auto backwardTransitions = model.getBackwardTransitions();
     auto nonMaybeStates = ~maybeStates;
     // Eliminate problematic mecs
@@ -541,7 +541,8 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
         }
     }
     if (getInfinityCase() != InfinityCase::AlwaysFinite) {
-        assert(getInfinityCase() == InfinityCase::HasPositiveInfinite || getInfinityCase() == InfinityCase::HasNegativeInfinite);
+        STORM_LOG_ASSERT(getInfinityCase() == InfinityCase::HasPositiveInfinite || getInfinityCase() == InfinityCase::HasNegativeInfinite,
+                         "Unexpected infinity case.");
         STORM_LOG_THROW(
             hasThreshold() || getInfinityCase() == InfinityCase::HasNegativeInfinite, storm::exceptions::NotSupportedException,
             "The upper bound for objective " << *objective.originalFormula << " is infinity at some state. This is only supported for thresholded objectives");
@@ -604,7 +605,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
                 (*lowerResultBounds)[state] = val;
             }
         } else {
-            assert(getInfinityCase() == InfinityCase::HasPositiveInfinite);
+            STORM_LOG_ASSERT(getInfinityCase() == InfinityCase::HasPositiveInfinite, "Expected positive infinity case.");
             auto result2 = computeValuesOfReducedSystem(env, quotient2.matrix, exitProbs2, rewards2, storm::OptimizationDirection::Maximize);
             upperResultBounds = std::vector<ValueType>(model.getNumberOfStates(), storm::utility::zero<ValueType>());
             for (auto const& state : maybeStates) {
@@ -627,7 +628,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
     STORM_LOG_ASSERT(selectedChoices.getNumberOfSetBits() == model.getNumberOfStates(), "invalid choice selection.");
     storm::storage::BitVector allStates(model.getNumberOfStates(), true);
     auto selectedMatrix = model.getTransitionMatrix().getSubmatrix(false, selectedChoices, allStates);
-    assert(selectedMatrix.getRowCount() == selectedMatrix.getRowGroupCount());
+    STORM_LOG_ASSERT(selectedMatrix.getRowCount() == selectedMatrix.getRowGroupCount(), "Selected matrix row/group count mismatch.");
     selectedMatrix.makeRowGroupingTrivial();
     auto subMaybeStates =
         getMaybeStates() & storm::utility::graph::getReachableStates(selectedMatrix, model.getInitialStates(), getMaybeStates(), ~getMaybeStates());
@@ -648,7 +649,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
         storm::solver::GeneralLinearEquationSolverFactory<ValueType> factory;
         bool const useEqSysFormat = factory.getEquationProblemFormat(env) == storm::solver::LinearEquationSolverProblemFormat::EquationSystem;
         auto eqSysMatrix = selectedMatrix.getSubmatrix(true, subMaybeStates, subMaybeStates, useEqSysFormat);
-        assert(eqSysMatrix.getRowCount() == eqSysMatrix.getRowGroupCount());
+        STORM_LOG_ASSERT(eqSysMatrix.getRowCount() == eqSysMatrix.getRowGroupCount(), "Eq sys matrix row/group count mismatch.");
         auto exitProbs = selectedMatrix.getConstrainedRowSumVector(subMaybeStates, ~subMaybeStates);
         std::vector<ValueType> rewards;
         rewards.reserve(exitProbs.size());
@@ -671,7 +672,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
         }
         auto solver = factory.create(env, eqSysMatrix);
         storm::storage::BitVector init = model.getInitialStates() % subMaybeStates;
-        assert(init.getNumberOfSetBits() == 1);
+        STORM_LOG_ASSERT(init.getNumberOfSetBits() == 1, "Expected exactly 1 initial state.");
         auto const initState = *init.begin();
         solver->setRelevantValues(std::move(init));
         auto req = solver->getRequirements(env);

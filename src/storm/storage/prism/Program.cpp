@@ -432,7 +432,7 @@ std::map<storm::expressions::Variable, storm::expressions::Expression> Program::
     std::map<storm::expressions::Variable, storm::expressions::Expression> renamingAsSubstitution;
     for (auto const& renamingPair : renaming) {
         if (getManager().hasVariable(renamingPair.first)) {
-            assert(getManager().hasVariable(renamingPair.second));
+            STORM_LOG_ASSERT(getManager().hasVariable(renamingPair.second), "Variable not found in renaming.");
             renamingAsSubstitution.emplace(getManager().getVariable(renamingPair.first), getManager().getVariableExpression(renamingPair.second));
         }
     }
@@ -450,14 +450,14 @@ std::map<std::string, std::string> Program::getFinalRenamingOfModule(Module cons
         moduleStack.push_back(&getModule(moduleStack.back()->getBaseModule()));
     }
 
-    assert(!moduleStack.back()->isRenamedFromModule());
+    STORM_LOG_ASSERT(!moduleStack.back()->isRenamedFromModule(), "Last module should not be renamed.");
     moduleStack.pop_back();
-    assert(moduleStack.empty() || moduleStack.back()->isRenamedFromModule());
+    STORM_LOG_ASSERT(moduleStack.empty() || moduleStack.back()->isRenamedFromModule(), "Expected renamed module.");
     std::map<std::string, std::string> currentRenaming;
     while (!moduleStack.empty()) {
         Module const& currentModule = *moduleStack.back();
         moduleStack.pop_back();
-        assert(currentModule.isRenamedFromModule());
+        STORM_LOG_ASSERT(currentModule.isRenamedFromModule(), "Expected renamed module.");
         std::map<std::string, std::string> newRenaming = currentModule.getRenaming();
         for (auto const& renaimingPair : newRenaming) {
             auto findRes = currentRenaming.find(renaimingPair.second);

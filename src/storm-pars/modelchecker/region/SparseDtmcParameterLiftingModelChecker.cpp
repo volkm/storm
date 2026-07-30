@@ -431,7 +431,7 @@ std::vector<ConstantType> SparseDtmcParameterLiftingModelChecker<SparseModelType
 
     if (stepBound) {
         if constexpr (!Robust) {
-            assert(*stepBound > 0);
+            STORM_LOG_ASSERT(*stepBound > 0, "Expected positive step bound.");
             x = std::vector<ConstantType>(resultVectorSize, storm::utility::zero<ConstantType>());
             auto multiplier = storm::solver::MultiplierFactory<ConstantType>().create(env, liftedMatrix);
             multiplier->repeatedMultiplyAndReduce(env, dirForParameters, x, &liftedVector, *stepBound);
@@ -714,7 +714,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                     uint64_t rowOffset = matrix.getRowGroupIndices()[state];
                     uint64_t optimalChoice = schedulerChoices[state];
                     auto const& optimalChoiceVal = choiceValuations[rowOffset + optimalChoice];
-                    assert(optimalChoiceVal.getUnspecifiedParameters().empty());
+                    STORM_LOG_ASSERT(optimalChoiceVal.getUnspecifiedParameters().empty(), "Expected no unspecified parameters.");
                     stateResults.clear();
                     for (uint64_t row = rowOffset; row < matrix.getRowGroupIndices()[state + 1]; ++row) {
                         stateResults.push_back(matrix.multiplyRowWithVector(row, quantitativeResult) + vector[row]);

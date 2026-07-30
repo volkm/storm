@@ -175,7 +175,7 @@ ValueType simplify(ValueType value) {
 
 template<typename ValueType>
 std::pair<ValueType, ValueType> minmax(std::vector<ValueType> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     ValueType min = values.front();
     ValueType max = values.front();
     for (auto const& vt : values) {
@@ -191,7 +191,7 @@ std::pair<ValueType, ValueType> minmax(std::vector<ValueType> const& values) {
 
 template<typename ValueType>
 ValueType minimum(std::vector<ValueType> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     ValueType min = values.front();
     for (auto const& vt : values) {
         if (vt < min) {
@@ -203,7 +203,7 @@ ValueType minimum(std::vector<ValueType> const& values) {
 
 template<typename ValueType>
 ValueType maximum(std::vector<ValueType> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     ValueType max = values.front();
     for (auto const& vt : values) {
         if (vt > max) {
@@ -215,7 +215,7 @@ ValueType maximum(std::vector<ValueType> const& values) {
 
 template<typename K, typename ValueType>
 std::pair<ValueType, ValueType> minmax(std::map<K, ValueType> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     ValueType min = values.begin()->second;
     ValueType max = values.begin()->second;
     for (auto const& vt : values) {
@@ -374,7 +374,7 @@ bool isInteger(storm::ClnRationalNumber const& number) {
 
 template<>
 std::pair<storm::ClnRationalNumber, storm::ClnRationalNumber> minmax(std::vector<storm::ClnRationalNumber> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     storm::ClnRationalNumber min = values.front();
     storm::ClnRationalNumber max = values.front();
     for (auto const& vt : values) {
@@ -584,7 +584,7 @@ bool isInteger(storm::GmpRationalNumber const& number) {
 
 template<>
 std::pair<storm::GmpRationalNumber, storm::GmpRationalNumber> minmax(std::vector<storm::GmpRationalNumber> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     storm::GmpRationalNumber min = values.front();
     storm::GmpRationalNumber max = values.front();
     for (auto const& vt : values) {
@@ -604,7 +604,7 @@ std::pair<storm::GmpRationalNumber, storm::GmpRationalNumber> minmax(std::vector
 
 template<>
 std::pair<storm::GmpRationalNumber, storm::GmpRationalNumber> minmax(std::map<uint64_t, storm::GmpRationalNumber> const& values) {
-    assert(!values.empty());
+    STORM_LOG_ASSERT(!values.empty(), "Expected non-empty values.");
     storm::GmpRationalNumber min = values.begin()->second;
     storm::GmpRationalNumber max = values.begin()->second;
     for (auto const& vt : values) {

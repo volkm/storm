@@ -61,8 +61,8 @@ LraViHelper<ValueType, ComponentType, TransitionsType>::LraViHelper(ComponentTyp
             STORM_LOG_ASSERT(nondetIs() || element.second.size() == 1, "Instant state has multiple choices but only a single choice was expected.");
         }
     }
-    assert(numIsSubModelStates + numTsSubModelStates == _component.size());
-    assert(_hasInstantStates || numIsSubModelStates == 0);
+    STORM_LOG_ASSERT(numIsSubModelStates + numTsSubModelStates == _component.size(), "Submodel state count mismatch.");
+    STORM_LOG_ASSERT(_hasInstantStates || numIsSubModelStates == 0, "Unexpected instant states.");
     STORM_LOG_ASSERT(nondetTs() || numTsSubModelStates == numTsSubModelChoices, "Unexpected choice count of deterministic timed submodel.");
     STORM_LOG_ASSERT(nondetIs() || numIsSubModelStates == numIsSubModelChoices, "Unexpected choice count of deterministic instant submodel.");
     _hasInstantStates = _hasInstantStates && numIsSubModelStates > 0;

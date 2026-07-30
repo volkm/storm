@@ -59,13 +59,14 @@ std::shared_ptr<BaseExpression const> PredicateExpression::simplify() const {
                 if (predicate == PredicateType::AtLeastOneOf) {
                     return res;
                 } else {
-                    assert(predicate == PredicateType::AtMostOneOf || predicate == PredicateType::ExactlyOneOf);
-                    trueCount++;
+                    STORM_LOG_ASSERT(predicate == PredicateType::AtMostOneOf || predicate == PredicateType::ExactlyOneOf, "Unexpected predicate.");
                     simplifiedOperands.push_back(res);
                 }
             } else {
-                assert(res->isFalse());
-                assert(predicate == PredicateType::AtMostOneOf || predicate == PredicateType::AtLeastOneOf || predicate == PredicateType::ExactlyOneOf);
+                STORM_LOG_ASSERT(res->isFalse(), "Expected false literal.");
+                STORM_LOG_ASSERT(
+                    predicate == PredicateType::AtMostOneOf || predicate == PredicateType::AtLeastOneOf || predicate == PredicateType::ExactlyOneOf,
+                    "Unexpected predicate.");
                 // do nothing, in particular, do not add.
             }
         } else {
