@@ -396,11 +396,7 @@ TEST(ValuationTest, ValuationsSelectEntities) {
 
 TEST(ValuationTest, RejectsNonCompliantDoubleOrStringSize) {
     // Double and String fields must always be exactly their default size (64 bits) per the UMB spec
-    // (see storm::umb::validation::validateTypeDeclaration). The addDoubleVariable/addStringVariable
-    // convenience methods can never violate this (they never accept a custom size), but the generic
-    // addVariable(ValuationClassDescription::Variable const&) escape hatch takes a fully custom
-    // SizedType and used to accept a non-compliant size silently, only causing corruption/crashes much
-    // later when the resulting description was actually read or written.
+    // (see storm::umb::validation::validateTypeDeclaration).
     auto manager = std::make_shared<storm::expressions::ExpressionManager>();
     auto const d = manager->declareRationalVariable("d");
     storm::storage::sparse::ValuationDescriptionBuilder doubleBuilder(manager);
