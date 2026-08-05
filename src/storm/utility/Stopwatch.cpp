@@ -20,9 +20,8 @@ Stopwatch::SecondType Stopwatch::getTimeInSeconds() const {
 
 Stopwatch::MilisecondType Stopwatch::getTimeInMilliseconds() const {
     auto time = accumulatedTime;
-    if (!this->stopped()) {
+    if (!this->stopped())
         time += std::chrono::high_resolution_clock::now() - startOfCurrentMeasurement;
-    }
     return std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
 }
 
@@ -48,7 +47,7 @@ void Stopwatch::stop() {
 void Stopwatch::start() {
     STORM_LOG_WARN_COND(isStopped, "Stopwatch is already running.");
     isStopped = false;
-    startOfCurrentMeasurement = std::chrono::high_resolution_clock::now();
+        startOfCurrentMeasurement = std::chrono::high_resolution_clock::now();
 }
 
 void Stopwatch::reset() {
