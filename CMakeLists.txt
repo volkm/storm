@@ -552,18 +552,17 @@ if(PROJECT_IS_TOP_LEVEL AND STORM_ENABLE_CLANG_TIDY)
 	# Bake the compiler's implicit include directories into the recorded compile commands. Fixes problems with e.g. Nix.
 	set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 	set(CMAKE_C_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES})
-	# Runs clang-tidy (as configured in .clang-tidy) over all compilation units in compile_commands.json.
-	# USES_TERMINAL puts this in ninja's console pool so output streams live; PYTHONUNBUFFERED
-	# keeps run-clang-tidy's [N/total] progress lines visible even when stdout is a pipe or file.
+	# Runs clang-tidy (as configured in .clang-tidy) over the Storm sources.
+	# USES_TERMINAL and PYTHONUNBUFFERED keep the progress of clang-tidy visible
 	add_custom_target(clang-tidy
 		COMMAND ${CMAKE_COMMAND} -E env PYTHONUNBUFFERED=1
-			${STORM_RUN_CLANG_TIDY_BINARY} -p ${CMAKE_BINARY_DIR} -j ${STORM_CLANG_TIDY_JOBS}
+			${STORM_RUN_CLANG_TIDY_BINARY} -p ${CMAKE_BINARY_DIR} -j ${STORM_CLANG_TIDY_JOBS} -source-filter=${CMAKE_SOURCE_DIR}/src
 		USES_TERMINAL
 		COMMENT "Running clang-tidy over the Storm sources.")
 	# Like clang-tidy, but automatically applies the suggested fixes.
 	add_custom_target(clang-tidy-fix
 		COMMAND ${CMAKE_COMMAND} -E env PYTHONUNBUFFERED=1
-			${STORM_RUN_CLANG_TIDY_BINARY} -p ${CMAKE_BINARY_DIR} -j ${STORM_CLANG_TIDY_JOBS} -fix
+			${STORM_RUN_CLANG_TIDY_BINARY} -p ${CMAKE_BINARY_DIR} -j ${STORM_CLANG_TIDY_JOBS} -source-filter=${CMAKE_SOURCE_DIR}/src -fix
 		USES_TERMINAL
 		COMMENT "Running clang-tidy with automatic fixes over the Storm sources.")
 endif()
