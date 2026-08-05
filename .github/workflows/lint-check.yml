@@ -56,6 +56,7 @@ jobs:
           step-summary: true
           thread-comments: false
           format-review: true
+          tidy-review: true
           no-lgtm: true
           ignore-format: 'build|resources|.github'
           ignore-tidy: 'resources/3rdparty'
