@@ -36,8 +36,15 @@ jobs:
             -DSTORM_DEVELOPER=ON \
             -DSTORM_COMPILE_WITH_PCH=OFF
 
+      - name: Install container prerequisites for clang tools
+        run: |
+          apt-get update
+          apt-get install -y libc6 wget lsb-release software-properties-common gnupg
+
       - name: Run cpp-linter
         id: cpp-linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: cpp-linter/cpp-linter-action@v2.20.0
         with:
           style: file
@@ -47,7 +54,7 @@ jobs:
           files-changed-only: true
           lines-changed-only: true
           step-summary: true
-          thread-comments: update
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
           ignore-format: 'build|resources|.github'
           ignore-tidy: 'resources/3rdparty'
 
