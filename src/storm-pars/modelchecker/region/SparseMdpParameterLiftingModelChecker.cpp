@@ -377,7 +377,7 @@ std::vector<ConstantType> SparseMdpParameterLiftingModelChecker<SparseModelType,
     // Get the result for the complete model (including maybestates)
     std::vector<ConstantType> result = resultsForNonMaybeStates;
     auto maybeStateResIt = x.begin();
-    for (auto maybeState : maybeStates) {
+    for (uint64_t maybeState : maybeStates) {
         result[maybeState] = *maybeStateResIt;
         ++maybeStateResIt;
     }
@@ -392,7 +392,7 @@ void SparseMdpParameterLiftingModelChecker<SparseModelType, ConstantType>::compu
         // only count selected rows
         n = selectedRows->getNumberOfSetBits();
     } else {
-        for (auto maybeState : maybeStates) {
+        for (uint64_t maybeState : maybeStates) {
             n += this->parametricModel->getTransitionMatrix().getRowGroupSize(maybeState);
         }
     }
@@ -400,7 +400,7 @@ void SparseMdpParameterLiftingModelChecker<SparseModelType, ConstantType>::compu
     // The player 1 matrix is the identity matrix of size n with the row groups as given by the original matrix (potentially without unselected rows)
     storm::storage::SparseMatrixBuilder<storm::storage::sparse::state_type> matrixBuilder(n, n, n, true, true, maybeStates.getNumberOfSetBits());
     uint64_t p1MatrixRow = 0;
-    for (auto maybeState : maybeStates) {
+    for (uint64_t maybeState : maybeStates) {
         matrixBuilder.newRowGroup(p1MatrixRow);
         if (selectedRows) {
             for (uint64_t row = selectedRows->getNextSetIndex(this->parametricModel->getTransitionMatrix().getRowGroupIndices()[maybeState]);
