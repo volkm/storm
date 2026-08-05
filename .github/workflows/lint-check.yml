@@ -20,13 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Cache fetched dependencies (carl, Eigen, ...)
-        uses: actions/cache@v6
-        with:
-          path: build/_deps
-          key: storm-deps-${{ hashFiles('CMakeLists.txt', 'resources/3rdparty/CMakeLists.txt') }}
-          restore-keys: storm-deps-
-
       - name: Configure to generate compile_commands.json
         run: |
           cmake -S . -B build \
@@ -36,20 +29,15 @@ jobs:
             -DSTORM_DEVELOPER=ON \
             -DSTORM_COMPILE_WITH_PCH=OFF
 
-      - name: Install container prerequisites for clang tools
-        run: |
-          apt-get update
-          apt-get install -y libc6 wget lsb-release software-properties-common gnupg
-
       - name: Run cpp-linter
         id: cpp-linter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: cpp-linter/cpp-linter-action@v2.20.0
+        uses: cpp-linter/cpp-linter-action@v2.20
         with:
           style: file
           tidy-checks: ''
-          version: '20'
+          version: '22'
           database: build
           files-changed-only: true
           lines-changed-only: diff
@@ -57,6 +45,7 @@ jobs:
           thread-comments: false
           format-review: true
           tidy-review: true
+          passive-reviews: true
           no-lgtm: true
           ignore-format: 'build|resources|.github'
           ignore-tidy: 'resources/3rdparty'
