@@ -146,8 +146,9 @@ storm::storage::SparseMatrix<ValueType> DeterministicSparseTransitionParser<Valu
         }
 
         // If we encountered deadlock and did not fix them, now is the time to throw the exception.
-        if (dontFixDeadlocks && hadDeadlocks)
+        if (dontFixDeadlocks && hadDeadlocks) {
             throw storm::exceptions::WrongFormatException() << "Some of the states do not have outgoing transitions.";
+        }
     }
 
     // Finally, build the actual matrix, test and return it.
@@ -202,10 +203,12 @@ typename DeterministicSparseTransitionParser<ValueType>::FirstPassResult Determi
         }
 
         // Check if a higher state id was found.
-        if (row > result.highestStateIndex)
+        if (row > result.highestStateIndex) {
             result.highestStateIndex = row;
-        if (col > result.highestStateIndex)
+        }
+        if (col > result.highestStateIndex) {
             result.highestStateIndex = col;
+        }
 
         ++result.numberOfNonzeroEntries;
 

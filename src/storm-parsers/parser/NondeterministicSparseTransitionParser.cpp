@@ -172,8 +172,9 @@ storm::storage::SparseMatrix<ValueType> NondeterministicSparseTransitionParser<V
         buf = trimWhitespaces(buf);
     }
 
-    if (dontFixDeadlocks && hadDeadlocks && !isRewardFile)
+    if (dontFixDeadlocks && hadDeadlocks && !isRewardFile) {
         throw storm::exceptions::WrongFormatException() << "Some of the states do not have outgoing transitions.";
+    }
 
     // Since we assume the transition rewards are for the transitions of the model, we copy the rowGroupIndices.
     if (isRewardFile) {
