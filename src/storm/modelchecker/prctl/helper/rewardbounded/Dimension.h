@@ -1,7 +1,12 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
+#include <string>
+
 #include <boost/optional.hpp>
 
+#include "storm/logic/Formula.h"
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/storage/BitVector.h"
 
