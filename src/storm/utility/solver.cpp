@@ -3,6 +3,7 @@
 #include "storm/environment/Environment.h"
 #include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/exceptions/InvalidOperationException.h"
+#include "storm/exceptions/MissingLibraryException.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/CoreSettings.h"
 #include "storm/solver/GlpkLpSolver.h"
@@ -141,7 +142,7 @@ std::unique_ptr<storm::solver::SmtSolver> SmtSolverFactory::create(storm::expres
 #elif defined STORM_HAVE_MATHSAT
         smtSolverType = storm::solver::SmtSolverType::Mathsat;
 #else
-        STORM_LOG_THROW(false, storm::exceptions::InvalidOperationException, "Requested an SMT solver but none was installed.");
+        STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException, "Requested an SMT solver but none was installed.");
 #endif
     }
     switch (smtSolverType) {

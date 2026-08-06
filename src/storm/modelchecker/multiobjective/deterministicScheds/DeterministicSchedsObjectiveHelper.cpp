@@ -194,7 +194,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         storm::utility::graph::checkIfECWithChoiceExists(model.getTransitionMatrix(), backwardTransitions, getMaybeStates(), negativeRewardChoices);
     bool hasPositiveEc =
         storm::utility::graph::checkIfECWithChoiceExists(model.getTransitionMatrix(), backwardTransitions, getMaybeStates(), positiveRewardChoices);
-    STORM_LOG_THROW(!(hasNegativeEC && hasPositiveEc), storm::exceptions::NotSupportedException,
+    STORM_LOG_THROW(!hasNegativeEC || !hasPositiveEc, storm::exceptions::NotSupportedException,
                     "Objective is not convergent: Infinite positive and infinite negative reward is possible.");
     infinityCase = hasNegativeEC ? InfinityCase::HasNegativeInfinite : (hasPositiveEc ? InfinityCase::HasPositiveInfinite : InfinityCase::AlwaysFinite);
 
@@ -544,7 +544,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
         assert(getInfinityCase() == InfinityCase::HasPositiveInfinite || getInfinityCase() == InfinityCase::HasNegativeInfinite);
         STORM_LOG_THROW(
             hasThreshold() || getInfinityCase() == InfinityCase::HasNegativeInfinite, storm::exceptions::NotSupportedException,
-            "The upper bound for objective " << *objective.originalFormula << " is infinity at some state. This is only supported for thresholded objectives");
+            "The upper bound for objective " << *objective.originalFormula << " is infinity at some state. This is only supported for thresholded objectives.");
         // Eliminate remaining mecs
         storm::storage::MaximalEndComponentDecomposition<ValueType> remainingMecs(quotient1.matrix, backwardTransitions1, allQuotient1States,
                                                                                   subsystemChoices1);
