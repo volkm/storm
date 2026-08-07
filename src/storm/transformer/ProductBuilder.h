@@ -3,9 +3,13 @@
 #include "storm/models/sparse/StateLabeling.h"
 #include "storm/storage/BitVector.h"
 #include "storm/storage/SparseMatrix.h"
+#include "storm/storage/sparse/StateType.h"
+#include "storm/transformer/Product.h"
 
+#include <cstddef>
 #include <deque>
 #include <map>
+#include <utility>
 #include <vector>
 
 namespace storm {

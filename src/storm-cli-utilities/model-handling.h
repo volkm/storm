@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <type_traits>
 
+#include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/storm.h"
 
 #include "AutomaticSettings.h"

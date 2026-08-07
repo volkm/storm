@@ -4,6 +4,8 @@
 
 #include "storm-gamebased-ar/modelchecker/abstraction/BisimulationAbstractionRefinementModelChecker.h"
 #include "storm-gamebased-ar/modelchecker/abstraction/GameBasedMdpModelChecker.h"
+#include "storm/exceptions/NotSupportedException.h"
+#include "storm/utility/macros.h"
 
 namespace storm::gbar {
 namespace api {

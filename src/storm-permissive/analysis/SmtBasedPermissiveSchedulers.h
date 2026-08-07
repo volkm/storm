@@ -1,6 +1,16 @@
 #pragma once
 
+#include "storm-permissive/analysis/PermissiveSchedulerComputation.h"
 #include "storm/solver/SmtSolver.h"
+#include "storm/storage/StateActionPair.h"
+#include "storm/storage/StateActionTargetTuple.h"
+#include "storm/utility/macros.h"
+
+#include <algorithm>
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace storm {
 namespace ps {
