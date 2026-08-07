@@ -101,7 +101,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         maybeStates = ~(prob0States | prob1States);
         // Cut away those states that are not reachable, or only reachable via non-maybe states.
         maybeStates &= storm::utility::graph::getReachableStates(model.getTransitionMatrix(), model.getInitialStates(), maybeStates, ~maybeStates);
-        for (auto const& state : maybeStates) {
+        for (auto state : maybeStates) {
             for (auto const& choice : model.getTransitionMatrix().getRowGroupIndices(state)) {
                 auto rowSum = model.getTransitionMatrix().getConstrainedRowSum(choice, prob1States);
                 if (storm::utility::isZero(rowSum)) {
@@ -130,7 +130,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         // Cut away those states that are not reachable, or only reachable via non-maybe states.
         maybeStates &= storm::utility::graph::getReachableStates(model.getTransitionMatrix(), model.getInitialStates(), maybeStates, ~maybeStates);
         std::vector<ValueType> choiceBasedRewards = getTotalRewardVector(model, *objective.formula);
-        for (auto const& state : maybeStates) {
+        for (auto state : maybeStates) {
             for (auto const& choice : model.getTransitionMatrix().getRowGroupIndices(state)) {
                 auto const& value = choiceBasedRewards[choice];
                 if (storm::utility::isZero(value)) {
@@ -157,7 +157,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         // Cut away those states that are not reachable, or only reachable via non-maybe states.
         maybeStates &= storm::utility::graph::getReachableStates(model.getTransitionMatrix(), model.getInitialStates(), maybeStates, ~maybeStates);
         std::vector<ValueType> choiceBasedRewards = getTotalRewardVector(model, *objective.formula);
-        for (auto const& state : maybeStates) {
+        for (auto state : maybeStates) {
             for (auto const& choice : model.getTransitionMatrix().getRowGroupIndices(state)) {
                 auto const& value = choiceBasedRewards[choice];
                 if (storm::utility::isZero(value)) {
@@ -194,7 +194,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::initialize() {
         storm::utility::graph::checkIfECWithChoiceExists(model.getTransitionMatrix(), backwardTransitions, getMaybeStates(), negativeRewardChoices);
     bool hasPositiveEc =
         storm::utility::graph::checkIfECWithChoiceExists(model.getTransitionMatrix(), backwardTransitions, getMaybeStates(), positiveRewardChoices);
-    STORM_LOG_THROW(!(hasNegativeEC && hasPositiveEc), storm::exceptions::NotSupportedException,
+    STORM_LOG_THROW(!hasNegativeEC || !hasPositiveEc, storm::exceptions::NotSupportedException,
                     "Objective is not convergent: Infinite positive and infinite negative reward is possible.");
     infinityCase = hasNegativeEC ? InfinityCase::HasNegativeInfinite : (hasPositiveEc ? InfinityCase::HasPositiveInfinite : InfinityCase::AlwaysFinite);
 
@@ -522,7 +522,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
     if (getInfinityCase() != InfinityCase::HasNegativeInfinite) {
         auto result1 = computeValuesOfReducedSystem(env, quotient1.matrix, exitProbs1, rewards1, storm::OptimizationDirection::Minimize);
         lowerResultBounds = std::vector<ValueType>(model.getNumberOfStates(), storm::utility::zero<ValueType>());
-        for (auto const& state : maybeStates) {
+        for (auto state : maybeStates) {
             ValueType val = result1.at(quotient1.oldToNewStateMapping.at(state));
             minusMinMaxSolverPrecision(env, val);
             (*lowerResultBounds)[state] = val;
@@ -531,7 +531,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
     if (getInfinityCase() != InfinityCase::HasPositiveInfinite) {
         auto result1 = computeValuesOfReducedSystem(env, quotient1.matrix, exitProbs1, rewards1, storm::OptimizationDirection::Maximize);
         upperResultBounds = std::vector<ValueType>(model.getNumberOfStates(), storm::utility::zero<ValueType>());
-        for (auto const& state : maybeStates) {
+        for (auto state : maybeStates) {
             ValueType val = result1.at(quotient1.oldToNewStateMapping.at(state));
             plusMinMaxSolverPrecision(env, val);
             if (infinityCase == InfinityCase::HasNegativeInfinite) {  // Upper bound has to be at least 0 to allow for "trivial solution" in encoding
@@ -545,7 +545,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
                          "Unexpected infinity case.");
         STORM_LOG_THROW(
             hasThreshold() || getInfinityCase() == InfinityCase::HasNegativeInfinite, storm::exceptions::NotSupportedException,
-            "The upper bound for objective " << *objective.originalFormula << " is infinity at some state. This is only supported for thresholded objectives");
+            "The upper bound for objective " << *objective.originalFormula << " is infinity at some state. This is only supported for thresholded objectives.");
         // Eliminate remaining mecs
         storm::storage::MaximalEndComponentDecomposition<ValueType> remainingMecs(quotient1.matrix, backwardTransitions1, allQuotient1States,
                                                                                   subsystemChoices1);
@@ -599,7 +599,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
         if (getInfinityCase() == InfinityCase::HasNegativeInfinite) {
             auto result2 = computeValuesOfReducedSystem(env, quotient2.matrix, exitProbs2, rewards2, storm::OptimizationDirection::Minimize);
             lowerResultBounds = std::vector<ValueType>(model.getNumberOfStates(), storm::utility::zero<ValueType>());
-            for (auto const& state : maybeStates) {
+            for (auto state : maybeStates) {
                 ValueType val = result2.at(quotient2.oldToNewStateMapping.at(quotient1.oldToNewStateMapping.at(state)));
                 minusMinMaxSolverPrecision(env, val);
                 (*lowerResultBounds)[state] = val;
@@ -608,7 +608,7 @@ void DeterministicSchedsObjectiveHelper<ModelType>::computeLowerUpperBounds(Envi
             STORM_LOG_ASSERT(getInfinityCase() == InfinityCase::HasPositiveInfinite, "Expected positive infinity case.");
             auto result2 = computeValuesOfReducedSystem(env, quotient2.matrix, exitProbs2, rewards2, storm::OptimizationDirection::Maximize);
             upperResultBounds = std::vector<ValueType>(model.getNumberOfStates(), storm::utility::zero<ValueType>());
-            for (auto const& state : maybeStates) {
+            for (auto state : maybeStates) {
                 ValueType val = result2.at(quotient2.oldToNewStateMapping.at(quotient1.oldToNewStateMapping.at(state)));
                 plusMinMaxSolverPrecision(env, val);
                 (*upperResultBounds)[state] = val;
@@ -637,7 +637,7 @@ typename DeterministicSchedsObjectiveHelper<ModelType>::ValueType DeterministicS
     if (!bsccCandidates.empty()) {
         storm::storage::StronglyConnectedComponentDecompositionOptions bsccOptions;
         bsccOptions.onlyBottomSccs(true).subsystem(bsccCandidates);
-        storm::storage::StronglyConnectedComponentDecomposition bsccs(selectedMatrix, bsccOptions);
+        storm::storage::StronglyConnectedComponentDecomposition<ValueType> bsccs(selectedMatrix, bsccOptions);
         for (auto const& bscc : bsccs) {
             for (auto const& s : bscc) {
                 subMaybeStates.set(s, false);
