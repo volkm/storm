@@ -243,9 +243,6 @@ SparseDtmcEliminationModelChecker<SparseDtmcModelType>::computeLongRunValues(Env
     while (priorityQueue->hasNext()) {
         storm::storage::sparse::state_type state = priorityQueue->pop();
         stateEliminator.eliminateState(state, true);
-#ifdef STORM_DEV
-        STORM_LOG_ASSERT(checkConsistent(flexibleMatrix, flexibleBackwardTransitions), "The forward and backward transition matrices became inconsistent.");
-#endif
     }
 
     // Now, we set the values of all states in BSCCs to that of the representative value (and clear the
@@ -868,9 +865,6 @@ void SparseDtmcEliminationModelChecker<SparseDtmcModelType>::performPrioritizedS
         if (removeForwardTransitions) {
             values[state] = storm::utility::zero<ValueType>();
         }
-#ifdef STORM_DEV
-        STORM_LOG_ASSERT(checkConsistent(transitionMatrix, backwardTransitions), "The forward and backward transition matrices became inconsistent.");
-#endif
     }
 }
 
@@ -1040,30 +1034,6 @@ uint_fast64_t SparseDtmcEliminationModelChecker<SparseDtmcModelType>::treatScc(
     }
 
     return maximalDepth;
-}
-
-template<typename SparseDtmcModelType>
-bool SparseDtmcEliminationModelChecker<SparseDtmcModelType>::checkConsistent(storm::storage::FlexibleSparseMatrix<ValueType>& transitionMatrix,
-                                                                             storm::storage::FlexibleSparseMatrix<ValueType>& backwardTransitions) {
-    for (uint_fast64_t forwardIndex = 0; forwardIndex < transitionMatrix.getRowCount(); ++forwardIndex) {
-        for (auto const& forwardEntry : transitionMatrix.getRow(forwardIndex)) {
-            if (forwardEntry.getColumn() == forwardIndex) {
-                continue;
-            }
-
-            bool foundCorrespondingElement = false;
-            for (auto const& backwardEntry : backwardTransitions.getRow(forwardEntry.getColumn())) {
-                if (backwardEntry.getColumn() == forwardIndex) {
-                    foundCorrespondingElement = true;
-                }
-            }
-
-            if (!foundCorrespondingElement) {
-                return false;
-            }
-        }
-    }
-    return true;
 }
 
 template class SparseDtmcEliminationModelChecker<storm::models::sparse::Dtmc<double>>;
