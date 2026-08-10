@@ -66,6 +66,28 @@ if(@STORM_HAVE_LIBARCHIVE@) # STORM_HAVE_LIBARCHIVE
      find_dependency(LibArchive)
 endif()
 
+if(@STORM_HAVE_GMM@)  # STORM_HAVE_GMM
+    if(NOT @STORM_SHIPPED_GMM@)  # System gmm is not shipped with storm
+        find_path(GMM_INCLUDE_DIR gmm/gmm_kernel.h)
+        set(_GMM_LINK_LIBRARIES "")
+        if(@STORM_GMM_NEEDS_BLAS@)
+            find_dependency(BLAS)
+            list(APPEND _GMM_LINK_LIBRARIES ${BLAS_LIBRARIES})
+        endif()
+        if(@STORM_GMM_NEEDS_LAPACK@)
+            find_dependency(LAPACK)
+            list(APPEND _GMM_LINK_LIBRARIES ${LAPACK_LIBRARIES})
+        endif()
+        add_library(gmm INTERFACE IMPORTED)
+        set_target_properties(
+                gmm
+                PROPERTIES
+                INTERFACE_INCLUDE_DIRECTORIES ${GMM_INCLUDE_DIR}
+                INTERFACE_LINK_LIBRARIES "${_GMM_LINK_LIBRARIES}"
+        )
+    endif()
+endif()
+
 if(@STORM_HAVE_MATHSAT@)  # STORM_HAVE_MATHSAT
     set(MATHSAT_ROOT "@MATHSAT_ROOT@")
     find_dependency(MATHSAT QUIET)

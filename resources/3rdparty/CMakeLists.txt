@@ -78,45 +78,11 @@ endif()
 
 #############################################################
 ##
-##	gmm
+##	gmm (optional)
 ##
 #############################################################
 
-if(NOT STORM_DISABLE_GMM)
-    set(GMM_VERSION "5.5")
-    message(STATUS "Storm - Including gmm ${GMM_VERSION}.")
-    ExternalProject_Add(
-            gmm_src
-            URL https://download-mirror.savannah.gnu.org/releases/getfem/stable/gmm-${GMM_VERSION}.tar.gz
-            SOURCE_DIR ${STORM_3RDPARTY_BINARY_DIR}/gmm
-            # Try to apply patch and otherwise check that patch was already applied
-            # Needed because while -N ignores already applied patches it still returns with exit code 1
-            PATCH_COMMAND patch -N -p1 -s -i ${STORM_3RDPARTY_SOURCE_DIR}/patches/gmm55.patch || patch --dry-run -N -p1 -s -i ${STORM_3RDPARTY_SOURCE_DIR}/patches/gmm55.patch | grep "Reversed (or previously applied) patch detected!"
-            UPDATE_COMMAND ""
-            CONFIGURE_COMMAND ""
-            BUILD_COMMAND ""
-            INSTALL_COMMAND ""
-            LOG_DOWNLOAD ON
-            LOG_INSTALL ON
-            LOG_OUTPUT_ON_FAILURE ON
-    )
-    add_library(gmm INTERFACE) # Not imported, we are in control of the sources.
-    add_dependencies(gmm gmm_src)
-    add_dependencies(storm_resources gmm)
-    target_include_directories(gmm INTERFACE
-            $<BUILD_INTERFACE:${STORM_3RDPARTY_BINARY_DIR}/gmm/include>
-            $<INSTALL_INTERFACE:${STORM_RESOURCE_INCLUDE_INSTALL_DIR}>
-    )
-    install(TARGETS gmm EXPORT storm_Targets)
-    install(DIRECTORY ${STORM_3RDPARTY_BINARY_DIR}/gmm/include/gmm
-            DESTINATION ${STORM_RESOURCE_INCLUDE_INSTALL_DIR}
-            FILES_MATCHING PATTERN "*.h" PATTERN ".git" EXCLUDE)
-    list(APPEND STORM_DEP_TARGETS gmm)
-    set(STORM_HAVE_GMM ON)
-else()
-    message(STATUS "Storm - Not linking with gmm.")
-    set(STORM_HAVE_GMM OFF)
-endif()
+include(${STORM_3RDPARTY_SOURCE_DIR}/include_gmm.cmake)
 
 #############################################################
 ##

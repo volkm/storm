@@ -58,6 +58,7 @@ RUN pacman -S --noconfirm \
         cln \
         ginac \
         glpk \
+        gmm \
         gmp \
         hwloc \
         libarchive \
