@@ -364,6 +364,7 @@ void ExplicitDFTModelBuilder<ValueType, StateType>::initializeNextIteration() {
 
 template<typename ValueType, typename StateType>
 void ExplicitDFTModelBuilder<ValueType, StateType>::exploreStateSpace(double approximationThreshold) {
+    bool takeFirstDependency = storm::settings::getModule<storm::dft::settings::modules::FaultTreeSettings>().isTakeFirstDependency();
     size_t nrExpandedStates = 0;
     size_t nrSkippedStates = 0;
     storm::utility::ProgressMeasurement progress("explored states");
@@ -415,7 +416,7 @@ void ExplicitDFTModelBuilder<ValueType, StateType>::exploreStateSpace(double app
             // Explore the current state
             ++nrExpandedStates;
             storm::generator::StateBehavior<ValueType, StateType> behavior =
-                generator.expand(std::bind(&ExplicitDFTModelBuilder::getOrAddStateIndex, this, std::placeholders::_1));
+                generator.expand(std::bind(&ExplicitDFTModelBuilder::getOrAddStateIndex, this, std::placeholders::_1), takeFirstDependency);
             STORM_LOG_ASSERT(!behavior.empty(), "Behavior is empty.");
             setMarkovian(behavior.begin()->isMarkovian());
 
