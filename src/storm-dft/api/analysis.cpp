@@ -26,8 +26,9 @@ storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::share
 template<typename ValueType>
 typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analyzeDFT(
     storm::dft::DftEnvironment const& env, storm::dft::storage::DFT<ValueType> const& dft,
-    std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, storm::dft::utility::RelevantEvents const& relevantEvents, bool printOutput) {
-    storm::dft::modelchecker::DFTModelChecker<ValueType> modelChecker(printOutput);
+    std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, storm::dft::utility::RelevantEvents const& relevantEvents, bool printOutput,
+    typename storm::dft::modelchecker::DFTModelChecker<ValueType>::ModelExportCallback const& exportCallback) {
+    storm::dft::modelchecker::DFTModelChecker<ValueType> modelChecker(printOutput, exportCallback);
     typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results results = modelChecker.check(env, dft, properties, relevantEvents);
     if (printOutput) {
         modelChecker.printTimings();
@@ -241,16 +242,16 @@ bool computeDependencyConflicts(storm::dft::storage::DFT<ValueType>& dft, bool u
 }
 
 // Explicitly instantiate methods
-template typename storm::dft::modelchecker::DFTModelChecker<double>::dft_results analyzeDFT(storm::dft::DftEnvironment const&,
-                                                                                            storm::dft::storage::DFT<double> const&,
-                                                                                            std::vector<std::shared_ptr<storm::logic::Formula const>> const&,
-                                                                                            storm::dft::utility::RelevantEvents const&, bool);
+template typename storm::dft::modelchecker::DFTModelChecker<double>::dft_results analyzeDFT(
+    storm::dft::DftEnvironment const&, storm::dft::storage::DFT<double> const&, std::vector<std::shared_ptr<storm::logic::Formula const>> const&,
+    storm::dft::utility::RelevantEvents const&, bool, typename storm::dft::modelchecker::DFTModelChecker<double>::ModelExportCallback const&);
 template std::pair<uint64_t, uint64_t> computeBEFailureBounds(storm::dft::storage::DFT<double> const&, bool, double);
 template bool computeDependencyConflicts(storm::dft::storage::DFT<double>&, bool, double);
 
 template typename storm::dft::modelchecker::DFTModelChecker<storm::RationalFunction>::dft_results analyzeDFT(
     storm::dft::DftEnvironment const&, storm::dft::storage::DFT<storm::RationalFunction> const&,
-    std::vector<std::shared_ptr<storm::logic::Formula const>> const&, storm::dft::utility::RelevantEvents const&, bool);
+    std::vector<std::shared_ptr<storm::logic::Formula const>> const&, storm::dft::utility::RelevantEvents const&, bool,
+    typename storm::dft::modelchecker::DFTModelChecker<storm::RationalFunction>::ModelExportCallback const&);
 template std::pair<uint64_t, uint64_t> computeBEFailureBounds(storm::dft::storage::DFT<storm::RationalFunction> const&, bool, double);
 template bool computeDependencyConflicts(storm::dft::storage::DFT<storm::RationalFunction>&, bool, double);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/variant.hpp>
+#include <functional>
 
 #include "storm-dft/environment/DftEnvironment.h"
 #include "storm-dft/storage/DFT.h"
@@ -24,6 +25,15 @@ class DFTModelChecker {
     typedef std::vector<boost::variant<ExtendedValueType, approximation_result>> dft_results;
     typedef std::vector<std::shared_ptr<storm::logic::Formula const>> property_vector;
 
+    /*!
+     * Callback invoked whenever a model has been built and is available for export.
+     *
+     * @param model The built model.
+     * @param isFinal True if it is the final model.
+     *                False if it is an intermediate model during the approximation loop.
+     */
+    using ModelExportCallback = std::function<void(std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, bool isFinal)>;
+
     class ResultOutputVisitor : public boost::static_visitor<> {
        public:
         void operator()(ExtendedValueType const& result, std::ostream& os) const {
@@ -38,7 +48,7 @@ class DFTModelChecker {
     /*!
      * Constructor.
      */
-    DFTModelChecker(bool printOutput) : printInfo(printOutput) {}
+    DFTModelChecker(bool printOutput, ModelExportCallback exportCallback = {}) : printInfo(printOutput), exportCallback(std::move(exportCallback)) {}
 
     /*!
      * Main method for checking DFTs.
@@ -69,6 +79,7 @@ class DFTModelChecker {
 
    private:
     bool printInfo;
+    ModelExportCallback exportCallback;
 
     // Timing values
     storm::utility::Stopwatch buildingTimer;

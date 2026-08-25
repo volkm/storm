@@ -15,6 +15,7 @@
 #include "storm-gspn/api/storm-gspn.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/api/export.h"
 #include "storm/api/properties.h"
 #include "storm/exceptions/UnmetRequirementException.h"
 #include "storm/settings/SettingsManager.h"
@@ -291,7 +292,17 @@ void processOptions() {
     if (props.empty()) {
         STORM_LOG_WARN("No property given. No analysis will be performed.");
     } else {
-        storm::dft::api::analyzeDFT<ValueType>(dftEnv, *dft, props, relevantEvents, true);
+        auto exportCallback = [&ioSettings](std::shared_ptr<storm::models::sparse::Model<ValueType>> const& model, bool isFinalModel) {
+            if (ioSettings.isExportExplicitSet()) {
+                std::vector<std::string> parameterNames;
+                storm::api::exportSparseModelAsDrn(model, ioSettings.getExportExplicitFilename(), parameterNames,
+                                                   !ioSettings.isExplicitExportPlaceholdersDisabled());
+            }
+            if (isFinalModel && ioSettings.isExportDotSet()) {
+                storm::api::exportSparseModelAsDot(model, ioSettings.getExportDotFilename(), ioSettings.getExportDotMaxWidth());
+            }
+        };
+        storm::dft::api::analyzeDFT<ValueType>(dftEnv, *dft, props, relevantEvents, true, exportCallback);
     }
 }
 

@@ -35,13 +35,14 @@ storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::share
  * @param properties PCTL formulas capturing the properties to check.
  * @param relevantEvents Relevant events which should be observed.
  * @param printOutput If true, model information, timings, results, etc. are printed.
+ * @param exportCallback If set, invoked whenever a model has been built, to let the caller export it.
  * @return Results.
  */
 template<typename ValueType>
 typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analyzeDFT(
     storm::dft::DftEnvironment const& env, storm::dft::storage::DFT<ValueType> const& dft,
     std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, storm::dft::utility::RelevantEvents const& relevantEvents = {},
-    bool printOutput = false);
+    bool printOutput = false, typename storm::dft::modelchecker::DFTModelChecker<ValueType>::ModelExportCallback const& exportCallback = {});
 
 /*!
  * Analyze the DFT using BDDs
