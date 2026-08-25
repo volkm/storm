@@ -13,6 +13,7 @@
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/properties.h"
 #include "storm/exceptions/UnmetRequirementException.h"
+#include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/settings/modules/IOSettings.h"
 #include "storm/settings/modules/TransformationSettings.h"
@@ -221,7 +222,8 @@ void processOptions() {
         // All events are relevant
         additionalRelevantEventNames = {"all"};
     }
-    storm::dft::utility::RelevantEvents relevantEvents = storm::dft::api::computeRelevantEvents(props, additionalRelevantEventNames);
+    storm::dft::utility::RelevantEvents relevantEvents =
+        storm::dft::api::computeRelevantEvents(props, additionalRelevantEventNames, faultTreeSettings.isAddLabelsClaiming());
 
     // Analyze DFT by translation to CTMC/MA
     dft = storm::dft::api::prepareForMarkovAnalysis<ValueType>(*dft);

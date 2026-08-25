@@ -18,9 +18,9 @@ namespace storm::dft {
 namespace api {
 
 storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
-                                                          std::vector<std::string> const& additionalRelevantEventNames) {
+                                                          std::vector<std::string> const& additionalRelevantEventNames, bool addLabelsClaiming) {
     storm::dft::utility::RelevantEvents events(additionalRelevantEventNames.begin(), additionalRelevantEventNames.end());
-    events.insertNamesFromProperties(properties.begin(), properties.end());
+    events.insertNamesFromProperties(properties.begin(), properties.end(), addLabelsClaiming);
     return events;
 }
 
