@@ -19,10 +19,11 @@ namespace api {
  *
  * @param properties List of properties. All events occurring in a property are relevant.
  * @param additionalRelevantEventNames List of names of additional relevant events.
+ * @param addLabelsClaiming Whether labels representing claiming operations are added to the model.
  * @return Relevant events.
  */
 storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties,
-                                                          std::vector<std::string> const& additionalRelevantEventNames);
+                                                          std::vector<std::string> const& additionalRelevantEventNames, bool addLabelsClaiming);
 
 /*!
  * Compute the exact or approximate analysis result of the given DFT according to the given properties.
