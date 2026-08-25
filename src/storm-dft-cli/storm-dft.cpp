@@ -1,4 +1,6 @@
 #include "storm-cli-utilities/cli.h"
+#include "storm-conv/api/storm-conv.h"
+#include "storm-conv/settings/modules/JaniExportSettings.h"
 #include "storm-dft/api/analysis.h"
 #include "storm-dft/api/gspn_transformation.h"
 #include "storm-dft/api/io.h"
@@ -113,7 +115,9 @@ void processOptions() {
 
     // Transformation to GSPN
     if (dftGspnSettings.isTransformToGspn()) {
-        std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> pair = storm::dft::api::transformToGSPN(*dft, faultTreeSettings.isDisableDC());
+        std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> pair =
+            storm::dft::api::transformToGSPN(*dft, faultTreeSettings.isDisableDC(), dftGspnSettings.isExtendPriorities(),
+                                             !dftGspnSettings.isDisableSmartTransformation(), dftGspnSettings.isMergeDCFailed());
         std::shared_ptr<storm::gspn::GSPN> gspn = pair.first;
         uint64_t toplevelFailedPlace = pair.second;
 
@@ -122,7 +126,11 @@ void processOptions() {
 
         // Transform to Jani
         // TODO analyse Jani model
-        std::shared_ptr<storm::jani::Model> model = storm::dft::api::transformToJani(*gspn, toplevelFailedPlace);
+        auto [model, janiProperties] = storm::dft::api::transformToJani(*gspn, toplevelFailedPlace);
+        if (dftGspnSettings.isWriteToJaniSet()) {
+            auto const& janiExportSettings = storm::settings::getModule<storm::settings::modules::JaniExportSettings>();
+            storm::api::exportJaniToFile(*model, janiProperties, dftGspnSettings.getWriteToJaniFilename(), janiExportSettings.isCompactJsonSet());
+        }
         return;
     }
 
