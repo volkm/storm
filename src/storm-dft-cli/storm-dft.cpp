@@ -1,6 +1,9 @@
 #include "storm-cli-utilities/cli.h"
 #include "storm-conv/api/storm-conv.h"
 #include "storm-conv/settings/modules/JaniExportSettings.h"
+#include "storm-dft-cli/settings/modules/DftGspnSettings.h"
+#include "storm-dft-cli/settings/modules/DftIOSettings.h"
+#include "storm-dft-cli/settings/modules/FaultTreeSettings.h"
 #include "storm-dft/api/analysis.h"
 #include "storm-dft/api/gspn_transformation.h"
 #include "storm-dft/api/io.h"
@@ -11,9 +14,6 @@
 #include "storm-dft/environment/TransformationEnvironment.h"
 #include "storm-dft/parser/BEOrderParser.h"
 #include "storm-dft/settings/DftSettings.h"
-#include "storm-dft/settings/modules/DftGspnSettings.h"
-#include "storm-dft/settings/modules/DftIOSettings.h"
-#include "storm-dft/settings/modules/FaultTreeSettings.h"
 #include "storm-gspn/api/storm-gspn.h"
 #include "storm-parsers/api/properties.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
@@ -327,6 +327,16 @@ void process() {
 }
 
 /*!
+ * Register the settings modules relevant for the Storm-DFT CLI.
+ */
+void initializeDftCliSettings(std::string const& name, std::string const& executableName) {
+    storm::dft::settings::initializeDftSettings(name, executableName);
+    storm::settings::addModule<storm::dft::settings::modules::DftIOSettings>();
+    storm::settings::addModule<storm::dft::settings::modules::FaultTreeSettings>();
+    storm::settings::addModule<storm::dft::settings::modules::DftGspnSettings>();
+}
+
+/*!
  * Entry point for Storm-DFT.
  *
  * @param argc The argc argument of main().
@@ -335,7 +345,7 @@ void process() {
  */
 int main(const int argc, const char** argv) {
     try {
-        return storm::cli::process("Storm-dft", "storm-dft", storm::dft::settings::initializeDftSettings, process, argc, argv);
+        return storm::cli::process("Storm-dft", "storm-dft", initializeDftCliSettings, process, argc, argv);
     } catch (storm::exceptions::BaseException const& exception) {
         STORM_LOG_ERROR("An exception caused Storm-DFT to terminate. The message of the exception is: " << exception.what());
         return 1;
