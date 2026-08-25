@@ -5,19 +5,16 @@
 #include "storm-dft/environment/AnalysisEnvironment.h"
 #include "storm-dft/environment/ModelBuilderEnvironment.h"
 #include "storm-dft/environment/TransformationEnvironment.h"
-#include "storm-dft/settings/modules/DftIOSettings.h"
 #include "storm-dft/utility/SymmetryFinder.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/api/bisimulation.h"
-#include "storm/api/export.h"
 #include "storm/api/verification.h"
 #include "storm/builder/ParallelCompositionBuilder.h"
 #include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/exceptions/InvalidModelException.h"
 #include "storm/modelchecker/results/ExplicitQualitativeCheckResult.h"
+#include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/ModelType.h"
-#include "storm/settings/SettingsManager.h"
-#include "storm/settings/modules/IOSettings.h"
 #include "storm/utility/bitoperations.h"
 
 namespace storm::dft {
@@ -290,9 +287,6 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
                                                                                       property_vector const& properties,
                                                                                       storm::dft::utility::RelevantEvents const& relevantEvents) {
     explorationTimer.start();
-    // TODO remove settings
-    auto ioSettings = storm::settings::getModule<storm::settings::modules::IOSettings>();
-    auto dftIOSettings = storm::settings::getModule<storm::dft::settings::modules::DftIOSettings>();
 
     double const approximationError = env.analysis().isApproximationErrorSet() ? env.analysis().getApproximationError() : 0.0;
 
@@ -349,17 +343,14 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
             STORM_LOG_DEBUG("Getting model for lower bound...");
             model = builder.getModelApproximation(true, !probabilityFormula);
             // We only output the info from the lower bound as the info for the upper bound is the same
-            if (printInfo && dftIOSettings.isShowDftStatisticsSet()) {
+            if (printInfo) {
                 std::cout << "Model in iteration " << (iteration + 1) << ":\n";
                 model->printModelInformationToStream(std::cout);
             }
             buildingTimer.stop();
 
-            if (ioSettings.isExportExplicitSet()) {
-                std::vector<std::string> parameterNames;
-                // TODO fill parameter names
-                storm::api::exportSparseModelAsDrn(model, ioSettings.getExportExplicitFilename(), parameterNames,
-                                                   !ioSettings.isExplicitExportPlaceholdersDisabled());
+            if (exportCallback) {
+                exportCallback(model, false);
             }
 
             // Check lower bounds
@@ -390,13 +381,12 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
             STORM_LOG_ASSERT(comparator.isLess(approxResult.first, approxResult.second) || comparator.isEqual(approxResult.first, approxResult.second),
                              "Under-approximation " << approxResult.first << " is greater than over-approximation " << approxResult.second);
             totalTimer.stop();
-            if (printInfo && dftIOSettings.isShowDftStatisticsSet()) {
-                std::cout << "Result after iteration " << (iteration + 1) << ": (" << approxResult.first << ", " << approxResult.second << ")\n";
-                printTimings();
-                std::cout << '\n';
-            } else {
-                STORM_LOG_DEBUG("Result after iteration " << (iteration + 1) << ": (" << approxResult.first << ", " << approxResult.second << ")");
-            }
+            STORM_LOG_STATISTICS_LAZY([this, iteration, &approxResult](std::ostream& out) {
+                out << "Result after iteration " << (iteration + 1) << ": (" << approxResult.first << ", " << approxResult.second << ")\n";
+                printTimings(out);
+                return true;
+            });
+            STORM_LOG_DEBUG("Result after iteration " << (iteration + 1) << ": (" << approxResult.first << ", " << approxResult.second << ")");
 
             totalTimer.start();
             ++iteration;
@@ -405,6 +395,10 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
         // STORM_LOG_INFO("Finished approximation after " << iteration << " iteration" << (iteration > 1 ? "s." : "."));
         if (printInfo) {
             model->printModelInformationToStream(std::cout);
+        }
+        // Export the model if required
+        if (exportCallback) {
+            exportCallback(model, true);
         }
         dft_results results;
         results.push_back(approximation_result(std::move(approxResult.first), std::move(approxResult.second)));
@@ -427,15 +421,8 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
         }
 
         // Export the model if required
-        // TODO move this outside of the model checker?
-        if (ioSettings.isExportExplicitSet()) {
-            std::vector<std::string> parameterNames;
-            // TODO fill parameter names
-            storm::api::exportSparseModelAsDrn(model, ioSettings.getExportExplicitFilename(), parameterNames,
-                                               !ioSettings.isExplicitExportPlaceholdersDisabled());
-        }
-        if (ioSettings.isExportDotSet()) {
-            storm::api::exportSparseModelAsDot(model, ioSettings.getExportDotFilename(), ioSettings.getExportDotMaxWidth());
+        if (exportCallback) {
+            exportCallback(model, true);
         }
 
         // Model checking
