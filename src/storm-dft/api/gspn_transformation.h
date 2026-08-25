@@ -8,15 +8,15 @@
 
 namespace storm::dft {
 namespace api {
-
 /*!
  * Transform DFT to GSPN.
  *
  * @param dft DFT.
+ * @param disableDC Whether Don't Care propagation is disabled.
  * @return Pair of GSPN and id of failed place corresponding to the top level element.
  */
 template<typename ValueType>
-std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<ValueType> const& dft);
+std::pair<std::shared_ptr<storm::gspn::GSPN>, uint64_t> transformToGSPN(storm::dft::storage::DFT<ValueType> const& dft, bool disableDC);
 
 /*!
  * Transform GSPN to Jani model.

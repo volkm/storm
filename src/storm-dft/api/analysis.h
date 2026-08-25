@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "storm-dft/builder/DftExplorationHeuristic.h"
+#include "storm-dft/environment/DftEnvironment.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/utility/RelevantEvents.h"
@@ -29,25 +30,17 @@ storm::dft::utility::RelevantEvents computeRelevantEvents(std::vector<std::share
  * Compute the exact or approximate analysis result of the given DFT according to the given properties.
  * First the Markov model is built from the DFT and then this model is checked against the given properties.
  *
+ * @param env Environment holding the DFT model-checking configuration.
  * @param dft DFT.
  * @param properties PCTL formulas capturing the properties to check.
- * @param symred Flag whether symmetry reduction should be used.
- * @param allowModularisation Flag whether modularisation should be applied if possible.
  * @param relevantEvents Relevant events which should be observed.
- * @param allowDCForRelevant Whether to allow Don't Care propagation for relevant events
- * @param approximationError Allowed approximation error.  Value 0 indicates no approximation.
- * @param approximationHeuristic Heuristic used for state space exploration.
- * @param eliminateChains If true, chains of non-Markovian states are eliminated from the resulting MA.
- * @param labelBehavior Behavior of labels of eliminated states
  * @param printOutput If true, model information, timings, results, etc. are printed.
  * @return Results.
  */
 template<typename ValueType>
 typename storm::dft::modelchecker::DFTModelChecker<ValueType>::dft_results analyzeDFT(
-    storm::dft::storage::DFT<ValueType> const& dft, std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, bool symred = true,
-    bool allowModularisation = true, storm::dft::utility::RelevantEvents const& relevantEvents = {}, bool allowDCForRelevant = false,
-    double approximationError = 0.0, storm::dft::builder::ApproximationHeuristic approximationHeuristic = storm::dft::builder::ApproximationHeuristic::DEPTH,
-    bool eliminateChains = false, storm::transformer::EliminationLabelBehavior labelBehavior = storm::transformer::EliminationLabelBehavior::KeepLabels,
+    storm::dft::DftEnvironment const& env, storm::dft::storage::DFT<ValueType> const& dft,
+    std::vector<std::shared_ptr<storm::logic::Formula const>> const& properties, storm::dft::utility::RelevantEvents const& relevantEvents = {},
     bool printOutput = false);
 
 /*!
