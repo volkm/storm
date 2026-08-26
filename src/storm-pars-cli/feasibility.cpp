@@ -1,4 +1,5 @@
-#include "storm-pars-cli/feasibility.h"
+#include "feasibility.h"
+
 #include <optional>
 
 #include "storm-cli-utilities/print.h"

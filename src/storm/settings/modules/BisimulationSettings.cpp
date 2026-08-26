@@ -1,4 +1,5 @@
-#include "storm/settings/modules/BisimulationSettings.h"
+#include "BisimulationSettings.h"
+
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

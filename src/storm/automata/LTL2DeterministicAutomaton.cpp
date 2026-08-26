@@ -1,4 +1,5 @@
-#include "storm/automata/LTL2DeterministicAutomaton.h"
+#include "LTL2DeterministicAutomaton.h"
+
 #include "storm/adapters/SpotAdapter.h"
 #include "storm/automata/DeterministicAutomaton.h"
 

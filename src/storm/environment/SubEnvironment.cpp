@@ -1,3 +1,5 @@
+#include "SubEnvironment.h"
+
 #include <memory>
 
 #include "storm/environment/Environment.h"

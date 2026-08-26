@@ -1,4 +1,4 @@
-#include "storm/storage/sparse/PrismChoiceOrigins.h"
+#include "PrismChoiceOrigins.h"
 
 #include "storm/adapters/JsonAdapter.h"
 

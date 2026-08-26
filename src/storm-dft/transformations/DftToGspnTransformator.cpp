@@ -1,4 +1,5 @@
 #include "DftToGspnTransformator.h"
+
 #include <memory>
 #include "storm/exceptions/NotImplementedException.h"
 

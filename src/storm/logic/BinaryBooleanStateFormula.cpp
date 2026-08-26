@@ -1,4 +1,5 @@
-#include "storm/logic/BinaryBooleanStateFormula.h"
+#include "BinaryBooleanStateFormula.h"
+
 #include <boost/any.hpp>
 #include <ostream>
 

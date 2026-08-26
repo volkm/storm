@@ -1,4 +1,4 @@
-#include "storm/settings/modules/MinMaxEquationSolverSettings.h"
+#include "MinMaxEquationSolverSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

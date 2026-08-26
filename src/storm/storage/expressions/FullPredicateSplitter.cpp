@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/FullPredicateSplitter.h"
+#include "FullPredicateSplitter.h"
 
 #include "storm/storage/expressions/Expression.h"
 #include "storm/storage/expressions/Expressions.h"

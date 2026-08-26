@@ -1,4 +1,4 @@
-#include "storm-gamebased-ar/abstraction/AbstractionInformation.h"
+#include "AbstractionInformation.h"
 
 #include "storm/environment/Environment.h"
 #include "storm/storage/BitVector.h"

@@ -1,4 +1,4 @@
-#include "storm/environment/solver/SolverEnvironment.h"
+#include "SolverEnvironment.h"
 
 #include "storm/environment/solver/AllSolverEnvironments.h"
 

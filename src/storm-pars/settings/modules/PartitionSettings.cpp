@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/PartitionSettings.h"
+#include "PartitionSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

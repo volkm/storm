@@ -1,5 +1,5 @@
+#include "APSet.h"
 
-#include "storm/automata/APSet.h"
 #include "storm/exceptions/UnexpectedException.h"
 #include "storm/utility/macros.h"
 

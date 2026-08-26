@@ -1,4 +1,4 @@
-#include "storm-parsers/parser/PrismParserGrammar.h"
+#include "PrismParserGrammar.h"
 
 #include <unordered_set>
 #include "storm/storage/prism/Compositions.h"

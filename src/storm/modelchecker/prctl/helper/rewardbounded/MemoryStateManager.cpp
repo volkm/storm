@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/MemoryStateManager.h"
+#include "MemoryStateManager.h"
 
 #include "storm/utility/macros.h"
 

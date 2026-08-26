@@ -1,4 +1,4 @@
-#include "storm-pomdp-cli/settings/modules/QualitativePOMDPAnalysisSettings.h"
+#include "QualitativePOMDPAnalysisSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

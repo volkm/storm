@@ -1,4 +1,4 @@
-#include "storm/modelchecker/exploration/SparseExplorationModelChecker.h"
+#include "SparseExplorationModelChecker.h"
 
 #include <sstream>
 

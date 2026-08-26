@@ -1,10 +1,11 @@
+#include "DeterministicSchedsParetoExplorer.h"
+
 #include <algorithm>
 #include <sstream>
 
 #include "storm/environment/modelchecker/MultiObjectiveModelCheckerEnvironment.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/modelchecker/multiobjective/MultiObjectivePostprocessing.h"
-#include "storm/modelchecker/multiobjective/deterministicScheds/DeterministicSchedsParetoExplorer.h"
 #include "storm/modelchecker/results/ExplicitParetoCurveCheckResult.h"
 #include "storm/models/sparse/MarkovAutomaton.h"
 #include "storm/models/sparse/Mdp.h"

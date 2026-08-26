@@ -1,4 +1,5 @@
-#include "storm/logic/RewardModelNameSubstitutionVisitor.h"
+#include "RewardModelNameSubstitutionVisitor.h"
+
 #include <boost/any.hpp>
 #include <optional>
 #include "storm/logic/Formulas.h"

@@ -1,4 +1,4 @@
-#include "storm/settings/modules/IOSettings.h"
+#include "IOSettings.h"
 
 #include "storm/exceptions/InvalidSettingsException.h"
 #include "storm/parser/CSVParser.h"

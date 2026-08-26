@@ -1,4 +1,4 @@
-#include "storm/storage/sparse/JaniChoiceOrigins.h"
+#include "JaniChoiceOrigins.h"
 
 #include "storm/storage/jani/Model.h"
 #include "storm/storage/jani/visitor/JSONExporter.h"

@@ -1,4 +1,4 @@
-#include "storm/storage/jani/ParallelComposition.h"
+#include "ParallelComposition.h"
 
 #include <sstream>
 

@@ -1,4 +1,4 @@
-#include "storm/storage/jani/Assignment.h"
+#include "Assignment.h"
 
 #include "storm/storage/jani/LValue.h"
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"

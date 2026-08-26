@@ -1,4 +1,4 @@
-#include "storm/storage/jani/localeliminator/AutomaticAction.h"
+#include "AutomaticAction.h"
 
 #include <boost/graph/strong_components.hpp>
 #include "storm/exceptions/NotImplementedException.h"

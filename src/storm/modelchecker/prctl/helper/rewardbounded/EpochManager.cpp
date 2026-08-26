@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/EpochManager.h"
+#include "EpochManager.h"
 
 #include "storm/utility/macros.h"
 

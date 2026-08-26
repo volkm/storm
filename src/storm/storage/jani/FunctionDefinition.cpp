@@ -1,4 +1,5 @@
-#include "storm/storage/jani/FunctionDefinition.h"
+#include "FunctionDefinition.h"
+
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 
 #include "storm/exceptions/InvalidArgumentException.h"

@@ -1,4 +1,4 @@
-#include "storm/storage/dd/bisimulation/SignatureComputer.h"
+#include "SignatureComputer.h"
 
 #include "storm/storage/dd/DdManager.h"
 

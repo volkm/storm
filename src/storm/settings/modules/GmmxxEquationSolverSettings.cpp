@@ -1,4 +1,4 @@
-#include "storm/settings/modules/GmmxxEquationSolverSettings.h"
+#include "GmmxxEquationSolverSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

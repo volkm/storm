@@ -1,4 +1,4 @@
-#include "storm/settings/modules/LongRunAverageSolverSettings.h"
+#include "LongRunAverageSolverSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

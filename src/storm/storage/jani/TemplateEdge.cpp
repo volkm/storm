@@ -1,4 +1,4 @@
-#include "storm/storage/jani/TemplateEdge.h"
+#include "TemplateEdge.h"
 
 #include "storm/storage/jani/LValue.h"
 #include "storm/storage/jani/Model.h"

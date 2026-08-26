@@ -1,4 +1,5 @@
-#include "storm/storage/jani/expressions/ArrayAccessExpression.h"
+#include "ArrayAccessExpression.h"
+
 #include "storm/storage/jani/visitor/JaniExpressionVisitor.h"
 
 #include "storm/exceptions/UnexpectedException.h"

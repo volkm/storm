@@ -1,4 +1,4 @@
-#include "storm/modelchecker/multiobjective/preprocessing/SparseMultiObjectivePreprocessor.h"
+#include "SparseMultiObjectivePreprocessor.h"
 
 #include <algorithm>
 #include <set>

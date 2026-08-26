@@ -1,4 +1,4 @@
-#include "storm-conv/settings/ConvSettings.h"
+#include "ConvSettings.h"
 
 #include "storm-conv/settings/modules/ConversionGeneralSettings.h"
 #include "storm-conv/settings/modules/ConversionInputSettings.h"

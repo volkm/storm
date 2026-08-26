@@ -1,4 +1,4 @@
-#include "storm-parsers/parser/FormulaParser.h"
+#include "FormulaParser.h"
 
 #include <fstream>
 

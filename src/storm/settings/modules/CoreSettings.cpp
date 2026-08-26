@@ -1,4 +1,4 @@
-#include "storm/settings/modules/CoreSettings.h"
+#include "CoreSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/MonotonicitySettings.h"
+#include "MonotonicitySettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

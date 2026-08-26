@@ -1,4 +1,4 @@
-#include "storm/generator/TransientVariableInformation.h"
+#include "TransientVariableInformation.h"
 
 #include "storm/storage/jani/Model.h"
 

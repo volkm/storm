@@ -1,4 +1,4 @@
-#include "storm/storage/umb/export/SparseModelToUmb.h"
+#include "SparseModelToUmb.h"
 
 #include "storm/storage/SparseMatrix.h"
 #include "storm/storage/umb/model/StringEncoding.h"

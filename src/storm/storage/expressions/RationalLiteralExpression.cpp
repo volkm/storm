@@ -1,4 +1,5 @@
-#include "storm/storage/expressions/RationalLiteralExpression.h"
+#include "RationalLiteralExpression.h"
+
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/ExpressionVisitor.h"
 

@@ -1,4 +1,4 @@
-#include "storm/storage/umb/export/UmbExport.h"
+#include "UmbExport.h"
 
 #include <boost/pfr.hpp>
 

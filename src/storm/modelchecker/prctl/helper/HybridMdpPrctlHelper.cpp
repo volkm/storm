@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/HybridMdpPrctlHelper.h"
+#include "HybridMdpPrctlHelper.h"
 
 #include "storm/modelchecker/prctl/helper/SymbolicMdpPrctlHelper.h"
 

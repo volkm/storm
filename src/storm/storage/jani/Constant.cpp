@@ -1,4 +1,5 @@
-#include "storm/storage/jani/Constant.h"
+#include "Constant.h"
+
 #include "storm/solver/SmtSolver.h"
 #include "storm/utility/solver.h"
 

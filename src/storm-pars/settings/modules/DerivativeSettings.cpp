@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/DerivativeSettings.h"
+#include "DerivativeSettings.h"
 
 #include "storm-pars/derivative/GradientDescentConstraintMethod.h"
 #include "storm-pars/derivative/GradientDescentMethod.h"

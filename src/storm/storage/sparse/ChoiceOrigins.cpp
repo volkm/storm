@@ -1,4 +1,4 @@
-#include "storm/storage/sparse/ChoiceOrigins.h"
+#include "ChoiceOrigins.h"
 
 #include "storm/adapters/JsonAdapter.h"
 

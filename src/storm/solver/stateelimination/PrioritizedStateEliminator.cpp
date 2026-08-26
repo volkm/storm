@@ -1,4 +1,4 @@
-#include "storm/solver/stateelimination/PrioritizedStateEliminator.h"
+#include "PrioritizedStateEliminator.h"
 
 #include "StaticStatePriorityQueue.h"
 #include "storm/adapters/RationalFunctionAdapter.h"

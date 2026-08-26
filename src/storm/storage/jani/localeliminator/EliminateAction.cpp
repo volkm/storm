@@ -1,4 +1,5 @@
 #include "EliminateAction.h"
+
 #include <boost/format.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include "storm/exceptions/NotImplementedException.h"

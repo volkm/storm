@@ -1,4 +1,5 @@
-#include "storm/storage/jani/localeliminator/JaniLocalEliminator.h"
+#include "JaniLocalEliminator.h"
+
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/solver/Z3SmtSolver.h"
 #include "storm/storage/expressions/Expression.h"

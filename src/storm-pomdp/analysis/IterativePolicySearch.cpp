@@ -1,4 +1,5 @@
-#include "storm-pomdp/analysis/IterativePolicySearch.h"
+#include "IterativePolicySearch.h"
+
 #include "storm/io/file.h"
 
 #include "storm-pomdp/analysis/OneShotPolicySearch.h"

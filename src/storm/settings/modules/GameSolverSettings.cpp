@@ -1,4 +1,4 @@
-#include "storm/settings/modules/GameSolverSettings.h"
+#include "GameSolverSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

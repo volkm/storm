@@ -1,4 +1,4 @@
-#include "storm/utility/string.h"
+#include "storm/utility/string.h"  // Needs full path to distinguish from "sylvan.h" in Sylvan library
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>

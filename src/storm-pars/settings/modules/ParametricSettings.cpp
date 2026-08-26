@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/ParametricSettings.h"
+#include "ParametricSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

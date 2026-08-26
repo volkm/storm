@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/MultiDimensionalRewardUnfolding.h"
+#include "MultiDimensionalRewardUnfolding.h"
 
 #include <functional>
 #include <set>

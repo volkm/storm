@@ -1,4 +1,4 @@
-#include "storm-pars/modelchecker/region/monotonicity/MonotonicityHelper.h"
+#include "MonotonicityHelper.h"
 
 #include "storm/exceptions/InvalidOperationException.h"
 #include "storm/exceptions/NotSupportedException.h"

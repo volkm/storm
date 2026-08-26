@@ -1,4 +1,4 @@
-#include "storm-pomdp-cli/settings/PomdpSettings.h"
+#include "PomdpSettings.h"
 
 #include "storm/settings/SettingsManager.h"
 

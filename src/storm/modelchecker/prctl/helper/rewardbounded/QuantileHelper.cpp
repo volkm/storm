@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/QuantileHelper.h"
+#include "QuantileHelper.h"
 
 #include <boost/optional.hpp>
 #include <memory>

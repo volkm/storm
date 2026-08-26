@@ -1,4 +1,4 @@
-#include "storm-gamebased-ar/modelchecker/abstraction/BisimulationAbstractionRefinementModelChecker.h"
+#include "BisimulationAbstractionRefinementModelChecker.h"
 
 #include "storm/models/symbolic/Dtmc.h"
 #include "storm/models/symbolic/Mdp.h"

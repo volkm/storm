@@ -1,4 +1,4 @@
-#include "storm/storage/umb/import/UmbImport.h"
+#include "UmbImport.h"
 
 #include "storm/storage/umb/model/UmbModel.h"
 

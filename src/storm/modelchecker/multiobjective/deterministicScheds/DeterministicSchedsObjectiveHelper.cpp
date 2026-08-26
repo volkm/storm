@@ -1,4 +1,4 @@
-#include "storm/modelchecker/multiobjective/deterministicScheds/DeterministicSchedsObjectiveHelper.h"
+#include "DeterministicSchedsObjectiveHelper.h"
 
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/logic/Formulas.h"

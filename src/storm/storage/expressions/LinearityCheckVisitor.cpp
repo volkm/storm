@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/LinearityCheckVisitor.h"
+#include "LinearityCheckVisitor.h"
 
 #include "storm/storage/expressions/Expressions.h"
 

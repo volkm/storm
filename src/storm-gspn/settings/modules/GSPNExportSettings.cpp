@@ -1,4 +1,4 @@
-#include "storm-gspn/settings/modules/GSPNExportSettings.h"
+#include "GSPNExportSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

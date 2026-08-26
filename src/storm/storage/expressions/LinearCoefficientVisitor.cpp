@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/LinearCoefficientVisitor.h"
+#include "LinearCoefficientVisitor.h"
 
 #include "storm/storage/expressions/Expressions.h"
 

@@ -1,4 +1,4 @@
-#include "storm-pomdp-cli/settings/modules/POMDPSettings.h"
+#include "POMDPSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

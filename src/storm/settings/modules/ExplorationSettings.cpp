@@ -1,4 +1,5 @@
-#include "storm/settings/modules/ExplorationSettings.h"
+#include "ExplorationSettings.h"
+
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

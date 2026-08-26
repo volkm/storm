@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/FeasibilitySettings.h"
+#include "FeasibilitySettings.h"
 
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"

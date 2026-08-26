@@ -1,4 +1,4 @@
-#include "storm-dft/settings/DftSettings.h"
+#include "DftSettings.h"
 
 #include "storm-dft/settings/modules/DftGspnSettings.h"
 #include "storm-dft/settings/modules/DftIOSettings.h"

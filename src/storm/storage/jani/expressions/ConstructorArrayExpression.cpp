@@ -1,5 +1,4 @@
-
-#include "storm/storage/jani/expressions/ConstructorArrayExpression.h"
+#include "ConstructorArrayExpression.h"
 
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"

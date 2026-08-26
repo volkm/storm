@@ -1,4 +1,4 @@
-#include "storm/io/ArchiveReader.h"
+#include "ArchiveReader.h"
 
 #include <array>
 #include <cstring>

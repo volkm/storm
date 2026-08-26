@@ -1,4 +1,4 @@
-#include "storm/settings/modules/NativeEquationSolverSettings.h"
+#include "NativeEquationSolverSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

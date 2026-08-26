@@ -1,4 +1,5 @@
-#include "storm/storage/expressions/VariableExpression.h"
+#include "VariableExpression.h"
+
 #include "ExpressionVisitor.h"
 #include "Valuation.h"
 #include "storm/exceptions/InvalidTypeException.h"

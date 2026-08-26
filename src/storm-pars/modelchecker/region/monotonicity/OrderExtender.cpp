@@ -1,4 +1,5 @@
 #include "OrderExtender.h"
+
 #include <vector>
 
 #include "storm/exceptions/NotSupportedException.h"

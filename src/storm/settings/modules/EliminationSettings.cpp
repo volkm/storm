@@ -1,4 +1,4 @@
-#include "storm/settings/modules/EliminationSettings.h"
+#include "EliminationSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

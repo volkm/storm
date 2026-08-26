@@ -1,4 +1,4 @@
-#include "storm-conv/settings/modules/ConversionInputSettings.h"
+#include "ConversionInputSettings.h"
 
 #include "storm/parser/CSVParser.h"
 #include "storm/settings/Argument.h"

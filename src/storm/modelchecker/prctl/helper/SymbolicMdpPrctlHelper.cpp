@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/SymbolicMdpPrctlHelper.h"
+#include "SymbolicMdpPrctlHelper.h"
 
 #include "storm/solver/SymbolicMinMaxLinearEquationSolver.h"
 

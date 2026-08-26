@@ -1,4 +1,4 @@
-#include "storm-gamebased-ar/abstraction/ExpressionTranslator.h"
+#include "ExpressionTranslator.h"
 
 #include "storm-gamebased-ar/abstraction/AbstractionInformation.h"
 

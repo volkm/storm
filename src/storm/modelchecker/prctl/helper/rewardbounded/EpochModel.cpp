@@ -1,4 +1,5 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/EpochModel.h"
+#include "EpochModel.h"
+
 #include "storm/modelchecker/prctl/helper/rewardbounded/MultiDimensionalRewardUnfolding.h"
 
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"

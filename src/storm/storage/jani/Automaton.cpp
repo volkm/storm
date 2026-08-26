@@ -1,4 +1,4 @@
-#include "storm/storage/jani/Automaton.h"
+#include "Automaton.h"
 
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/jani/Edge.h"

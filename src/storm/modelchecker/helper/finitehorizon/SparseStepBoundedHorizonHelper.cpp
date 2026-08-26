@@ -1,4 +1,5 @@
-#include "storm/modelchecker/helper/finitehorizon/SparseStepBoundedHorizonHelper.h"
+#include "SparseStepBoundedHorizonHelper.h"
+
 #include "storm/adapters/IntervalAdapter.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/adapters/RationalNumberAdapter.h"

@@ -1,4 +1,4 @@
-#include "storm/modelchecker/csl/helper/HybridMarkovAutomatonCslHelper.h"
+#include "HybridMarkovAutomatonCslHelper.h"
 
 #include "storm/modelchecker/csl/helper/SparseMarkovAutomatonCslHelper.h"
 #include "storm/modelchecker/prctl/helper/HybridMdpPrctlHelper.h"

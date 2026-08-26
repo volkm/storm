@@ -1,4 +1,4 @@
-#include "storm-pomdp-cli/settings/modules/ToParametricSettings.h"
+#include "ToParametricSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

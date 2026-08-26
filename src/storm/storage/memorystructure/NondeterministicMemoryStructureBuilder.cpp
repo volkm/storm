@@ -1,4 +1,5 @@
-#include "storm/storage/memorystructure/NondeterministicMemoryStructureBuilder.h"
+#include "NondeterministicMemoryStructureBuilder.h"
+
 #include "storm/storage/memorystructure/NondeterministicMemoryStructure.h"
 
 #include "storm/exceptions/InvalidArgumentException.h"

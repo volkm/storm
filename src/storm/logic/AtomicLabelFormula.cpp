@@ -1,4 +1,5 @@
-#include "storm/logic/AtomicLabelFormula.h"
+#include "AtomicLabelFormula.h"
+
 #include <boost/any.hpp>
 
 #include <ostream>

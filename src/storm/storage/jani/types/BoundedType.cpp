@@ -1,4 +1,5 @@
-#include "storm/storage/jani/types/BoundedType.h"
+#include "BoundedType.h"
+
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 
 #include "storm/exceptions/UnexpectedException.h"

@@ -1,4 +1,4 @@
-#include "storm/settings/modules/TopologicalEquationSolverSettings.h"
+#include "TopologicalEquationSolverSettings.h"
 
 #include "storm/settings/modules/CoreSettings.h"
 

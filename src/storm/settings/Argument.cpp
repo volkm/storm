@@ -1,4 +1,4 @@
-#include "storm/settings/Argument.h"
+#include "Argument.h"
 
 #include "storm/settings/ArgumentValidators.h"
 

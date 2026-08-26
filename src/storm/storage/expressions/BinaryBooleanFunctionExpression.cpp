@@ -1,4 +1,5 @@
-#include "storm/storage/expressions/BinaryBooleanFunctionExpression.h"
+#include "BinaryBooleanFunctionExpression.h"
+
 #include "Expressions.h"
 #include "storm/exceptions/InvalidTypeException.h"
 #include "storm/storage/expressions/BooleanLiteralExpression.h"

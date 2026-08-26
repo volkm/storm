@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/SimpleValuation.h"
+#include "SimpleValuation.h"
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/functional/hash.hpp>

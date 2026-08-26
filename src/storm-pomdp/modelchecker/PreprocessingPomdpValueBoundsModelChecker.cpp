@@ -1,4 +1,5 @@
-#include "storm-pomdp/modelchecker/PreprocessingPomdpValueBoundsModelChecker.h"
+#include "PreprocessingPomdpValueBoundsModelChecker.h"
+
 #include <random>
 
 #include "storm-pomdp/storage/PomdpMemory.h"

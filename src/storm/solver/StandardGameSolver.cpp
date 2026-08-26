@@ -1,4 +1,4 @@
-#include "storm/solver/StandardGameSolver.h"
+#include "StandardGameSolver.h"
 
 #include "storm/solver/EigenLinearEquationSolver.h"
 #include "storm/solver/EliminationLinearEquationSolver.h"

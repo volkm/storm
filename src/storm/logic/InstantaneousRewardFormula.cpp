@@ -1,4 +1,5 @@
-#include "storm/logic/InstantaneousRewardFormula.h"
+#include "InstantaneousRewardFormula.h"
+
 #include <boost/any.hpp>
 #include <ostream>
 

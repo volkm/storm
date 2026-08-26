@@ -1,4 +1,4 @@
-#include "storm-gamebased-ar/abstraction/LocalExpressionInformation.h"
+#include "LocalExpressionInformation.h"
 
 #include "storm-gamebased-ar/abstraction/AbstractionInformation.h"
 

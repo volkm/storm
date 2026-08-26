@@ -1,4 +1,4 @@
-#include "storm/settings/modules/CuddSettings.h"
+#include "CuddSettings.h"
 
 #include "storm/settings/SettingsManager.h"
 

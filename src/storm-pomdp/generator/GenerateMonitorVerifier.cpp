@@ -1,4 +1,5 @@
-#include "storm-pomdp/generator/GenerateMonitorVerifier.h"
+#include "GenerateMonitorVerifier.h"
+
 #include <sys/types.h>
 
 #include <algorithm>

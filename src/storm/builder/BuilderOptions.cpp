@@ -1,4 +1,4 @@
-#include "storm/builder/BuilderOptions.h"
+#include "BuilderOptions.h"
 
 #include "storm/builder/TerminalStatesGetter.h"
 

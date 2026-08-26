@@ -1,3 +1,5 @@
+#include "Formula.h"
+
 #include <boost/any.hpp>
 #include <sstream>
 #include "storm/logic/Formulas.h"

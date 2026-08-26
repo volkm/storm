@@ -1,4 +1,5 @@
-#include "storm/logic/ExtractMaximalStateFormulasVisitor.h"
+#include "ExtractMaximalStateFormulasVisitor.h"
+
 #include <boost/any.hpp>
 #include <optional>
 

@@ -1,4 +1,5 @@
-#include "storm/storage/expressions/UnaryBooleanFunctionExpression.h"
+#include "UnaryBooleanFunctionExpression.h"
+
 #include "ExpressionVisitor.h"
 #include "storm/exceptions/InvalidTypeException.h"
 #include "storm/storage/expressions/BooleanLiteralExpression.h"

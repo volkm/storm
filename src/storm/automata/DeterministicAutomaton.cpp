@@ -1,4 +1,4 @@
-#include "storm/automata/DeterministicAutomaton.h"
+#include "DeterministicAutomaton.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-exception-parameter"  // emitted from the flex-generated hoa_lexer.hh

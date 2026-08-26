@@ -1,4 +1,4 @@
-#include "storm/storage/jani/VariablesToConstantsTransformer.h"
+#include "VariablesToConstantsTransformer.h"
 
 #include "storm/storage/jani/Constant.h"
 #include "storm/storage/jani/Model.h"

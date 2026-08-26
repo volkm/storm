@@ -1,4 +1,4 @@
-#include "storm/logic/TimeOperatorFormula.h"
+#include "TimeOperatorFormula.h"
 
 #include <boost/any.hpp>
 #include <ostream>

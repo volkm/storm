@@ -1,4 +1,4 @@
-#include "storm/storage/jani/Edge.h"
+#include "Edge.h"
 
 #include "storm/storage/jani/Model.h"
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"

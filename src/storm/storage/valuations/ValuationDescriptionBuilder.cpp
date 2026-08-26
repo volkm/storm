@@ -1,4 +1,4 @@
-#include "storm/storage/valuations/ValuationDescriptionBuilder.h"
+#include "ValuationDescriptionBuilder.h"
 
 #include <sstream>
 #include "storm/exceptions/InvalidArgumentException.h"

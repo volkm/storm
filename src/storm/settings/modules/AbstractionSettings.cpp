@@ -1,4 +1,4 @@
-#include "storm/settings/modules/AbstractionSettings.h"
+#include "AbstractionSettings.h"
 
 #include "storm/settings/Argument.h"
 #include "storm/settings/ArgumentBuilder.h"

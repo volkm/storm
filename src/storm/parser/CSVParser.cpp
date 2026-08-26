@@ -1,4 +1,5 @@
-#include "storm/parser/CSVParser.h"
+#include "CSVParser.h"
+
 #include <boost/any.hpp>
 
 #include <boost/algorithm/string.hpp>

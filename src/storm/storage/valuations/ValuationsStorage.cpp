@@ -1,4 +1,4 @@
-#include "storm/storage/valuations/ValuationsStorage.h"
+#include "ValuationsStorage.h"
 
 #include <bitset>
 #include <cstring>

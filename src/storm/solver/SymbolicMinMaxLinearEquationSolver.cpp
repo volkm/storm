@@ -1,4 +1,4 @@
-#include "storm/solver/SymbolicMinMaxLinearEquationSolver.h"
+#include "SymbolicMinMaxLinearEquationSolver.h"
 
 #include "storm/storage/dd/DdManager.h"
 

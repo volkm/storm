@@ -1,4 +1,4 @@
-#include "storm/storage/prism/ToJaniConverter.h"
+#include "ToJaniConverter.h"
 
 #include "storm/storage/expressions/ExpressionManager.h"
 

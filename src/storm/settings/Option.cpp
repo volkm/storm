@@ -1,4 +1,4 @@
-#include "storm/settings/Option.h"
+#include "Option.h"
 
 #include <algorithm>
 #include <iomanip>

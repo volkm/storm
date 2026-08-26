@@ -1,4 +1,4 @@
-#include "storm/settings/modules/SylvanSettings.h"
+#include "SylvanSettings.h"
 
 #include "storm/settings/SettingsManager.h"
 #include "storm/utility/OsDetection.h"

@@ -1,4 +1,4 @@
-#include "storm/modelchecker/prctl/helper/rewardbounded/ProductModel.h"
+#include "ProductModel.h"
 
 #include "storm/logic/CloneVisitor.h"
 #include "storm/logic/Formulas.h"

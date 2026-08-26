@@ -1,4 +1,4 @@
-#include "storm-gamebased-ar/abstraction/ValidBlockAbstractor.h"
+#include "ValidBlockAbstractor.h"
 
 #include "storm-gamebased-ar/abstraction/AbstractionInformation.h"
 

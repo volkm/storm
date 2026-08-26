@@ -1,4 +1,5 @@
-#include "storm/storage/prism/CompositionToJaniVisitor.h"
+#include "CompositionToJaniVisitor.h"
+
 #include "storm/storage/prism/Compositions.h"
 
 #include "storm/storage/jani/Compositions.h"

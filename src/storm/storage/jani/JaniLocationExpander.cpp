@@ -1,4 +1,4 @@
-#include "storm/storage/jani/JaniLocationExpander.h"
+#include "JaniLocationExpander.h"
 
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 

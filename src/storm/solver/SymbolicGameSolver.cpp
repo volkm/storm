@@ -1,4 +1,4 @@
-#include "storm/solver/SymbolicGameSolver.h"
+#include "SymbolicGameSolver.h"
 
 #include "storm/storage/dd/Add.h"
 #include "storm/storage/dd/Bdd.h"

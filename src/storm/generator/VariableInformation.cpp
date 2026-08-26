@@ -1,4 +1,4 @@
-#include "storm/generator/VariableInformation.h"
+#include "VariableInformation.h"
 
 #include "storm/storage/jani/Model.h"
 #include "storm/storage/prism/Program.h"

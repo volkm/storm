@@ -1,4 +1,4 @@
-#include "storm-pars/settings/modules/RegionVerificationSettings.h"
+#include "RegionVerificationSettings.h"
 
 #include "storm-pars/modelchecker/region/RegionSplitEstimateKind.h"
 #include "storm-pars/modelchecker/region/RegionSplittingStrategy.h"

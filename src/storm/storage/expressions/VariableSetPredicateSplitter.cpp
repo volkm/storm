@@ -1,4 +1,4 @@
-#include "storm/storage/expressions/VariableSetPredicateSplitter.h"
+#include "VariableSetPredicateSplitter.h"
 
 #include "storm/storage/expressions/Expressions.h"
 

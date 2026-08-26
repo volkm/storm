@@ -1,4 +1,5 @@
-#include "storm/logic/UnaryBooleanStateFormula.h"
+#include "UnaryBooleanStateFormula.h"
+
 #include <boost/any.hpp>
 #include <ostream>
 

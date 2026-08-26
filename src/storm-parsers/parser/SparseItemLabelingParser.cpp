@@ -1,4 +1,4 @@
-#include "storm-parsers/parser/SparseItemLabelingParser.h"
+#include "SparseItemLabelingParser.h"
 
 #include <cstring>
 #include <iostream>

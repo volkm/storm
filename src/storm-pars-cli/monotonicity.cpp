@@ -1,8 +1,7 @@
-#include "storm-pars-cli/monotonicity.h"
+#include "monotonicity.h"
 
 #include "storm-cli-utilities/model-handling.h"
 #include "storm-pars-cli/feasibility.h"
-#include "storm-pars-cli/monotonicity.h"
 #include "storm-pars-cli/print.h"
 #include "storm-pars-cli/sampling.h"
 

@@ -1,4 +1,4 @@
-#include "storm/settings/modules/TimeBoundedSolverSettings.h"
+#include "TimeBoundedSolverSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"

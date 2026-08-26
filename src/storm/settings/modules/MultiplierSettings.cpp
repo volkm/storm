@@ -1,4 +1,4 @@
-#include "storm/settings/modules/MultiplierSettings.h"
+#include "MultiplierSettings.h"
 
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/Option.h"
