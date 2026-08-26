@@ -1,5 +1,6 @@
 #include "JaniLocalEliminator.h"
 
+#include "storm/exceptions/NotImplementedException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/solver/Z3SmtSolver.h"
 #include "storm/storage/expressions/Expression.h"
@@ -7,8 +8,6 @@
 #include "storm/storage/jani/AutomatonComposition.h"
 #include "storm/storage/jani/localeliminator/AutomaticAction.h"
 #include "storm/storage/jani/localeliminator/FinishAction.h"
-
-#include "storm/exceptions/NotImplementedException.h"
 
 namespace storm {
 namespace jani {

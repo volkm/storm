@@ -1,7 +1,6 @@
 #include "ExplorationInformation.h"
 
 #include "storm/environment/exploration/ExplorationEnvironment.h"
-
 #include "storm/utility/macros.h"
 
 namespace storm {

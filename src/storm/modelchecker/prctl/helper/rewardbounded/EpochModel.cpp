@@ -1,13 +1,11 @@
 #include "EpochModel.h"
 
-#include "storm/modelchecker/prctl/helper/rewardbounded/MultiDimensionalRewardUnfolding.h"
-
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 #include "storm/environment/solver/SolverEnvironment.h"
-#include "storm/utility/graph.h"
-
 #include "storm/exceptions/UncheckedRequirementException.h"
 #include "storm/exceptions/UnexpectedException.h"
+#include "storm/modelchecker/prctl/helper/rewardbounded/MultiDimensionalRewardUnfolding.h"
+#include "storm/utility/graph.h"
 
 namespace storm {
 namespace modelchecker {

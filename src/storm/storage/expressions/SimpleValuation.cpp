@@ -4,11 +4,9 @@
 #include <boost/functional/hash.hpp>
 
 #include "storm/adapters/JsonAdapter.h"
-
+#include "storm/exceptions/InvalidTypeException.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/Variable.h"
-
-#include "storm/exceptions/InvalidTypeException.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

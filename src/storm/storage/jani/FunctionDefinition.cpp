@@ -1,8 +1,7 @@
 #include "FunctionDefinition.h"
 
-#include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
-
 #include "storm/exceptions/InvalidArgumentException.h"
+#include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

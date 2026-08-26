@@ -1,9 +1,7 @@
 #include "ValidBlockAbstractor.h"
 
 #include "storm-gamebased-ar/abstraction/AbstractionInformation.h"
-
 #include "storm/storage/dd/DdManager.h"
-
 #include "storm/utility/Stopwatch.h"
 #include "storm/utility/solver.h"
 

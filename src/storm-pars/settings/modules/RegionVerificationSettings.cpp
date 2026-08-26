@@ -2,10 +2,9 @@
 
 #include "storm-pars/modelchecker/region/RegionSplitEstimateKind.h"
 #include "storm-pars/modelchecker/region/RegionSplittingStrategy.h"
+#include "storm/exceptions/IllegalArgumentValueException.h"
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/OptionBuilder.h"
-
-#include "storm/exceptions/IllegalArgumentValueException.h"
 #include "storm/utility/macros.h"
 
 namespace storm::settings::modules {

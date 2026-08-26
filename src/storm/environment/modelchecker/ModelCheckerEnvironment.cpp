@@ -2,14 +2,12 @@
 
 #include "storm/environment/modelchecker/ConditionalModelCheckerEnvironment.h"
 #include "storm/environment/modelchecker/MultiObjectiveModelCheckerEnvironment.h"
-
+#include "storm/exceptions/InvalidEnvironmentException.h"
+#include "storm/exceptions/UnexpectedException.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/IOSettings.h"
 #include "storm/settings/modules/ModelCheckerSettings.h"
 #include "storm/utility/macros.h"
-
-#include "storm/exceptions/InvalidEnvironmentException.h"
-#include "storm/exceptions/UnexpectedException.h"
 
 namespace storm {
 

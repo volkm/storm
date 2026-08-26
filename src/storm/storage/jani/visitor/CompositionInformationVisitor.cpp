@@ -1,9 +1,8 @@
 #include "CompositionInformationVisitor.h"
 
+#include "storm/exceptions/WrongFormatException.h"
 #include "storm/storage/jani/Compositions.h"
 #include "storm/storage/jani/Model.h"
-
-#include "storm/exceptions/WrongFormatException.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

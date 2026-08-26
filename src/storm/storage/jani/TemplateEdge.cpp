@@ -1,9 +1,8 @@
 #include "TemplateEdge.h"
 
+#include "storm/storage/expressions/LinearityCheckVisitor.h"
 #include "storm/storage/jani/LValue.h"
 #include "storm/storage/jani/Model.h"
-
-#include "storm/storage/expressions/LinearityCheckVisitor.h"
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 
 namespace storm {

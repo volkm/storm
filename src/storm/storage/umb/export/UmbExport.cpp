@@ -2,13 +2,12 @@
 
 #include <boost/pfr.hpp>
 
-#include "storm/storage/umb/model/UmbModel.h"
-#include "storm/storage/umb/model/ValueEncoding.h"
-
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/UnexpectedException.h"
 #include "storm/io/ArchiveWriter.h"
 #include "storm/io/file.h"
+#include "storm/storage/umb/model/UmbModel.h"
+#include "storm/storage/umb/model/ValueEncoding.h"
 #include "storm/utility/bitoperations.h"
 #include "storm/utility/macros.h"
 

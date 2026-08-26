@@ -1,7 +1,6 @@
 #include "AtomicLabelFormula.h"
 
 #include <boost/any.hpp>
-
 #include <ostream>
 
 #include "storm/logic/AtomicExpressionFormula.h"

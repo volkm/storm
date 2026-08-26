@@ -1,7 +1,7 @@
 #include "IntegerLiteralExpression.h"
 
-#include "ExpressionVisitor.h"
 #include "storm/storage/expressions/ExpressionManager.h"
+#include "storm/storage/expressions/ExpressionVisitor.h"
 
 namespace storm {
 namespace expressions {

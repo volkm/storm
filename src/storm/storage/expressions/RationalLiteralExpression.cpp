@@ -2,7 +2,6 @@
 
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/ExpressionVisitor.h"
-
 #include "storm/utility/constants.h"
 
 namespace storm {

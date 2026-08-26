@@ -4,12 +4,11 @@
 #include <cstring>
 #include <fstream>
 
+#include "storm/exceptions/FileIoException.h"
+#include "storm/exceptions/MissingLibraryException.h"
 #include "storm/storage/BitVector.h"
 #include "storm/utility/bitoperations.h"
 #include "storm/utility/macros.h"
-
-#include "storm/exceptions/FileIoException.h"
-#include "storm/exceptions/MissingLibraryException.h"
 
 namespace storm::io {
 

@@ -3,11 +3,10 @@
 #include <sstream>
 #include <string_view>
 
-#include "storm/storage/umb/model/UmbModel.h"
-#include "storm/utility/macros.h"
-
 #include "storm/exceptions/UnexpectedException.h"
 #include "storm/exceptions/WrongFormatException.h"
+#include "storm/storage/umb/model/UmbModel.h"
+#include "storm/utility/macros.h"
 
 namespace storm::umb {
 

@@ -2,10 +2,9 @@
 
 #include <boost/any.hpp>
 
-#include "storm/logic/Formulas.h"
-
 #include "storm/exceptions/InvalidOperationException.h"
 #include "storm/exceptions/InvalidPropertyException.h"
+#include "storm/logic/Formulas.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

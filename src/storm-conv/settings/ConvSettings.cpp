@@ -5,7 +5,6 @@
 #include "storm-conv/settings/modules/ConversionOutputSettings.h"
 #include "storm-conv/settings/modules/JaniExportSettings.h"
 #include "storm-conv/settings/modules/PrismExportSettings.h"
-
 #include "storm/settings/SettingsManager.h"
 
 namespace storm {

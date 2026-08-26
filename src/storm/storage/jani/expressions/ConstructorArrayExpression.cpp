@@ -1,11 +1,10 @@
 #include "ConstructorArrayExpression.h"
 
+#include "storm/exceptions/InvalidArgumentException.h"
+#include "storm/exceptions/UnexpectedException.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/jani/visitor/JaniExpressionSubstitutionVisitor.h"
 #include "storm/storage/jani/visitor/JaniExpressionVisitor.h"
-
-#include "storm/exceptions/InvalidArgumentException.h"
-#include "storm/exceptions/UnexpectedException.h"
 
 namespace storm {
 namespace expressions {

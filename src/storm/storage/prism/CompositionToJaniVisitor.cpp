@@ -1,10 +1,9 @@
 #include "CompositionToJaniVisitor.h"
 
-#include "storm/storage/prism/Compositions.h"
-
 #include "storm/storage/jani/Compositions.h"
 #include "storm/storage/jani/Model.h"
 #include "storm/storage/jani/visitor/CompositionInformationVisitor.h"
+#include "storm/storage/prism/Compositions.h"
 
 namespace storm {
 namespace prism {

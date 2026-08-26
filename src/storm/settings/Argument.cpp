@@ -1,11 +1,10 @@
 #include "Argument.h"
 
-#include "storm/settings/ArgumentValidators.h"
-
 #include "storm/exceptions/IllegalArgumentException.h"
 #include "storm/exceptions/IllegalArgumentValueException.h"
 #include "storm/exceptions/IllegalFunctionCallException.h"
 #include "storm/settings/ArgumentTypeInferationHelper.h"
+#include "storm/settings/ArgumentValidators.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

@@ -1,8 +1,7 @@
 #include "MemoryStateManager.h"
 
-#include "storm/utility/macros.h"
-
 #include "storm/exceptions/IllegalArgumentException.h"
+#include "storm/utility/macros.h"
 
 namespace storm {
 namespace modelchecker {

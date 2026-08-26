@@ -5,16 +5,13 @@
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/adapters/RationalNumberForward.h"
 #include "storm/modelchecker/hints/ExplicitModelCheckerHint.h"
-
 #include "storm/models/sparse/StandardRewardModel.h"
-
+#include "storm/solver/multiplier/Multiplier.h"
 #include "storm/storage/BitVector.h"
+#include "storm/utility/SignalHandler.h"
 #include "storm/utility/graph.h"
 #include "storm/utility/macros.h"
 #include "storm/utility/vector.h"
-
-#include "storm/solver/multiplier/Multiplier.h"
-#include "storm/utility/SignalHandler.h"
 
 namespace storm::modelchecker::helper {
 

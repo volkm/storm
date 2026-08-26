@@ -1,7 +1,6 @@
 #include "GenerateMonitorVerifier.h"
 
 #include <sys/types.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -10,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/IllegalArgumentException.h"
 #include "storm/exceptions/InvalidArgumentException.h"

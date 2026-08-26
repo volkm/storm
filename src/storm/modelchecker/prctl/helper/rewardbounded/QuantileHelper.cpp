@@ -7,7 +7,10 @@
 #include <vector>
 
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
-
+#include "storm/exceptions/NotSupportedException.h"
+#include "storm/exceptions/UnexpectedException.h"
+#include "storm/logic/BoundedUntilFormula.h"
+#include "storm/logic/ProbabilityOperatorFormula.h"
 #include "storm/modelchecker/prctl/helper/rewardbounded/MultiDimensionalRewardUnfolding.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/Mdp.h"
@@ -16,12 +19,6 @@
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/Expressions.h"
 #include "storm/utility/vector.h"
-
-#include "storm/logic/BoundedUntilFormula.h"
-#include "storm/logic/ProbabilityOperatorFormula.h"
-
-#include "storm/exceptions/NotSupportedException.h"
-#include "storm/exceptions/UnexpectedException.h"
 
 namespace storm {
 namespace modelchecker {

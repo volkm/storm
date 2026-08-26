@@ -6,7 +6,6 @@
 #include "cpphoafparser/parser/hoa_parser.hh"
 #include "cpphoafparser/parser/hoa_parser_helper.hh"
 #pragma clang diagnostic pop
-
 #include "storm/automata/AcceptanceCondition.h"
 #include "storm/automata/HOAConsumerDA.h"
 #include "storm/exceptions/FileIoException.h"

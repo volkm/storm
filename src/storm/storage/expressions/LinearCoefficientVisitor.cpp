@@ -1,8 +1,7 @@
 #include "LinearCoefficientVisitor.h"
 
-#include "storm/storage/expressions/Expressions.h"
-
 #include "storm/exceptions/InvalidArgumentException.h"
+#include "storm/storage/expressions/Expressions.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

@@ -1,9 +1,9 @@
 #include "ArrayAccessExpression.h"
 
-#include "storm/storage/jani/visitor/JaniExpressionVisitor.h"
-
 #include "storm/exceptions/UnexpectedException.h"
+#include "storm/storage/jani/visitor/JaniExpressionVisitor.h"
 #include "storm/utility/macros.h"
+
 namespace storm {
 namespace expressions {
 

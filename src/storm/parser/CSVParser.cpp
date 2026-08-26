@@ -1,8 +1,8 @@
 #include "CSVParser.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/any.hpp>
 
-#include <boost/algorithm/string.hpp>
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/utility/macros.h"
 
