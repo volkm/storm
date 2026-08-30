@@ -65,7 +65,7 @@ In case a new patch needs to be created follow these steps:
 8. Add the patch to `resources/3rdparty/patches/` and change the `resources/3rdparty/CMakeLists.txt` file accordingly.
 
 ### ExprTk
-To update ExrtTk, download the latest version from the [website](https://www.partow.net/programming/exprtk/index.html#downloads) and copy the file `exprtk.hpp` to `$STORM_DIR/resources/3rdparty/exprtk/`.
+To update ExprTk, download the latest version from the [website](https://www.partow.net/programming/exprtk/index.html#downloads) and copy the file `exprtk.hpp` to `$STORM_DIR/resources/3rdparty/exprtk/`.
 
 ### GMM
 To update GMM, change the corresponding version in `$STORM_DIR/resources/3rdparty/CMakeLists.txt`.
