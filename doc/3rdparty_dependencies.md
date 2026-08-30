@@ -10,7 +10,7 @@ Before adding new third-party libraries make sure that the licensing allows to u
 If the library will be shipped with Storm, make sure that the license allows this.
 Libraries should be maintained and future support should be guaranteed.
 
-To add a new library, support must be added to CMake, in Storm itself, and various other places needs updating.
+To add a new library, support must be added to CMake, in Storm itself, and various other places need updating.
 See the list below for the steps.
 
 ### Adding CMake support
@@ -38,7 +38,7 @@ See the list below for the steps.
 - Update the documentation below on how to update the library.
 - Extend the Docker images in [docker-storm](https://github.com/stormchecker/docker-storm/) to ship with the new library.
 - Update the information on the [dependencies](https://www.stormchecker.org/documentation/obtain-storm/dependencies.html) on the [Storm-website](https://github.com/stormchecker/storm-website/).
-- If packages exists, add support for [Archlinux](https://aur.archlinux.org/packages/stormchecker), [Homebrew](https://github.com/moves-rwth/homebrew-storm).
+- If packages exist, add support for [Archlinux](https://aur.archlinux.org/packages/stormchecker), [Homebrew](https://github.com/moves-rwth/homebrew-storm).
 
 ## Update third-party resources
 New versions of third-party resources should be supported by Storm.
