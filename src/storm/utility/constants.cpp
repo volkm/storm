@@ -1147,6 +1147,15 @@ storm::Interval abs(storm::Interval const& interval) {
 }
 
 template<>
+storm::Interval pow(storm::Interval const& value, int_fast64_t exponent) {
+    if (exponent >= 0) {
+        return value.pow(exponent);
+    } else {
+        return storm::utility::one<storm::Interval>() / value.pow(-exponent);
+    }
+}
+
+template<>
 bool isApproxEqual(storm::Interval const& a, storm::Interval const& b, storm::Interval const& precision, bool relative) {
     STORM_LOG_ASSERT(precision.isPointInterval(), "Precision must be a point interval.");
     return isApproxEqual<double>(a.lower(), b.lower(), precision.center(), relative) &&
@@ -1163,6 +1172,15 @@ bool isApproxEqual(storm::RationalInterval const& a, storm::RationalInterval con
 template<>
 storm::RationalInterval abs(storm::RationalInterval const& interval) {
     return interval.abs();
+}
+
+template<>
+storm::RationalInterval pow(storm::RationalInterval const& value, int_fast64_t exponent) {
+    if (exponent >= 0) {
+        return value.pow(exponent);
+    } else {
+        return storm::utility::one<storm::RationalInterval>() / value.pow(-exponent);
+    }
 }
 
 // Explicit instantiations.

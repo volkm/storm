@@ -59,7 +59,7 @@ TEST_F(ModelInstantiatorTest, BrpProb) {
                 auto instantiatedEntry = instantiated.getTransitionMatrix().getRow(row).begin();
                 for (auto const& paramEntry : dtmc->getTransitionMatrix().getRow(row)) {
                     EXPECT_EQ(paramEntry.getColumn(), instantiatedEntry->getColumn());
-                    double evaluatedValue = carl::toDouble(paramEntry.getValue().evaluate(valuation));
+                    double evaluatedValue = storm::utility::convertNumber<double>(paramEntry.getValue().evaluate(valuation));
                     EXPECT_EQ(evaluatedValue, instantiatedEntry->getValue());
                     ++instantiatedEntry;
                 }
@@ -94,7 +94,7 @@ TEST_F(ModelInstantiatorTest, BrpProb) {
                 auto instantiatedEntry = instantiated.getTransitionMatrix().getRow(row).begin();
                 for (auto const& paramEntry : dtmc->getTransitionMatrix().getRow(row)) {
                     EXPECT_EQ(paramEntry.getColumn(), instantiatedEntry->getColumn());
-                    double evaluatedValue = carl::toDouble(paramEntry.getValue().evaluate(valuation));
+                    double evaluatedValue = storm::utility::convertNumber<double>(paramEntry.getValue().evaluate(valuation));
                     EXPECT_EQ(evaluatedValue, instantiatedEntry->getValue());
                     ++instantiatedEntry;
                 }
@@ -128,7 +128,7 @@ TEST_F(ModelInstantiatorTest, BrpProb) {
                 auto instantiatedEntry = instantiated.getTransitionMatrix().getRow(row).begin();
                 for (auto const& paramEntry : dtmc->getTransitionMatrix().getRow(row)) {
                     EXPECT_EQ(paramEntry.getColumn(), instantiatedEntry->getColumn());
-                    double evaluatedValue = carl::toDouble(paramEntry.getValue().evaluate(valuation));
+                    double evaluatedValue = storm::utility::convertNumber<double>(paramEntry.getValue().evaluate(valuation));
                     EXPECT_EQ(evaluatedValue, instantiatedEntry->getValue());
                     ++instantiatedEntry;
                 }
@@ -189,7 +189,7 @@ TEST_F(ModelInstantiatorTest, Brp_Rew) {
                 auto instantiatedEntry = instantiated.getTransitionMatrix().getRow(row).begin();
                 for (auto const& paramEntry : dtmc->getTransitionMatrix().getRow(row)) {
                     EXPECT_EQ(paramEntry.getColumn(), instantiatedEntry->getColumn());
-                    double evaluatedValue = carl::toDouble(paramEntry.getValue().evaluate(valuation));
+                    double evaluatedValue = storm::utility::convertNumber<double>(paramEntry.getValue().evaluate(valuation));
                     EXPECT_EQ(evaluatedValue, instantiatedEntry->getValue());
                     ++instantiatedEntry;
                 }
@@ -204,7 +204,7 @@ TEST_F(ModelInstantiatorTest, Brp_Rew) {
         std::size_t stateActionEntries = dtmc->getUniqueRewardModel().getStateActionRewardVector().size();
         ASSERT_EQ(stateActionEntries, instantiated.getUniqueRewardModel().getStateActionRewardVector().size());
         for (std::size_t i = 0; i < stateActionEntries; ++i) {
-            double evaluatedValue = carl::toDouble(dtmc->getUniqueRewardModel().getStateActionRewardVector()[i].evaluate(valuation));
+            double evaluatedValue = storm::utility::convertNumber<double>(dtmc->getUniqueRewardModel().getStateActionRewardVector()[i].evaluate(valuation));
             EXPECT_EQ(evaluatedValue, instantiated.getUniqueRewardModel().getStateActionRewardVector()[i]);
         }
         EXPECT_EQ(dtmc->getStateLabeling(), instantiated.getStateLabeling());
@@ -253,7 +253,7 @@ TEST_F(ModelInstantiatorTest, Consensus) {
             auto instantiatedEntry = instantiated.getTransitionMatrix().getRow(row).begin();
             for (auto const& paramEntry : mdp->getTransitionMatrix().getRow(row)) {
                 EXPECT_EQ(paramEntry.getColumn(), instantiatedEntry->getColumn());
-                double evaluatedValue = carl::toDouble(paramEntry.getValue().evaluate(valuation));
+                double evaluatedValue = storm::utility::convertNumber<double>(paramEntry.getValue().evaluate(valuation));
                 EXPECT_EQ(evaluatedValue, instantiatedEntry->getValue());
                 ++instantiatedEntry;
             }
