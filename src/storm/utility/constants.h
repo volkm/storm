@@ -15,8 +15,6 @@
 #include <map>
 #include <vector>
 
-#include "storm/utility/NumberTraits.h"
-
 namespace storm {
 
 // Forward-declare MatrixEntry class.
