@@ -1,8 +1,8 @@
 #include "storm/environment/modelchecker/MultiObjectiveModelCheckerEnvironment.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/MultiObjectiveSettings.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 #include "storm/exceptions/IllegalArgumentException.h"

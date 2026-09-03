@@ -6,10 +6,10 @@
 #include "storm/environment/Environment.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/Dtmc.h"
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/storage/jani/Property.h"
-#include "storm/utility/constants.h"
 
 class SparseDtmcMultiDimensionalRewardUnfoldingTest : public ::testing::Test {
    protected:

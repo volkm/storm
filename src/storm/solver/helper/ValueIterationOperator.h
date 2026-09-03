@@ -10,12 +10,12 @@
 
 #include "storm/adapters/IntervalForward.h"
 #include "storm/exceptions/NotImplementedException.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/solver/helper/SchedulerTrackingHelper.h"
 #include "storm/solver/helper/ValueIterationOperatorForward.h"
 #include "storm/storage/BitVector.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

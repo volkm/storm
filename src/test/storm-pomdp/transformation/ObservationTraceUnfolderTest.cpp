@@ -8,8 +8,8 @@
 #include "storm-pomdp/transformer/ObservationTraceUnfolder.h"
 #include "storm/api/storm.h"
 #include "storm/models/sparse/StandardRewardModel.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/ExpressionManager.h"
-#include "storm/utility/constants.h"
 
 TEST(ObservationTraceUnfolder, Simple) {
 #ifndef STORM_HAVE_Z3

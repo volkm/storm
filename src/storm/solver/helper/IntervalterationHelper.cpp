@@ -3,9 +3,9 @@
 #include <type_traits>
 
 #include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/helper/ValueIterationOperator.h"
 #include "storm/utility/Extremum.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm::solver::helper {

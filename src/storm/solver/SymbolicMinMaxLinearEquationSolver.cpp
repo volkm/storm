@@ -5,7 +5,7 @@
 #include "storm/storage/dd/Add.h"
 #include "storm/storage/dd/Bdd.h"
 
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 

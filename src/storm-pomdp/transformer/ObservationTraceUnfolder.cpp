@@ -5,11 +5,11 @@
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/adapters/RationalNumberForward.h"
 #include "storm/exceptions/InvalidArgumentException.h"
+#include "storm/numbers/ConstantsComparator.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/valuations/ValuationDescriptionBuilder.h"
 #include "storm/storage/valuations/Valuations.h"
 #include "storm/storage/valuations/ValuationsStorage.h"
-#include "storm/utility/ConstantsComparator.h"
 
 #undef _VERBOSE_OBSERVATION_UNFOLDING
 

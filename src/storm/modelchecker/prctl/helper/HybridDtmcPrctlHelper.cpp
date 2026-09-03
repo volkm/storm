@@ -10,6 +10,7 @@
 #include "storm/modelchecker/results/SymbolicQualitativeCheckResult.h"
 #include "storm/modelchecker/results/SymbolicQuantitativeCheckResult.h"
 #include "storm/models/symbolic/StandardRewardModel.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/LinearEquationSolver.h"
 #include "storm/solver/multiplier/Multiplier.h"
 #include "storm/storage/dd/Add.h"
@@ -17,7 +18,6 @@
 #include "storm/storage/dd/DdManager.h"
 #include "storm/storage/dd/Odd.h"
 #include "storm/utility/Stopwatch.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 
 namespace storm {

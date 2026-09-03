@@ -2,8 +2,8 @@
 
 #include "StaticStatePriorityQueue.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/stateelimination/StatePriorityQueue.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace solver {

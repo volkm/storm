@@ -14,11 +14,11 @@
 #include "storm/models/sparse/Ctmc.h"
 #include "storm/models/sparse/MarkovAutomaton.h"
 #include "storm/models/sparse/StandardRewardModel.h"
+#include "storm/numbers/NumberTraits.h"
+#include "storm/numbers/rationalfunction.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/storage/SparseMatrixOperations.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/rationalfunction.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

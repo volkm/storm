@@ -11,7 +11,7 @@
 #include "storm/solver/SymbolicEquationSolver.h"
 #include "storm/solver/SymbolicLinearEquationSolver.h"
 
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 
 #include "SolverSelectionOptions.h"
 #include "storm/storage/dd/DdType.h"

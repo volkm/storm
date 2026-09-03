@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "storm/adapters/RationalNumberAdapter.h"
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

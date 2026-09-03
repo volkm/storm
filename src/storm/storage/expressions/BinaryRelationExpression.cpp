@@ -2,10 +2,10 @@
 
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidTypeException.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/BooleanLiteralExpression.h"
 #include "storm/storage/expressions/ExpressionVisitor.h"
 #include "storm/storage/expressions/OperatorType.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

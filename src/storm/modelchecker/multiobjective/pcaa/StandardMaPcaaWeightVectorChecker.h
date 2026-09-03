@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "storm/modelchecker/multiobjective/pcaa/StandardPcaaWeightVectorChecker.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/solver/LinearEquationSolver.h"
 #include "storm/solver/MinMaxLinearEquationSolver.h"
-#include "storm/utility/NumberTraits.h"
 
 namespace storm {
 namespace modelchecker {

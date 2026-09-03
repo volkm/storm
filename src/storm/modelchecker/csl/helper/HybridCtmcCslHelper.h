@@ -10,7 +10,7 @@
 
 #include "storm/solver/LinearEquationSolver.h"
 
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 
 namespace storm {
 

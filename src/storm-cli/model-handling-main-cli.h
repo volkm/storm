@@ -11,9 +11,9 @@
 #include "storm/modelchecker/results/CheckResult.h"
 #include "storm/modelchecker/results/ExplicitParetoCurveCheckResult.h"
 #include "storm/modelchecker/results/SymbolicQualitativeCheckResult.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/settings/modules/AbstractionSettings.h"
 #include "storm/settings/modules/CounterexampleGeneratorSettings.h"
-#include "storm/utility/NumberTraits.h"
 #include "storm/utility/SignalHandler.h"
 
 namespace storm {

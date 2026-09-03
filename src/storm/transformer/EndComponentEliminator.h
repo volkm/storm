@@ -1,7 +1,7 @@
 #pragma once
 
+#include "storm/numbers/constants.h"
 #include "storm/storage/MaximalEndComponentDecomposition.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 #include "storm/utility/macros.h"
 

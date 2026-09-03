@@ -2,8 +2,8 @@
 
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/InvalidStateException.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/stateelimination/StateEliminationUtility.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

@@ -12,8 +12,8 @@
 #include "storm/api/properties.h"
 #include "storm/api/verification.h"
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/prism/Program.h"
-#include "storm/utility/constants.h"
 
 namespace {
 class DoubleSVIEnvironment {

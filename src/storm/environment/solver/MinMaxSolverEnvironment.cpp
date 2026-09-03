@@ -1,9 +1,9 @@
 #include "storm/environment/solver/MinMaxSolverEnvironment.h"
 
 #include "storm/environment/solver/MinMaxLpSolverEnvironment.h"
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/MinMaxEquationSolverSettings.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

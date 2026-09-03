@@ -20,7 +20,7 @@
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/RationalFunctionToExpression.h"
 
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 #include "storm-pars/api/region.h"
 

@@ -2,10 +2,10 @@
 
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/environment/solver/TopologicalSolverEnvironment.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/ProgressMeasurement.h"
 #include "storm/utility/SignalHandler.h"
 #include "storm/utility/Stopwatch.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

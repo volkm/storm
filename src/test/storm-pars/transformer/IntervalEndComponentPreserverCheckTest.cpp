@@ -21,11 +21,11 @@
 #include "storm/modelchecker/results/ExplicitQualitativeCheckResult.h"
 #include "storm/models/sparse/Dtmc.h"
 #include "storm/models/sparse/Model.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/IterativeMinMaxLinearEquationSolver.h"
 #include "storm/solver/MinMaxLinearEquationSolver.h"
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/storage/prism/Program.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 void testModelInterval(std::string programFile, std::string formulaAsString, std::string constantsAsString) {

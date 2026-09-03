@@ -13,10 +13,10 @@
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/models/sparse/MarkovAutomaton.h"
 #include "storm/models/sparse/Mdp.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/Z3LpSolver.h"
 #include "storm/storage/geometry/Hyperrectangle.h"
 #include "storm/utility/SignalHandler.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm::modelchecker::multiobjective {

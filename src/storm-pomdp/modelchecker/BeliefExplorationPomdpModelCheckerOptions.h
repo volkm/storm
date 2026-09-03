@@ -1,8 +1,8 @@
 #pragma once
 
 #include "storm-pomdp/builder/BeliefMdpExplorer.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/NumberTraits.h"
+#include "storm/numbers/constants.h"
 
 namespace storm {
 namespace builder {

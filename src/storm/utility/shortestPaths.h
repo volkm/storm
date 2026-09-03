@@ -11,8 +11,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "storm/numbers/constants.h"
 #include "storm/storage/BitVector.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

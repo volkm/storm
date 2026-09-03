@@ -8,11 +8,11 @@
 #include "storm/exceptions/WrongFormatException.h"
 #include "storm/logic/Formulas.h"
 #include "storm/models/sparse/StateLabeling.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/storage/expressions/ExpressionEvaluator.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/SimpleValuation.h"
 #include "storm/storage/valuations/ValuationDescriptionBuilder.h"
-#include "storm/utility/NumberTraits.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

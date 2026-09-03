@@ -18,9 +18,9 @@
 #include "storm/exceptions/WrongFormatException.h"
 #include "storm/io/ArchiveReader.h"
 #include "storm/io/file.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/SignalHandler.h"
 #include "storm/utility/builder.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm::parser {

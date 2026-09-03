@@ -8,8 +8,8 @@
 #include <mutex>
 
 #include "storm/adapters/RationalFunctionAdapter.h"
-#include "storm/utility/constants.h"
-#include "storm/utility/KwekMehlhorn.h"
+#include "storm/numbers/constants.h"
+#include "storm/numbers/KwekMehlhorn.h"
 #include "storm/exceptions/InvalidOperationException.h"
 #include "storm/exceptions/PrecisionExceededException.h"
 

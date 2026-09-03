@@ -12,13 +12,13 @@
 #include "storm/models/symbolic/DeterministicModel.h"
 #include "storm/models/symbolic/NondeterministicModel.h"
 #include "storm/models/symbolic/StochasticTwoPlayerGame.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/ExplicitGameStrategyPair.h"
 #include "storm/storage/StronglyConnectedComponentDecomposition.h"
 #include "storm/storage/dd/Add.h"
 #include "storm/storage/dd/Bdd.h"
 #include "storm/storage/dd/DdManager.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

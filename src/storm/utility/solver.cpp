@@ -6,6 +6,7 @@
 #include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/exceptions/InvalidOperationException.h"
 #include "storm/exceptions/MissingLibraryException.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/CoreSettings.h"
 #include "storm/solver/GlpkLpSolver.h"
@@ -15,7 +16,6 @@
 #include "storm/solver/SoplexLpSolver.h"
 #include "storm/solver/Z3LpSolver.h"
 #include "storm/solver/Z3SmtSolver.h"
-#include "storm/utility/NumberTraits.h"
 
 namespace storm {
 namespace utility {

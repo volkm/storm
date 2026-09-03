@@ -5,8 +5,8 @@
 #include "storm/exceptions/NotImplementedException.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
 #include "storm/modelchecker/results/SymbolicQualitativeCheckResult.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/dd/DdManager.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

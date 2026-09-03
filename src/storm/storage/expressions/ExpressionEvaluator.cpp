@@ -1,7 +1,7 @@
 #include "storm/storage/expressions/ExpressionEvaluator.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/ExpressionManager.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace expressions {

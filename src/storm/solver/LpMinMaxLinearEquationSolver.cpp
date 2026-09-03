@@ -5,10 +5,10 @@
 #include "storm/exceptions/InvalidEnvironmentException.h"
 #include "storm/exceptions/NotImplementedException.h"
 #include "storm/exceptions/UnexpectedException.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/solver/helper/ValueIterationHelper.h"
 #include "storm/solver/helper/ValueIterationOperator.h"
 #include "storm/storage/expressions/BinaryRelationType.h"
-#include "storm/utility/NumberTraits.h"
 #include "storm/utility/macros.h"
 #include "storm/utility/vector.h"
 

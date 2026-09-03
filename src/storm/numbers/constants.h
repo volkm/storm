@@ -15,7 +15,7 @@
 #include <map>
 #include <vector>
 
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 
 namespace storm {
 

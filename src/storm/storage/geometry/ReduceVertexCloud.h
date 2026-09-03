@@ -1,8 +1,8 @@
 #pragma once
 
+#include "storm/numbers/constants.h"
 #include "storm/solver/SmtSolver.h"
 #include "storm/storage/BitVector.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/solver.h"
 
 namespace storm {

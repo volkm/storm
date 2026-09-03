@@ -8,7 +8,7 @@
 
 #include "storm/environment/Environment.h"
 
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/graph.h"
 
 #include "storm/models/symbolic/StandardRewardModel.h"

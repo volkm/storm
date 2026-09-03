@@ -12,10 +12,10 @@
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/InvalidTypeException.h"
 #include "storm/exceptions/NotImplementedException.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/ExpressionVisitor.h"
 #include "storm/storage/expressions/Expressions.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 #ifdef STORM_HAVE_MATHSAT

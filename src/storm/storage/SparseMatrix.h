@@ -14,8 +14,8 @@
 #include "storm/storage/BitVector.h"
 #include "storm/storage/sparse/StateType.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/utility/OptionalRef.h"
-#include "storm/utility/constants.h"
 
 // Forward declaration for adapter classes.
 namespace storm {

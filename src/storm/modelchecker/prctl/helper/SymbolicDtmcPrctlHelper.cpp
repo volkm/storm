@@ -3,11 +3,11 @@
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/InvalidPropertyException.h"
 #include "storm/models/symbolic/StandardRewardModel.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/SymbolicLinearEquationSolver.h"
 #include "storm/storage/dd/Add.h"
 #include "storm/storage/dd/Bdd.h"
 #include "storm/storage/dd/DdType.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 
 namespace storm {

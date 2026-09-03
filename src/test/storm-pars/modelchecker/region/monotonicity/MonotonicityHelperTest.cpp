@@ -19,7 +19,7 @@
 #include "storm/api/bisimulation.h"
 #include "storm/api/builder.h"
 #include "storm/api/properties.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 class MonotonicityHelperTest : public ::testing::Test {
    protected:

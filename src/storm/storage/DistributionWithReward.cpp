@@ -1,7 +1,7 @@
 #include "storm/storage/DistributionWithReward.h"
 
 #include "storm/adapters/RationalFunctionAdapter.h"
-#include "storm/utility/ConstantsComparator.h"
+#include "storm/numbers/ConstantsComparator.h"
 
 namespace storm {
 namespace storage {

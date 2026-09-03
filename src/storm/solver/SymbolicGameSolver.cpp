@@ -7,7 +7,7 @@
 #include "storm/environment/solver/GameSolverEnvironment.h"
 
 #include "storm/exceptions/IllegalFunctionCallException.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

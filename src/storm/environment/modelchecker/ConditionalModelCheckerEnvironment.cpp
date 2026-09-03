@@ -1,9 +1,9 @@
 #include "storm/environment/modelchecker/ConditionalModelCheckerEnvironment.h"
 
 #include "storm/adapters/RationalNumberForward.h"
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/ConditionalSettings.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 

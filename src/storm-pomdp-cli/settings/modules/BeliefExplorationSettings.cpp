@@ -2,9 +2,9 @@
 
 #include "storm-pomdp/modelchecker/BeliefExplorationPomdpModelCheckerOptions.h"
 #include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/settings/ArgumentBuilder.h"
 #include "storm/settings/OptionBuilder.h"
-#include "storm/utility/NumberTraits.h"
 
 namespace storm {
 namespace settings {

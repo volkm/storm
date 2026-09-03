@@ -2,9 +2,9 @@
 
 #include <iomanip>
 #include <iostream>
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/ExpressionManager.h"
 #include "storm/storage/expressions/Expressions.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

@@ -1,13 +1,13 @@
-#include "storm/utility/ConstantsComparator.h"
+#include "storm/numbers/ConstantsComparator.h"
 
 #include <type_traits>
 
 #include "storm/adapters/IntervalAdapter.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/numbers/NumberTraits.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

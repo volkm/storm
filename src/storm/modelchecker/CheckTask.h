@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "storm/logic/Formulas.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 #include "storm/adapters/IntervalForward.h"
 #include "storm/logic/ComparisonType.h"

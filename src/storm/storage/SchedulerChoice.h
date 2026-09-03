@@ -1,7 +1,7 @@
 #pragma once
 
+#include "storm/numbers/constants.h"
 #include "storm/storage/Distribution.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace storage {

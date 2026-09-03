@@ -5,7 +5,7 @@
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/io/export.h"
 #include "storm/models/sparse/StandardRewardModel.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 namespace storm {
 namespace models {

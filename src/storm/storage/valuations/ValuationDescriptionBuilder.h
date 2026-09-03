@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
+#include "storm/numbers/NumberTraits.h"
 #include "storm/storage/valuations/ValuationDescription.h"
-#include "storm/utility/NumberTraits.h"
 
 namespace storm {
 namespace expressions {

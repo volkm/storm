@@ -8,7 +8,7 @@
 #include "storm/solver/LinearEquationSolver.h"
 #include "storm/solver/SolveGoal.h"
 
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 
 #include "storm/storage/sparse/StateType.h"
 

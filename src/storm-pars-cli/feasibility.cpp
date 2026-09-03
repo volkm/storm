@@ -6,8 +6,8 @@
 #include "storm-pars/storage/ParameterRegion.h"
 #include "storm/api/verification.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
-#include "storm/utility/constants.h"
 
 #include "storm-pars/api/region.h"
 #include "storm-pars/derivative/GradientDescentInstantiationSearcher.h"

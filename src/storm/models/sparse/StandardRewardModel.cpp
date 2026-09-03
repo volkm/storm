@@ -4,8 +4,8 @@
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidOperationException.h"
+#include "storm/numbers/rationalfunction.h"
 #include "storm/storage/SparseMatrixOperations.h"
-#include "storm/utility/rationalfunction.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

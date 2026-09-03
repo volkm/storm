@@ -1,7 +1,7 @@
 #pragma once
 
 #include "storm-gspn/storage/gspn/Transition.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 namespace storm {
 namespace gspn {

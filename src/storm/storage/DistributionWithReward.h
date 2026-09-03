@@ -2,8 +2,8 @@
 
 #include "storm/storage/Distribution.h"
 
-#include "storm/utility/ConstantsComparator.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/ConstantsComparator.h"
+#include "storm/numbers/constants.h"
 
 namespace storm {
 

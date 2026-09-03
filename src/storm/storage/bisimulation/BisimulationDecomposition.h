@@ -1,12 +1,12 @@
 #pragma once
 
 #include "storm/logic/Formulas.h"
+#include "storm/numbers/ConstantsComparator.h"
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/storage/Decomposition.h"
 #include "storm/storage/StateBlock.h"
 #include "storm/storage/bisimulation/BisimulationType.h"
 #include "storm/storage/bisimulation/Partition.h"
-#include "storm/utility/ConstantsComparator.h"
 
 namespace storm {
 namespace logic {

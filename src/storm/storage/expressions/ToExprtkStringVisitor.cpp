@@ -1,6 +1,6 @@
 #include "storm/storage/expressions/ToExprtkStringVisitor.h"
 
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 namespace storm {
 namespace expressions {

@@ -4,8 +4,8 @@
 #include <iosfwd>
 #include <vector>
 
+#include "storm/numbers/ConstantsComparator.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/ConstantsComparator.h"
 
 namespace storm {
 

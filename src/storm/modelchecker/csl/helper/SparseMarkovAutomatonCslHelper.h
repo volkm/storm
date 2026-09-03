@@ -3,12 +3,12 @@
 #include <optional>
 
 #include "storm/modelchecker/prctl/helper/MDPModelCheckingHelperReturnType.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/solver/MinMaxLinearEquationSolver.h"
 #include "storm/solver/OptimizationDirection.h"
 #include "storm/solver/SolveGoal.h"
 #include "storm/storage/BitVector.h"
 #include "storm/storage/MaximalEndComponent.h"
-#include "storm/utility/NumberTraits.h"
 #include "storm/utility/numerical.h"
 
 namespace storm {

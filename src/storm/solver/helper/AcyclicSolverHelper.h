@@ -3,8 +3,8 @@
 #include <optional>
 
 #include "storm/exceptions/UnmetRequirementException.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/SparseMatrix.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

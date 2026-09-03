@@ -5,9 +5,9 @@
 #include "storm/environment/solver/GmmxxSolverEnvironment.h"
 #include "storm/environment/solver/NativeSolverEnvironment.h"
 #include "storm/environment/solver/TopologicalSolverEnvironment.h"
+#include "storm/numbers/constants.h"
 #include "storm/solver/EliminationLinearEquationSolver.h"
 #include "storm/solver/LinearEquationSolver.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace {

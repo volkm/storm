@@ -1,8 +1,8 @@
 
-#include "storm/utility/RationalApproximation.h"
+#include "storm/numbers/RationalApproximation.h"
 
 #include "storm/adapters/RationalNumberAdapter.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm::utility {

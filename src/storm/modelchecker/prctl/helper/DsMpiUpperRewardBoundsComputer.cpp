@@ -2,12 +2,12 @@
 
 #include "storm-config.h"
 #include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/numbers/ConstantsComparator.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/BitVector.h"
 #include "storm/storage/ConsecutiveUint64DynamicPriorityQueue.h"
 #include "storm/storage/SparseMatrix.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/ConstantsComparator.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

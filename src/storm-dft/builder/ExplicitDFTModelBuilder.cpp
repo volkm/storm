@@ -8,12 +8,12 @@
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/models/sparse/Ctmc.h"
 #include "storm/models/sparse/MarkovAutomaton.h"
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/transformer/NonMarkovianChainTransformer.h"
 #include "storm/utility/ProgressMeasurement.h"
 #include "storm/utility/SignalHandler.h"
 #include "storm/utility/bitoperations.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm::dft {

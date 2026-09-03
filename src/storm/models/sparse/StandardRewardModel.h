@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "storm/adapters/RationalFunctionForward.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/SparseMatrix.h"
 #include "storm/utility/OptionalRef.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace models {

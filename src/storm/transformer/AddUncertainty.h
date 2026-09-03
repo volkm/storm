@@ -5,7 +5,7 @@
 #include "storm/adapters/IntervalForward.h"
 #include "storm/adapters/RationalNumberForward.h"
 #include "storm/models/sparse/Model.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 namespace storm::transformer {
 

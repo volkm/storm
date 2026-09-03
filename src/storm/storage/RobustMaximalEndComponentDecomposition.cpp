@@ -3,10 +3,10 @@
 #include <numeric>
 
 #include "storm/adapters/IntervalAdapter.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/BitVector.h"
 #include "storm/storage/StronglyConnectedComponent.h"
 #include "storm/storage/StronglyConnectedComponentDecomposition.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 
 namespace storm {

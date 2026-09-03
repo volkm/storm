@@ -6,8 +6,8 @@
 #include "storm/environment/solver/GmmxxSolverEnvironment.h"
 #include "storm/exceptions/AbortException.h"
 #include "storm/exceptions/MissingLibraryException.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/SignalHandler.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

@@ -3,11 +3,11 @@
 #include "storm/environment/solver/NativeSolverEnvironment.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/PrecisionExceededException.h"
+#include "storm/numbers/KwekMehlhorn.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/dd/Add.h"
 #include "storm/storage/dd/DdManager.h"
-#include "storm/utility/KwekMehlhorn.h"
 #include "storm/utility/SignalHandler.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/dd.h"
 #include "storm/utility/macros.h"
 

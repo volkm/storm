@@ -10,6 +10,7 @@
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/builder/ExplicitModelBuilder.h"
 #include "storm/models/sparse/Pomdp.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/umb/export/SparseModelToUmb.h"
 #include "storm/storage/umb/export/UmbExport.h"
 #include "storm/storage/umb/import/SparseModelFromUmb.h"
@@ -17,7 +18,6 @@
 #include "storm/storage/umb/model/UmbModel.h"
 #include "storm/storage/umb/model/ValueEncoding.h"
 #include "storm/storage/valuations/ValuationsStorage.h"
-#include "storm/utility/constants.h"
 #include "test/storm_gtest.h"
 /*!
  *  Test round trip encoding and decoding of umb

@@ -9,7 +9,7 @@
 #include "storm/generator/CompressedState.h"
 #include "storm/generator/VariableInformation.h"
 
-#include "storm/utility/ConstantsComparator.h"
+#include "storm/numbers/ConstantsComparator.h"
 
 namespace storm {
 

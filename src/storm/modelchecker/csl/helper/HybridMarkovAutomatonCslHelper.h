@@ -8,8 +8,8 @@
 
 #include "storm/modelchecker/results/CheckResult.h"
 
+#include "storm/numbers/NumberTraits.h"
 #include "storm/solver/OptimizationDirection.h"
-#include "storm/utility/NumberTraits.h"
 
 namespace storm {
 

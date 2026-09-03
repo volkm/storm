@@ -5,10 +5,10 @@
 
 #include "storm/adapters/IntervalAdapter.h"
 #include "storm/adapters/RationalNumberAdapter.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/umb/model/FileTypes.h"
 #include "storm/storage/umb/model/GenericVector.h"
 #include "storm/storage/umb/model/Type.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 #include "storm/exceptions/NotSupportedException.h"

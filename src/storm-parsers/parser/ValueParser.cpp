@@ -8,8 +8,8 @@
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/NotSupportedException.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/expressions/ExpressionEvaluator.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace parser {

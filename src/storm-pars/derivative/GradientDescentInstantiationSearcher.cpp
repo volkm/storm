@@ -8,10 +8,10 @@
 #include "storm/environment/solver/SolverEnvironment.h"
 #include "storm/modelchecker/results/CheckResult.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/GeneralSettings.h"
 #include "storm/utility/SignalHandler.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace derivative {

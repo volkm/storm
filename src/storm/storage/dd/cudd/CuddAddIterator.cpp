@@ -3,10 +3,10 @@
 #include <cmath>
 
 #include "storm/exceptions/MissingLibraryException.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/dd/DdManager.h"
 #include "storm/storage/dd/DdMetaVariable.h"
 #include "storm/storage/expressions/ExpressionManager.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

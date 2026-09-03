@@ -1,10 +1,10 @@
 
 #include "storm-pomdp/generator/NondeterministicBeliefTracker.h"
+#include "storm/numbers/ConstantsComparator.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/geometry/ReduceVertexCloud.h"
 #include "storm/storage/geometry/nativepolytopeconversion/QuickHull.h"
-#include "storm/utility/ConstantsComparator.h"
 #include "storm/utility/Stopwatch.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/vector.h"
 
 namespace storm {

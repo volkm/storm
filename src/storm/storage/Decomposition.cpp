@@ -2,9 +2,9 @@
 
 #include <vector>
 
+#include "storm/numbers/constants.h"
 #include "storm/storage/MaximalEndComponent.h"
 #include "storm/storage/StronglyConnectedComponent.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 namespace storage {

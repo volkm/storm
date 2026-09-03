@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/NumberTraits.h"
 
 namespace storm {
 namespace utility {

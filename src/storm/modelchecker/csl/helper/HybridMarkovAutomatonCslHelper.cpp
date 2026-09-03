@@ -7,8 +7,8 @@
 #include "storm/storage/dd/Bdd.h"
 #include "storm/storage/dd/DdManager.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/solver/SolveGoal.h"
-#include "storm/utility/constants.h"
 #include "storm/utility/graph.h"
 #include "storm/utility/macros.h"
 

@@ -1,8 +1,8 @@
 #include "storm/environment/solver/OviSolverEnvironment.h"
 
+#include "storm/numbers/constants.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/OviSolverSettings.h"
-#include "storm/utility/constants.h"
 
 namespace storm {
 

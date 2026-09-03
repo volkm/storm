@@ -1,8 +1,8 @@
-#include "storm/utility/KwekMehlhorn.h"
+#include "storm/numbers/KwekMehlhorn.h"
 
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/PrecisionExceededException.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 #include "storm/utility/macros.h"
 
 namespace storm {

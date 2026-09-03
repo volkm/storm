@@ -2,11 +2,11 @@
 
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/modelchecker/prctl/helper/BaierUpperRewardBoundsComputer.h"
+#include "storm/numbers/constants.h"
 #include "storm/storage/MaximalEndComponentDecomposition.h"
 #include "storm/storage/SparseMatrix.h"
 #include "storm/transformer/EndComponentEliminator.h"
 #include "storm/utility/Extremum.h"
-#include "storm/utility/constants.h"
 
 namespace storm::modelchecker::multiobjective {
 

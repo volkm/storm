@@ -7,8 +7,8 @@
 #include "storm-pomdp/transformer/MakeStateSetObservationClosed.h"
 
 #include "storm/logic/Formulas.h"
-#include "storm/utility/ConstantsComparator.h"
-#include "storm/utility/NumberTraits.h"
+#include "storm/numbers/ConstantsComparator.h"
+#include "storm/numbers/NumberTraits.h"
 
 #include "storm-pomdp/builder/BeliefMdpExplorer.h"
 #include "storm-pomdp/modelchecker/PreprocessingPomdpValueBoundsModelChecker.h"

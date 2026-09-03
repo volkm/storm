@@ -22,7 +22,7 @@
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/utility/macros.h"
 
-#include "storm/utility/ConstantsComparator.h"
+#include "storm/numbers/ConstantsComparator.h"
 #include "storm/utility/Stopwatch.h"
 #include "storm/utility/graph.h"
 #include "storm/utility/solver.h"

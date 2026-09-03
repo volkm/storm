@@ -1,4 +1,4 @@
-#include "storm/utility/constants.h"
+#include "storm/numbers/constants.h"
 
 #include <cmath>
 
@@ -7,8 +7,8 @@
 #include "storm/adapters/RationalNumberAdapter.h"
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/NotSupportedException.h"
+#include "storm/numbers/NumberTraits.h"
 #include "storm/storage/sparse/StateType.h"
-#include "storm/utility/NumberTraits.h"
 #include "storm/utility/logging.h"
 #include "storm/utility/macros.h"
 

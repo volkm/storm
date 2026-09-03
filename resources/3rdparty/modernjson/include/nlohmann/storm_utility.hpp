@@ -7,8 +7,8 @@
 #include <nlohmann/detail/abi_macros.hpp>
 
 #include "storm/adapters/RationalNumberAdapter.h"
-#include "storm/utility/NumberTraits.h"
-#include "storm/utility/constants.h"
+#include "storm/numbers/NumberTraits.h"
+#include "storm/numbers/constants.h"
 
 NLOHMANN_JSON_NAMESPACE_BEGIN
 
