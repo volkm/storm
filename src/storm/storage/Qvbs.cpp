@@ -28,7 +28,7 @@ std::string getString(storm::json<storm::RationalNumber> const& structure, std::
     if (structure.is_number_integer()) {
         return std::to_string(structure.get<int64_t>());
     } else if (structure.is_number_float()) {
-        return storm::utility::to_string(structure.get<storm::RationalNumber>());
+        return storm::numbers::to_string(structure.get<storm::RationalNumber>());
     } else if (structure.is_string()) {
         return structure.get<std::string>();
     } else if (structure.is_boolean()) {

@@ -17,7 +17,7 @@ class ReduceVertexCloud {
      * @param wiggle
      * @param timeout: Maximal time in milliseconds, 0 is no timeout
      */
-    ReduceVertexCloud(std::shared_ptr<storm::utility::solver::SmtSolverFactory>& smtSolverFactory, ValueType wiggle = storm::utility::zero<ValueType>(),
+    ReduceVertexCloud(std::shared_ptr<storm::utility::solver::SmtSolverFactory>& smtSolverFactory, ValueType wiggle = storm::numbers::zero<ValueType>(),
                       uint64_t timeout = 0)
         : smtSolverFactory(smtSolverFactory), wiggle(wiggle), timeOut(timeout) {}
 

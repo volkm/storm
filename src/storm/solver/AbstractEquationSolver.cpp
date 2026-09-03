@@ -250,7 +250,7 @@ void AbstractEquationSolver<ValueType>::createLowerBoundsVector(std::vector<Valu
     if (this->hasLowerBound(BoundType::Local)) {
         lowerBoundsVector = this->getLowerBounds();
     } else {
-        ValueType lowerBound = this->hasLowerBound(BoundType::Global) ? this->getLowerBound() : storm::utility::zero<ValueType>();
+        ValueType lowerBound = this->hasLowerBound(BoundType::Global) ? this->getLowerBound() : storm::numbers::zero<ValueType>();
         for (auto& e : lowerBoundsVector) {
             e = lowerBound;
         }

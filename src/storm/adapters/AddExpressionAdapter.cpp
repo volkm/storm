@@ -213,12 +213,12 @@ boost::any AddExpressionAdapter<Type, ValueType>::visit(storm::expressions::Bool
 
 template<storm::dd::DdType Type, typename ValueType>
 boost::any AddExpressionAdapter<Type, ValueType>::visit(storm::expressions::IntegerLiteralExpression const& expression, boost::any const&) {
-    return ddManager->getConstant(storm::utility::convertNumber<ValueType>(expression.getValue()));
+    return ddManager->getConstant(storm::numbers::convertNumber<ValueType>(expression.getValue()));
 }
 
 template<storm::dd::DdType Type, typename ValueType>
 boost::any AddExpressionAdapter<Type, ValueType>::visit(storm::expressions::RationalLiteralExpression const& expression, boost::any const&) {
-    return ddManager->getConstant(storm::utility::convertNumber<ValueType>(expression.getValue()));
+    return ddManager->getConstant(storm::numbers::convertNumber<ValueType>(expression.getValue()));
 }
 
 // Explicitly instantiate the symbolic expression adapter

@@ -204,7 +204,7 @@ void SparseDerivativeInstantiationModelChecker<FunctionType, ConstantType>::spec
 
     // Setup instantiated constrained matrix
     storage::SparseMatrixBuilder<ConstantType> instantiatedSystemBuilder;
-    const ConstantType dummyValue = storm::utility::one<ConstantType>();
+    const ConstantType dummyValue = storm::numbers::one<ConstantType>();
     for (uint_fast64_t row = 0; row < constrainedMatrixEquationSystem.getRowCount(); ++row) {
         for (auto const& entry : constrainedMatrixEquationSystem.getRow(row)) {
             instantiatedSystemBuilder.addNextValue(row, entry.getColumn(), dummyValue);
@@ -265,7 +265,7 @@ void SparseDerivativeInstantiationModelChecker<FunctionType, ConstantType>::spec
         // REWARD -> For every state, the reward goes into the output vector
         FunctionType rationalFunction;
         if (!checkTask.getFormula().isRewardOperatorFormula()) {
-            FunctionType vectorValue = utility::zero<FunctionType>();
+            FunctionType vectorValue = storm::numbers::zero<FunctionType>();
             for (auto const& entry : transitionMatrix.getRow(state)) {
                 if (target.get(entry.getColumn())) {
                     vectorValue += entry.getValue();
@@ -303,15 +303,15 @@ void SparseDerivativeInstantiationModelChecker<FunctionType, ConstantType>::init
     storage::SparseMatrix<FunctionType>& matrix, storage::SparseMatrix<ConstantType>& matrixInstantiated,
     std::vector<std::pair<typename storm::storage::SparseMatrix<ConstantType>::iterator, ConstantType*>>& matrixMapping,
     std::unordered_map<FunctionType, ConstantType>& functions) {
-    ConstantType dummyValue = storm::utility::one<ConstantType>();
+    ConstantType dummyValue = storm::numbers::one<ConstantType>();
     auto constantEntryIt = matrixInstantiated.begin();
     auto parametricEntryIt = matrix.begin();
     while (parametricEntryIt != matrix.end()) {
         STORM_LOG_ASSERT(parametricEntryIt->getColumn() == constantEntryIt->getColumn(),
                          "Entries of parametric and constant matrix are not at the same position.");
-        if (storm::utility::isConstant(parametricEntryIt->getValue())) {
+        if (storm::numbers::isConstant(parametricEntryIt->getValue())) {
             // Constant entries can be inserted directly
-            constantEntryIt->setValue(storm::utility::convertNumber<ConstantType>(parametricEntryIt->getValue()));
+            constantEntryIt->setValue(storm::numbers::convertNumber<ConstantType>(parametricEntryIt->getValue()));
             // STORM_PRINT_AND_LOG("Setting constant entry\n");
         } else {
             // insert the new function and store that the current constantMatrix entry needs to be set to the value of this function

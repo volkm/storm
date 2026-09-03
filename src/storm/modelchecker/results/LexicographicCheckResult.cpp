@@ -57,17 +57,17 @@ std::ostream& LexicographicCheckResult<ValueType>::writeToStream(std::ostream& o
         if (it != values.begin()) {
             out << ", ";
         }
-        out << std::setw(storm::NumberTraits<ValueType>::IsExact ? 20 : 11) << *it;
+        out << std::setw(storm::numbers::NumberTraits<ValueType>::IsExact ? 20 : 11) << *it;
     }
     out << " )";
-    if (storm::NumberTraits<ValueType>::IsExact) {
+    if (storm::numbers::NumberTraits<ValueType>::IsExact) {
         out << " approx. ";
         out << "   (";
         for (auto it = values.begin(); it != values.end(); ++it) {
             if (it != values.begin()) {
                 out << ", ";
             }
-            out << std::setw(11) << storm::utility::convertNumber<double>(*it);
+            out << std::setw(11) << storm::numbers::convertNumber<double>(*it);
         }
         out << " )";
     }

@@ -456,7 +456,7 @@ TEST(RobustRationalDtmcModelCheckerTest, Tiny03RewardsNoUncertaintyResolutionMod
 
 TEST(RobustRationalDtmcModelCheckerTest, Tiny04MaxMinRewards) {
     checkExplicitModelForQuantitativeResultRational(STORM_TEST_RESOURCES_DIR "/idtmc/tiny-04.drn", "R=? [ F \"target\"];R=? [ F \"target\"]",
-                                                    storm::utility::infinity<storm::RationalNumber>(), storm::utility::infinity<storm::RationalNumber>());
+                                                    storm::numbers::infinity<storm::RationalNumber>(), storm::numbers::infinity<storm::RationalNumber>());
 }
 
 TEST(RobustRationalDtmcModelCheckerTest, AddUncertaintyBrpMax) {

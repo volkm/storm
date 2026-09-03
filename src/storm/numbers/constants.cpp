@@ -1,4 +1,4 @@
-#include "storm/numbers/constants.h"
+#include "constants.h"
 
 #include <cmath>
 
@@ -13,7 +13,7 @@
 #include "storm/utility/macros.h"
 
 namespace storm {
-namespace utility {
+namespace numbers {
 
 template<typename ValueType>
 ValueType one() {
@@ -285,7 +285,7 @@ ValueType ceil(ValueType const& number) {
 template<typename ValueType>
 ValueType round(ValueType const& number) {
     // Rounding towards infinity
-    return floor<ValueType>(number + storm::utility::convertNumber<ValueType>(0.5));
+    return floor<ValueType>(number + storm::numbers::convertNumber<ValueType>(0.5));
 }
 
 template<typename ValueType>
@@ -311,11 +311,11 @@ ValueType sin(ValueType const& number) {
 template<typename ValueType>
 uint64_t numDigits(ValueType const& number) {
     auto numDigits = 0;
-    ValueType remaining = storm::utility::one<ValueType>() / number;
-    ValueType ten = storm::utility::convertNumber<ValueType>(10);
-    while (remaining >= storm::utility::one<ValueType>()) {
+    ValueType remaining = storm::numbers::one<ValueType>() / number;
+    ValueType ten = storm::numbers::convertNumber<ValueType>(10);
+    while (remaining >= storm::numbers::one<ValueType>()) {
         ++numDigits;
-        remaining = storm::utility::floor<ValueType>(remaining / ten);
+        remaining = storm::numbers::floor<ValueType>(remaining / ten);
     }
     return numDigits;
 }
@@ -325,7 +325,7 @@ uint64_t bitsize(ValueType const& number) {
     if constexpr (std::is_same_v<ValueType, uint64_t>) {
         return std::bit_width(number);
     } else {
-        if (storm::utility::isZero(number)) {
+        if (storm::numbers::isZero(number)) {
             return 0;
         } else {
             // GMPs sizeinbase returns 1 if number is zero.
@@ -386,7 +386,7 @@ std::pair<storm::ClnRationalNumber, storm::ClnRationalNumber> minmax(std::vector
     storm::ClnRationalNumber min = values.front();
     storm::ClnRationalNumber max = values.front();
     for (auto const& vt : values) {
-        if (vt == storm::utility::infinity<storm::ClnRationalNumber>()) {
+        if (vt == storm::numbers::infinity<storm::ClnRationalNumber>()) {
             max = vt;
         } else {
             if (vt < min) {
@@ -553,7 +553,7 @@ ClnRationalNumber pow(ClnRationalNumber const& value, int_fast64_t exponent) {
     if (exponent >= 0) {
         return carl::pow(value, exponent);
     } else {
-        return storm::utility::one<ClnRationalNumber>() / carl::pow(value, -exponent);
+        return storm::numbers::one<ClnRationalNumber>() / carl::pow(value, -exponent);
     }
 }
 
@@ -596,7 +596,7 @@ std::pair<storm::GmpRationalNumber, storm::GmpRationalNumber> minmax(std::vector
     storm::GmpRationalNumber min = values.front();
     storm::GmpRationalNumber max = values.front();
     for (auto const& vt : values) {
-        if (vt == storm::utility::infinity<storm::GmpRationalNumber>()) {
+        if (vt == storm::numbers::infinity<storm::GmpRationalNumber>()) {
             max = vt;
         } else {
             if (vt < min) {
@@ -616,7 +616,7 @@ std::pair<storm::GmpRationalNumber, storm::GmpRationalNumber> minmax(std::map<ui
     storm::GmpRationalNumber min = values.begin()->second;
     storm::GmpRationalNumber max = values.begin()->second;
     for (auto const& vt : values) {
-        if (vt.second == storm::utility::infinity<storm::GmpRationalNumber>()) {
+        if (vt.second == storm::numbers::infinity<storm::GmpRationalNumber>()) {
             max = vt.second;
         } else {
             if (vt.second < min) {
@@ -780,7 +780,7 @@ GmpRationalNumber pow(GmpRationalNumber const& value, int_fast64_t exponent) {
     if (exponent >= 0) {
         return carl::pow(value, exponent);
     } else {
-        return storm::utility::one<GmpRationalNumber>() / carl::pow(value, -exponent);
+        return storm::numbers::one<GmpRationalNumber>() / carl::pow(value, -exponent);
     }
 }
 
@@ -867,7 +867,7 @@ bool isInfinity(storm::RationalFunction const& a) {
 
 template<>
 bool isInteger(storm::RationalFunction const& func) {
-    return storm::utility::isConstant(func) && storm::utility::isOne(func.denominator());
+    return storm::numbers::isConstant(func) && storm::numbers::isOne(func.denominator());
 }
 
 template<>
@@ -1023,7 +1023,7 @@ RationalFunction pow(RationalFunction const& value, int_fast64_t exponent) {
     if (exponent >= 0) {
         return carl::pow(value, exponent);
     } else {
-        return storm::utility::one<RationalFunction>() / carl::pow(value, -exponent);
+        return storm::numbers::one<RationalFunction>() / carl::pow(value, -exponent);
     }
 }
 
@@ -1268,7 +1268,7 @@ template bool isAlmostZero(storm::ClnRationalNumber const& value);
 template bool isAlmostOne(storm::ClnRationalNumber const& value);
 template bool isApproxEqual(storm::ClnRationalNumber const& a, storm::ClnRationalNumber const& b, storm::ClnRationalNumber const& precision, bool relative);
 template bool isBetween(storm::ClnRationalNumber const& a, storm::ClnRationalNumber const& b, storm::ClnRationalNumber const& c, bool strict);
-template storm::NumberTraits<ClnRationalNumber>::IntegerType convertNumber(storm::NumberTraits<ClnRationalNumber>::IntegerType const& number);
+template storm::numbers::NumberTraits<ClnRationalNumber>::IntegerType convertNumber(storm::numbers::NumberTraits<ClnRationalNumber>::IntegerType const& number);
 template storm::ClnRationalNumber convertNumber(storm::ClnRationalNumber const& number);
 template storm::ClnRationalNumber simplify(storm::ClnRationalNumber value);
 template std::pair<storm::ClnRationalNumber, storm::ClnRationalNumber> minmax(std::map<uint64_t, storm::ClnRationalNumber> const&);
@@ -1300,7 +1300,7 @@ template bool isAlmostZero(storm::GmpRationalNumber const& value);
 template bool isAlmostOne(storm::GmpRationalNumber const& value);
 template bool isBetween(storm::GmpRationalNumber const&, storm::GmpRationalNumber const&, storm::GmpRationalNumber const&, bool);
 template bool isApproxEqual(storm::GmpRationalNumber const& a, storm::GmpRationalNumber const& b, storm::GmpRationalNumber const& precision, bool relative);
-template storm::NumberTraits<GmpRationalNumber>::IntegerType convertNumber(storm::NumberTraits<GmpRationalNumber>::IntegerType const& number);
+template storm::numbers::NumberTraits<GmpRationalNumber>::IntegerType convertNumber(storm::numbers::NumberTraits<GmpRationalNumber>::IntegerType const& number);
 template storm::GmpRationalNumber convertNumber(storm::GmpRationalNumber const& number);
 template storm::GmpRationalNumber simplify(storm::GmpRationalNumber value);
 template storm::GmpRationalNumber minimum(std::map<uint64_t, storm::GmpRationalNumber> const&);
@@ -1352,5 +1352,5 @@ template bool isBetween(RationalInterval const&, RationalInterval const&, Ration
 template RationalInterval convertNumber(RationalInterval const&);
 
 template std::string to_string(storm::RationalInterval const& value);
-}  // namespace utility
+}  // namespace numbers
 }  // namespace storm

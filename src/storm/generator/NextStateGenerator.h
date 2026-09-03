@@ -186,7 +186,7 @@ class NextStateGenerator {
     CompressedState const* state;
 
     /// A comparator used to approximately compare constants, e.g., whether they sum to one..
-    storm::utility::ConstantsComparator<ValueType> comparator;
+    storm::numbers::ConstantsComparator<ValueType> comparator;
 
     /// The mask to compute the observability class (Constructed upon first use)
     mutable storm::storage::BitVector mask;

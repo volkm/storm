@@ -32,7 +32,7 @@ std::shared_ptr<storm::models::sparse::Model<typename AddUncertainty<ValueType>:
             }
         } else {
             for (auto const& entry : origModel->getTransitionMatrix().getRow(rowIndex)) {
-                newMatrixBuilder.addNextValue(rowIndex, entry.getColumn(), storm::utility::convertNumber<IntervalType>(entry.getValue()));
+                newMatrixBuilder.addNextValue(rowIndex, entry.getColumn(), storm::numbers::convertNumber<IntervalType>(entry.getValue()));
             }
         }
     }
@@ -76,14 +76,14 @@ std::shared_ptr<storm::models::sparse::Model<typename AddUncertainty<ValueType>:
 template<typename ValueType>
 typename AddUncertainty<ValueType>::IntervalType AddUncertainty<ValueType>::addUncertainty(ValueType const& vt, ValueType additiveUncertainty,
                                                                                            ValueType minimalValue) {
-    if (utility::isOne(vt)) {
-        return IntervalType(storm::utility::one<ValueType>(), storm::utility::one<ValueType>());
+    if (storm::numbers::isOne(vt)) {
+        return IntervalType(storm::numbers::one<ValueType>(), storm::numbers::one<ValueType>());
     }
     STORM_LOG_THROW(vt >= minimalValue, storm::exceptions::InvalidArgumentException, "Transition probability is smaller than minimal value.");
-    ValueType const lowerBound = storm::utility::max<ValueType>(vt - additiveUncertainty, minimalValue);
-    ValueType const upperBound = storm::utility::min<ValueType>(vt + additiveUncertainty, storm::utility::one<ValueType>() - minimalValue);
-    STORM_LOG_ASSERT(storm::utility::isPositive(lowerBound), "Lower bound must be strictly above zero.");
-    STORM_LOG_ASSERT(upperBound < storm::utility::one<ValueType>(), "Upper bound must be strictly below one.");
+    ValueType const lowerBound = storm::numbers::max<ValueType>(vt - additiveUncertainty, minimalValue);
+    ValueType const upperBound = storm::numbers::min<ValueType>(vt + additiveUncertainty, storm::numbers::one<ValueType>() - minimalValue);
+    STORM_LOG_ASSERT(storm::numbers::isPositive(lowerBound), "Lower bound must be strictly above zero.");
+    STORM_LOG_ASSERT(upperBound < storm::numbers::one<ValueType>(), "Upper bound must be strictly below one.");
     return IntervalType(lowerBound, upperBound);
 }
 

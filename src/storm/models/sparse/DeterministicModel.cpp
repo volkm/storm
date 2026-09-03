@@ -49,7 +49,7 @@ void DeterministicModel<ValueType, RewardModelType>::writeDotToStream(std::ostre
 
         typename storm::storage::SparseMatrix<ValueType>::const_rows row = this->getTransitionMatrix().getRow(i);
         for (auto const& transition : row) {
-            if (transition.getValue() != storm::utility::zero<ValueType>()) {
+            if (transition.getValue() != storm::numbers::zero<ValueType>()) {
                 if (subsystem == nullptr || subsystem->get(transition.getColumn())) {
                     outStream << "\t" << arrowOrigin << " -> " << transition.getColumn() << " [ label= \"" << transition.getValue() << "\" ];\n";
                 }

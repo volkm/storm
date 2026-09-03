@@ -901,7 +901,7 @@ std::unique_ptr<storm::modelchecker::CheckResult> AbstractAbstractionRefinementM
         if ((abstractModel.getInitialStates() && !symbolicQualitativeResultMinMax.getProb1Min().getStates()) == abstractModel.getInitialStates()) {
             result = std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
                 abstractModel.getReachableStates(), abstractModel.getInitialStates(),
-                abstractModel.getInitialStates().ite(abstractModel.getManager().getConstant(storm::utility::infinity<ValueType>()),
+                abstractModel.getInitialStates().ite(abstractModel.getManager().getConstant(storm::numbers::infinity<ValueType>()),
                                                      abstractModel.getManager().template getAddZero<ValueType>()));
         }
     } else {
@@ -916,13 +916,13 @@ std::unique_ptr<storm::modelchecker::CheckResult> AbstractAbstractionRefinementM
         } else if ((abstractModel.getInitialStates() && symbolicQualitativeResultMinMax.getProb0Max().getStates()) == abstractModel.getInitialStates()) {
             result = std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
                 abstractModel.getReachableStates(), abstractModel.getInitialStates(), abstractModel.getManager().template getAddZero<ValueType>());
-        } else if (checkTask->isBoundSet() && checkTask->getBoundThreshold() == storm::utility::zero<ValueType>() &&
+        } else if (checkTask->isBoundSet() && checkTask->getBoundThreshold() == storm::numbers::zero<ValueType>() &&
                    (abstractModel.getInitialStates() && symbolicQualitativeResultMinMax.getProb0Min().getStates()) != abstractModel.getInitialStates()) {
             result = std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
                 abstractModel.getReachableStates(), abstractModel.getInitialStates(),
                 (abstractModel.getInitialStates() && symbolicQualitativeResultMinMax.getProb0Min().getStates())
                     .ite(abstractModel.getManager().template getConstant<ValueType>(0.5), abstractModel.getManager().template getAddZero<ValueType>()));
-        } else if (checkTask->isBoundSet() && checkTask->getBoundThreshold() == storm::utility::one<ValueType>() &&
+        } else if (checkTask->isBoundSet() && checkTask->getBoundThreshold() == storm::numbers::one<ValueType>() &&
                    (abstractModel.getInitialStates() && symbolicQualitativeResultMinMax.getProb1Max().getStates()) != abstractModel.getInitialStates()) {
             result = std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
                 abstractModel.getReachableStates(), abstractModel.getInitialStates(),
@@ -996,7 +996,7 @@ std::unique_ptr<storm::modelchecker::CheckResult> AbstractAbstractionRefinementM
     return std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
         lowerBounds.getReachableStates(), lowerBounds.getStates(),
         (lowerBounds.getValueVector() + upperBounds.getValueVector()) /
-            lowerBounds.getValueVector().getDdManager().getConstant(storm::utility::convertNumber<ValueType>(std::string("2.0"))));
+            lowerBounds.getValueVector().getDdManager().getConstant(storm::numbers::convertNumber<ValueType>(std::string("2.0"))));
 }
 
 template class AbstractAbstractionRefinementModelChecker<storm::models::symbolic::Dtmc<storm::dd::DdType::CUDD, double>>;

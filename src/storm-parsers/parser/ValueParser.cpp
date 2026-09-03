@@ -66,7 +66,7 @@ bool parseDouble(std::string const& value, double& result) {
         // Try as rational number
         storm::RationalNumber rationalResult;
         if (parseNumber(value, rationalResult)) {
-            result = storm::utility::convertNumber<double>(rationalResult);
+            result = storm::numbers::convertNumber<double>(rationalResult);
             return true;
         } else {
             return false;

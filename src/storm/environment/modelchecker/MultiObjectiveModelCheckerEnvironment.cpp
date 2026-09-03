@@ -17,7 +17,7 @@ MultiObjectiveModelCheckerEnvironment::MultiObjectiveModelCheckerEnvironment() {
         plotPathParetoPoints = multiobjectiveSettings.getExportPlotDirectory() + "paretopoints.csv";
     }
 
-    precision = storm::utility::convertNumber<storm::RationalNumber>(multiobjectiveSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(multiobjectiveSettings.getPrecision());
     if (multiobjectiveSettings.getPrecisionAbsolute()) {
         precisionType = PrecisionType::Absolute;
     } else if (multiobjectiveSettings.getPrecisionRelativeToDiff()) {
@@ -41,7 +41,7 @@ MultiObjectiveModelCheckerEnvironment::MultiObjectiveModelCheckerEnvironment() {
     redundantBsccConstraints = multiobjectiveSettings.isRedundantBsccConstraintsSet();
 
     if (multiobjectiveSettings.isWeightedSumApproximationTradeoffSet()) {
-        approximationTradeoff = storm::utility::convertNumber<storm::RationalNumber>(multiobjectiveSettings.getWeightedSumApproximationTradeoff());
+        approximationTradeoff = storm::numbers::convertNumber<storm::RationalNumber>(multiobjectiveSettings.getWeightedSumApproximationTradeoff());
     }
     if (multiobjectiveSettings.isMaxStepsSet()) {
         maxSteps = multiobjectiveSettings.getMaxSteps();

@@ -30,7 +30,7 @@ class ImmediateTransition : public storm::gspn::Transition {
      * True iff no weight is attached.
      */
     bool noWeightAttached() const {
-        return storm::utility::isZero(weight);
+        return storm::numbers::isZero(weight);
     }
 
    private:

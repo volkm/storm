@@ -18,7 +18,7 @@ GmmxxSolverEnvironment::GmmxxSolverEnvironment() {
     } else {
         maxIterationCount = std::numeric_limits<uint_fast64_t>::max();
     }
-    precision = storm::utility::convertNumber<storm::RationalNumber>(gmmxxSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(gmmxxSettings.getPrecision());
 }
 
 GmmxxSolverEnvironment::~GmmxxSolverEnvironment() {

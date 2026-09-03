@@ -11,9 +11,9 @@ TimeBoundedSolverEnvironment::TimeBoundedSolverEnvironment() {
     auto const& tbSettings = storm::settings::getModule<storm::settings::modules::TimeBoundedSolverSettings>();
     maMethod = tbSettings.getMaMethod();
     maMethodSetFromDefault = tbSettings.isMaMethodSetFromDefaultValue();
-    precision = storm::utility::convertNumber<storm::RationalNumber>(tbSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(tbSettings.getPrecision());
     relative = tbSettings.isRelativePrecision();
-    unifPlusKappa = storm::utility::convertNumber<storm::RationalNumber>(tbSettings.getUnifPlusKappa());
+    unifPlusKappa = storm::numbers::convertNumber<storm::RationalNumber>(tbSettings.getUnifPlusKappa());
 }
 
 TimeBoundedSolverEnvironment::~TimeBoundedSolverEnvironment() {

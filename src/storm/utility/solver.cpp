@@ -116,7 +116,7 @@ std::unique_ptr<LpSolverFactory<ValueType>> getLpSolverFactory(storm::Environmen
     storm::solver::LpSolverType t;
     if (solvType == storm::solver::LpSolverTypeSelection::FROMSETTINGS) {
         t = env.solver().getLpSolverType();
-        bool useExact = storm::NumberTraits<ValueType>::IsExact || env.solver().isForceExact();
+        bool useExact = storm::numbers::NumberTraits<ValueType>::IsExact || env.solver().isForceExact();
         if (useExact && t != storm::solver::LpSolverType::Z3 && env.solver().isLpSolverTypeSetFromDefaultValue()) {
             t = storm::solver::LpSolverType::Z3;
         }

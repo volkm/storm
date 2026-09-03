@@ -269,9 +269,9 @@ typename MarkovAutomatonSparseTransitionParser<ValueType>::Result MarkovAutomato
     if (fixDeadlocks) {
         for (uint_fast64_t index = lastsource + 1; index <= firstPassResult.highestStateIndex; ++index) {
             result.markovianStates.set(index, true);
-            result.exitRates[index] = storm::utility::one<ValueType>();
+            result.exitRates[index] = storm::numbers::one<ValueType>();
             result.transitionMatrixBuilder.newRowGroup(currentChoice);
-            result.transitionMatrixBuilder.addNextValue(currentChoice, index, storm::utility::one<ValueType>());
+            result.transitionMatrixBuilder.addNextValue(currentChoice, index, storm::numbers::one<ValueType>());
             ++currentChoice;
         }
     } else {

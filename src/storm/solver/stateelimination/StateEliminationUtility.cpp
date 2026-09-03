@@ -46,7 +46,7 @@ uint_fast64_t estimateComplexity(ValueType const&) {
 
 template<>
 uint_fast64_t estimateComplexity(storm::RationalFunction const& value) {
-    if (storm::utility::isConstant(value)) {
+    if (storm::numbers::isConstant(value)) {
         return 1;
     }
     if (value.denominator().isConstant()) {
@@ -68,7 +68,7 @@ uint_fast64_t computeStatePenalty(storm::storage::sparse::state_type const& stat
             penalty += estimateComplexity(predecessor.getValue()) * estimateComplexity(successor.getValue());
         }
         if (predecessor.getColumn() == state) {
-            hasParametricSelfLoop = !storm::utility::isConstant(predecessor.getValue());
+            hasParametricSelfLoop = !storm::numbers::isConstant(predecessor.getValue());
         }
         penalty += estimateComplexity(oneStepProbabilities[predecessor.getColumn()]) * estimateComplexity(predecessor.getValue()) *
                    estimateComplexity(oneStepProbabilities[state]);
@@ -200,7 +200,7 @@ std::vector<uint_fast64_t> getStateDistances(storm::storage::SparseMatrix<ValueT
         // states.
         storm::storage::BitVector pseudoTargetStates(transitionMatrix.getRowCount());
         for (std::size_t index = 0; index < oneStepProbabilities.size(); ++index) {
-            if (oneStepProbabilities[index] != storm::utility::zero<ValueType>()) {
+            if (oneStepProbabilities[index] != storm::numbers::zero<ValueType>()) {
                 pseudoTargetStates.set(index);
             }
         }

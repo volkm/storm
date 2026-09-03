@@ -34,7 +34,7 @@ SymbolicMinMaxLinearEquationSolver<DdType, ValueType>::SymbolicMinMaxLinearEquat
     : SymbolicEquationSolver<DdType, ValueType>(allRows),
       A(A),
       illegalMask(illegalMask),
-      illegalMaskAdd(illegalMask.ite(A.getDdManager().getConstant(storm::utility::infinity<ValueType>()), A.getDdManager().template getAddZero<ValueType>())),
+      illegalMaskAdd(illegalMask.ite(A.getDdManager().getConstant(storm::numbers::infinity<ValueType>()), A.getDdManager().template getAddZero<ValueType>())),
       rowMetaVariables(rowMetaVariables),
       columnMetaVariables(columnMetaVariables),
       choiceVariables(choiceVariables),
@@ -187,13 +187,13 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
     // The actual rational search.
     uint64_t overallIterations = 0;
     uint64_t valueIterationInvocations = 0;
-    ValueType precision = storm::utility::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
     uint64_t maxIter = env.solver().minMax().getMaximalNumberOfIterations();
     bool relative = env.solver().minMax().getRelativeTerminationCriterion();
     SolverStatus status = SolverStatus::InProgress;
     while (status == SolverStatus::InProgress && overallIterations < maxIter) {
         typename SymbolicMinMaxLinearEquationSolver<DdType, ImpreciseType>::ValueIterationResult viResult =
-            impreciseSolver.performValueIteration(dir, currentX, b, storm::utility::convertNumber<ImpreciseType, ValueType>(precision), relative, maxIter);
+            impreciseSolver.performValueIteration(dir, currentX, b, storm::numbers::convertNumber<ImpreciseType, ValueType>(precision), relative, maxIter);
 
         ++valueIterationInvocations;
         STORM_LOG_TRACE("Completed " << valueIterationInvocations << " value iteration invocations, the last one with precision " << precision
@@ -204,7 +204,7 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
 
         // Compute maximal precision until which to sharpen.
         uint64_t p =
-            storm::utility::convertNumber<uint64_t>(storm::utility::ceil(storm::utility::log10<ValueType>(storm::utility::one<ValueType>() / precision)));
+            storm::numbers::convertNumber<uint64_t>(storm::numbers::ceil(storm::numbers::log10<ValueType>(storm::numbers::one<ValueType>() / precision)));
 
         bool isSolution = false;
         sharpenedX = sharpen<RationalType, ImpreciseType>(dir, p, rationalSolver, viResult.values, rationalB, isSolution);
@@ -213,7 +213,7 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
             status = SolverStatus::Converged;
         } else {
             currentX = viResult.values;
-            precision /= storm::utility::convertNumber<ValueType, uint64_t>(10);
+            precision /= storm::numbers::convertNumber<ValueType, uint64_t>(10);
         }
         if (storm::utility::resources::isTerminate()) {
             status = SolverStatus::Aborted;
@@ -235,7 +235,8 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
 
 template<storm::dd::DdType DdType, typename ValueType>
 template<typename ImpreciseType>
-typename std::enable_if<std::is_same<ValueType, ImpreciseType>::value && storm::NumberTraits<ValueType>::IsExact, storm::dd::Add<DdType, ValueType>>::type
+typename std::enable_if<std::is_same<ValueType, ImpreciseType>::value && storm::numbers::NumberTraits<ValueType>::IsExact,
+                        storm::dd::Add<DdType, ValueType>>::type
 SymbolicMinMaxLinearEquationSolver<DdType, ValueType>::solveEquationsRationalSearchHelper(Environment const& env,
                                                                                           storm::solver::OptimizationDirection const& dir,
                                                                                           storm::dd::Add<DdType, ValueType> const& x,
@@ -245,7 +246,8 @@ SymbolicMinMaxLinearEquationSolver<DdType, ValueType>::solveEquationsRationalSea
 
 template<storm::dd::DdType DdType, typename ValueType>
 template<typename ImpreciseType>
-typename std::enable_if<std::is_same<ValueType, ImpreciseType>::value && !storm::NumberTraits<ValueType>::IsExact, storm::dd::Add<DdType, ValueType>>::type
+typename std::enable_if<std::is_same<ValueType, ImpreciseType>::value && !storm::numbers::NumberTraits<ValueType>::IsExact,
+                        storm::dd::Add<DdType, ValueType>>::type
 SymbolicMinMaxLinearEquationSolver<DdType, ValueType>::solveEquationsRationalSearchHelper(Environment const& env,
                                                                                           storm::solver::OptimizationDirection const& dir,
                                                                                           storm::dd::Add<DdType, ValueType> const& x,
@@ -309,7 +311,7 @@ storm::dd::Add<DdType, ValueType> SymbolicMinMaxLinearEquationSolver<DdType, Val
             // The linear equation solver should be at least as precise as this solver
             std::unique_ptr<storm::Environment> environmentOfSolverStorage;
             auto precOfSolver = env.solver().getPrecisionOfLinearEquationSolver(env.solver().getLinearEquationSolverType());
-            if (!storm::NumberTraits<ValueType>::IsExact) {
+            if (!storm::numbers::NumberTraits<ValueType>::IsExact) {
                 bool changePrecision = precOfSolver.first && precOfSolver.first.get() > env.solver().minMax().getPrecision();
                 bool changeRelative = precOfSolver.second && !precOfSolver.second.get() && env.solver().minMax().getRelativeTerminationCriterion();
                 if (changePrecision || changeRelative) {
@@ -332,7 +334,7 @@ storm::dd::Add<DdType, ValueType> SymbolicMinMaxLinearEquationSolver<DdType, Val
         }
     }
 
-    ValueType precision = storm::utility::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
     ValueIterationResult viResult = performValueIteration(dir, localX, b, precision, env.solver().minMax().getRelativeTerminationCriterion(),
                                                           env.solver().minMax().getMaximalNumberOfIterations());
 
@@ -402,7 +404,7 @@ storm::dd::Add<DdType, ValueType> SymbolicMinMaxLinearEquationSolver<DdType, Val
     // It should be at least as precise as this solver.
     std::unique_ptr<storm::Environment> environmentOfSolverStorage;
     auto precOfSolver = env.solver().getPrecisionOfLinearEquationSolver(env.solver().getLinearEquationSolverType());
-    if (!storm::NumberTraits<ValueType>::IsExact) {
+    if (!storm::numbers::NumberTraits<ValueType>::IsExact) {
         bool changePrecision = precOfSolver.first && precOfSolver.first.get() > env.solver().minMax().getPrecision();
         bool changeRelative = precOfSolver.second && !precOfSolver.second.get() && env.solver().minMax().getRelativeTerminationCriterion();
         if (changePrecision || changeRelative) {

@@ -103,7 +103,7 @@ class BisimulationDecomposition : public Decomposition<StateBlock> {
         }
 
         ValueType getTolerance() const {
-            return storm::NumberTraits<ValueType>::IsExact ? storm::utility::zero<ValueType>() : tolerance;
+            return storm::numbers::NumberTraits<ValueType>::IsExact ? storm::numbers::zero<ValueType>() : tolerance;
         }
 
         void setTolerance(ValueType value) {
@@ -295,7 +295,7 @@ class BisimulationDecomposition : public Decomposition<StateBlock> {
     storm::storage::bisimulation::Partition<BlockDataType> partition;
 
     // A comparator used for comparing the distances of constants.
-    storm::utility::ConstantsComparator<ValueType> comparator;
+    storm::numbers::ConstantsComparator<ValueType> comparator;
 
     // The quotient, if it was build. Otherwise a null pointer.
     std::shared_ptr<ModelType> quotient;

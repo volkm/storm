@@ -109,11 +109,11 @@ std::shared_ptr<BaseExpression const> UnaryNumericalFunctionExpression::simplify
                     break;
                 case OperatorType::Cos:
                     useInteger = false;
-                    rationalValue = storm::utility::cos(storm::utility::convertNumber<storm::RationalNumber>(intValue));
+                    rationalValue = storm::numbers::cos(storm::numbers::convertNumber<storm::RationalNumber>(intValue));
                     break;
                 case OperatorType::Sin:
                     useInteger = false;
-                    rationalValue = storm::utility::sin(storm::utility::convertNumber<storm::RationalNumber>(intValue));
+                    rationalValue = storm::numbers::sin(storm::numbers::convertNumber<storm::RationalNumber>(intValue));
                     break;
             }
             if (useInteger) {
@@ -129,22 +129,22 @@ std::shared_ptr<BaseExpression const> UnaryNumericalFunctionExpression::simplify
                     value = -value;
                     break;
                 case OperatorType::Floor:
-                    value = storm::utility::floor(value);
+                    value = storm::numbers::floor(value);
                     convertToInteger = true;
                     break;
                 case OperatorType::Ceil:
-                    value = storm::utility::ceil(value);
+                    value = storm::numbers::ceil(value);
                     convertToInteger = true;
                     break;
                 case OperatorType::Cos:
-                    value = storm::utility::cos(value);
+                    value = storm::numbers::cos(value);
                     break;
                 case OperatorType::Sin:
-                    value = storm::utility::sin(value);
+                    value = storm::numbers::sin(value);
                     break;
             }
             if (convertToInteger) {
-                return std::shared_ptr<BaseExpression>(new IntegerLiteralExpression(this->getManager(), storm::utility::convertNumber<int64_t>(value)));
+                return std::shared_ptr<BaseExpression>(new IntegerLiteralExpression(this->getManager(), storm::numbers::convertNumber<int64_t>(value)));
             } else {
                 return std::shared_ptr<BaseExpression>(new RationalLiteralExpression(this->getManager(), value));
             }

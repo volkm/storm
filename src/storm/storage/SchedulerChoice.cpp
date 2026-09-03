@@ -17,7 +17,7 @@ SchedulerChoice<ValueType>::SchedulerChoice() {
 
 template<typename ValueType>
 SchedulerChoice<ValueType>::SchedulerChoice(uint_fast64_t deterministicChoice) {
-    distribution.addProbability(deterministicChoice, storm::utility::one<ValueType>());
+    distribution.addProbability(deterministicChoice, storm::numbers::one<ValueType>());
 }
 
 template<typename ValueType>

@@ -230,14 +230,14 @@ std::shared_ptr<BaseExpression const> BinaryNumericalFunctionExpression::simplif
                             newValue = carl::pow(firstOperandEvaluation, exponent);
                         } else {
                             storm::RationalNumber power = carl::pow(firstOperandEvaluation, -exponent);
-                            newValue = storm::utility::one<storm::RationalNumber>() / power;
+                            newValue = storm::numbers::one<storm::RationalNumber>() / power;
                         }
                     }
                     break;
                 }
                 case OperatorType::Modulo: {
                     if (carl::isInteger(firstOperandEvaluation) && carl::isInteger(secondOperandEvaluation)) {
-                        newValue = storm::utility::mod(storm::utility::numerator(firstOperandEvaluation), storm::utility::numerator(secondOperandEvaluation));
+                        newValue = storm::numbers::mod(storm::numbers::numerator(firstOperandEvaluation), storm::numbers::numerator(secondOperandEvaluation));
                     }
                     break;
                 }

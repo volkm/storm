@@ -15,9 +15,9 @@ namespace traits {
 template<>
 bool scale(int exp, storm::RationalNumber& r, storm::RationalNumber acc) {
     if (exp >= 0) {
-        r = acc * storm::utility::pow(storm::RationalNumber(10), static_cast<uint_fast64_t>(exp));
+        r = acc * storm::numbers::pow(storm::RationalNumber(10), static_cast<uint_fast64_t>(exp));
     } else {
-        r = acc / storm::utility::pow(storm::RationalNumber(10), static_cast<uint_fast64_t>(-exp));
+        r = acc / storm::numbers::pow(storm::RationalNumber(10), static_cast<uint_fast64_t>(-exp));
     }
     return true;
 }
@@ -25,7 +25,7 @@ bool scale(int exp, storm::RationalNumber& r, storm::RationalNumber acc) {
 #if BOOST_VERSION < 107000
 template<>
 bool is_equal_to_one(storm::RationalNumber const& value) {
-    return storm::utility::isOne(value);
+    return storm::numbers::isOne(value);
 }
 #endif
 

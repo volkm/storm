@@ -43,7 +43,7 @@ std::shared_ptr<models::sparse::Model<ValueType, RewardModelType>> NonMarkovianC
     STORM_LOG_WARN_COND(!ma->hasChoiceOrigins(), "Choice origins are not preserved in chain elimination.");
 
     // Eliminate all probabilistic states by state elimination
-    auto actionRewards = std::vector<ValueType>(ma->getTransitionMatrix().getRowCount(), storm::utility::zero<ValueType>());
+    auto actionRewards = std::vector<ValueType>(ma->getTransitionMatrix().getRowCount(), storm::numbers::zero<ValueType>());
     storm::solver::stateelimination::NondeterministicModelStateEliminator<ValueType> stateEliminator(flexibleMatrix, flexibleBackwardTransitions,
                                                                                                      actionRewards);
     storm::storage::BitVector keepStates(ma->getNumberOfStates(), true);

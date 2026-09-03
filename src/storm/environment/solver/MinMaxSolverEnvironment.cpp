@@ -18,7 +18,7 @@ MinMaxSolverEnvironment::MinMaxSolverEnvironment() {
     } else {
         maxIterationCount = std::numeric_limits<uint_fast64_t>::max();
     }
-    precision = storm::utility::convertNumber<storm::RationalNumber>(minMaxSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(minMaxSettings.getPrecision());
     considerRelativeTerminationCriterion =
         minMaxSettings.getConvergenceCriterion() == storm::settings::modules::MinMaxEquationSolverSettings::ConvergenceCriterion::Relative;
     STORM_LOG_ASSERT(considerRelativeTerminationCriterion ||

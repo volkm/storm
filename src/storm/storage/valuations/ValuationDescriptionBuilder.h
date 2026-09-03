@@ -20,7 +20,7 @@ namespace storage::sparse {
  */
 class ValuationDescriptionBuilder {
    public:
-    using Integer = storm::NumberTraits<storm::RationalNumber>::IntegerType;
+    using Integer = storm::numbers::NumberTraits<storm::RationalNumber>::IntegerType;
 
     ValuationDescriptionBuilder(std::shared_ptr<storm::expressions::ExpressionManager const> const& expressionManager);
 

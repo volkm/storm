@@ -39,11 +39,11 @@ class Bounds {
 
     ValueType getDifferenceOfStateBounds(StateType const& state, ExplorationInformation<StateType, ValueType> const& explorationInformation) const;
 
-    void initializeBoundsForNextState(std::pair<ValueType, ValueType> const& vals = std::pair<ValueType, ValueType>(storm::utility::zero<ValueType>(),
-                                                                                                                    storm::utility::one<ValueType>()));
+    void initializeBoundsForNextState(std::pair<ValueType, ValueType> const& vals = std::pair<ValueType, ValueType>(storm::numbers::zero<ValueType>(),
+                                                                                                                    storm::numbers::one<ValueType>()));
 
-    void initializeBoundsForNextAction(std::pair<ValueType, ValueType> const& vals = std::pair<ValueType, ValueType>(storm::utility::zero<ValueType>(),
-                                                                                                                     storm::utility::one<ValueType>()));
+    void initializeBoundsForNextAction(std::pair<ValueType, ValueType> const& vals = std::pair<ValueType, ValueType>(storm::numbers::zero<ValueType>(),
+                                                                                                                     storm::numbers::one<ValueType>()));
 
     void setLowerBoundForState(StateType const& state, ExplorationInformation<StateType, ValueType> const& explorationInformation, ValueType const& value);
 

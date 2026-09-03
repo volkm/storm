@@ -295,7 +295,7 @@ std::map<storm::expressions::Variable, storm::expressions::Expression> parseCons
                     constantDefinitions[variable] = manager.integer(integerValue);
                 } else if (variable.hasRationalType()) {
                     try {
-                        storm::RationalNumber rationalValue = storm::utility::convertNumber<storm::RationalNumber>(value);
+                        storm::RationalNumber rationalValue = storm::numbers::convertNumber<storm::RationalNumber>(value);
                         constantDefinitions[variable] = manager.rational(rationalValue);
                     } catch (std::exception& e) {
                         STORM_LOG_THROW(false, storm::exceptions::WrongFormatException,

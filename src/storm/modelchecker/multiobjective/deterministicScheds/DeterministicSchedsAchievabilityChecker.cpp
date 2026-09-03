@@ -37,21 +37,21 @@ std::unique_ptr<CheckResult> DeterministicSchedsAchievabilityChecker<SparseModel
         auto& obj = objectiveHelper[objIndex];
         obj.computeLowerUpperBounds(env);
         if (!optimizingObjectiveIndex.has_value() || *optimizingObjectiveIndex != objIndex) {
-            objVector.assign(numObj, storm::utility::zero<GeometryValueType>());
-            objVector[objIndex] = -storm::utility::one<GeometryValueType>();
-            thresholdHalfspaces.emplace_back(objVector, storm::utility::convertNumber<GeometryValueType, ModelValueType>(-obj.getThreshold()));
+            objVector.assign(numObj, storm::numbers::zero<GeometryValueType>());
+            objVector[objIndex] = -storm::numbers::one<GeometryValueType>();
+            thresholdHalfspaces.emplace_back(objVector, storm::numbers::convertNumber<GeometryValueType, ModelValueType>(-obj.getThreshold()));
         }
     }
     auto thresholdPolytope = storm::storage::geometry::Polytope<GeometryValueType>::create(std::move(thresholdHalfspaces));
 
     // Set objective weights (none if this is a qualitative achievability query)
-    objVector.assign(numObj, storm::utility::zero<GeometryValueType>());
+    objVector.assign(numObj, storm::numbers::zero<GeometryValueType>());
     auto eps = objVector;
     if (optimizingObjectiveIndex.has_value()) {
-        objVector[*optimizingObjectiveIndex] = storm::utility::one<GeometryValueType>();
-        eps[*optimizingObjectiveIndex] = env.modelchecker().multi().getPrecision() * storm::utility::convertNumber<GeometryValueType, uint64_t>(2u);
+        objVector[*optimizingObjectiveIndex] = storm::numbers::one<GeometryValueType>();
+        eps[*optimizingObjectiveIndex] = env.modelchecker().multi().getPrecision() * storm::numbers::convertNumber<GeometryValueType, uint64_t>(2u);
         if (env.modelchecker().multi().getPrecisionType() == MultiObjectiveModelCheckerEnvironment::PrecisionType::RelativeToDiff) {
-            eps[*optimizingObjectiveIndex] *= storm::utility::convertNumber<GeometryValueType, ModelValueType>(
+            eps[*optimizingObjectiveIndex] *= storm::numbers::convertNumber<GeometryValueType, ModelValueType>(
                 objectiveHelper[*optimizingObjectiveIndex].getUpperValueBoundAtState(originalModelInitialState) -
                 objectiveHelper[*optimizingObjectiveIndex].getLowerValueBoundAtState(originalModelInitialState));
         }
@@ -71,10 +71,10 @@ std::unique_ptr<CheckResult> DeterministicSchedsAchievabilityChecker<SparseModel
         if (optimizingObjectiveIndex.has_value()) {
             // Average between obtained lower- and upper bounds
             auto result =
-                storm::utility::convertNumber<ValueType, GeometryValueType>(achievingPoint->first[*optimizingObjectiveIndex] + achievingPoint->second);
-            result /= storm::utility::convertNumber<ValueType, uint64_t>(2u);
+                storm::numbers::convertNumber<ValueType, GeometryValueType>(achievingPoint->first[*optimizingObjectiveIndex] + achievingPoint->second);
+            result /= storm::numbers::convertNumber<ValueType, uint64_t>(2u);
             if (objectiveHelper[*optimizingObjectiveIndex].minimizing()) {
-                result *= -storm::utility::one<ValueType>();
+                result *= -storm::numbers::one<ValueType>();
             }
             return std::make_unique<storm::modelchecker::ExplicitQuantitativeCheckResult<ValueType>>(originalModelInitialState, result);
         }

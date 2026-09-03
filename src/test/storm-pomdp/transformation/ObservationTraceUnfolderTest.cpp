@@ -21,7 +21,7 @@ TEST(ObservationTraceUnfolder, Simple) {
     std::shared_ptr<storm::models::sparse::Pomdp<double>> pomdp =
         storm::api::buildSparseModel<double>(program, {formula})->as<storm::models::sparse::Pomdp<double>>();
 
-    std::vector<double> risk(pomdp->getNumberOfStates(), storm::utility::zero<double>());
+    std::vector<double> risk(pomdp->getNumberOfStates(), storm::numbers::zero<double>());
     std::shared_ptr<storm::expressions::ExpressionManager> exprManager = std::make_shared<storm::expressions::ExpressionManager>();
     storm::pomdp::ObservationTraceUnfolderOptions options;
 
@@ -50,7 +50,7 @@ TEST(ObservationTraceUnfolder, ExpressionManagerOutlivesConstructorArgument) {
     std::shared_ptr<storm::models::sparse::Pomdp<double>> pomdp =
         storm::api::buildSparseModel<double>(program, {formula})->as<storm::models::sparse::Pomdp<double>>();
 
-    std::vector<double> risk(pomdp->getNumberOfStates(), storm::utility::zero<double>());
+    std::vector<double> risk(pomdp->getNumberOfStates(), storm::numbers::zero<double>());
     storm::pomdp::ObservationTraceUnfolderOptions options;
 
     std::unique_ptr<storm::pomdp::ObservationTraceUnfolder<double>> unfolder;

@@ -23,7 +23,7 @@ class DoubleSVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::SoundValueIteration);
-        env.solver().minMax().setPrecision(storm::utility::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
         return env;
     }
 };

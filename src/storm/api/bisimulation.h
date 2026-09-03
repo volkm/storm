@@ -28,9 +28,9 @@ std::shared_ptr<ModelType> performDeterministicSparseBisimulationMinimization(st
     using OptionsType = typename storm::storage::DeterministicModelBisimulationDecomposition<ModelType>::Options;
     // Falls back to the general precision setting when the caller does not deliberately choose a tolerance;
     // may be reworked to require an explicit choice throughout the API in the future.
-    typename ModelType::ValueType const resolvedTolerance = storm::NumberTraits<typename ModelType::ValueType>::IsExact
-                                                                ? storm::utility::zero<typename ModelType::ValueType>()
-                                                                : storm::utility::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
+    typename ModelType::ValueType const resolvedTolerance = storm::numbers::NumberTraits<typename ModelType::ValueType>::IsExact
+                                                                ? storm::numbers::zero<typename ModelType::ValueType>()
+                                                                : storm::numbers::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
                                                                       storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
     OptionsType options =
         (!formulas.empty() && graphPreserving) ? OptionsType(*model, formulas, resolvedTolerance) : OptionsType::preservingAllLabels(resolvedTolerance);
@@ -56,9 +56,9 @@ std::shared_ptr<ModelType> performNondeterministicSparseBisimulationMinimization
     using OptionsType = typename storm::storage::NondeterministicModelBisimulationDecomposition<ModelType>::Options;
     // Falls back to the general precision setting when the caller does not deliberately choose a tolerance;
     // may be reworked to require an explicit choice throughout the API in the future.
-    typename ModelType::ValueType const resolvedTolerance = storm::NumberTraits<typename ModelType::ValueType>::IsExact
-                                                                ? storm::utility::zero<typename ModelType::ValueType>()
-                                                                : storm::utility::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
+    typename ModelType::ValueType const resolvedTolerance = storm::numbers::NumberTraits<typename ModelType::ValueType>::IsExact
+                                                                ? storm::numbers::zero<typename ModelType::ValueType>()
+                                                                : storm::numbers::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
                                                                       storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
     OptionsType options =
         (!formulas.empty() && graphPreserving) ? OptionsType(*model, formulas, resolvedTolerance) : OptionsType::preservingAllLabels(resolvedTolerance);

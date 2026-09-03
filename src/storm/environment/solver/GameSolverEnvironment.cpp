@@ -17,7 +17,7 @@ GameSolverEnvironment::GameSolverEnvironment() {
     } else {
         maxIterationCount = std::numeric_limits<uint_fast64_t>::max();
     }
-    precision = storm::utility::convertNumber<storm::RationalNumber>(gameSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(gameSettings.getPrecision());
     considerRelativeTerminationCriterion =
         gameSettings.getConvergenceCriterion() == storm::settings::modules::GameSolverSettings::ConvergenceCriterion::Relative;
     STORM_LOG_ASSERT(considerRelativeTerminationCriterion ||

@@ -189,8 +189,8 @@ class StandardRewardModel {
     template<typename MatrixValueType>
     ValueType getTotalStateActionReward(uint_fast64_t stateIndex, uint_fast64_t choiceIndex,
                                         storm::storage::SparseMatrix<MatrixValueType> const& transitionMatrix,
-                                        MatrixValueType const& stateRewardWeight = storm::utility::one<MatrixValueType>(),
-                                        MatrixValueType const& actionRewardWeight = storm::utility::one<MatrixValueType>()) const;
+                                        MatrixValueType const& stateRewardWeight = storm::numbers::one<MatrixValueType>(),
+                                        MatrixValueType const& actionRewardWeight = storm::numbers::one<MatrixValueType>()) const;
 
     /*!
      * Creates a new reward model by restricting the actions of the action-based rewards.

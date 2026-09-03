@@ -388,7 +388,7 @@ std::optional<storm::dd::DdType> Model<Type, ValueType>::getDdType() const {
 
 template<storm::dd::DdType Type, typename ValueType>
 bool Model<Type, ValueType>::isExact() const {
-    return storm::NumberTraits<ValueType>::IsExact;
+    return storm::numbers::NumberTraits<ValueType>::IsExact;
 }
 
 template<storm::dd::DdType Type, typename ValueType>
@@ -412,7 +412,7 @@ bool Model<Type, ValueType>::hasParameters() const {
     }
     // Check for parameters
     for (auto it = this->getTransitionMatrix().begin(false); it != this->getTransitionMatrix().end(); ++it) {
-        if (!storm::utility::isConstant((*it).second)) {
+        if (!storm::numbers::isConstant((*it).second)) {
             return true;
         }
     }

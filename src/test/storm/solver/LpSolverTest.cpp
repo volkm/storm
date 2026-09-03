@@ -155,7 +155,7 @@ class LpSolverTest : public ::testing::Test {
     }
 
     ValueType parseNumber(std::string const& input) const {
-        return storm::utility::convertNumber<ValueType>(input);
+        return storm::numbers::convertNumber<ValueType>(input);
     }
 
     ValueType precision() const {

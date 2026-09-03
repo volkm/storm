@@ -183,7 +183,7 @@ class GameBasedMdpModelChecker : public storm::modelchecker::AbstractModelChecke
     std::shared_ptr<storm::utility::solver::SmtSolverFactory> smtSolverFactory;
 
     /// A comparator that can be used for detecting convergence.
-    storm::utility::ConstantsComparator<ValueType> comparator;
+    storm::numbers::ConstantsComparator<ValueType> comparator;
 
     /// A flag indicating whether to reuse the qualitative results.
     bool reuseQualitativeResults;

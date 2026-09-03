@@ -9,7 +9,7 @@ namespace storm {
 OviSolverEnvironment::OviSolverEnvironment() {
     auto const& oviSettings = storm::settings::getModule<storm::settings::modules::OviSolverSettings>();
     if (oviSettings.hasUpperBoundGuessingFactorBeenSet()) {
-        upperBoundGuessingFactor = storm::utility::convertNumber<storm::RationalNumber>(oviSettings.getUpperBoundGuessingFactor());
+        upperBoundGuessingFactor = storm::numbers::convertNumber<storm::RationalNumber>(oviSettings.getUpperBoundGuessingFactor());
     }
 }
 

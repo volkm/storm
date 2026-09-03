@@ -65,7 +65,7 @@ Add<LibraryType, ValueType> DdManager<LibraryType>::getAddUndefined() const {
 template<DdType LibraryType>
 template<typename ValueType>
 Add<LibraryType, ValueType> DdManager<LibraryType>::getInfinity() const {
-    return getConstant(storm::utility::infinity<ValueType>());
+    return getConstant(storm::numbers::infinity<ValueType>());
 }
 
 template<DdType LibraryType>
@@ -147,7 +147,7 @@ Add<LibraryType, ValueType> DdManager<LibraryType>::getIdentity(storm::expressio
 
     Add<LibraryType, ValueType> result = this->getAddZero<ValueType>();
     for (int_fast64_t value = metaVariable.getLow(); value <= metaVariable.getHigh(); ++value) {
-        result += this->getEncoding(variable, value).template toAdd<ValueType>() * this->getConstant(storm::utility::convertNumber<ValueType>(value));
+        result += this->getEncoding(variable, value).template toAdd<ValueType>() * this->getConstant(storm::numbers::convertNumber<ValueType>(value));
     }
     return result;
 }

@@ -42,7 +42,7 @@ RewardModelInformation::RewardModelInformation(Model const& model, storm::expres
         }
     }
     auto initExpr = storm::jani::substituteJaniExpression(rewardModelExpression, initialSubstitution, true).simplify();
-    if (containsNonTransientVariable || initExpr.containsVariables() || !storm::utility::isZero(initExpr.evaluateAsRational())) {
+    if (containsNonTransientVariable || initExpr.containsVariables() || !storm::numbers::isZero(initExpr.evaluateAsRational())) {
         stateRewards = true;
         actionRewards = true;
         transitionRewards = true;

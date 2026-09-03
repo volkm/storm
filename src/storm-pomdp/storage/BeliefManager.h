@@ -162,7 +162,7 @@ class BeliefManager {
     std::vector<std::unordered_map<BeliefType, BeliefId, BeliefHash, Belief_equal_to>> beliefToIdMap;
     BeliefId initialBeliefId;
 
-    storm::utility::ConstantsComparator<BeliefValueType> cc;
+    storm::numbers::ConstantsComparator<BeliefValueType> cc;
 
     std::shared_ptr<storm::solver::LpSolver<BeliefValueType>> lpSolver;
 

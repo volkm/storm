@@ -105,7 +105,7 @@ StateType ExplicitModelBuilder<ValueType, RewardModelType, StateType>::getOrAddS
             statesToExplore.emplace_front(state, actualIndex);
 
             // Reserve one slot for the new state in the remapping.
-            stateRemapping.get().push_back(storm::utility::zero<StateType>());
+            stateRemapping.get().push_back(storm::numbers::zero<StateType>());
         } else if (options.explorationOrder == ExplorationOrder::Bfs) {
             statesToExplore.emplace_back(state, actualIndex);
         } else {
@@ -207,15 +207,15 @@ void ExplicitModelBuilder<ValueType, RewardModelType, StateType>::buildMatrices(
                 transitionMatrixBuilder.newRowGroup(currentRow);
             }
 
-            transitionMatrixBuilder.addNextValue(currentRow, currentIndex, storm::utility::one<ValueType>());
+            transitionMatrixBuilder.addNextValue(currentRow, currentIndex, storm::numbers::one<ValueType>());
 
             for (auto& rewardModelBuilder : rewardModelBuilders) {
                 if (rewardModelBuilder.hasStateRewards()) {
-                    rewardModelBuilder.addStateReward(storm::utility::zero<ValueType>());
+                    rewardModelBuilder.addStateReward(storm::numbers::zero<ValueType>());
                 }
 
                 if (rewardModelBuilder.hasStateActionRewards()) {
-                    rewardModelBuilder.addStateActionReward(storm::utility::zero<ValueType>());
+                    rewardModelBuilder.addStateActionReward(storm::numbers::zero<ValueType>());
                 }
             }
 

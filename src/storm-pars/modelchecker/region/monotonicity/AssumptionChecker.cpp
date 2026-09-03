@@ -36,7 +36,8 @@ void AssumptionChecker<ValueType, ConstantType>::initializeCheckingOnSamples(std
             auto lb = region.getLowerBoundary(var.name());
             auto ub = region.getUpperBoundary(var.name());
             // Creates samples between lb and ub, that is: lb, lb + (ub-lb)/(#samples -1), lb + 2* (ub-lb)/(#samples -1), ..., ub
-            auto val = std::pair<VariableType, CoefficientType>(var, (lb + utility::convertNumber<CoefficientType>(i / (numberOfSamples - 1)) * (ub - lb)));
+            auto val =
+                std::pair<VariableType, CoefficientType>(var, (lb + storm::numbers::convertNumber<CoefficientType>(i / (numberOfSamples - 1)) * (ub - lb)));
             valuation.insert(val);
         }
         models::sparse::Dtmc<ConstantType> sampleModel = instantiator.instantiate(valuation);
@@ -129,7 +130,7 @@ AssumptionStatus AssumptionChecker<ValueType, ConstantType>::checkOnSamples(std:
         auto valuation = expressions::SimpleValuation(assumption->getManager().getSharedPointer());
         for (auto var : vars) {
             auto index = std::stoi(var.getName());
-            valuation.setRationalValue(var, utility::convertNumber<double>(values[index]));
+            valuation.setRationalValue(var, storm::numbers::convertNumber<double>(values[index]));
         }
 
         STORM_LOG_ASSERT(assumption->hasBooleanType(), "Assumption does not have boolean type.");
@@ -282,8 +283,8 @@ AssumptionStatus AssumptionChecker<ValueType, ConstantType>::validateAssumptionS
                 exprBounds = exprBounds && var == manager->rational(0);
             } else {
                 // the var is a parameter
-                auto lb = utility::convertNumber<RationalNumber>(region.getLowerBoundary(var.getName()));
-                auto ub = utility::convertNumber<RationalNumber>(region.getUpperBoundary(var.getName()));
+                auto lb = storm::numbers::convertNumber<RationalNumber>(region.getLowerBoundary(var.getName()));
+                auto ub = storm::numbers::convertNumber<RationalNumber>(region.getUpperBoundary(var.getName()));
                 exprBounds = exprBounds && manager->rational(lb) < var && var < manager->rational(ub);
             }
         }

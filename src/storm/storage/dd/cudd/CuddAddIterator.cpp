@@ -34,7 +34,7 @@ AddIterator<DdType::CUDD, ValueType>::AddIterator(DdManager<DdType::CUDD> const&
     : ddManager(&ddManager),
       generator(generator),
       cube(cube),
-      valueAsDouble(storm::utility::convertNumber<double>(value)),
+      valueAsDouble(storm::numbers::convertNumber<double>(value)),
       isAtEnd(isAtEnd),
       metaVariables(metaVariables),
       enumerateDontCareMetaVariables(enumerateDontCareMetaVariables),
@@ -216,7 +216,7 @@ bool AddIterator<DdType::CUDD, ValueType>::operator!=(AddIterator<DdType::CUDD, 
 
 template<typename ValueType>
 std::pair<storm::expressions::SimpleValuation, ValueType> AddIterator<DdType::CUDD, ValueType>::operator*() const {
-    return std::make_pair(currentValuation, storm::utility::convertNumber<ValueType>(valueAsDouble));
+    return std::make_pair(currentValuation, storm::numbers::convertNumber<ValueType>(valueAsDouble));
 }
 
 #else

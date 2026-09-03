@@ -13,12 +13,12 @@ LongRunAverageSolverEnvironment::LongRunAverageSolverEnvironment() {
     detMethodSetFromDefault = lraSettings.isDetLraMethodSetFromDefaultValue();
     nondetMethod = lraSettings.getNondetLraMethod();
     nondetMethodSetFromDefault = lraSettings.isNondetLraMethodSetFromDefaultValue();
-    precision = storm::utility::convertNumber<storm::RationalNumber>(lraSettings.getPrecision());
+    precision = storm::numbers::convertNumber<storm::RationalNumber>(lraSettings.getPrecision());
     relative = lraSettings.isRelativePrecision();
     if (lraSettings.isMaximalIterationCountSet()) {
         maxIters = lraSettings.getMaximalIterationCount();
     }
-    aperiodicFactor = storm::utility::convertNumber<storm::RationalNumber>(lraSettings.getAperiodicFactor());
+    aperiodicFactor = storm::numbers::convertNumber<storm::RationalNumber>(lraSettings.getAperiodicFactor());
 }
 
 LongRunAverageSolverEnvironment::~LongRunAverageSolverEnvironment() {
