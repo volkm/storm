@@ -172,9 +172,9 @@ TEST_F(ModelInstantiatorTest, Brp_Rew) {
         storm::RationalFunctionVariable const& pK = storm::findRFVariable("pK");
         ASSERT_NE(pK, storm::RationalFunctionVariable::NO_VARIABLE);
         storm::RationalFunctionVariable const& TOMsg = storm::findRFVariable("TOMsg");
-        ASSERT_NE(pK, storm::RationalFunctionVariable::NO_VARIABLE);
+        ASSERT_NE(TOMsg, storm::RationalFunctionVariable::NO_VARIABLE);
         storm::RationalFunctionVariable const& TOAck = storm::findRFVariable("TOAck");
-        ASSERT_NE(pK, storm::RationalFunctionVariable::NO_VARIABLE);
+        ASSERT_NE(TOAck, storm::RationalFunctionVariable::NO_VARIABLE);
         valuation.insert(std::make_pair(pL, storm::utility::convertNumber<storm::RationalFunctionCoefficient>(0.9)));
         valuation.insert(std::make_pair(pK, storm::utility::convertNumber<storm::RationalFunctionCoefficient>(0.3)));
         valuation.insert(std::make_pair(TOMsg, storm::utility::convertNumber<storm::RationalFunctionCoefficient>(0.3)));

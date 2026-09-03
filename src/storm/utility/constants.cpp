@@ -1,5 +1,6 @@
 #include "storm/utility/constants.h"
 
+#include <cmath>
 #include <numeric>
 
 #include "storm/adapters/IntervalAdapter.h"
