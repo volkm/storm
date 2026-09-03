@@ -30,15 +30,16 @@ ValueType Bound::evaluateThresholdAs() const {
 }
 
 template bool Bound::isSatisfied(double const& compareValue) const;
-#if defined(STORM_HAVE_CLN)
-template bool Bound::isSatisfied(storm::ClnRationalNumber const& compareValue) const;
-template storm::ClnRationalNumber Bound::evaluateThresholdAs() const;
-#endif
-#if defined(STORM_HAVE_GMP)
-template bool Bound::isSatisfied(storm::GmpRationalNumber const& compareValue) const;
-template storm::GmpRationalNumber Bound::evaluateThresholdAs() const;
-#endif
 template double Bound::evaluateThresholdAs() const;
+
+template bool Bound::isSatisfied(storm::RationalNumber const& compareValue) const;
+template storm::RationalNumber Bound::evaluateThresholdAs() const;
+
+#if STORM_RATIONAL_NUMBER_DIFFERS_FROM_COEFFICIENT
+template bool Bound::isSatisfied(storm::RationalFunctionCoefficient const& compareValue) const;
+template storm::RationalFunctionCoefficient Bound::evaluateThresholdAs() const;
+#endif
+
 template storm::RationalFunction Bound::evaluateThresholdAs() const;
 
 }  // namespace storm::logic
