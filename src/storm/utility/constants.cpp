@@ -479,9 +479,14 @@ double convertNumber(ClnRationalNumber const& number) {
 }
 
 template<>
+bool tryParseNumber(std::string const& input, ClnRationalNumber& result) {
+    return carl::try_parse<ClnRationalNumber>(input, result);
+}
+
+template<>
 ClnRationalNumber convertNumber(std::string const& number) {
     ClnRationalNumber result;
-    if (carl::try_parse<ClnRationalNumber>(number, result)) {
+    if (tryParseNumber(number, result)) {
         return result;
     }
     STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException, "Unable to parse '" << number << "' as a rational number.");
@@ -712,9 +717,14 @@ double convertNumber(GmpRationalNumber const& number) {
 }
 
 template<>
+bool tryParseNumber(std::string const& input, GmpRationalNumber& result) {
+    return carl::try_parse<GmpRationalNumber>(input, result);
+}
+
+template<>
 GmpRationalNumber convertNumber(std::string const& number) {
     GmpRationalNumber result;
-    if (carl::try_parse<GmpRationalNumber>(number, result)) {
+    if (tryParseNumber(number, result)) {
         return result;
     }
     STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException, "Unable to parse '" << number << "' as a rational number.");

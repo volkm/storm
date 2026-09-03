@@ -119,6 +119,16 @@ bool isInteger(ValueType const& number);
 template<typename TargetType, typename SourceType>
 TargetType convertNumber(SourceType const& number);
 
+/*!
+ * Tries to parse a number from its string representation.
+ *
+ * @param input String representation of the number.
+ * @param result The parsed number (only valid if parsing succeeded).
+ * @return True iff the string could be parsed as a number of the given type.
+ */
+template<typename RationalType>
+bool tryParseNumber(std::string const& input, RationalType& result);
+
 template<typename ValueType>
 ValueType simplify(ValueType value);
 
