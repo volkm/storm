@@ -120,9 +120,6 @@ template<typename TargetType, typename SourceType>
 TargetType convertNumber(SourceType const& number);
 
 template<typename ValueType>
-std::pair<ValueType, ValueType> asFraction(ValueType const& number);
-
-template<typename ValueType>
 ValueType simplify(ValueType value);
 
 template<typename IndexType, typename ValueType>
@@ -211,6 +208,12 @@ std::pair<IntegerType, IntegerType> divide(IntegerType const& dividend, IntegerT
 
 template<typename IntegerType>
 IntegerType mod(IntegerType const& first, IntegerType const& second);
+
+template<typename IntegerType>
+IntegerType gcd(IntegerType const& first, IntegerType const& second);
+
+template<typename IntegerType>
+IntegerType lcm(IntegerType const& first, IntegerType const& second);
 
 template<typename ValueType>
 std::string to_string(ValueType const& value);

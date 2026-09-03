@@ -1,6 +1,6 @@
 #include "storm/utility/constants.h"
 
-#include <cmath>
+#include <numeric>
 
 #include "storm/adapters/IntervalAdapter.h"
 #include "storm/adapters/RationalFunctionAdapter.h"
@@ -350,6 +350,16 @@ std::pair<IntegerType, IntegerType> divide(IntegerType const& dividend, IntegerT
     return std::make_pair(dividend / divisor, mod(dividend, divisor));
 }
 
+template<typename IntegerType>
+IntegerType gcd(IntegerType const& first, IntegerType const& second) {
+    return std::gcd(first, second);
+}
+
+template<typename IntegerType>
+IntegerType lcm(IntegerType const& first, IntegerType const& second) {
+    return std::lcm(first, second);
+}
+
 template<typename ValueType>
 std::string to_string(ValueType const& value) {
     std::stringstream ss;
@@ -478,11 +488,6 @@ ClnRationalNumber convertNumber(std::string const& number) {
 }
 
 template<>
-std::pair<ClnRationalNumber, ClnRationalNumber> asFraction(ClnRationalNumber const& number) {
-    return std::make_pair(carl::getNum(number), carl::getDenom(number));
-}
-
-template<>
 ClnRationalNumber sqrt(ClnRationalNumber const& number) {
     return carl::sqrt(number);
 }
@@ -539,6 +544,18 @@ std::pair<typename NumberTraits<ClnRationalNumber>::IntegerType, typename Number
     std::pair<typename NumberTraits<ClnRationalNumber>::IntegerType, typename NumberTraits<ClnRationalNumber>::IntegerType> result;
     carl::divide(dividend, divisor, result.first, result.second);
     return result;
+}
+
+template<>
+typename NumberTraits<ClnRationalNumber>::IntegerType gcd(typename NumberTraits<ClnRationalNumber>::IntegerType const& first,
+                                                          typename NumberTraits<ClnRationalNumber>::IntegerType const& second) {
+    return carl::gcd(first, second);
+}
+
+template<>
+typename NumberTraits<ClnRationalNumber>::IntegerType lcm(typename NumberTraits<ClnRationalNumber>::IntegerType const& first,
+                                                          typename NumberTraits<ClnRationalNumber>::IntegerType const& second) {
+    return carl::lcm(first, second);
 }
 
 template<>
@@ -704,11 +721,6 @@ GmpRationalNumber convertNumber(std::string const& number) {
 }
 
 template<>
-std::pair<GmpRationalNumber, GmpRationalNumber> asFraction(GmpRationalNumber const& number) {
-    return std::make_pair(carl::getNum(number), carl::getDenom(number));
-}
-
-template<>
 GmpRationalNumber sqrt(GmpRationalNumber const& number) {
     return carl::sqrt(number);
 }
@@ -766,6 +778,18 @@ std::pair<typename NumberTraits<GmpRationalNumber>::IntegerType, typename Number
     std::pair<typename NumberTraits<GmpRationalNumber>::IntegerType, typename NumberTraits<GmpRationalNumber>::IntegerType> result;
     carl::divide(dividend, divisor, result.first, result.second);
     return result;
+}
+
+template<>
+typename NumberTraits<GmpRationalNumber>::IntegerType gcd(typename NumberTraits<GmpRationalNumber>::IntegerType const& first,
+                                                          typename NumberTraits<GmpRationalNumber>::IntegerType const& second) {
+    return carl::gcd(first, second);
+}
+
+template<>
+typename NumberTraits<GmpRationalNumber>::IntegerType lcm(typename NumberTraits<GmpRationalNumber>::IntegerType const& first,
+                                                          typename NumberTraits<GmpRationalNumber>::IntegerType const& second) {
+    return carl::lcm(first, second);
 }
 
 template<>
