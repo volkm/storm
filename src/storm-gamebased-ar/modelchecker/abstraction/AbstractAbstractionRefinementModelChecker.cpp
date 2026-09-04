@@ -996,7 +996,7 @@ std::unique_ptr<storm::modelchecker::CheckResult> AbstractAbstractionRefinementM
     return std::make_unique<storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>>(
         lowerBounds.getReachableStates(), lowerBounds.getStates(),
         (lowerBounds.getValueVector() + upperBounds.getValueVector()) /
-            lowerBounds.getValueVector().getDdManager().getConstant(storm::numbers::convertNumber<ValueType>(std::string("2.0"))));
+            lowerBounds.getValueVector().getDdManager().getConstant(storm::numbers::convert<ValueType>(std::string("2.0"))));
 }
 
 template class AbstractAbstractionRefinementModelChecker<storm::models::symbolic::Dtmc<storm::dd::DdType::CUDD, double>>;

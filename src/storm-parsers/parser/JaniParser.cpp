@@ -1173,7 +1173,7 @@ storm::expressions::Expression JaniParser<ValueType>::parseExpression(Json const
     } else if (expressionStructure.is_number_integer()) {
         return expressionManager->integer(expressionStructure.template get<int64_t>());
     } else if (expressionStructure.is_number_float()) {
-        return expressionManager->rational(storm::numbers::convertNumber<storm::RationalNumber>(expressionStructure.template get<ValueType>()));
+        return expressionManager->rational(storm::numbers::convert<storm::RationalNumber>(expressionStructure.template get<ValueType>()));
     } else if (expressionStructure.is_string()) {
         std::string ident = expressionStructure.template get<std::string>();
         return storm::expressions::Expression(getVariableOrConstantExpression(ident, scope, auxiliaryVariables));

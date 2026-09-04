@@ -245,9 +245,8 @@ std::shared_ptr<MonitorVerifier<ValueType>> GenerateMonitorVerifier<ValueType>::
         }
 
         if (monitor.getStateLabeling().getStateHasLabel(options.acceptingLabel, mon_from)) {
-            STORM_LOG_THROW(
-                risk[mc_from] >= -storm::numbers::convertNumber<ValueType>(1e-12) && risk[mc_from] <= storm::numbers::convertNumber<ValueType>(1.0 + 1e-12),
-                exceptions::IllegalArgumentException, "Risk for state " + std::to_string(mc_from) + " is not in [0, 1].");
+            STORM_LOG_THROW(risk[mc_from] >= -storm::numbers::convert<ValueType>(1e-12) && risk[mc_from] <= storm::numbers::convert<ValueType>(1.0 + 1e-12),
+                            exceptions::IllegalArgumentException, "Risk for state " + std::to_string(mc_from) + " is not in [0, 1].");
             if (storm::numbers::isAlmostZero(risk[mc_from])) {
                 builder.addNextValue(currentRow, stopIndex, storm::numbers::one<ValueType>());
             } else if (storm::numbers::isAlmostOne(risk[mc_from])) {

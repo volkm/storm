@@ -47,7 +47,7 @@ std::unique_ptr<CheckResult> HybridDtmcPrctlHelper<DdType, ValueType>::computeUn
         return std::unique_ptr<CheckResult>(new storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>(
             model.getReachableStates(),
             statesWithProbability01.second.template toAdd<ValueType>() +
-                maybeStates.template toAdd<ValueType>() * model.getManager().template getConstant<ValueType>(storm::numbers::convertNumber<ValueType>(0.5))));
+                maybeStates.template toAdd<ValueType>() * model.getManager().template getConstant<ValueType>(storm::numbers::convert<ValueType>(0.5))));
     } else {
         // If there are maybe states, we need to solve an equation system.
         if (!maybeStates.isZero()) {
@@ -91,7 +91,7 @@ std::unique_ptr<CheckResult> HybridDtmcPrctlHelper<DdType, ValueType>::computeUn
             }
 
             // Create the solution vector.
-            std::vector<ValueType> x(maybeStates.getNonZeroCount(), storm::numbers::convertNumber<ValueType>(0.5));
+            std::vector<ValueType> x(maybeStates.getNonZeroCount(), storm::numbers::convert<ValueType>(0.5));
 
             // Translate the symbolic matrix/vector to their explicit representations and solve the equation system.
             conversionWatch.start();
@@ -344,7 +344,7 @@ std::unique_ptr<CheckResult> HybridDtmcPrctlHelper<DdType, ValueType>::computeRe
             }
 
             // Create the solution vector.
-            std::vector<ValueType> x(maybeStates.getNonZeroCount(), storm::numbers::convertNumber<ValueType>(0.5));
+            std::vector<ValueType> x(maybeStates.getNonZeroCount(), storm::numbers::convert<ValueType>(0.5));
 
             // Translate the symbolic matrix/vector to their explicit representations.
             conversionWatch.start();

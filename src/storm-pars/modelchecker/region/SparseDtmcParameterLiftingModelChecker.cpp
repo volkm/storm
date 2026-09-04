@@ -590,7 +590,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                             }
                             auto const derivative = function.derivative(p);
                             if (derivative.isConstant()) {
-                                constantDerivatives.emplace_back(true, storm::numbers::convertNumber<double>(derivative.constantPart()));
+                                constantDerivatives.emplace_back(true, storm::numbers::convert<double>(derivative.constantPart()));
                             } else if (!storm::transformer::BigStep::lastSavedAnnotations.count(entry.getValue())) {
                                 functionDerivatives.emplace(function, derivative);
                                 constantDerivatives.emplace_back(false, 0);
@@ -625,7 +625,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                         if (storm::transformer::BigStep::lastSavedAnnotations.count(entry.getValue())) {
                             auto& annotation = storm::transformer::BigStep::lastSavedAnnotations.at(entry.getValue());
                             ConstantType derivative =
-                                annotation.derivative()->template evaluate<ConstantType>(storm::numbers::convertNumber<ConstantType>(region.getCenter(p)));
+                                annotation.derivative()->template evaluate<ConstantType>(storm::numbers::convert<ConstantType>(region.getCenter(p)));
                             derivatives.push_back(derivative);
                         } else {
                             auto const& cDer = constantDerivatives.at(entryCount);
@@ -633,7 +633,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                                 derivatives.push_back(cDer.second);
                             } else {
                                 CoefficientType derivative = functionDerivatives.at(entry.getValue()).evaluate(region.getCenterPoint());
-                                derivatives.push_back(storm::numbers::convertNumber<ConstantType>(derivative));
+                                derivatives.push_back(storm::numbers::convert<ConstantType>(derivative));
                             }
                         }
                         entryCount++;
@@ -739,7 +739,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                                 }
                             }
                             auto const& optimal = stateResults[optimalChoice];
-                            auto diff = storm::numbers::abs<ConstantType>(optimal - storm::numbers::convertNumber<ConstantType>(bestValue));
+                            auto diff = storm::numbers::abs<ConstantType>(optimal - storm::numbers::convert<ConstantType>(bestValue));
                             if (foundBestValue) {
                                 if (checkUpperParameters) {
                                     deltaLower[p] += diff * weighting[state];
@@ -779,7 +779,7 @@ void SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robus
                 auto result = this->derivativeChecker->check(env, center, param, reachabilityProbabilities);
                 ConstantType derivative =
                     result->template asExplicitQuantitativeCheckResult<ConstantType>().getValueVector()[this->derivativeChecker->getInitialState()];
-                cachedRegionSplitEstimates[param] = storm::numbers::abs(derivative) * storm::numbers::convertNumber<ConstantType>(region.getDifference(param));
+                cachedRegionSplitEstimates[param] = storm::numbers::abs(derivative) * storm::numbers::convert<ConstantType>(region.getDifference(param));
             }
             break;
         }
@@ -872,7 +872,7 @@ SparseDtmcParameterLiftingModelChecker<SparseModelType, ConstantType, Robust>::o
             auto est = cachedRegionSplitEstimates.find(par);
             STORM_LOG_ASSERT(est != cachedRegionSplitEstimates.end(),
                              "Requested region split estimate for parameter " << par.name() << " but none was generated.");
-            result.push_back(storm::numbers::convertNumber<CoefficientType>(est->second));
+            result.push_back(storm::numbers::convert<CoefficientType>(est->second));
         }
         return result;
     } else {

@@ -79,7 +79,7 @@ ParameterLifter<ParametricType, ConstantType>::ParameterLifter(storm::storage::S
                 if (selectedColumns.get(entry.getColumn())) {
                     if (storm::numbers::isConstant(entry.getValue())) {
                         builder.addNextValue(newRowIndex, oldToNewColumnIndexMapping[entry.getColumn()],
-                                             storm::numbers::convertNumber<ConstantType>(entry.getValue()));
+                                             storm::numbers::convert<ConstantType>(entry.getValue()));
                     } else {
                         builder.addNextValue(newRowIndex, oldToNewColumnIndexMapping[entry.getColumn()], storm::numbers::one<ConstantType>());
                         ConstantType& placeholder = functionValuationCollector.add(entry.getValue(), val);
@@ -91,7 +91,7 @@ ParameterLifter<ParametricType, ConstantType>::ParameterLifter(storm::storage::S
 
             // Insert the vector entry for this row
             if (storm::numbers::isConstant(pVectorEntry)) {
-                vector.push_back(storm::numbers::convertNumber<ConstantType>(pVectorEntry));
+                vector.push_back(storm::numbers::convert<ConstantType>(pVectorEntry));
             } else {
                 vector.push_back(storm::numbers::one<ConstantType>());
                 AbstractValuation vectorVal(val);

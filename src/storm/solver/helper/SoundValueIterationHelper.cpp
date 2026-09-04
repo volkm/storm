@@ -219,7 +219,7 @@ class SVIBackend {
 template<typename ValueType, bool TrivialRowGrouping>
 void SoundValueIterationHelper<ValueType, TrivialRowGrouping>::SVIData::trySetAverage(std::vector<ValueType>& out) const {
     if (a.has_value() && b.has_value()) {
-        ValueType abAvg = (*a + *b) / storm::numbers::convertNumber<ValueType, uint64_t>(2);
+        ValueType abAvg = (*a + *b) / storm::numbers::convert<ValueType, uint64_t>(2);
         storm::utility::vector::applyPointwise(xy.first, xy.second, out,
                                                [&abAvg](ValueType const& xVal, ValueType const& yVal) -> ValueType { return xVal + abAvg * yVal; });
     }

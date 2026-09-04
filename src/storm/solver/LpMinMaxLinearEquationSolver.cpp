@@ -73,17 +73,17 @@ bool LpMinMaxLinearEquationSolver<ValueType>::solveEquationsViToLp(Environment c
         this->startMeasureProgress();
         if constexpr (std::is_same_v<ValueType, double>) {
             viHelper.VI(x, b, numIterations, env.solver().minMax().getRelativeTerminationCriterion(),
-                        storm::numbers::convertNumber<double>(env.solver().minMax().getPrecision()), dir, viCallback);
+                        storm::numbers::convert<double>(env.solver().minMax().getPrecision()), dir, viCallback);
         } else {
             // convert from/to double
             auto xVi = storm::utility::vector::convertNumericVector<double>(x);
             auto bVi = storm::utility::vector::convertNumericVector<double>(b);
-            double const precision = storm::numbers::convertNumber<double>(env.solver().minMax().getPrecision());
+            double const precision = storm::numbers::convert<double>(env.solver().minMax().getPrecision());
             bool const relative = env.solver().minMax().getRelativeTerminationCriterion();
             viHelper.VI(xVi, bVi, numIterations, relative, precision, dir, viCallback);
             auto xIt = xVi.cbegin();
             for (auto& xi : x) {
-                xi = storm::numbers::convertNumber<ValueType>(*xIt);
+                xi = storm::numbers::convert<ValueType>(*xIt);
                 ++xIt;
             }
         }

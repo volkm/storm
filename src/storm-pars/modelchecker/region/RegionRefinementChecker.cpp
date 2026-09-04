@@ -106,7 +106,7 @@ class PartitioningProgress {
 
    private:
     static uint64_t asPercentage(T const& value) {
-        return storm::numbers::convertNumber<uint64_t>(storm::numbers::round<T>(value * storm::numbers::convertNumber<T, uint64_t>(100u)));
+        return storm::numbers::convert<uint64_t>(storm::numbers::round<T>(value * storm::numbers::convert<T, uint64_t>(100u)));
     }
 
     T const totalArea;
@@ -125,7 +125,7 @@ std::unique_ptr<storm::modelchecker::RegionRefinementCheckResult<ParametricType>
     STORM_LOG_INFO("Applying Region Partitioning on region: " << region.toString(true) << " .");
 
     auto progress = PartitioningProgress<CoefficientType>(
-        region.area(), storm::numbers::convertNumber<CoefficientType>(coverageThreshold.value_or(storm::numbers::zero<ParametricType>())));
+        region.area(), storm::numbers::convert<CoefficientType>(coverageThreshold.value_or(storm::numbers::zero<ParametricType>())));
 
     // Holds the initial region as well as all considered (sub)-regions and their annotations as a tree
     AnnotatedRegion<ParametricType> rootRegion(region);
@@ -308,7 +308,7 @@ RegionRefinementChecker<ParametricType>::computeExtremalValue(Environment const&
     // Handle input precision
     STORM_LOG_THROW(storm::numbers::isConstant(precision), storm::exceptions::InvalidArgumentException,
                     "Precision must be a constant value. Got " << precision << " instead.");
-    CoefficientType convertedPrecision = storm::numbers::convertNumber<CoefficientType>(precision);
+    CoefficientType convertedPrecision = storm::numbers::convert<CoefficientType>(precision);
 
     auto acceptGlobalBound = [&](CoefficientType value, CoefficientType newValue) {
         CoefficientType const usedPrecision = convertedPrecision * (absolutePrecision ? storm::numbers::one<CoefficientType>() : value);
@@ -324,7 +324,7 @@ template<typename ParametricType>
 bool RegionRefinementChecker<ParametricType>::verifyRegion(const storm::Environment& env, const storm::storage::ParameterRegion<ParametricType>& region,
                                                            const storm::logic::Bound& bound) {
     // Use the bound from the formula.
-    CoefficientType valueToCheck = storm::numbers::convertNumber<CoefficientType>(bound.threshold.evaluateAsRational());
+    CoefficientType valueToCheck = storm::numbers::convert<CoefficientType>(bound.threshold.evaluateAsRational());
     // We will try to violate the bound.
     storm::solver::OptimizationDirection dir =
         isLowerBound(bound.comparisonType) ? storm::solver::OptimizationDirection::Minimize : storm::solver::OptimizationDirection::Maximize;

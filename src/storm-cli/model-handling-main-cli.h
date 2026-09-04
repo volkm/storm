@@ -139,7 +139,7 @@ void printFilteredResult(std::unique_ptr<storm::modelchecker::CheckResult> const
                     STORM_LOG_THROW(false, storm::exceptions::InvalidArgumentException, "Unhandled filter type.");
             }
             if (storm::numbers::NumberTraits<ValueType>::IsExact && storm::numbers::isConstant(resultValue)) {
-                STORM_PRINT(resultValue << " (approx. " << storm::numbers::convertNumber<double>(resultValue) << ")");
+                STORM_PRINT(resultValue << " (approx. " << storm::numbers::convert<double>(resultValue) << ")");
             } else {
                 STORM_PRINT(resultValue);
             }

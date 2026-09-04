@@ -1146,7 +1146,7 @@ void BeliefMdpExplorer<PomdpType, BeliefValueType>::insertValueHints(ValueType c
     lowerValueBounds.push_back(lowerBound);
     upperValueBounds.push_back(upperBound);
     // Take the middle value as a hint
-    values.push_back((lowerBound + upperBound) / storm::numbers::convertNumber<ValueType, uint64_t>(2));
+    values.push_back((lowerBound + upperBound) / storm::numbers::convert<ValueType, uint64_t>(2));
     STORM_LOG_ASSERT(lowerValueBounds.size() == getCurrentNumberOfMdpStates(), "Value vectors have different size then number of available states.");
     STORM_LOG_ASSERT(lowerValueBounds.size() == upperValueBounds.size() && values.size() == upperValueBounds.size(), "Value vectors have inconsistent size.");
 }

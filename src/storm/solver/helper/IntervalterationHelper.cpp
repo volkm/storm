@@ -140,7 +140,7 @@ SolverStatus IntervalIterationHelper<ValueType, TrivialRowGrouping>::II(std::vec
     } else {
         status = II<OptimizationDirection::Minimize>(xy, offsets, numIterations, relative, precision, iterationCallback, relevantValues);
     }
-    auto two = storm::numbers::convertNumber<ValueType>(2.0);
+    auto two = storm::numbers::convert<ValueType>(2.0);
     // get the average of lower- and upper result
     storm::utility::vector::applyPointwise<ValueType, ValueType, ValueType>(
         xy.first, xy.second, xy.first, [&two](ValueType const& a, ValueType const& b) -> ValueType { return (a + b) / two; });

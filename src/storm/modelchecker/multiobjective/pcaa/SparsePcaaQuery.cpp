@@ -74,21 +74,21 @@ std::unique_ptr<CheckResult> SparsePcaaQuery<SparseModelType, GeometryValueType>
         storm::utility::vector::scaleVectorInPlace(weightVector, normalizationFactor);
         STORM_LOG_INFO("Iteration #" << refinementSteps.size() << ": Processing new WSO instance with weight vector "
                                      << storm::utility::vector::toString(storm::utility::vector::convertNumericVector<double>(weightVector))
-                                     << " and precision " << storm::numbers::convertNumber<double>(epsilonWso) << ".");
+                                     << " and precision " << storm::numbers::convert<double>(epsilonWso) << ".");
 
         // Solve WSO instance
-        this->weightVectorChecker->setWeightedPrecision(storm::numbers::convertNumber<ModelValueType>(epsilonWso));
+        this->weightVectorChecker->setWeightedPrecision(storm::numbers::convert<ModelValueType>(epsilonWso));
         weightVectorChecker->check(env, storm::utility::vector::convertNumericVector<ModelValueType>(weightVector));
-        GeometryValueType optimalWeightedSum = storm::numbers::convertNumber<GeometryValueType>(weightVectorChecker->getOptimalWeightedSum());
+        GeometryValueType optimalWeightedSum = storm::numbers::convert<GeometryValueType>(weightVectorChecker->getOptimalWeightedSum());
         // Due to numerical issues, it might be that the found optimal weighted sum is smaller than the actual weighted sum of one of the achievable points.
         // To avoid that our over-approximation does not contain all achievable points, we correct this here.
         for (auto const& step : refinementSteps) {
             optimalWeightedSum = std::max(optimalWeightedSum, storm::utility::vector::dotProduct(weightVector, step.achievablePoint));
         }
-        if (GeometryValueType const diff = optimalWeightedSum - storm::numbers::convertNumber<GeometryValueType>(weightVectorChecker->getOptimalWeightedSum());
+        if (GeometryValueType const diff = optimalWeightedSum - storm::numbers::convert<GeometryValueType>(weightVectorChecker->getOptimalWeightedSum());
             diff > epsilonWso / 10) {
             STORM_LOG_WARN("Numerical issues: The overapproximation would not contain the underapproximation. Hence, a halfspace is shifted by "
-                           << (storm::numbers::convertNumber<double>(diff)) << ".");
+                           << (storm::numbers::convert<double>(diff)) << ".");
         }
 
         // Store result of iteration
@@ -246,7 +246,7 @@ SparsePcaaQuery<SparseModelType, GeometryValueType>::tryAnswerOrNextWeightsAchie
         }
         referencePoint = thresholds;
         referencePoint[optObjIndex.value()] =
-            optRes.first[optObjIndex.value()] - storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision());
+            optRes.first[optObjIndex.value()] - storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision());
         // The following assertion holds because optRes.first is in the over-approximation and satisfies all thresholds and the over-approximation is
         // downward closed
         STORM_LOG_ASSERT(overApproximation->contains(referencePoint), "Expected reference point to be contained in the over-approximation.");
@@ -263,10 +263,9 @@ SparsePcaaQuery<SparseModelType, GeometryValueType>::tryAnswerOrNextWeightsAchie
         if (optObjIndex.has_value()) {
             // Return the middle-value of the result interval [ referencePoint[optObjIndex], referencePoint[optObjIndex] + multiPrecisoin ]
             GeometryValueType result =
-                referencePoint[optObjIndex.value()] + (storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision()) /
-                                                       storm::numbers::convertNumber<GeometryValueType, uint64_t>(2));
-            auto resultForOriginalModel =
-                storm::numbers::convertNumber<ModelValueType>(transformObjectiveValueToOriginal(objectives[optObjIndex.value()], result));
+                referencePoint[optObjIndex.value()] + (storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision()) /
+                                                       storm::numbers::convert<GeometryValueType, uint64_t>(2));
+            auto resultForOriginalModel = storm::numbers::convert<ModelValueType>(transformObjectiveValueToOriginal(objectives[optObjIndex.value()], result));
 
             return std::unique_ptr<CheckResult>(new ExplicitQuantitativeCheckResult<ModelValueType>(initialStateOfOriginalModel, resultForOriginalModel));
         } else {
@@ -301,8 +300,8 @@ typename SparsePcaaQuery<SparseModelType, GeometryValueType>::AnswerOrWeights Sp
     PolytopePtr underApproximation = Polytope::createDownwardClosure(achievablePoints);
     auto achievableHalfspaces = underApproximation->getHalfspaces();
     // Now check whether the over-approximation contains a point that is not close enough to the under-approximation
-    GeometryValueType delta = storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision()) /
-                              storm::numbers::convertNumber<GeometryValueType>(std::sqrt(objectives.size()));
+    GeometryValueType delta = storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision()) /
+                              storm::numbers::convert<GeometryValueType>(std::sqrt(objectives.size()));
     for (auto const& halfspace : achievableHalfspaces) {
         GeometryValueType const sumOfWeights =
             std::accumulate(halfspace.normalVector().begin(), halfspace.normalVector().end(), storm::numbers::zero<GeometryValueType>());
@@ -353,30 +352,30 @@ GeometryValueType SparsePcaaQuery<SparseModelType, GeometryValueType>::getEpsilo
     GeometryValueType gamma;
     if (env.modelchecker().multi().isApproximationTradeoffSet()) {
         // A value was set explicitly, so we use that.
-        gamma = storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getApproximationTradeoff());
+        gamma = storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getApproximationTradeoff());
     } else {
         // No value was set explicitly. We pick one heuristically
         if (env.solver().isForceExact()) {
             gamma = storm::numbers::zero<GeometryValueType>();  // In exact mode, we don't expect any inaccuracies in the WSO solver
         } else if (env.solver().isForceSoundness() || weightVectorChecker->smallPrecisionsAreChallenging()) {
             // in sound mode and/or when WSO calls are challenging, we pick a middle-ground value
-            gamma = storm::numbers::convertNumber<GeometryValueType>(0.5);
+            gamma = storm::numbers::convert<GeometryValueType>(0.5);
         } else {
             // In unsound mode with non-challenging WSO calls, we don't want too inaccurate precisions (e.g. standard value iteration with large epsilon becomes
             // very unreliable). Hence, we pick a rather small value.
-            gamma = storm::numbers::convertNumber<GeometryValueType>(1.0 / 64.0);
+            gamma = storm::numbers::convert<GeometryValueType>(1.0 / 64.0);
         }
     }
 
     // Get the precision for multiobjective model checking. Further decrease it if the approximation is close.
-    GeometryValueType eps_multi = storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision());
+    GeometryValueType eps_multi = storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision());
     if (approxDistance.has_value()) {
         eps_multi = std::min<GeometryValueType>(eps_multi, approxDistance.value());
     }
 
     // We divide by sqrt(objectives.size()) to ensure that even for values of gamma close to 1, we can still achieve enough precision
     // See Example 3.5 in https://doi.org/10.18154/RWTH-2023-09669 for an example why this is needed.
-    return gamma * eps_multi / storm::numbers::convertNumber<GeometryValueType>(std::sqrt(objectives.size()));
+    return gamma * eps_multi / storm::numbers::convert<GeometryValueType>(std::sqrt(objectives.size()));
 }
 
 template<typename SparseModelType, typename GeometryValueType>

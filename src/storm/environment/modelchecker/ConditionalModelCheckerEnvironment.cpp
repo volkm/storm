@@ -10,7 +10,7 @@ namespace storm {
 ConditionalModelCheckerEnvironment::ConditionalModelCheckerEnvironment() {
     auto const& mcSettings = storm::settings::getModule<storm::settings::modules::ConditionalSettings>();
     algorithm = mcSettings.getConditionalAlgorithmSetting();
-    precision = storm::numbers::convertNumber<storm::RationalNumber>(mcSettings.getConditionalPrecision());
+    precision = storm::numbers::convert<storm::RationalNumber>(mcSettings.getConditionalPrecision());
     relative = !mcSettings.isConditionalPrecisionAbsolute();
     precisionSetFromDefault = mcSettings.isConditionalPrecisionSetFromDefaultValue();
 }

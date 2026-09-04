@@ -32,7 +32,7 @@ std::pair<typename NumberTraits<RationalType>::IntegerType, typename NumberTrait
                                                                                                                                  uint64_t precision) {
     typedef typename NumberTraits<RationalType>::IntegerType IntegerType;
 
-    IntegerType powerOfTen = storm::numbers::pow(storm::numbers::convertNumber<IntegerType>(static_cast<uint64_t>(10)), precision);
+    IntegerType powerOfTen = storm::numbers::pow(storm::numbers::convert<IntegerType>(static_cast<uint64_t>(10)), precision);
     IntegerType truncated = storm::numbers::trunc<RationalType>(value * powerOfTen);
     return std::make_pair(truncated, powerOfTen);
 }
@@ -45,8 +45,8 @@ std::pair<typename NumberTraits<RationalType>::IntegerType, typename NumberTrait
 
     double powerOfTen = std::pow(10, precision);
     auto truncated = storm::numbers::trunc<double>(value * powerOfTen);
-    return std::make_pair(storm::numbers::convertNumber<typename NumberTraits<RationalType>::IntegerType>(truncated),
-                          storm::numbers::convertNumber<typename NumberTraits<RationalType>::IntegerType>(powerOfTen));
+    return std::make_pair(storm::numbers::convert<typename NumberTraits<RationalType>::IntegerType>(truncated),
+                          storm::numbers::convert<typename NumberTraits<RationalType>::IntegerType>(powerOfTen));
 }
 
 template<typename RationalType, typename ImpreciseType>
@@ -58,7 +58,7 @@ RationalType findRational(uint64_t precision, ImpreciseType const& value) {
         truncatedFraction.first, truncatedFraction.second, truncatedFraction.first + storm::numbers::one<IntegerType>(), truncatedFraction.second);
 
     // Convert one of the arguments to a rational type to not get integer division.
-    return storm::numbers::convertNumber<RationalType>(result.first) / result.second;
+    return storm::numbers::convert<RationalType>(result.first) / result.second;
 }
 
 template<typename RationalType, typename ImpreciseType>
@@ -66,7 +66,7 @@ RationalType sharpen(uint64_t precision, ImpreciseType const& value) {
     ImpreciseType integer = storm::numbers::floor(value);
     ImpreciseType fraction = value - integer;
     auto rational = findRational<RationalType>(precision, fraction);
-    return storm::numbers::convertNumber<RationalType>(integer) + rational;
+    return storm::numbers::convert<RationalType>(integer) + rational;
 }
 
 template<typename RationalType, typename ImpreciseType>

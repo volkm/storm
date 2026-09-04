@@ -132,10 +132,10 @@ typename GlpkLpSolver<ValueType, RawMode>::Variable GlpkLpSolver<ValueType, RawM
     // Create the variable in glpk.
     int variableIndex = glp_add_cols(this->lp, 1);
     glp_set_col_name(this->lp, variableIndex, name.c_str());
-    glp_set_col_bnds(lp, variableIndex, boundType, lowerBound.has_value() ? storm::numbers::convertNumber<double>(*lowerBound) : 0.0,
-                     upperBound.has_value() ? storm::numbers::convertNumber<double>(*upperBound) : 0.0);
+    glp_set_col_bnds(lp, variableIndex, boundType, lowerBound.has_value() ? storm::numbers::convert<double>(*lowerBound) : 0.0,
+                     upperBound.has_value() ? storm::numbers::convert<double>(*upperBound) : 0.0);
     glp_set_col_kind(this->lp, variableIndex, getGlpkType<ValueType, RawMode>(type));
-    glp_set_obj_coef(this->lp, variableIndex, storm::numbers::convertNumber<double>(objectiveFunctionCoefficient));
+    glp_set_obj_coef(this->lp, variableIndex, storm::numbers::convert<double>(objectiveFunctionCoefficient));
 
     if constexpr (RawMode) {
         this->variableToIndexMap.push_back(variableIndex);
@@ -173,7 +173,7 @@ void GlpkLpSolver<ValueType, RawMode>::addConstraint(std::string const& name, Co
     std::vector<int> variableIndices(1, -1);
     std::vector<double> coefficients(1, 0.0);
     if constexpr (RawMode) {
-        rhs = storm::numbers::convertNumber<double>(constraint.rhs);
+        rhs = storm::numbers::convert<double>(constraint.rhs);
         relationType = constraint.relationType;
         variableIndices.reserve(constraint.lhsVariableIndices.size() + 1);
         for (auto const& var : constraint.lhsVariableIndices) {
@@ -181,7 +181,7 @@ void GlpkLpSolver<ValueType, RawMode>::addConstraint(std::string const& name, Co
         }
         coefficients.reserve(constraint.lhsCoefficients.size() + 1);
         for (auto const& coef : constraint.lhsCoefficients) {
-            coefficients.push_back(storm::numbers::convertNumber<double>(coef));
+            coefficients.push_back(storm::numbers::convert<double>(coef));
         }
     } else {
         STORM_LOG_THROW(constraint.getManager() == this->getManager(), storm::exceptions::InvalidArgumentException,
@@ -405,7 +405,7 @@ ValueType GlpkLpSolver<ValueType, RawMode>::getContinuousValue(Variable const& v
     } else {
         value = glp_get_col_prim(this->lp, static_cast<int>(variableIndex));
     }
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 #else
     STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
                     "This version of storm was compiled without support for GLPK. Yet, a method was called that requires this support. Please choose a "
@@ -493,7 +493,7 @@ ValueType GlpkLpSolver<ValueType, RawMode>::getObjectiveValue() const {
         value = glp_get_obj_val(this->lp);
     }
 
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 #else
     STORM_LOG_THROW(false, storm::exceptions::MissingLibraryException,
                     "This version of storm was compiled without support for GLPK. Yet, a method was called that requires this support. Please choose a "
@@ -593,7 +593,7 @@ void GlpkLpSolver<ValueType, RawMode>::pop() {
 
 template<typename ValueType, bool RawMode>
 void GlpkLpSolver<ValueType, RawMode>::setMaximalMILPGap(ValueType const& gap, bool relative) {
-    this->maxMILPGap = storm::numbers::convertNumber<double>(gap);
+    this->maxMILPGap = storm::numbers::convert<double>(gap);
     this->maxMILPGapRelative = relative;
 }
 
@@ -601,9 +601,9 @@ template<typename ValueType, bool RawMode>
 ValueType GlpkLpSolver<ValueType, RawMode>::getMILPGap(bool relative) const {
     STORM_LOG_ASSERT(this->isOptimal(), "Asked for the MILP gap although there is no (bounded) solution.");
     if (relative) {
-        return storm::numbers::convertNumber<ValueType>(this->actualRelativeMILPGap);
+        return storm::numbers::convert<ValueType>(this->actualRelativeMILPGap);
     } else {
-        return storm::numbers::abs<ValueType>(storm::numbers::convertNumber<ValueType>(this->actualRelativeMILPGap) * getObjectiveValue());
+        return storm::numbers::abs<ValueType>(storm::numbers::convert<ValueType>(this->actualRelativeMILPGap) * getObjectiveValue());
     }
 }
 

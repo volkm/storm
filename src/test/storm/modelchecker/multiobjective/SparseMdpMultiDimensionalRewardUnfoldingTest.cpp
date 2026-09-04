@@ -47,31 +47,31 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_one_dim_walk_sma
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(0.5), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(0.5), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[1], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(0.125), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(0.125), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[2], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[3], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[4], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[5], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[6], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_EQ(storm::numbers::convertNumber<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
+    EXPECT_EQ(storm::numbers::convert<storm::RationalNumber>(1.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 }
 
 TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_one_dim_walk_large) {
@@ -97,12 +97,12 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_one_dim_walk_lar
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::pow(storm::numbers::convertNumber<storm::RationalNumber>(0.5), 5);
+    storm::RationalNumber expectedResult = storm::numbers::pow(storm::numbers::convert<storm::RationalNumber>(0.5), 5);
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[1], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::pow(storm::numbers::convertNumber<storm::RationalNumber>(0.5), 15);
+    expectedResult = storm::numbers::pow(storm::numbers::convert<storm::RationalNumber>(0.5), 15);
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 }
 
@@ -134,43 +134,43 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_tiny_ec) {
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/5");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/5");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[1], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[2], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[3], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[4], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[5], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[6], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 }
 
 TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_zeroconf_dl) {
     storm::Environment env;
-    auto const prec = storm::numbers::convertNumber<double>(env.modelchecker().multi().getPrecision());
+    auto const prec = storm::numbers::convert<double>(env.modelchecker().multi().getPrecision());
 
     std::string programFile = STORM_TEST_RESOURCES_DIR "/mdp/zeroconf_dl_not_unfolded.nm";
     std::string constantsDef = "N=1000,K=2,reset=true";
@@ -220,7 +220,7 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_csma) {
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("29487882838281/35184372088832");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("29487882838281/35184372088832");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 }
 
@@ -252,37 +252,37 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, single_obj_lower_bounds) {
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("81/100");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("81/100");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[1], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[2], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("27/64");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("27/64");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[3], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("9/16");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("9/16");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[4], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("27/64");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("27/64");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[5], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("243/640");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("243/640");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[6], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("81/160");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("81/160");
     EXPECT_EQ(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState]);
 }
 
@@ -313,23 +313,20 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, one_dim_walk_small) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[0]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_NEAR(storm::numbers::convertNumber<storm::RationalNumber>(0.5), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
+    EXPECT_NEAR(storm::numbers::convert<storm::RationalNumber>(0.5), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[1]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_NEAR(storm::numbers::convertNumber<storm::RationalNumber>(0.125), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState],
-                prec);
+    EXPECT_NEAR(storm::numbers::convert<storm::RationalNumber>(0.125), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[2]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    EXPECT_NEAR(storm::numbers::convertNumber<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
+    EXPECT_NEAR(storm::numbers::convert<storm::RationalNumber>(0.0), result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[3]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p1 = {storm::numbers::convertNumber<storm::RationalNumber>(0.5),
-                                             storm::numbers::convertNumber<storm::RationalNumber>(0.5)};
-    std::vector<storm::RationalNumber> q1 = {storm::numbers::convertNumber<storm::RationalNumber>(0.125),
-                                             storm::numbers::convertNumber<storm::RationalNumber>(0.75)};
+    std::vector<storm::RationalNumber> p1 = {storm::numbers::convert<storm::RationalNumber>(0.5), storm::numbers::convert<storm::RationalNumber>(0.5)};
+    std::vector<storm::RationalNumber> q1 = {storm::numbers::convert<storm::RationalNumber>(0.125), storm::numbers::convert<storm::RationalNumber>(0.75)};
     auto expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p1, q1}));
 
@@ -338,8 +335,7 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, one_dim_walk_small) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[4]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p2 = {storm::numbers::convertNumber<storm::RationalNumber>(0.0),
-                                             storm::numbers::convertNumber<storm::RationalNumber>(0.75)};
+    std::vector<storm::RationalNumber> p2 = {storm::numbers::convert<storm::RationalNumber>(0.0), storm::numbers::convert<storm::RationalNumber>(0.75)};
     expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p2}));
     std::vector<std::vector<storm::RationalNumber>> transformationMatrix(2,
@@ -353,10 +349,8 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, one_dim_walk_small) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[5]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p3 = {storm::numbers::convertNumber<storm::RationalNumber>(0.0),
-                                             storm::numbers::convertNumber<storm::RationalNumber>(-0.75)};
-    std::vector<storm::RationalNumber> q3 = {storm::numbers::convertNumber<storm::RationalNumber>(-0.5),
-                                             storm::numbers::convertNumber<storm::RationalNumber>(0.0)};
+    std::vector<storm::RationalNumber> p3 = {storm::numbers::convert<storm::RationalNumber>(0.0), storm::numbers::convert<storm::RationalNumber>(-0.75)};
+    std::vector<storm::RationalNumber> q3 = {storm::numbers::convert<storm::RationalNumber>(-0.5), storm::numbers::convert<storm::RationalNumber>(0.0)};
     expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p3, q3}));
     transformationMatrix[1][1] = -storm::numbers::one<storm::RationalNumber>();
@@ -390,17 +384,17 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, one_dim_walk_large) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[0]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::pow(storm::numbers::convertNumber<storm::RationalNumber>(0.5), 5);
+    storm::RationalNumber expectedResult = storm::numbers::pow(storm::numbers::convert<storm::RationalNumber>(0.5), 5);
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[1]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::pow(storm::numbers::convertNumber<storm::RationalNumber>(0.5), 15);
+    expectedResult = storm::numbers::pow(storm::numbers::convert<storm::RationalNumber>(0.5), 15);
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[2]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("2539/4096");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("2539/4096");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 }
 
@@ -434,45 +428,45 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, tiny_ec) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[0]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/5");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/5");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[1]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[2]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[3]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[4]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("0");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("0");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[5]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[6]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/50");
+    expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("1/50");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[7]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/10"),
-                                            storm::numbers::convertNumber<storm::RationalNumber, std::string>("0")};
-    std::vector<storm::RationalNumber> q = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("0"),
-                                            storm::numbers::convertNumber<storm::RationalNumber, std::string>("19/100")};
+    std::vector<storm::RationalNumber> p = {storm::numbers::convert<storm::RationalNumber, std::string>("1/10"),
+                                            storm::numbers::convert<storm::RationalNumber, std::string>("0")};
+    std::vector<storm::RationalNumber> q = {storm::numbers::convert<storm::RationalNumber, std::string>("0"),
+                                            storm::numbers::convert<storm::RationalNumber, std::string>("19/100")};
     auto expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p, q}));
 
@@ -482,7 +476,7 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, tiny_ec) {
 
 TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, zeroconf_dl) {
     storm::Environment env;
-    auto const prec = storm::numbers::convertNumber<double>(env.modelchecker().multi().getPrecision());
+    auto const prec = storm::numbers::convert<double>(env.modelchecker().multi().getPrecision());
 
     std::string programFile = STORM_TEST_RESOURCES_DIR "/mdp/zeroconf_dl_not_unfolded.nm";
     std::string constantsDef = "N=1000,K=2,reset=true";
@@ -531,13 +525,13 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, csma) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[0]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("29487882838281/35184372088832");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("29487882838281/35184372088832");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[1]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("29487882838281/35184372088832"),
-                                            storm::numbers::convertNumber<storm::RationalNumber, std::string>("7/8")};
+    std::vector<storm::RationalNumber> p = {storm::numbers::convert<storm::RationalNumber, std::string>("29487882838281/35184372088832"),
+                                            storm::numbers::convert<storm::RationalNumber, std::string>("7/8")};
     auto expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p}));
     EXPECT_TRUE(expectedAchievableValues->contains(result->asExplicitParetoCurveCheckResult<storm::RationalNumber>().getUnderApproximation()));
@@ -571,13 +565,13 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, lower_bounds) {
 
     result = storm::api::verifyWithSparseEngine(mdp, storm::api::createTask<storm::RationalNumber>(formulas[0], true));
     ASSERT_TRUE(result->isExplicitQuantitativeCheckResult());
-    storm::RationalNumber expectedResult = storm::numbers::convertNumber<storm::RationalNumber, std::string>("81/100");
+    storm::RationalNumber expectedResult = storm::numbers::convert<storm::RationalNumber, std::string>("81/100");
     EXPECT_NEAR(expectedResult, result->asExplicitQuantitativeCheckResult<storm::RationalNumber>()[initState], prec);
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[1]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p1 = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("1"),
-                                             storm::numbers::convertNumber<storm::RationalNumber, std::string>("27/64")};
+    std::vector<storm::RationalNumber> p1 = {storm::numbers::convert<storm::RationalNumber, std::string>("1"),
+                                             storm::numbers::convert<storm::RationalNumber, std::string>("27/64")};
     auto expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p1}));
     EXPECT_TRUE(expectedAchievableValues->contains(result->asExplicitParetoCurveCheckResult<storm::RationalNumber>().getUnderApproximation()));
@@ -585,10 +579,10 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, lower_bounds) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[2]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p2 = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("1"),
-                                             storm::numbers::convertNumber<storm::RationalNumber, std::string>("243/640")};
-    std::vector<storm::RationalNumber> q2 = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("81/256"),
-                                             storm::numbers::convertNumber<storm::RationalNumber, std::string>("27/64")};
+    std::vector<storm::RationalNumber> p2 = {storm::numbers::convert<storm::RationalNumber, std::string>("1"),
+                                             storm::numbers::convert<storm::RationalNumber, std::string>("243/640")};
+    std::vector<storm::RationalNumber> q2 = {storm::numbers::convert<storm::RationalNumber, std::string>("81/256"),
+                                             storm::numbers::convert<storm::RationalNumber, std::string>("27/64")};
     expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p2, q2}));
     EXPECT_TRUE(expectedAchievableValues->contains(result->asExplicitParetoCurveCheckResult<storm::RationalNumber>().getUnderApproximation()));
@@ -596,10 +590,10 @@ TEST_F(SparseMdpMultiDimensionalRewardUnfoldingTest, lower_bounds) {
 
     result = storm::modelchecker::multiobjective::performMultiObjectiveModelChecking(env, *mdp, formulas[3]->asMultiObjectiveFormula());
     ASSERT_TRUE(result->isExplicitParetoCurveCheckResult());
-    std::vector<storm::RationalNumber> p3 = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("81/160"),
-                                             storm::numbers::convertNumber<storm::RationalNumber, std::string>("243/640")};
-    std::vector<storm::RationalNumber> q3 = {storm::numbers::convertNumber<storm::RationalNumber, std::string>("2187/10240"),
-                                             storm::numbers::convertNumber<storm::RationalNumber, std::string>("27/64")};
+    std::vector<storm::RationalNumber> p3 = {storm::numbers::convert<storm::RationalNumber, std::string>("81/160"),
+                                             storm::numbers::convert<storm::RationalNumber, std::string>("243/640")};
+    std::vector<storm::RationalNumber> q3 = {storm::numbers::convert<storm::RationalNumber, std::string>("2187/10240"),
+                                             storm::numbers::convert<storm::RationalNumber, std::string>("27/64")};
     expectedAchievableValues =
         storm::storage::geometry::Polytope<storm::RationalNumber>::createDownwardClosure(std::vector<std::vector<storm::RationalNumber>>({p3, q3}));
     EXPECT_TRUE(expectedAchievableValues->contains(result->asExplicitParetoCurveCheckResult<storm::RationalNumber>().getUnderApproximation()));

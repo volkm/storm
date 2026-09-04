@@ -94,7 +94,7 @@ void TransientVariableValuation<ValueType>::setInValuations(uint64_t const state
                 STORM_LOG_THROW(
                     storm::numbers::isConstant(value), storm::exceptions::NotSupportedException,
                     "Non-constant variable valuations are not supported. Got value " << value << " for variable " << varInfo.variable.getName() << ".");
-                valuations.writeValue(stateIndex, varInfo.variable, storm::numbers::convertNumber<storm::RationalNumber>(value));
+                valuations.writeValue(stateIndex, varInfo.variable, storm::numbers::convert<storm::RationalNumber>(value));
             } else {
                 valuations.writeValue(stateIndex, varInfo.variable, value);
             }
@@ -198,7 +198,7 @@ void TransientVariableInformation<ValueType>::createVariablesForVariableSet(stor
     for (auto const& variable : variableSet.getRealVariables()) {
         if (variable.isTransient()) {
             rationalVariableInformation.emplace_back(variable.getExpressionVariable(),
-                                                     storm::numbers::convertNumber<ValueType>(variable.getInitExpression().evaluateAsRational()), global);
+                                                     storm::numbers::convert<ValueType>(variable.getInitExpression().evaluateAsRational()), global);
         }
     }
 }

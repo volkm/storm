@@ -2267,7 +2267,7 @@ bool SparseMatrix<ValueType>::isProbabilistic(ValueType const& tolerance, storm:
         if constexpr (std::is_same_v<ValueType, BaseType>) {
             return value;
         } else {
-            return storm::numbers::convertNumber<BaseType>(value);
+            return storm::numbers::convert<BaseType>(value);
         }
     };
     STORM_LOG_ASSERT(storm::numbers::isConstant(tolerance), "Expected constant tolerance. Got " << tolerance);

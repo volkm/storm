@@ -336,7 +336,7 @@ std::pair<storm::RationalNumber, typename storm::storage::ParameterRegion<ValueT
     auto refinementChecker = initializeRegionRefinementChecker(env, settings);
     auto res =
         refinementChecker->computeExtremalValue(env, region, dir, precision.value_or(storm::numbers::zero<ValueType>()), absolutePrecision, boundInvariant);
-    return {storm::numbers::convertNumber<storm::RationalNumber>(res.first), std::move(res.second)};
+    return {storm::numbers::convert<storm::RationalNumber>(res.first), std::move(res.second)};
 }
 
 /*!

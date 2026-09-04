@@ -214,7 +214,7 @@ void Annotation::computeDerivative(uint64_t nth) {
                 continue;
             }
 
-            RationalFunctionCoefficient newConstant = constant * storm::numbers::convertNumber<RationalFunctionCoefficient>(info[i]);
+            RationalFunctionCoefficient newConstant = constant * storm::numbers::convert<RationalFunctionCoefficient>(info[i]);
 
             std::vector<uint64_t> insert(info);
             insert[i]--;

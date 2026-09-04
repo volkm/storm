@@ -83,7 +83,7 @@ std::ostream& ParetoCurveCheckResult<ValueType>::writeToStream(std::ostream& out
                 if (it != p.begin()) {
                     out << ", ";
                 }
-                out << std::setw(11) << storm::numbers::convertNumber<double>(*it);
+                out << std::setw(11) << storm::numbers::convert<double>(*it);
             }
             out << " )";
         }

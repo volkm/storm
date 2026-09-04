@@ -82,7 +82,7 @@ class Halfspace {
             }
             std::stringstream numberStream;
             if (numbersAsDouble) {
-                numberStream << storm::numbers::convertNumber<double>(*it);
+                numberStream << storm::numbers::convert<double>(*it);
             } else {
                 numberStream << *it;
             }
@@ -90,7 +90,7 @@ class Halfspace {
         }
         stream << ") * x <= ";
         if (numbersAsDouble) {
-            stream << storm::numbers::convertNumber<double>(offset());
+            stream << storm::numbers::convert<double>(offset());
         } else {
             stream << offset();
         }

@@ -217,9 +217,9 @@ TEST_F(UmbRoundTripTest, maze_pomdp) {
 
 TEST(UmbTest, RationalEncoding) {
     auto const one = storm::numbers::one<storm::RationalNumber>();
-    auto const int64max = storm::numbers::convertNumber<storm::RationalNumber, int64_t>(std::numeric_limits<int64_t>::max());
-    auto const int64min = storm::numbers::convertNumber<storm::RationalNumber, int64_t>(std::numeric_limits<int64_t>::min());
-    auto const uint64max = storm::numbers::convertNumber<storm::RationalNumber, uint64_t>(std::numeric_limits<uint64_t>::max());
+    auto const int64max = storm::numbers::convert<storm::RationalNumber, int64_t>(std::numeric_limits<int64_t>::max());
+    auto const int64min = storm::numbers::convert<storm::RationalNumber, int64_t>(std::numeric_limits<int64_t>::min());
+    auto const uint64max = storm::numbers::convert<storm::RationalNumber, uint64_t>(std::numeric_limits<uint64_t>::max());
 
     std::vector<storm::RationalNumber> values(17);
     // The first 8 values are chosen such that they can be represented with two 64-bit numbers.
@@ -227,8 +227,8 @@ TEST(UmbTest, RationalEncoding) {
     values[1] = -storm::numbers::zero<storm::RationalNumber>();
     values[2] = one;
     values[3] = -one;
-    values[4] = storm::numbers::convertNumber<storm::RationalNumber, std::string>("123/456");
-    values[5] = -storm::numbers::convertNumber<storm::RationalNumber, std::string>("123/456");
+    values[4] = storm::numbers::convert<storm::RationalNumber, std::string>("123/456");
+    values[5] = -storm::numbers::convert<storm::RationalNumber, std::string>("123/456");
     values[6] = int64max / uint64max;
     values[7] = int64min / uint64max;
 
@@ -248,7 +248,7 @@ TEST(UmbTest, RationalEncoding) {
     values[10] = int64min - one;
     values[11] = one / (int64min - one);
     values[12] = (int64min - one) / (uint64max + one);
-    values[13] = storm::numbers::convertNumber<storm::RationalNumber, std::string>(
+    values[13] = storm::numbers::convert<storm::RationalNumber, std::string>(
         "949667607787274453086419753000949667607787274453086419753000949667607787274453086419753000949667607787274453086419753000949667607787274453086419753000"
         "9496676077872744530864197530009496676077872744530864197530009496676077872744530864197530/"
         "780116505469339517040847240228739241622101546262265311616467711470010820006007800398204693387501962318501358930877102188539546463329577703105788853954"

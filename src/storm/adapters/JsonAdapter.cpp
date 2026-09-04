@@ -19,12 +19,12 @@ bool isJsonNumberExportAccurate(storm::json<ValueType> const& j) {
         return false;
     }
     // Parse the dumped value with full accuracy
-    auto parsed = storm::numbers::convertNumber<storm::RationalNumber, std::string>(jDump);
+    auto parsed = storm::numbers::convert<storm::RationalNumber, std::string>(jDump);
     // Check if parsed and actual value coincide.
     if constexpr (std::is_same_v<ValueType, storm::RationalNumber>) {
         return parsed == j.template get_ref<ValueType const&>();
     } else {
-        return parsed == storm::numbers::convertNumber<storm::RationalNumber>(j.template get_ref<ValueType const&>());
+        return parsed == storm::numbers::convert<storm::RationalNumber>(j.template get_ref<ValueType const&>());
     }
 }
 

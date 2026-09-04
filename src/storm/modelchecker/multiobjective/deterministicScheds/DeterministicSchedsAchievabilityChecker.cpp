@@ -39,7 +39,7 @@ std::unique_ptr<CheckResult> DeterministicSchedsAchievabilityChecker<SparseModel
         if (!optimizingObjectiveIndex.has_value() || *optimizingObjectiveIndex != objIndex) {
             objVector.assign(numObj, storm::numbers::zero<GeometryValueType>());
             objVector[objIndex] = -storm::numbers::one<GeometryValueType>();
-            thresholdHalfspaces.emplace_back(objVector, storm::numbers::convertNumber<GeometryValueType, ModelValueType>(-obj.getThreshold()));
+            thresholdHalfspaces.emplace_back(objVector, storm::numbers::convert<GeometryValueType, ModelValueType>(-obj.getThreshold()));
         }
     }
     auto thresholdPolytope = storm::storage::geometry::Polytope<GeometryValueType>::create(std::move(thresholdHalfspaces));
@@ -49,9 +49,9 @@ std::unique_ptr<CheckResult> DeterministicSchedsAchievabilityChecker<SparseModel
     auto eps = objVector;
     if (optimizingObjectiveIndex.has_value()) {
         objVector[*optimizingObjectiveIndex] = storm::numbers::one<GeometryValueType>();
-        eps[*optimizingObjectiveIndex] = env.modelchecker().multi().getPrecision() * storm::numbers::convertNumber<GeometryValueType, uint64_t>(2u);
+        eps[*optimizingObjectiveIndex] = env.modelchecker().multi().getPrecision() * storm::numbers::convert<GeometryValueType, uint64_t>(2u);
         if (env.modelchecker().multi().getPrecisionType() == MultiObjectiveModelCheckerEnvironment::PrecisionType::RelativeToDiff) {
-            eps[*optimizingObjectiveIndex] *= storm::numbers::convertNumber<GeometryValueType, ModelValueType>(
+            eps[*optimizingObjectiveIndex] *= storm::numbers::convert<GeometryValueType, ModelValueType>(
                 objectiveHelper[*optimizingObjectiveIndex].getUpperValueBoundAtState(originalModelInitialState) -
                 objectiveHelper[*optimizingObjectiveIndex].getLowerValueBoundAtState(originalModelInitialState));
         }
@@ -70,9 +70,8 @@ std::unique_ptr<CheckResult> DeterministicSchedsAchievabilityChecker<SparseModel
                                        << " ).");
         if (optimizingObjectiveIndex.has_value()) {
             // Average between obtained lower- and upper bounds
-            auto result =
-                storm::numbers::convertNumber<ValueType, GeometryValueType>(achievingPoint->first[*optimizingObjectiveIndex] + achievingPoint->second);
-            result /= storm::numbers::convertNumber<ValueType, uint64_t>(2u);
+            auto result = storm::numbers::convert<ValueType, GeometryValueType>(achievingPoint->first[*optimizingObjectiveIndex] + achievingPoint->second);
+            result /= storm::numbers::convert<ValueType, uint64_t>(2u);
             if (objectiveHelper[*optimizingObjectiveIndex].minimizing()) {
                 result *= -storm::numbers::one<ValueType>();
             }

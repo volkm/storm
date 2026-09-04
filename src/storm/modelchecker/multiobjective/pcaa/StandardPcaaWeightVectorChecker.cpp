@@ -198,12 +198,11 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::check(Environment const& 
     }
     ValueType resultingWeightedPrecision = storm::numbers::abs<ValueType>(getOptimalWeightedSum() - weightedSum);
     // Since the weight vector is normalized (has length 1), the resultingWeightedPrecision coincides with the distance between over- and under-approximaiton
-    STORM_LOG_WARN_COND(resultingWeightedPrecision <= this->getWeightedPrecision() + storm::numbers::convertNumber<ValueType>(1e-10),
+    STORM_LOG_WARN_COND(resultingWeightedPrecision <= this->getWeightedPrecision() + storm::numbers::convert<ValueType>(1e-10),
                         "The desired precision was not reached: resulting precision "
                             << resultingWeightedPrecision << " exceeds specified value " << this->getWeightedPrecision() << " by approx. "
-                            << (storm::numbers::convertNumber<double, ValueType>(resultingWeightedPrecision - this->getWeightedPrecision()))
-                            << ". Weight vector is" << storm::utility::vector::toString(storm::utility::vector::convertNumericVector<double>(weightVector))
-                            << ".");
+                            << (storm::numbers::convert<double, ValueType>(resultingWeightedPrecision - this->getWeightedPrecision())) << ". Weight vector is"
+                            << storm::utility::vector::toString(storm::utility::vector::convertNumericVector<double>(weightVector)) << ".");
     if (!storm::numbers::isOne(inputWeightVectorLength)) {
         // reverse the normalization of the weight vector for the returned optimal weighted sum.
         storm::utility::vector::scaleVectorInPlace<ValueType, ValueType>(weightedResult, inputWeightVectorLength);
@@ -371,11 +370,11 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::infiniteHorizonWeightedPh
     auto solverEnv = inputEnv;
     // see epsilon in https://doi.org/10.18154/RWTH-2023-09669 Algorithm 5.2
     ValueType epsilon = this->getWeightedPrecisionUnboundedPhase() * storm::numbers::sqrt(storm::utility::vector::dotProduct(weightVector, weightVector)) /
-                        storm::numbers::convertNumber<ValueType>(2.0);
+                        storm::numbers::convert<ValueType>(2.0);
     // We want to compute a value v_C for each MEC C that upper bounds the true MEC value and is also epsilon/2 close to it.
     // We therefore compute a value that is epsilon/4 close to it and then add epsilon/4 as offset below.
-    ValueType const offset = epsilon / storm::numbers::convertNumber<ValueType>(4.0);
-    solverEnv.solver().lra().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(offset));
+    ValueType const offset = epsilon / storm::numbers::convert<ValueType>(4.0);
+    solverEnv.solver().lra().setPrecision(storm::numbers::convert<storm::RationalNumber>(offset));
     solverEnv.solver().lra().setRelativeTerminationCriterion(false);
     // Compute the optimal (weighted) lra value for each mec, keeping track of the optimal choices
     STORM_LOG_ASSERT(lraMecDecomposition, "Mec decomposition for lra computations not initialized.");
@@ -406,7 +405,7 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::unboundedWeightedPhase(En
     solverEnv.solver().minMax().setRelativeTerminationCriterion(false);
     solverEnv.solver().lra().setRelativeTerminationCriterion(false);
     bool const requireSoundApproximation = !solverEnv.solver().isForceExact() && solverEnv.solver().isForceSoundness();
-    ValueType const two = storm::numbers::convertNumber<ValueType>(2.0);
+    ValueType const two = storm::numbers::convert<ValueType>(2.0);
     // see epsilon in https://doi.org/10.18154/RWTH-2023-09669 Algorithm 4.2
     ValueType adjustedPrecision =
         this->getWeightedPrecisionUnboundedPhase() * storm::numbers::sqrt(storm::utility::vector::dotProduct(weightVector, weightVector)) / two;
@@ -417,11 +416,11 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::unboundedWeightedPhase(En
         adjustedPrecision /= two;  // need to be more precise to get a correct and sufficiently tight upper bound on the weighted sum
     }
     if (lraObjectives.empty()) {
-        solverEnv.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(adjustedPrecision));
+        solverEnv.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(adjustedPrecision));
     } else {
         // need to be more precise to distribute the approximation error between lra and total reward phase
-        solverEnv.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, ValueType>(adjustedPrecision / two));
-        solverEnv.solver().lra().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, ValueType>(adjustedPrecision / two));
+        solverEnv.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber, ValueType>(adjustedPrecision / two));
+        solverEnv.solver().lra().setPrecision(storm::numbers::convert<storm::RationalNumber, ValueType>(adjustedPrecision / two));
     }
 
     // Catch the case where all values on the RHS of the MinMax equation system are zero.
@@ -524,7 +523,7 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::unboundedIndividualPhase(
     storm::solver::GeneralLinearEquationSolverFactory<ValueType> linearEquationSolverFactory;
     bool const requireSoundApproximation = !solverEnv.solver().isForceExact() && solverEnv.solver().isForceSoundness();
     // see epsilon and epsilon_j in https://doi.org/10.18154/RWTH-2023-09669 Algorithm 4.2
-    ValueType const two = storm::numbers::convertNumber<ValueType>(2.0);
+    ValueType const two = storm::numbers::convert<ValueType>(2.0);
     ValueType epsilon = this->getWeightedPrecisionUnboundedPhase() * storm::numbers::sqrt(storm::utility::vector::dotProduct(weightVector, weightVector)) / two;
     if (solverEnv.solver().isForceExact()) {
         // If we are already using an exact solver, we consider the precision to be zero
@@ -544,12 +543,12 @@ void StandardPcaaWeightVectorChecker<SparseModelType>::unboundedIndividualPhase(
     for (uint_fast64_t const& objIndex : storm::utility::vector::getSortedIndices(weightVector)) {
         auto const& obj = this->objectives[objIndex];
         if (objectivesWithNoUpperTimeBound.get(objIndex)) {
-            ValueType epsilon_j = epsilon / storm::numbers::convertNumber<ValueType, uint64_t>(objectivesWithNoUpperTimeBound.getNumberOfSetBits());
+            ValueType epsilon_j = epsilon / storm::numbers::convert<ValueType, uint64_t>(objectivesWithNoUpperTimeBound.getNumberOfSetBits());
             if (!storm::numbers::isZero(weightVector[objIndex])) {
                 epsilon_j /= storm::numbers::abs(weightVector[objIndex]);
             }
-            solverEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convertNumber<RationalNumber>(epsilon_j), false);
-            solverEnv.solver().lra().setPrecision(storm::numbers::convertNumber<RationalNumber>(epsilon_j));
+            solverEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convert<RationalNumber>(epsilon_j), false);
+            solverEnv.solver().lra().setPrecision(storm::numbers::convert<RationalNumber>(epsilon_j));
             solverEnv.solver().lra().setRelativeTerminationCriterion(false);
 
             if (lraObjectives.get(objIndex)) {

@@ -113,11 +113,11 @@ class UnifPlusHelper {
         std::vector<ValueType> markovianExitRates = storm::utility::vector::filterVector(exitRateVector, markovianMaybeStates);
 
         // Obtain parameters of the algorithm
-        auto two = storm::numbers::convertNumber<ValueType>(2.0);
+        auto two = storm::numbers::convert<ValueType>(2.0);
         // Truncation error
-        ValueType kappa = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getUnifPlusKappa());
+        ValueType kappa = storm::numbers::convert<ValueType>(env.solver().timeBounded().getUnifPlusKappa());
         // Precision to be achieved
-        ValueType epsilon = two * storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+        ValueType epsilon = two * storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
         bool relativePrecision = env.solver().timeBounded().getRelativeTerminationCriterion();
         // Uniformization rate
         ValueType lambda = *std::max_element(markovianExitRates.begin(), markovianExitRates.end());
@@ -166,8 +166,7 @@ class UnifPlusHelper {
             uint64_t N = storm::numbers::ceil(lambda * *upperTimeBound * std::exp(2) - storm::numbers::log(kappa * epsilon));
             // Compute poisson distribution.
             // The division by 8 is similar to what is done for CTMCs (probably to reduce numerical impacts?)
-            auto foxGlynnResult =
-                storm::utility::numerical::foxGlynn(lambda * *upperTimeBound, epsilon * kappa / storm::numbers::convertNumber<ValueType>(8.0));
+            auto foxGlynnResult = storm::utility::numerical::foxGlynn(lambda * *upperTimeBound, epsilon * kappa / storm::numbers::convert<ValueType>(8.0));
             // Scale the weights so they sum to one.
             // storm::utility::vector::scaleVectorInPlace(foxGlynnResult.weights, storm::numbers::one<ValueType>() / foxGlynnResult.totalWeight);
 
@@ -303,7 +302,7 @@ class UnifPlusHelper {
                     } else {
                         minValue = *std::min_element(maybeStatesValuesUpper.begin(), maybeStatesValuesUpper.end());
                     }
-                    minValue *= storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getUnifPlusKappa());
+                    minValue *= storm::numbers::convert<ValueType>(env.solver().timeBounded().getUnifPlusKappa());
                     kappa = std::min(kappa, minValue);
                     STORM_LOG_DEBUG("Decreased kappa to " << kappa << ".");
                 }
@@ -651,7 +650,7 @@ std::vector<ValueType> computeBoundedUntilProbabilitiesImca(Environment const& e
     for (auto value : exitRateVector) {
         maxExitRate = std::max(maxExitRate, value);
     }
-    ValueType delta = (2.0 * storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision())) / (upperBound * maxExitRate * maxExitRate);
+    ValueType delta = (2.0 * storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision())) / (upperBound * maxExitRate * maxExitRate);
 
     // (2) Compute the number of steps we need to make for the interval.
     uint64_t numberOfSteps = static_cast<uint64_t>(std::ceil((upperBound - lowerBound) / delta));

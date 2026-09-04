@@ -98,9 +98,8 @@ void printResult(ValueType const& lowerBound, ValueType const& upperBound) {
     if (storm::numbers::NumberTraits<ValueType>::IsExact) {
         STORM_PRINT_AND_LOG(" (approx. ");
         double roundedLowerBound =
-            storm::numbers::isInfinity<ValueType>(-lowerBound) ? -storm::numbers::infinity<double>() : storm::numbers::convertNumber<double>(lowerBound);
-        double roundedUpperBound =
-            storm::numbers::isInfinity(upperBound) ? storm::numbers::infinity<double>() : storm::numbers::convertNumber<double>(upperBound);
+            storm::numbers::isInfinity<ValueType>(-lowerBound) ? -storm::numbers::infinity<double>() : storm::numbers::convert<double>(lowerBound);
+        double roundedUpperBound = storm::numbers::isInfinity(upperBound) ? storm::numbers::infinity<double>() : storm::numbers::convert<double>(upperBound);
         printResult(roundedLowerBound, roundedUpperBound);
         STORM_PRINT_AND_LOG(")");
     }

@@ -54,10 +54,10 @@ void testModelB(std::string programFile, std::string formulaAsString, std::strin
     for (auto const& param : parameters) {
         std::vector<std::map<storm::RationalFunctionVariable, storm::RationalFunctionCoefficient>> newInstantiations;
         for (auto point : testInstantiations) {
-            for (storm::RationalNumber x = storm::numbers::convertNumber<storm::RationalNumber>(1e-6); x <= 1;
-                 x += (1 - storm::numbers::convertNumber<storm::RationalNumber>(1e-6)) / 10) {
+            for (storm::RationalNumber x = storm::numbers::convert<storm::RationalNumber>(1e-6); x <= 1;
+                 x += (1 - storm::numbers::convert<storm::RationalNumber>(1e-6)) / 10) {
                 std::map<storm::RationalFunctionVariable, storm::RationalFunctionCoefficient> newMap(point);
-                newMap[param] = storm::numbers::convertNumber<storm::RationalFunctionCoefficient>(x);
+                newMap[param] = storm::numbers::convert<storm::RationalFunctionCoefficient>(x);
                 newInstantiations.push_back(newMap);
             }
         }

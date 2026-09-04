@@ -32,7 +32,7 @@ void QuickHull<ValueType>::generateHalfspacesFromPoints(std::vector<EigenVector>
             for (uint_fast64_t vertexIndex : vertexIndices) {
                 insidePoint += points[vertexIndex];
             }
-            insidePoint /= storm::numbers::convertNumber<ValueType>(static_cast<uint_fast64_t>(vertexIndices.size()));
+            insidePoint /= storm::numbers::convert<ValueType>(static_cast<uint_fast64_t>(vertexIndices.size()));
 
             // Create the initial facets from the found vertices.
             std::vector<Facet> facets = computeInitialFacets(points, vertexIndices, insidePoint);

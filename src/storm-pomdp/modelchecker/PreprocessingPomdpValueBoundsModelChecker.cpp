@@ -68,7 +68,7 @@ std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>> Preproce
             } else {
                 ValueType choiceScore = info.minimize() ? (choiceValue - stateValue) : (stateValue - choiceValue);
                 if (relativeScore) {
-                    ValueType avg = (stateValue + choiceValue) / storm::numbers::convertNumber<ValueType, uint64_t>(2);
+                    ValueType avg = (stateValue + choiceValue) / storm::numbers::convert<ValueType, uint64_t>(2);
                     if (!storm::numbers::isZero(avg)) {
                         choiceScore /= avg;
                     }
@@ -213,9 +213,8 @@ typename PreprocessingPomdpValueBoundsModelChecker<ValueType>::ValueBounds Prepr
     std::shared_ptr<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>> guessedSchedulerPair;
     std::vector<std::pair<double, bool>> guessParameters({{0.875, false}, {0.875, true}, {0.75, false}, {0.75, true}});
     for (auto const& pars : guessParameters) {
-        guessedSchedulerPair = std::make_shared<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>>(
-            computeValuesForGuessedScheduler(env, fullyObservableResult, actionBasedRewardsPtr, formula, info, underlyingMdp,
-                                             storm::numbers::convertNumber<ValueType>(pars.first), pars.second));
+        guessedSchedulerPair = std::make_shared<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>>(computeValuesForGuessedScheduler(
+            env, fullyObservableResult, actionBasedRewardsPtr, formula, info, underlyingMdp, storm::numbers::convert<ValueType>(pars.first), pars.second));
         guessedSchedulerValues.push_back(guessedSchedulerPair->first);
         guessedSchedulers.push_back(guessedSchedulerPair->second);
     }
@@ -232,17 +231,17 @@ typename PreprocessingPomdpValueBoundsModelChecker<ValueType>::ValueBounds Prepr
     }
     guessedSchedulerPair = std::make_shared<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>>(
         computeValuesForGuessedScheduler(env, guessedSchedulerValues[bestGuess], actionBasedRewardsPtr, formula, info, underlyingMdp,
-                                         storm::numbers::convertNumber<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
+                                         storm::numbers::convert<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
     guessedSchedulerValues.push_back(guessedSchedulerPair->first);
     guessedSchedulers.push_back(guessedSchedulerPair->second);
     guessedSchedulerPair = std::make_shared<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>>(
         computeValuesForGuessedScheduler(env, guessedSchedulerValues.back(), actionBasedRewardsPtr, formula, info, underlyingMdp,
-                                         storm::numbers::convertNumber<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
+                                         storm::numbers::convert<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
     guessedSchedulerValues.push_back(guessedSchedulerPair->first);
     guessedSchedulers.push_back(guessedSchedulerPair->second);
     guessedSchedulerPair = std::make_shared<std::pair<std::vector<ValueType>, storm::storage::Scheduler<ValueType>>>(
         computeValuesForGuessedScheduler(env, guessedSchedulerValues.back(), actionBasedRewardsPtr, formula, info, underlyingMdp,
-                                         storm::numbers::convertNumber<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
+                                         storm::numbers::convert<ValueType>(guessParameters[bestGuess].first), guessParameters[bestGuess].second));
     guessedSchedulerValues.push_back(guessedSchedulerPair->first);
     guessedSchedulers.push_back(guessedSchedulerPair->second);
 

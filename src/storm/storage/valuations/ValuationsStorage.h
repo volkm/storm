@@ -627,7 +627,7 @@ class ValuationsStorage {
             case Int: {
                 Integer value = varInfo.description.type.type == Int ? readInteger<true>(getRawBytes(entity), varInfo.bitOffset, bitSize)
                                                                      : readInteger<false>(getRawBytes(entity), varInfo.bitOffset, bitSize);
-                value += storm::numbers::convertNumber<Integer>(varInfo.description.offset.value_or(0));
+                value += storm::numbers::convert<Integer>(varInfo.description.offset.value_or(0));
                 if (invokeCallback(value)) {
                     return;
                 }
@@ -696,11 +696,11 @@ class ValuationsStorage {
                     if constexpr (std::is_same_v<ValueType, uint64_t> || std::is_same_v<ValueType, int64_t> || std::is_same_v<ValueType, Integer>) {
                         // Explicitly initialize integer values to the lower bound, 0, or the upper bound (in that order)
                         if (varInfo.description.lower && (!std::is_same_v<ValueType, uint64_t> || varInfo.description.lower.value() >= 0)) {
-                            value = storm::numbers::convertNumber<ValueType>(varInfo.description.lower.value());
+                            value = storm::numbers::convert<ValueType>(varInfo.description.lower.value());
                         } else if (!varInfo.description.upper || varInfo.description.upper >= 0) {
                             value = storm::numbers::zero<ValueType>();
                         } else {
-                            value = storm::numbers::convertNumber<ValueType>(varInfo.description.upper.value());
+                            value = storm::numbers::convert<ValueType>(varInfo.description.upper.value());
                         }
                     }
                 }
@@ -738,13 +738,13 @@ class ValuationsStorage {
                                                      << ": value is greater than upper bound " << varInfo.description.upper.value() << ".");
                         } else {
                             if (varInfo.description.lower) {
-                                STORM_LOG_THROW(value >= storm::numbers::convertNumber<Integer>(varInfo.description.lower.value()),
+                                STORM_LOG_THROW(value >= storm::numbers::convert<Integer>(varInfo.description.lower.value()),
                                                 storm::exceptions::OutOfRangeException,
                                                 "Value " << value << " is out of range for variable " << varInfo.description.name
                                                          << ": value is smaller than lower bound " << varInfo.description.lower.value() << ".");
                             }
                             if (varInfo.description.upper) {
-                                STORM_LOG_THROW(value <= storm::numbers::convertNumber<Integer>(varInfo.description.upper.value()),
+                                STORM_LOG_THROW(value <= storm::numbers::convert<Integer>(varInfo.description.upper.value()),
                                                 storm::exceptions::OutOfRangeException,
                                                 "Value " << value << " is out of range for variable " << varInfo.description.name
                                                          << ": value is greater than upper bound " << varInfo.description.upper.value() << ".");
@@ -756,7 +756,7 @@ class ValuationsStorage {
                                                  "Set negative value " << value << "-" << offset << " to unsigned variable.");
                                 value -= offset;
                             } else {
-                                value -= storm::numbers::convertNumber<ValueType>(offset);
+                                value -= storm::numbers::convert<ValueType>(offset);
                             }
                         }
                     }

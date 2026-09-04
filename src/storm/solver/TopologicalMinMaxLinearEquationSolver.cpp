@@ -42,7 +42,7 @@ storm::Environment TopologicalMinMaxLinearEquationSolver<ValueType, SolutionType
     if (adaptPrecision) {
         STORM_LOG_ASSERT(this->longestSccChainSize, "Did not compute the longest SCC chain size although it is needed.");
         storm::RationalNumber subEnvPrec =
-            subEnv.solver().minMax().getPrecision() / storm::numbers::convertNumber<storm::RationalNumber>(this->longestSccChainSize.get());
+            subEnv.solver().minMax().getPrecision() / storm::numbers::convert<storm::RationalNumber>(this->longestSccChainSize.get());
         subEnv.solver().minMax().setPrecision(subEnvPrec);
     }
     return subEnv;

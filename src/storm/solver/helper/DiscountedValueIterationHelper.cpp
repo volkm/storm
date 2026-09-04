@@ -16,7 +16,7 @@ class DiscountedVIOperatorBackend {
           // See Russell, Norvig: Artificial Intelligence: A Modern Approach, 4th ed., p.583
           bound{(((storm::numbers::one<ValueType>() - discountFactor) * precision) / (discountFactor))} {
         auto upper = storm::numbers::log<ValueType>((2 * maximalAbsoluteReward) / (precision * (1 - discountFactor)));
-        maxIterations = storm::numbers::convertNumber<uint64_t>(storm::numbers::ceil<ValueType>(upper / -storm::numbers::log(discountFactor)));
+        maxIterations = storm::numbers::convert<uint64_t>(storm::numbers::ceil<ValueType>(upper / -storm::numbers::log(discountFactor)));
         STORM_LOG_DEBUG("Maximum number of iterations: " << maxIterations);
     }
 

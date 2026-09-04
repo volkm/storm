@@ -75,8 +75,8 @@ class MonotonicityHelper {
             expressions::Expression exprBounds = manager->boolean(true);
             for (auto variable : variables) {
                 auto managerVariable = manager->declareRationalVariable(variable.name());
-                auto lb = storm::numbers::convertNumber<RationalNumber>(reg.getLowerBoundary(variable));
-                auto ub = storm::numbers::convertNumber<RationalNumber>(reg.getUpperBoundary(variable));
+                auto lb = storm::numbers::convert<RationalNumber>(reg.getLowerBoundary(variable));
+                auto ub = storm::numbers::convert<RationalNumber>(reg.getUpperBoundary(variable));
                 exprBounds = exprBounds && manager->rational(lb) < managerVariable && managerVariable < manager->rational(ub);
             }
 

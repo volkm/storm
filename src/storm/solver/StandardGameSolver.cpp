@@ -312,7 +312,7 @@ bool StandardGameSolver<ValueType>::solveGameValueIteration(Environment const& e
         auxiliaryP1RowGroupVector = std::make_unique<std::vector<ValueType>>(this->getNumberOfPlayer1States());
     }
 
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().game().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().game().getPrecision());
     bool relative = env.solver().game().getRelativeTerminationCriterion();
     uint64_t maxIter = env.solver().game().getMaximalNumberOfIterations();
 
@@ -469,7 +469,7 @@ bool StandardGameSolver<ValueType>::extractChoices(Environment const& env, Optim
     storm::numbers::ConstantsComparator<ValueType> comparator(
         linearEquationSolverIsExact
             ? storm::numbers::zero<ValueType>()
-            : storm::numbers::convertNumber<ValueType>(env.solver().getPrecisionOfLinearEquationSolver(env.solver().getLinearEquationSolverType()).first.get()),
+            : storm::numbers::convert<ValueType>(env.solver().getPrecisionOfLinearEquationSolver(env.solver().getLinearEquationSolverType()).first.get()),
         false);
 
     // get the choices of player 2 and the corresponding values.

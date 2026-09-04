@@ -73,7 +73,7 @@ std::size_t BeliefManager<storm::models::sparse::Pomdp<double>, double, uint64_t
     // Assumes that beliefs are ordered
     for (auto const &entry : belief) {
         boost::hash_combine(seed, entry.first);
-        boost::hash_combine(seed, round(storm::numbers::convertNumber<double>(entry.second) * 1e15));
+        boost::hash_combine(seed, round(storm::numbers::convert<double>(entry.second) * 1e15));
     }
     return seed;
 }
@@ -132,7 +132,7 @@ typename BeliefManager<PomdpType, BeliefValueType, StateType>::ValueType BeliefM
     BeliefId const &beliefId, std::vector<ValueType> const &summands) {
     auto result = storm::numbers::zero<ValueType>();
     for (auto const &entry : getBelief(beliefId)) {
-        result += storm::numbers::convertNumber<ValueType>(entry.second) * storm::numbers::convertNumber<ValueType>(summands.at(entry.first));
+        result += storm::numbers::convert<ValueType>(entry.second) * storm::numbers::convert<ValueType>(summands.at(entry.first));
     }
     return result;
 }
@@ -145,7 +145,7 @@ std::pair<bool, typename BeliefManager<PomdpType, BeliefValueType, StateType>::V
     for (auto const &entry : getBelief(beliefId)) {
         auto probIter = summands.find(entry.first);
         if (probIter != summands.end()) {
-            result += storm::numbers::convertNumber<ValueType>(entry.second) * storm::numbers::convertNumber<ValueType>(summands.at(entry.first));
+            result += storm::numbers::convert<ValueType>(entry.second) * storm::numbers::convert<ValueType>(summands.at(entry.first));
         } else {
             successful = false;
             break;
@@ -170,7 +170,7 @@ typename BeliefManager<PomdpType, BeliefValueType, StateType>::ValueType BeliefM
         uint64_t choiceIndex = choiceIndices[entry.first] + localActionIndex;
         STORM_LOG_ASSERT(choiceIndex < choiceIndices[entry.first + 1], "Invalid local action index.");
         STORM_LOG_ASSERT(choiceIndex < pomdpActionRewardVector.size(), "Invalid choice index.");
-        result += storm::numbers::convertNumber<ValueType>(entry.second) * pomdpActionRewardVector[choiceIndex];
+        result += storm::numbers::convert<ValueType>(entry.second) * pomdpActionRewardVector[choiceIndex];
     }
     return result;
 }
@@ -530,7 +530,7 @@ BeliefManager<PomdpType, BeliefValueType, StateType>::expandInternal(storm::Envi
         for (auto const &pomdpTransition : pomdp.getTransitionMatrix().getRow(state, actionIndex)) {
             if (!storm::numbers::isZero(pomdpTransition.getValue())) {
                 auto obs = pomdp.getObservation(pomdpTransition.getColumn());
-                addToDistribution(successorObs, obs, pointEntry.second * storm::numbers::convertNumber<BeliefValueType>(pomdpTransition.getValue()));
+                addToDistribution(successorObs, obs, pointEntry.second * storm::numbers::convert<BeliefValueType>(pomdpTransition.getValue()));
             }
         }
     }
@@ -543,7 +543,7 @@ BeliefManager<PomdpType, BeliefValueType, StateType>::expandInternal(storm::Envi
             uint64_t state = pointEntry.first;
             for (auto const &pomdpTransition : pomdp.getTransitionMatrix().getRow(state, actionIndex)) {
                 if (pomdp.getObservation(pomdpTransition.getColumn()) == successor.first) {
-                    BeliefValueType prob = pointEntry.second * storm::numbers::convertNumber<BeliefValueType>(pomdpTransition.getValue()) / successor.second;
+                    BeliefValueType prob = pointEntry.second * storm::numbers::convert<BeliefValueType>(pomdpTransition.getValue()) / successor.second;
                     addToDistribution(successorBelief, pomdpTransition.getColumn(), prob);
                 }
             }
@@ -557,20 +557,20 @@ BeliefManager<PomdpType, BeliefValueType, StateType>::expandInternal(storm::Envi
             for (size_t j = 0; j < triangulation.size(); ++j) {
                 // Here we additionally assume that triangulation.gridPoints does not contain the same point multiple times
                 BeliefValueType a = triangulation.weights[j] * successor.second;
-                destinations.emplace_back(triangulation.gridPoints[j], storm::numbers::convertNumber<ValueType>(a));
+                destinations.emplace_back(triangulation.gridPoints[j], storm::numbers::convert<ValueType>(a));
             }
         } else if (observationGridClippingResolutions) {
             BeliefClipping clipping = clipBeliefToGrid(env, successorBelief, observationGridClippingResolutions.value()[successor.first],
                                                        storm::storage::BitVector(pomdp.getNumberOfStates()));
             if (clipping.isClippable) {
                 BeliefValueType a = (storm::numbers::one<BeliefValueType>() - clipping.delta) * successor.second;
-                destinations.emplace_back(clipping.targetBelief, storm::numbers::convertNumber<ValueType>(a));
+                destinations.emplace_back(clipping.targetBelief, storm::numbers::convert<ValueType>(a));
             } else {
                 // Belief on Grid
-                destinations.emplace_back(getOrAddBeliefId(successorBelief), storm::numbers::convertNumber<ValueType>(successor.second));
+                destinations.emplace_back(getOrAddBeliefId(successorBelief), storm::numbers::convert<ValueType>(successor.second));
             }
         } else {
-            destinations.emplace_back(getOrAddBeliefId(successorBelief), storm::numbers::convertNumber<ValueType>(successor.second));
+            destinations.emplace_back(getOrAddBeliefId(successorBelief), storm::numbers::convert<ValueType>(successor.second));
         }
     }
 
@@ -598,7 +598,7 @@ typename BeliefManager<PomdpType, BeliefValueType, StateType>::BeliefClipping Be
     lpSolver->push();
 
     std::vector<BeliefValueType> helper(belief.size(), storm::numbers::zero<BeliefValueType>());
-    helper[0] = storm::numbers::convertNumber<BeliefValueType>(resolution);
+    helper[0] = storm::numbers::convert<BeliefValueType>(resolution);
     bool done = false;
     // Set-up Variables
     std::vector<storm::expressions::Expression> decisionVariables;
@@ -634,12 +634,12 @@ typename BeliefManager<PomdpType, BeliefValueType, StateType>::BeliefClipping Be
         auto belIter = belief.begin();
         for (uint64_t j = 0; j < belief.size() - 1; ++j) {
             if (!cc.isEqual(helper[j] - helper[j + 1], storm::numbers::zero<BeliefValueType>())) {
-                candidate[belIter->first] = (helper[j] - helper[j + 1]) / storm::numbers::convertNumber<BeliefValueType>(resolution);
+                candidate[belIter->first] = (helper[j] - helper[j + 1]) / storm::numbers::convert<BeliefValueType>(resolution);
             }
             belIter++;
         }
         if (!cc.isEqual(helper[belief.size() - 1], storm::numbers::zero<BeliefValueType>())) {
-            candidate[belIter->first] = helper[belief.size() - 1] / storm::numbers::convertNumber<BeliefValueType>(resolution);
+            candidate[belIter->first] = helper[belief.size() - 1] / storm::numbers::convert<BeliefValueType>(resolution);
         }
         if (isEqual(candidate, belief)) {
             // TODO Improve handling of successors which are already on the grid
@@ -675,7 +675,7 @@ typename BeliefManager<PomdpType, BeliefValueType, StateType>::BeliefClipping Be
                 lpSolver->update();
             }
         }
-        if (helper.back() == storm::numbers::convertNumber<BeliefValueType>(resolution)) {
+        if (helper.back() == storm::numbers::convert<BeliefValueType>(resolution)) {
             // If the last entry of helper is the gridResolution, we have enumerated all necessary distributions
             done = true;
         } else {

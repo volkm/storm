@@ -88,7 +88,7 @@ void print(std::ostream& out, ValueType const& value) {
     } else {
         out << value;
         if (std::is_same<ValueType, storm::RationalNumber>::value) {
-            out << " (approx. " << storm::numbers::convertNumber<double>(value) << ")";
+            out << " (approx. " << storm::numbers::convert<double>(value) << ")";
         }
     }
 }
@@ -113,13 +113,13 @@ void printRange(std::ostream& out, ValueType const& min, ValueType const& max) {
         if (min == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(min);
+            out << storm::numbers::convert<double>(min);
         }
         out << ", ";
         if (max == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(max);
+            out << storm::numbers::convert<double>(max);
         }
         out << "])";
     }
@@ -185,7 +185,7 @@ ValueType SymbolicQuantitativeCheckResult<Type, ValueType>::getMax() const {
 
 template<storm::dd::DdType Type, typename ValueType>
 ValueType SymbolicQuantitativeCheckResult<Type, ValueType>::average() const {
-    return this->sum() / storm::numbers::convertNumber<ValueType>(this->states.getNonZeroCount());
+    return this->sum() / storm::numbers::convert<ValueType>(this->states.getNonZeroCount());
 }
 
 template<storm::dd::DdType Type, typename ValueType>

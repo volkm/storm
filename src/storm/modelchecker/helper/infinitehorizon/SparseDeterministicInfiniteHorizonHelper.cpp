@@ -120,7 +120,7 @@ ValueType SparseDeterministicInfiniteHorizonHelper<ValueType>::computeLraForBscc
                                                                                    ValueGetter const& actionValueGetter,
                                                                                    storm::storage::StronglyConnectedComponent const& bscc) {
     // Collect parameters of the computation
-    ValueType aperiodicFactor = storm::numbers::convertNumber<ValueType>(env.solver().lra().getAperiodicFactor());
+    ValueType aperiodicFactor = storm::numbers::convert<ValueType>(env.solver().lra().getAperiodicFactor());
 
     // Now create a helper and perform the algorithm
     if (this->isContinuousTime()) {
@@ -225,7 +225,7 @@ std::pair<ValueType, std::vector<ValueType>> SparseDeterministicInfiniteHorizonH
 
     std::vector<ValueType> eqSysSol(bscc.size(), storm::numbers::zero<ValueType>());
     // Take the mean of the rewards as an initial guess for the gain
-    // eqSysSol.front() = std::accumulate(eqSysVector.begin(), eqSysVector.end(), storm::numbers::zero<ValueType>()) / storm::numbers::convertNumber<ValueType,
+    // eqSysSol.front() = std::accumulate(eqSysVector.begin(), eqSysVector.end(), storm::numbers::zero<ValueType>()) / storm::numbers::convert<ValueType,
     // uint64_t>(bscc.size());
     solver->solveEquations(subEnv, eqSysSol, eqSysVector);
 
@@ -307,7 +307,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::comp
             //
             // The relative error in the normalized value x/y = (x'/y')*((1+delta_x)/(1+delta_y)) = (x'/y')*(1+((delta_x-delta_y)/(1+\delta_y))) can be upper
             // bounded by 2*eps/(1-eps). We set eps so that this term is equal to requiredPrecision
-            storm::RationalNumber eps = requiredPrecision / (storm::numbers::convertNumber<storm::RationalNumber, uint64_t>(2) + requiredPrecision);
+            storm::RationalNumber eps = requiredPrecision / (storm::numbers::convert<storm::RationalNumber, uint64_t>(2) + requiredPrecision);
             evtEnv.solver().setLinearEquationSolverPrecision(eps, prec.second);
         }
     }
@@ -438,7 +438,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::comp
     STORM_LOG_THROW(!requirements.hasEnabledCriticalRequirement(), storm::exceptions::UnmetRequirementException,
                     "Solver requirements " + requirements.getEnabledRequirementsAsString() + " not checked.");
 
-    std::vector<ValueType> steadyStateDistr(bscc.size(), storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType, uint64_t>(bscc.size()));
+    std::vector<ValueType> steadyStateDistr(bscc.size(), storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType, uint64_t>(bscc.size()));
     solver->solveEquations(env, steadyStateDistr, bsccEquationSystemRightSide);
 
     // As a last step, we normalize these values to counter numerical inaccuracies a bit.
@@ -549,7 +549,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::buil
         STORM_LOG_THROW(!requirements.hasEnabledCriticalRequirement(), storm::exceptions::UnmetRequirementException,
                         "Solver requirements " + requirements.getEnabledRequirementsAsString() + " not checked.");
         sspValues.assign(sspMatrixVector.first.getRowCount(),
-                         (*lowerUpperBounds.first + *lowerUpperBounds.second) / storm::numbers::convertNumber<ValueType, uint64_t>(2));
+                         (*lowerUpperBounds.first + *lowerUpperBounds.second) / storm::numbers::convert<ValueType, uint64_t>(2));
         solver->solveEquations(env, sspValues, sspMatrixVector.second);
     }
 
@@ -601,7 +601,7 @@ std::vector<ValueType> SparseDeterministicInfiniteHorizonHelper<ValueType>::comp
             storm::RationalNumber eps = storm::numbers::sqrt<RationalNumber>(storm::numbers::one<storm::RationalNumber>() + requiredPrecision) -
                                         storm::numbers::one<storm::RationalNumber>();
             subEnv.solver().setLinearEquationSolverPrecision(eps, prec.second);
-            STORM_LOG_INFO("Precision for BSCC reachability and BSCC steady state distribution analysis set to " << storm::numbers::convertNumber<double>(eps)
+            STORM_LOG_INFO("Precision for BSCC reachability and BSCC steady state distribution analysis set to " << storm::numbers::convert<double>(eps)
                                                                                                                  << ".");
         }
     }

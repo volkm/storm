@@ -78,7 +78,7 @@ constexpr std::add_pointer_t<T> to_pointer(T t)
 template<typename T>
 T from_string(std::string const& str)
 {
-    return ::storm::numbers::convertNumber<T>(str);
+    return ::storm::numbers::convert<T>(str);
 }
 
 template<typename T>
@@ -110,11 +110,11 @@ constexpr ToType convert(FromType const& v)
 	else if constexpr (std::is_same_v<ToType, int>)
 	{
 		// Conversion to int is e.g. necessary for scoped enums with default underlying type (enum class Name {...};)
-		return static_cast<int>(::storm::numbers::convertNumber<int64_t>(v));
+		return static_cast<int>(::storm::numbers::convert<int64_t>(v));
 	}
     else
     {
-        return ::storm::numbers::convertNumber<ToType>(v);
+        return ::storm::numbers::convert<ToType>(v);
     }
 }
 

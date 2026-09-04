@@ -187,13 +187,13 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
     // The actual rational search.
     uint64_t overallIterations = 0;
     uint64_t valueIterationInvocations = 0;
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
     uint64_t maxIter = env.solver().minMax().getMaximalNumberOfIterations();
     bool relative = env.solver().minMax().getRelativeTerminationCriterion();
     SolverStatus status = SolverStatus::InProgress;
     while (status == SolverStatus::InProgress && overallIterations < maxIter) {
         typename SymbolicMinMaxLinearEquationSolver<DdType, ImpreciseType>::ValueIterationResult viResult =
-            impreciseSolver.performValueIteration(dir, currentX, b, storm::numbers::convertNumber<ImpreciseType, ValueType>(precision), relative, maxIter);
+            impreciseSolver.performValueIteration(dir, currentX, b, storm::numbers::convert<ImpreciseType, ValueType>(precision), relative, maxIter);
 
         ++valueIterationInvocations;
         STORM_LOG_TRACE("Completed " << valueIterationInvocations << " value iteration invocations, the last one with precision " << precision
@@ -203,8 +203,7 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
         overallIterations += viResult.iterations;
 
         // Compute maximal precision until which to sharpen.
-        uint64_t p =
-            storm::numbers::convertNumber<uint64_t>(storm::numbers::ceil(storm::numbers::log10<ValueType>(storm::numbers::one<ValueType>() / precision)));
+        uint64_t p = storm::numbers::convert<uint64_t>(storm::numbers::ceil(storm::numbers::log10<ValueType>(storm::numbers::one<ValueType>() / precision)));
 
         bool isSolution = false;
         sharpenedX = sharpen<RationalType, ImpreciseType>(dir, p, rationalSolver, viResult.values, rationalB, isSolution);
@@ -213,7 +212,7 @@ storm::dd::Add<DdType, RationalType> SymbolicMinMaxLinearEquationSolver<DdType, 
             status = SolverStatus::Converged;
         } else {
             currentX = viResult.values;
-            precision /= storm::numbers::convertNumber<ValueType, uint64_t>(10);
+            precision /= storm::numbers::convert<ValueType, uint64_t>(10);
         }
         if (storm::utility::resources::isTerminate()) {
             status = SolverStatus::Aborted;
@@ -334,7 +333,7 @@ storm::dd::Add<DdType, ValueType> SymbolicMinMaxLinearEquationSolver<DdType, Val
         }
     }
 
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
     ValueIterationResult viResult = performValueIteration(dir, localX, b, precision, env.solver().minMax().getRelativeTerminationCriterion(),
                                                           env.solver().minMax().getMaximalNumberOfIterations());
 

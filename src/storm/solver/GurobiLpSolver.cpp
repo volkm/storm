@@ -169,10 +169,10 @@ typename GurobiLpSolver<ValueType, RawMode>::Variable GurobiLpSolver<ValueType, 
 
     // Create the actual variable.
     int error = 0;
-    error = GRBaddvar(model, 0, nullptr, nullptr, storm::numbers::convertNumber<double>(objectiveFunctionCoefficient),
-                      lowerBound.has_value() ? storm::numbers::convertNumber<double>(*lowerBound) : -GRB_INFINITY,
-                      upperBound.has_value() ? storm::numbers::convertNumber<double>(*upperBound) : GRB_INFINITY, getGurobiType<ValueType, RawMode>(type),
-                      name.c_str());
+    error =
+        GRBaddvar(model, 0, nullptr, nullptr, storm::numbers::convert<double>(objectiveFunctionCoefficient),
+                  lowerBound.has_value() ? storm::numbers::convert<double>(*lowerBound) : -GRB_INFINITY,
+                  upperBound.has_value() ? storm::numbers::convert<double>(*upperBound) : GRB_INFINITY, getGurobiType<ValueType, RawMode>(type), name.c_str());
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Could not create binary Gurobi variable (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
     return resultVar;
@@ -191,13 +191,13 @@ GurobiConstraint createConstraint(typename GurobiLpSolver<ValueType, RawMode>::C
     GurobiConstraint gurobiConstraint;
     storm::expressions::RelationType relationType;
     if constexpr (RawMode) {
-        gurobiConstraint.rhs = storm::numbers::convertNumber<double>(constraint.rhs);
+        gurobiConstraint.rhs = storm::numbers::convert<double>(constraint.rhs);
         relationType = constraint.relationType;
         gurobiConstraint.variableIndices.insert(gurobiConstraint.variableIndices.end(), constraint.lhsVariableIndices.begin(),
                                                 constraint.lhsVariableIndices.end());
         gurobiConstraint.coefficients.reserve(constraint.lhsCoefficients.size());
         for (auto const& coef : constraint.lhsCoefficients) {
-            gurobiConstraint.coefficients.push_back(storm::numbers::convertNumber<double>(coef));
+            gurobiConstraint.coefficients.push_back(storm::numbers::convert<double>(coef));
         }
     } else {
         STORM_LOG_THROW(constraint.isRelationalExpression(), storm::exceptions::InvalidArgumentException, "Illegal constraint is not a relational expression.");
@@ -402,7 +402,7 @@ ValueType GurobiLpSolver<ValueType, RawMode>::getContinuousValue(Variable const&
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to get Gurobi solution (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
 
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 }
 
 template<typename ValueType, bool RawMode>
@@ -485,7 +485,7 @@ ValueType GurobiLpSolver<ValueType, RawMode>::getObjectiveValue() const {
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to get Gurobi solution (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
 
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 }
 
 template<typename ValueType, bool RawMode>
@@ -599,7 +599,7 @@ ValueType GurobiLpSolver<ValueType, RawMode>::getContinuousValue(Variable const&
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to get Gurobi solution (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
 
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 }
 
 template<typename ValueType, bool RawMode>
@@ -684,16 +684,16 @@ ValueType GurobiLpSolver<ValueType, RawMode>::getObjectiveValue(uint64_t solutio
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to get Gurobi solution (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
 
-    return storm::numbers::convertNumber<ValueType>(value);
+    return storm::numbers::convert<ValueType>(value);
 }
 
 template<typename ValueType, bool RawMode>
 void GurobiLpSolver<ValueType, RawMode>::setMaximalMILPGap(ValueType const& gap, bool relative) {
     int error = -1;
     if (relative) {
-        error = GRBsetdblparam(GRBgetenv(model), GRB_DBL_PAR_MIPGAP, storm::numbers::convertNumber<double>(gap));
+        error = GRBsetdblparam(GRBgetenv(model), GRB_DBL_PAR_MIPGAP, storm::numbers::convert<double>(gap));
     } else {
-        error = GRBsetdblparam(GRBgetenv(model), GRB_DBL_PAR_MIPGAPABS, storm::numbers::convertNumber<double>(gap));
+        error = GRBsetdblparam(GRBgetenv(model), GRB_DBL_PAR_MIPGAPABS, storm::numbers::convert<double>(gap));
     }
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to set Gurobi MILP GAP (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
@@ -705,7 +705,7 @@ ValueType GurobiLpSolver<ValueType, RawMode>::getMILPGap(bool relative) const {
     int error = GRBgetdblattr(model, GRB_DBL_ATTR_MIPGAP, &relativeGap);
     STORM_LOG_THROW(error == 0, storm::exceptions::InvalidStateException,
                     "Unable to get Gurobi MILP GAP (" << GRBgeterrormsg(**environment) << ", error code " << error << ").");
-    auto result = storm::numbers::convertNumber<ValueType>(relativeGap);
+    auto result = storm::numbers::convert<ValueType>(relativeGap);
     if (relative) {
         return result;
     } else {

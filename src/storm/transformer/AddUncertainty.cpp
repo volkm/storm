@@ -32,7 +32,7 @@ std::shared_ptr<storm::models::sparse::Model<typename AddUncertainty<ValueType>:
             }
         } else {
             for (auto const& entry : origModel->getTransitionMatrix().getRow(rowIndex)) {
-                newMatrixBuilder.addNextValue(rowIndex, entry.getColumn(), storm::numbers::convertNumber<IntervalType>(entry.getValue()));
+                newMatrixBuilder.addNextValue(rowIndex, entry.getColumn(), storm::numbers::convert<IntervalType>(entry.getValue()));
             }
         }
     }

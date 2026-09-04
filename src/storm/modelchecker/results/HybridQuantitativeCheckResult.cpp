@@ -51,7 +51,7 @@ std::unique_ptr<CheckResult> HybridQuantitativeCheckResult<Type, ValueType>::com
     // Then translate the explicit part to a symbolic format and simultaneously to a qualitative result.
     symbolicResult |= storm::dd::Bdd<Type>::template fromVector<ValueType>(this->reachableStates.getDdManager(), this->explicitValues, this->odd,
                                                                            this->symbolicValues.getContainedMetaVariables(), comparisonType,
-                                                                           storm::numbers::convertNumber<ValueType>(bound));
+                                                                           storm::numbers::convert<ValueType>(bound));
 
     return std::unique_ptr<SymbolicQualitativeCheckResult<Type>>(new SymbolicQualitativeCheckResult<Type>(reachableStates, symbolicResult));
 }
@@ -113,7 +113,7 @@ void print(std::ostream& out, ValueType const& value) {
     } else {
         out << value;
         if (std::is_same<ValueType, storm::RationalNumber>::value) {
-            out << " (approx. " << storm::numbers::convertNumber<double>(value) << ")";
+            out << " (approx. " << storm::numbers::convert<double>(value) << ")";
         }
     }
 }
@@ -138,13 +138,13 @@ void printRange(std::ostream& out, ValueType const& min, ValueType const& max) {
         if (min == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(min);
+            out << storm::numbers::convert<double>(min);
         }
         out << ", ";
         if (max == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(max);
+            out << storm::numbers::convert<double>(max);
         }
         out << "])";
     }
@@ -265,7 +265,7 @@ ValueType HybridQuantitativeCheckResult<Type, ValueType>::sum() const {
 
 template<storm::dd::DdType Type, typename ValueType>
 ValueType HybridQuantitativeCheckResult<Type, ValueType>::average() const {
-    return this->sum() / storm::numbers::convertNumber<ValueType>((symbolicStates || explicitStates).getNonZeroCount());
+    return this->sum() / storm::numbers::convert<ValueType>((symbolicStates || explicitStates).getNonZeroCount());
 }
 
 template<storm::dd::DdType Type, typename ValueType>

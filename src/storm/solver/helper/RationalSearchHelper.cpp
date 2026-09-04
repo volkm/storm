@@ -111,11 +111,11 @@ std::pair<RSResult, SolverStatus> RationalSearchHelper<TargetValueType, ExactVal
     SolverStatus status{SolverStatus::InProgress};
     RSResult result{RSResult::InProgress};
     while (status == SolverStatus::InProgress) {
-        auto viStatus = viHelper.VI(operand, offsets, numIterations, false, storm::numbers::convertNumber<ValueType>(precision), Dir, iterationCallback);
+        auto viStatus = viHelper.VI(operand, offsets, numIterations, false, storm::numbers::convert<ValueType>(precision), Dir, iterationCallback);
 
         // Compute maximal precision until which to sharpen.
-        auto p = storm::numbers::convertNumber<uint64_t>(
-            storm::numbers::ceil(storm::numbers::log10<ExactValueType>(storm::numbers::one<ExactValueType>() / precision)));
+        auto p =
+            storm::numbers::convert<uint64_t>(storm::numbers::ceil(storm::numbers::log10<ExactValueType>(storm::numbers::one<ExactValueType>() / precision)));
 
         // check if the sharpened vector is the desired solution.
         result = sharpen<ValueType, Dir>(p, operand, exactOffsets, target);
@@ -128,7 +128,7 @@ std::pair<RSResult, SolverStatus> RationalSearchHelper<TargetValueType, ExactVal
                     status = viStatus;
                 } else {
                     // Increase the precision.
-                    precision /= storm::numbers::convertNumber<ExactValueType>(static_cast<uint64_t>(10));
+                    precision /= storm::numbers::convert<ExactValueType>(static_cast<uint64_t>(10));
                 }
                 break;
             case RSResult::PrecisionExceeded:
@@ -160,7 +160,7 @@ SolverStatus RationalSearchHelper<TargetValueType, ExactValueType, ImpreciseValu
     } else {
         // We only try with the inexact type
         auto exactOffsets = storm::utility::vector::convertNumericVector<ExactValueType>(offsets);
-        return RS<TargetValueType, Dir>(operand, offsets, numIterations, storm::numbers::convertNumber<ExactValueType>(precision), exactOffsets, operand,
+        return RS<TargetValueType, Dir>(operand, offsets, numIterations, storm::numbers::convert<ExactValueType>(precision), exactOffsets, operand,
                                         iterationCallback)
             .second;
     }

@@ -40,8 +40,8 @@ storm::RationalNumber findRational(storm::RationalNumber const& lowerBound, bool
         path.push_back(std::min(l_i, u_i));  // insert tree traversal information
         if (l_i == u_i && !storm::numbers::isZero(l_rem) && !storm::numbers::isZero(u_rem)) {
             // continue traversing the tree
-            l = storm::numbers::convertNumber<storm::RationalNumber>(l_den) / l_rem;
-            u = storm::numbers::convertNumber<storm::RationalNumber>(u_den) / u_rem;
+            l = storm::numbers::convert<storm::RationalNumber>(l_den) / l_rem;
+            u = storm::numbers::convert<storm::RationalNumber>(u_den) / u_rem;
             continue;
         }
         // Reaching this point means that we have found a node in the Stern-Brocot tree where the paths for lower and upper bound diverge.
@@ -141,9 +141,9 @@ storm::RationalNumber findRational(storm::RationalNumber const& lowerBound, bool
 
     // Now, construct the rational number from the path
     auto it = path.rbegin();
-    auto result = storm::numbers::convertNumber<storm::RationalNumber>(*it);
+    auto result = storm::numbers::convert<storm::RationalNumber>(*it);
     for (++it; it != path.rend(); ++it) {
-        result = storm::numbers::convertNumber<storm::RationalNumber>(*it) + storm::numbers::one<storm::RationalNumber>() / result;
+        result = storm::numbers::convert<storm::RationalNumber>(*it) + storm::numbers::one<storm::RationalNumber>() / result;
     }
     return result;
 

@@ -49,7 +49,7 @@ storm::Environment TopologicalLinearEquationSolver<ValueType>::getEnvironmentFor
         STORM_LOG_ASSERT(this->longestSccChainSize, "Did not compute the longest SCC chain size although it is needed.");
         auto subEnvPrec = subEnv.solver().getPrecisionOfLinearEquationSolver(subEnv.solver().getLinearEquationSolverType());
         subEnv.solver().setLinearEquationSolverPrecision(
-            static_cast<storm::RationalNumber>(subEnvPrec.first.get() / storm::numbers::convertNumber<storm::RationalNumber>(this->longestSccChainSize.get())));
+            static_cast<storm::RationalNumber>(subEnvPrec.first.get() / storm::numbers::convert<storm::RationalNumber>(this->longestSccChainSize.get())));
     }
     return subEnv;
 }

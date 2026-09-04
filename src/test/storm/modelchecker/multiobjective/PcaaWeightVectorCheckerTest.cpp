@@ -72,7 +72,7 @@ class PcaaWeightVectorCheckerTest : public ::testing::Test {
     }
 
     ValueType parseNumber(std::string const& input) const {
-        return storm::numbers::convertNumber<ValueType>(input);
+        return storm::numbers::convert<ValueType>(input);
     }
 
     std::vector<ValueType> parseVector(std::string const& input) const {

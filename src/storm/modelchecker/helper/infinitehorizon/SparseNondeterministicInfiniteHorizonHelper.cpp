@@ -289,7 +289,7 @@ ValueType SparseNondeterministicInfiniteHorizonHelper<ValueType>::computeLraForM
                                                                                      ValueGetter const& actionRewardsGetter,
                                                                                      storm::storage::MaximalEndComponent const& mec) {
     // Collect some parameters of the computation
-    ValueType aperiodicFactor = storm::numbers::convertNumber<ValueType>(env.solver().lra().getAperiodicFactor());
+    ValueType aperiodicFactor = storm::numbers::convert<ValueType>(env.solver().lra().getAperiodicFactor());
     std::vector<uint64_t>* optimalChoices = nullptr;
     if (this->isProduceSchedulerSet()) {
         optimalChoices = &this->_producedOptimalChoices.get();

@@ -81,13 +81,13 @@ void RewardBoundedMdpPcaaWeightVectorChecker<SparseMdpModelType>::check(Environm
     auto initEpoch = rewardUnfolding.getStartEpoch();
     auto epochOrder = rewardUnfolding.getEpochComputationOrder(initEpoch);
     EpochCheckingData cachedData;
-    ValueType const globalPrecision = this->getWeightedPrecision() / storm::numbers::convertNumber<ValueType>(4.0);  // 4=2*2:
+    ValueType const globalPrecision = this->getWeightedPrecision() / storm::numbers::convert<ValueType>(4.0);  // 4=2*2:
     // We divide the precision by 2 to distribute the approximation error over weighted (minmax) optimization and linear equation solving
     // We again divide by 2 to account for the fact that we only compute a mid-point p such that the real value is in [p - precision, p + precision].
     ValueType const epochPrecision = rewardUnfolding.getRequiredEpochModelPrecision(initEpoch, globalPrecision);
     Environment newEnv = env;
-    newEnv.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(epochPrecision));
-    newEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convertNumber<storm::RationalNumber>(epochPrecision));
+    newEnv.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(epochPrecision));
+    newEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convert<storm::RationalNumber>(epochPrecision));
     storm::utility::ProgressMeasurement progress("epochs");
     progress.setMaxCount(epochOrder.size());
     progress.startNewMeasurement(0);
@@ -99,7 +99,7 @@ void RewardBoundedMdpPcaaWeightVectorChecker<SparseMdpModelType>::check(Environm
             std::vector<ValueType> cdfEntry;
             for (uint64_t i = 0; i < rewardUnfolding.getEpochManager().getDimensionCount(); ++i) {
                 uint64_t offset = rewardUnfolding.getDimension(i).boundType == helper::rewardbounded::DimensionBoundType::LowerBound ? 1 : 0;
-                cdfEntry.push_back(storm::numbers::convertNumber<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
+                cdfEntry.push_back(storm::numbers::convert<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
                                    rewardUnfolding.getDimension(i).scalingFactor);
             }
             auto const& solution = rewardUnfolding.getInitialStateResult(epoch);

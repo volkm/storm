@@ -13,7 +13,7 @@ ReturnType evaluateRationalFunction(storm::RationalFunction const& function, Val
     if constexpr (std::is_same<ReturnType, typename CoefficientType<storm::RationalFunction>::type>::value) {
         return function.evaluate(valuation);
     } else {
-        return storm::numbers::convertNumber<ReturnType>(function.evaluate(valuation));
+        return storm::numbers::convert<ReturnType>(function.evaluate(valuation));
     }
 }
 

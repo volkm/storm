@@ -174,7 +174,7 @@ ValueType LraViHelper<ValueType, ComponentType, TransitionsType>::performValueIt
                                                                                         storm::solver::OptimizationDirection const* dir,
                                                                                         std::vector<uint64_t>* choices) {
     initializeNewValues(stateValueGetter, actionValueGetter, exitRates);
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().lra().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().lra().getPrecision());
     bool relative = env.solver().lra().getRelativeTerminationCriterion();
     boost::optional<uint64_t> maxIter;
     if (env.solver().lra().isMaximalIterationCountSet()) {
@@ -459,7 +459,7 @@ LraViHelper<ValueType, ComponentType, TransitionsType>::checkConvergence(bool re
     }
 
     // Compute the average of the maximal and the minimal difference.
-    ValueType avgDiff = (maxDiff + minDiff) / (storm::numbers::convertNumber<ValueType>(2.0));
+    ValueType avgDiff = (maxDiff + minDiff) / (storm::numbers::convert<ValueType>(2.0));
 
     // "Undo" the scaling of the values
     res.currentValue = avgDiff * _uniformizationRate;

@@ -166,7 +166,7 @@ std::vector<storm::storage::BitVector> const& WinningRegion::getWinningSetsPerOb
 
 storm::RationalNumber WinningRegion::beliefSupportStates() const {
     storm::RationalNumber total = 0;
-    storm::RationalNumber two = storm::numbers::convertNumber<storm::RationalNumber>(2);
+    storm::RationalNumber two = storm::numbers::convert<storm::RationalNumber>(2);
     for (auto const& size : observationSizes) {
         total += carl::pow(two, size) - 1;
     }
@@ -179,7 +179,7 @@ std::pair<storm::RationalNumber, storm::RationalNumber> count(std::vector<storm:
                                                               bool plus, uint64_t remdepth) {
     STORM_LOG_ASSERT(intersects.size() == intersectsInfo.size(), "Intersect size mismatch.");
     storm::RationalNumber newVal = val;
-    storm::RationalNumber two = storm::numbers::convertNumber<storm::RationalNumber>(2);
+    storm::RationalNumber two = storm::numbers::convert<storm::RationalNumber>(2);
     for (uint64_t i = 0; i < intersects.size(); ++i) {
         if (plus) {
             newVal += carl::pow(two, intersects[i].getNumberOfSetBits());
@@ -279,10 +279,10 @@ std::pair<storm::RationalNumber, storm::RationalNumber> count(std::vector<storm:
 std::pair<storm::RationalNumber, storm::RationalNumber> WinningRegion::computeNrWinningBeliefs() const {
     storm::RationalNumber upper = 0;
     storm::RationalNumber lower = 0;
-    storm::RationalNumber two = storm::numbers::convertNumber<storm::RationalNumber>(2);
+    storm::RationalNumber two = storm::numbers::convert<storm::RationalNumber>(2);
     for (auto const& winningSets : winningRegion) {
         storm::RationalNumber totalForObs = 0;
-        storm::RationalNumber two = storm::numbers::convertNumber<storm::RationalNumber>(2);
+        storm::RationalNumber two = storm::numbers::convert<storm::RationalNumber>(2);
 
         std::vector<storm::storage::BitVector> info;  // which intersections are part of this
         for (uint64_t i = 0; i < winningSets.size(); ++i) {

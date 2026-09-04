@@ -57,10 +57,10 @@ void ValuationDescriptionBuilder::addIntegerVariable(storm::expressions::Variabl
                                                      bool optional) {
     assertAndCollectVariable(variable);
     STORM_LOG_ASSERT(lowerBound <= upperBound, "Lower bound " << lowerBound << " must not be above upper bound" << upperBound << ".");
-    if (lowerBound >= storm::numbers::convertNumber<storm::RationalNumber>(std::numeric_limits<int64_t>::min()) &&
-        upperBound <= storm::numbers::convertNumber<storm::RationalNumber>(std::numeric_limits<int64_t>::max())) {
+    if (lowerBound >= storm::numbers::convert<storm::RationalNumber>(std::numeric_limits<int64_t>::min()) &&
+        upperBound <= storm::numbers::convert<storm::RationalNumber>(std::numeric_limits<int64_t>::max())) {
         // If the values fit into int64_t, we use that.
-        addIntegerVariable(variable, storm::numbers::convertNumber<int64_t>(lowerBound), storm::numbers::convertNumber<int64_t>(upperBound));
+        addIntegerVariable(variable, storm::numbers::convert<int64_t>(lowerBound), storm::numbers::convert<int64_t>(upperBound));
     } else {
         uint64_t const bitSize = storm::numbers::bitsize<Integer>(upperBound - lowerBound);
         storm::umb::SizedType const t{.type{lowerBound < 0 ? storm::umb::Type::Int : storm::umb::Type::Uint}, .size{std::max<uint64_t>(1, bitSize)}};

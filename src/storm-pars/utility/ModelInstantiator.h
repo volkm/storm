@@ -128,7 +128,7 @@ class ModelInstantiator {
             if (!transformer::BigStep::lastSavedAnnotations.empty() && functionResult.first.gatherVariables().size() == 1 &&
                 transformer::BigStep::lastSavedAnnotations.count(functionResult.first)) {
                 auto const& annotation = transformer::BigStep::lastSavedAnnotations.at(functionResult.first);
-                functionResult.second = annotation.evaluate(storm::numbers::convertNumber<ConstantType>(valuation.at(annotation.getParameter())));
+                functionResult.second = annotation.evaluate(storm::numbers::convert<ConstantType>(valuation.at(annotation.getParameter())));
             } else {
                 functionResult.second = storm::utility::parametric::evaluate<ConstantType>(functionResult.first, valuation);
             }

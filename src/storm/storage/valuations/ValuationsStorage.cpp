@@ -358,7 +358,7 @@ void ValuationsStorage::setValuesInEvaluator(uint64_t entity, storm::expressions
             evaluator.setIntegerValue(var, value);
             // evaluator has no support for arbitrary-precision integers.
         } else if constexpr (std::is_same_v<ValueType, double> || std::is_same_v<ValueType, storm::RationalNumber>) {
-            evaluator.setRationalValue(var, storm::numbers::convertNumber<RationalValueType>(value));
+            evaluator.setRationalValue(var, storm::numbers::convert<RationalValueType>(value));
         } else {
             STORM_LOG_THROW(
                 (std::is_same_v<ValueType, std::string_view> || std::is_same_v<ValueType, std::string> || std::is_same_v<ValueType, std::nullopt_t>),

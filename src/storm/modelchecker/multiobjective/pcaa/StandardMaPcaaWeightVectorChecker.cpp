@@ -99,7 +99,7 @@ typename SparseMaModelType::ValueType StandardMaPcaaWeightVectorChecker<SparseMa
     if (!this->objectivesWithNoUpperTimeBound.full()) {
         // If there are time-bounded objectives, we allow most of the approximation error in the bounded phase.
         // This is because computing time-bounded objectives accurately is likely the largest bottle neck of the computation.
-        return storm::numbers::convertNumber<ValueType>(0.99) * this->getWeightedPrecision();
+        return storm::numbers::convert<ValueType>(0.99) * this->getWeightedPrecision();
     }
     return storm::numbers::zero<ValueType>();
 }
@@ -337,7 +337,7 @@ void StandardMaPcaaWeightVectorChecker<SparseMaModelType>::digitizeTimeBounds(Ti
             ValueType errorAwayFromZero = storm::numbers::zero<ValueType>();
             if (obj.formula->getSubformula().isCumulativeRewardFormula()) {
                 ValueType timeBound = obj.formula->getSubformula().asCumulativeRewardFormula().template getBound<ValueType>();
-                uint_fast64_t digitizedBound = storm::numbers::convertNumber<uint_fast64_t>(timeBound / digitizationConstant);
+                uint_fast64_t digitizedBound = storm::numbers::convert<uint_fast64_t>(timeBound / digitizationConstant);
                 auto timeBoundIt = upperTimeBounds.insert(std::make_pair(digitizedBound, storm::storage::BitVector(this->objectives.size(), false))).first;
                 timeBoundIt->second.set(objIndex);
                 ValueType digitizationError = storm::numbers::one<ValueType>();

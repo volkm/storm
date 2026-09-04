@@ -46,7 +46,7 @@ storm::dd::Add<Type, ValueType> SymbolicGameSolver<Type, ValueType>::solveGame(E
                         "Switching game method to Value iteration since the selected method is not supported by this solver.");
 
     // Set up the environment.
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().game().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().game().getPrecision());
     bool relative = env.solver().game().getRelativeTerminationCriterion();
     uint64_t maxIter = env.solver().game().getMaximalNumberOfIterations();
     storm::dd::Add<Type, ValueType> xCopy = x;

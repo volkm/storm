@@ -58,8 +58,8 @@ bool DiscountingHelper<ValueType, TrivialRowGrouping>::solveWithDiscountedValueI
     }
     progressMeasurement->startNewMeasurement(0);
     auto status = viHelper.DiscountedVI(x, b, numIterations, env.solver().minMax().getRelativeTerminationCriterion(),
-                                        storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision()), discountFactor, maximalAbsoluteReward,
-                                        dir, viCallback, env.solver().minMax().getMultiplicationStyle());
+                                        storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision()), discountFactor, maximalAbsoluteReward, dir,
+                                        viCallback, env.solver().minMax().getMultiplicationStyle());
 
     // If requested, we store the scheduler for retrieval.
     if (this->isTrackSchedulerSet()) {

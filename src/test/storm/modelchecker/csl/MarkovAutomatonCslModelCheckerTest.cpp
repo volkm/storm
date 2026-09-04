@@ -38,7 +38,7 @@ class SparseDoubleValueIterationEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration, true);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-10));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-10));
         return env;
     }
 };
@@ -52,7 +52,7 @@ class JaniSparseDoubleValueIterationEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration, true);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-10));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-10));
         return env;
     }
 };
@@ -73,7 +73,7 @@ class JaniHybridDoubleValueIterationEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration, true);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-10));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-10));
         return env;
     }
 };
@@ -88,7 +88,7 @@ class SparseDoubleIntervalIterationEnvironment {
         storm::Environment env;
         env.solver().setForceSoundness(true);
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::IntervalIteration, true);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         env.solver().minMax().setRelativeTerminationCriterion(false);
         return env;
     }
@@ -142,7 +142,7 @@ class MarkovAutomatonCslModelCheckerTest : public ::testing::Test {
         return _environment;
     }
     ValueType parseNumber(std::string const& input) const {
-        return storm::numbers::convertNumber<ValueType>(input);
+        return storm::numbers::convert<ValueType>(input);
     }
     ValueType precision() const {
         return TestType::isExact ? parseNumber("0") : parseNumber("1e-6");

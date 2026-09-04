@@ -98,7 +98,7 @@ std::shared_ptr<storm::models::symbolic::Model<DdType, ExportValueType>> Partial
         if (std::is_same<ValueType, storm::RationalNumber>::value) {
             STORM_LOG_ASSERT(quotientTransitionMatrix.greater(storm::numbers::one<ValueType>()).isZero(), "Illegal entries in quotient matrix.");
         } else {
-            STORM_LOG_ASSERT(quotientTransitionMatrix.greater(storm::numbers::one<ValueType>() + storm::numbers::convertNumber<ValueType>(1e-6)).isZero(),
+            STORM_LOG_ASSERT(quotientTransitionMatrix.greater(storm::numbers::one<ValueType>() + storm::numbers::convert<ValueType>(1e-6)).isZero(),
                              "Illegal entries in quotient matrix.");
         }
 

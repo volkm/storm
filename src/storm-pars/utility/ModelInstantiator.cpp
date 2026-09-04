@@ -43,7 +43,7 @@ ModelInstantiator<ParametricSparseModelType, ConstantSparseModelType>::buildDumm
     if (parametricMatrix.hasTrivialRowGrouping()) {
         for (uint_fast64_t row = 0; row < parametricMatrix.getRowCount(); ++row) {
             auto parametricRow = parametricMatrix.getRow(row);
-            ConstantType dummyValue = storm::numbers::one<ConstantType>() / storm::numbers::convertNumber<ConstantType>(parametricRow.getNumberOfEntries());
+            ConstantType dummyValue = storm::numbers::one<ConstantType>() / storm::numbers::convert<ConstantType>(parametricRow.getNumberOfEntries());
             for (auto const& paramEntry : parametricRow) {
                 matrixBuilder.addNextValue(row, paramEntry.getColumn(), dummyValue);
             }
@@ -53,7 +53,7 @@ ModelInstantiator<ParametricSparseModelType, ConstantSparseModelType>::buildDumm
             matrixBuilder.newRowGroup(parametricMatrix.getRowGroupIndices()[rowGroup]);
             for (uint_fast64_t row = parametricMatrix.getRowGroupIndices()[rowGroup]; row < parametricMatrix.getRowGroupIndices()[rowGroup + 1]; ++row) {
                 auto parametricRow = parametricMatrix.getRow(row);
-                ConstantType dummyValue = storm::numbers::one<ConstantType>() / storm::numbers::convertNumber<ConstantType>(parametricRow.getNumberOfEntries());
+                ConstantType dummyValue = storm::numbers::one<ConstantType>() / storm::numbers::convert<ConstantType>(parametricRow.getNumberOfEntries());
                 for (auto const& paramEntry : parametricRow) {
                     matrixBuilder.addNextValue(row, paramEntry.getColumn(), dummyValue);
                 }
@@ -102,7 +102,7 @@ void ModelInstantiator<ParametricSparseModelType, ConstantSparseModelType>::init
                          "Entries of parametric and constant matrix are not at the same position.");
         if (storm::numbers::isConstant(parametricEntryIt->getValue())) {
             // Constant entries can be inserted directly
-            constantEntryIt->setValue(storm::numbers::convertNumber<ConstantType>(parametricEntryIt->getValue()));
+            constantEntryIt->setValue(storm::numbers::convert<ConstantType>(parametricEntryIt->getValue()));
         } else {
             // insert the new function and store that the current constantMatrix entry needs to be set to the value of this function
             auto functionsIt = functions.insert(std::make_pair(parametricEntryIt->getValue(), dummyValue)).first;
@@ -126,7 +126,7 @@ void ModelInstantiator<ParametricSparseModelType, ConstantSparseModelType>::init
     while (parametricEntryIt != parametricVector.end()) {
         if (storm::numbers::isConstant(storm::numbers::simplify(*parametricEntryIt))) {
             // Constant entries can be inserted directly
-            *constantEntryIt = storm::numbers::convertNumber<ConstantType>(*parametricEntryIt);
+            *constantEntryIt = storm::numbers::convert<ConstantType>(*parametricEntryIt);
         } else {
             // insert the new function and store that the current constantVector entry needs to be set to the value of this function
             auto functionsIt = functions.insert(std::make_pair(*parametricEntryIt, dummyValue)).first;

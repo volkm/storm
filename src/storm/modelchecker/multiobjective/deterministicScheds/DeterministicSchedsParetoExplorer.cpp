@@ -119,7 +119,7 @@ std::string DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType
             out << ", ";
         }
         if (convertToDouble) {
-            out << storm::numbers::convertNumber<double>(pi);
+            out << storm::numbers::convert<double>(pi);
         } else {
             out << pi;
         }
@@ -250,10 +250,9 @@ void DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::Face
     GeometryValueType product = storm::utility::vector::dotProduct(getHalfspace().normalVector(), point.get());
     if (product != getHalfspace().offset()) {
         if (product < getHalfspace().offset()) {
-            STORM_LOG_DEBUG("The point on the facet actually has distance "
-                            << storm::numbers::convertNumber<double>(getHalfspace().euclideanDistance(point.get())));
+            STORM_LOG_DEBUG("The point on the facet actually has distance " << storm::numbers::convert<double>(getHalfspace().euclideanDistance(point.get())));
         } else {
-            STORM_LOG_DEBUG("Halfspace of facet is shifted by " << storm::numbers::convertNumber<double>(getHalfspace().euclideanDistance(point.get()))
+            STORM_LOG_DEBUG("Halfspace of facet is shifted by " << storm::numbers::convert<double>(getHalfspace().euclideanDistance(point.get()))
                                                                 << " to capture all points that are supposed to lie on the facet.");
             halfspace.offset() = product;
         }
@@ -332,15 +331,15 @@ std::unique_ptr<CheckResult> DeterministicSchedsParetoExplorer<SparseModelType, 
                 }
             }
         }
-        GeometryValueType epsScalingFactor = storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision());
+        GeometryValueType epsScalingFactor = storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision());
         epsScalingFactor += epsScalingFactor;
         eps.clear();
         for (uint64_t i = 0; i < pmax.size(); ++i) {
             eps.push_back((pmax[i] - pmin[i]) * epsScalingFactor);
-            if (eps.back() < storm::numbers::convertNumber<GeometryValueType>(1e-8)) {
+            if (eps.back() < storm::numbers::convert<GeometryValueType>(1e-8)) {
                 STORM_LOG_WARN("Changing relative precision of objective "
                                << i << " to 1e-8 since the difference between the highest and lowest value is below 1e-8.");
-                eps.back() = storm::numbers::convertNumber<GeometryValueType>(1e-8);
+                eps.back() = storm::numbers::convert<GeometryValueType>(1e-8);
             }
         }
         STORM_LOG_INFO("Relative precision for deterministic scheduler Pareto explorer is "
@@ -348,7 +347,7 @@ std::unique_ptr<CheckResult> DeterministicSchedsParetoExplorer<SparseModelType, 
     } else {
         STORM_LOG_THROW(env.modelchecker().multi().getPrecisionType() == MultiObjectiveModelCheckerEnvironment::PrecisionType::Absolute,
                         storm::exceptions::IllegalArgumentException, "Unknown multiobjective precision type.");
-        auto ei = storm::numbers::convertNumber<GeometryValueType>(env.modelchecker().multi().getPrecision());
+        auto ei = storm::numbers::convert<GeometryValueType>(env.modelchecker().multi().getPrecision());
         ei += ei;
         eps = std::vector<GeometryValueType>(objectives.size(), ei);
     }
@@ -391,9 +390,9 @@ void DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::addH
             } else {
                 std::cout << ",";
             }
-            std::cout << storm::numbers::convertNumber<double>(xi);
+            std::cout << storm::numbers::convert<double>(xi);
         }
-        std::cout << "];[" << storm::numbers::convertNumber<double>(offset) << "]\n";
+        std::cout << "];[" << storm::numbers::convert<double>(offset) << "]\n";
     }
     storm::storage::geometry::Halfspace<GeometryValueType> overApproxHalfspace(normalVector, offset);
     overApproximation = overApproximation->intersection(overApproxHalfspace);
@@ -424,7 +423,7 @@ void DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::addU
                 } else {
                     std::cout << ",";
                 }
-                std::cout << storm::numbers::convertNumber<double>(vi);
+                std::cout << storm::numbers::convert<double>(vi);
             }
             std::cout << "]";
         }
@@ -465,11 +464,11 @@ void DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::init
         std::vector<GeometryValueType> pointCoord;
         GeometryValueType offset;
         if (wvChecker) {
-            wvChecker->setWeightedPrecision(storm::numbers::convertNumber<ModelValueType>(env.solver().minMax().getPrecision()));
+            wvChecker->setWeightedPrecision(storm::numbers::convert<ModelValueType>(env.solver().minMax().getPrecision()));
             wvChecker->check(env, storm::utility::vector::convertNumericVector<ModelValueType>(weightVector));
             pointCoord = storm::utility::vector::convertNumericVector<GeometryValueType>(wvChecker->getAchievablePoint());
             negateMinObjectives(pointCoord);
-            offset = storm::numbers::convertNumber<GeometryValueType>(wvChecker->getOptimalWeightedSum());
+            offset = storm::numbers::convert<GeometryValueType>(wvChecker->getOptimalWeightedSum());
         } else {
             lpChecker->setCurrentWeightVector(env, weightVector);
             auto optionalPoint = lpChecker->check(env, overApproximation);
@@ -505,8 +504,7 @@ template<class SparseModelType, typename GeometryValueType>
 std::vector<GeometryValueType> DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::getReferenceCoordinates(Environment const& env) const {
     std::vector<GeometryValueType> result;
     for (uint64_t objIndex = 0; objIndex < objectives.size(); ++objIndex) {
-        result.push_back(
-            storm::numbers::convertNumber<GeometryValueType>(objectiveHelper[objIndex].getLowerValueBoundAtState(*model->getInitialStates().begin())));
+        result.push_back(storm::numbers::convert<GeometryValueType>(objectiveHelper[objIndex].getLowerValueBoundAtState(*model->getInitialStates().begin())));
     }
     return result;
 }
@@ -559,11 +557,11 @@ bool DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::opti
     std::vector<GeometryValueType> pointCoord;
     GeometryValueType offset;
     if (wvChecker) {
-        wvChecker->setWeightedPrecision(storm::numbers::convertNumber<ModelValueType>(env.solver().minMax().getPrecision()));
+        wvChecker->setWeightedPrecision(storm::numbers::convert<ModelValueType>(env.solver().minMax().getPrecision()));
         wvChecker->check(env, storm::utility::vector::convertNumericVector<ModelValueType>(f.getHalfspace().normalVector()));
         pointCoord = storm::utility::vector::convertNumericVector<GeometryValueType>(wvChecker->getAchievablePoint());
         negateMinObjectives(pointCoord);
-        offset = storm::numbers::convertNumber<GeometryValueType>(wvChecker->getOptimalWeightedSum());
+        offset = storm::numbers::convert<GeometryValueType>(wvChecker->getOptimalWeightedSum());
     } else {
         auto currentArea = overApproximation->intersection(f.getHalfspace().invert());
         auto optionalPoint = lpChecker->check(env, overApproximation, eps);
@@ -593,7 +591,7 @@ bool DeterministicSchedsParetoExplorer<SparseModelType, GeometryValueType>::opti
             storm::storage::geometry::PolytopeTree<GeometryValueType> remainingArea(overApproximation->intersection(f.getHalfspace().invert()));
             std::vector<std::vector<GeometryValueType>> vertices;
             vertices.push_back(optPoint.get());
-            auto minmaxPrec = storm::numbers::convertNumber<GeometryValueType>(env.solver().minMax().getPrecision());
+            auto minmaxPrec = storm::numbers::convert<GeometryValueType>(env.solver().minMax().getPrecision());
             minmaxPrec += minmaxPrec;
             for (auto const& pId : f.getPoints()) {
                 vertices.push_back(pointset.getPoint(pId).get());

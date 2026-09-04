@@ -32,10 +32,10 @@ class ValueEncoding {
             auto const twoTo64 = storm::numbers::pow<IntegerType>(2, 64);
             auto inputIt = std::ranges::begin(input);
             auto const inputEnd = std::ranges::end(input);
-            auto result = storm::numbers::convertNumber<IntegerType>(*inputIt);
+            auto result = storm::numbers::convert<IntegerType>(*inputIt);
             for (++inputIt; inputIt != inputEnd; ++inputIt) {
                 result *= twoTo64;
-                result += storm::numbers::convertNumber<IntegerType>(*inputIt);
+                result += storm::numbers::convert<IntegerType>(*inputIt);
             }
             return result;
         };
@@ -153,11 +153,11 @@ class ValueEncoding {
 
             STORM_LOG_ASSERT(value >= 0, "Value must be non-negative for unsigned encoding.");
             auto divisionResult = storm::numbers::divide<IntegerType>(value, twoTo64);
-            result.push_back(storm::numbers::convertNumber<uint64_t, storm::RationalNumber>(divisionResult.second));
+            result.push_back(storm::numbers::convert<uint64_t, storm::RationalNumber>(divisionResult.second));
             uint64_t buckets = 1;
             while (divisionResult.first != 0) {
                 divisionResult = storm::numbers::divide<IntegerType>(divisionResult.first, twoTo64);
-                result.push_back(storm::numbers::convertNumber<uint64_t, storm::RationalNumber>(divisionResult.second));
+                result.push_back(storm::numbers::convert<uint64_t, storm::RationalNumber>(divisionResult.second));
                 ++buckets;
             }
             // fill remaining buckets with zeros
@@ -213,9 +213,9 @@ class ValueEncoding {
     static auto intervalToBaseRangeView(InputRange&& input) {
         return std::ranges::iota_view(0ull, std::ranges::size(input) * 2) | std::views::transform([&input](auto i) -> BaseType {
                    if (i % 2 == 0) {
-                       return storm::numbers::convertNumber<BaseType>(input[i / 2].lower());
+                       return storm::numbers::convert<BaseType>(input[i / 2].lower());
                    } else {
-                       return storm::numbers::convertNumber<BaseType>(input[i / 2].upper());
+                       return storm::numbers::convert<BaseType>(input[i / 2].upper());
                    }
                });
     }
@@ -237,7 +237,7 @@ class ValueEncoding {
                 return input;
             } else {
                 return input | std::ranges::views::transform(
-                                   [](SourceType const& value) -> ValueType { return storm::numbers::convertNumber<ValueType, SourceType>(value); });
+                                   [](SourceType const& value) -> ValueType { return storm::numbers::convert<ValueType, SourceType>(value); });
             }
         };
 

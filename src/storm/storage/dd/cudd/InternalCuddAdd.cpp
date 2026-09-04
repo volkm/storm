@@ -337,18 +337,18 @@ uint_fast64_t InternalAdd<DdType::CUDD, ValueType>::getNodeCount() const {
 template<typename ValueType>
 ValueType InternalAdd<DdType::CUDD, ValueType>::getMin() const {
     cudd::ADD constantMinAdd = this->getCuddAdd().FindMin();
-    return storm::numbers::convertNumber<ValueType>(Cudd_V(constantMinAdd.getNode()));
+    return storm::numbers::convert<ValueType>(Cudd_V(constantMinAdd.getNode()));
 }
 
 template<typename ValueType>
 ValueType InternalAdd<DdType::CUDD, ValueType>::getMax() const {
     cudd::ADD constantMaxAdd = this->getCuddAdd().FindMax();
-    return storm::numbers::convertNumber<ValueType>(Cudd_V(constantMaxAdd.getNode()));
+    return storm::numbers::convert<ValueType>(Cudd_V(constantMaxAdd.getNode()));
 }
 
 template<typename ValueType>
 ValueType InternalAdd<DdType::CUDD, ValueType>::getValue() const {
-    return storm::numbers::convertNumber<ValueType>(Cudd_V(this->getCuddAdd().getNode()));
+    return storm::numbers::convert<ValueType>(Cudd_V(this->getCuddAdd().getNode()));
 }
 
 template<typename ValueType>
@@ -423,8 +423,8 @@ AddIterator<DdType::CUDD, ValueType> InternalAdd<DdType::CUDD, ValueType>::begin
     int* cube;
     double value;
     DdGen* generator = this->getCuddAdd().FirstCube(&cube, &value);
-    return AddIterator<DdType::CUDD, ValueType>(fullDdManager, generator, cube, storm::numbers::convertNumber<ValueType>(value),
-                                                (Cudd_IsGenEmpty(generator) != 0), &metaVariables, enumerateDontCareMetaVariables);
+    return AddIterator<DdType::CUDD, ValueType>(fullDdManager, generator, cube, storm::numbers::convert<ValueType>(value), (Cudd_IsGenEmpty(generator) != 0),
+                                                &metaVariables, enumerateDontCareMetaVariables);
 }
 
 template<typename ValueType>
@@ -552,7 +552,7 @@ void InternalAdd<DdType::CUDD, ValueType>::forEachRec(DdNode const* dd, uint_fas
 
     // If we are at the maximal level, the value to be set is stored as a constant in the DD.
     if (currentLevel == maxLevel) {
-        function(currentOffset, storm::numbers::convertNumber<ValueType>(Cudd_V(dd)));
+        function(currentOffset, storm::numbers::convert<ValueType>(Cudd_V(dd)));
     } else if (ddVariableIndices[currentLevel] < Cudd_NodeReadIndex(dd)) {
         // If we skipped a level, we need to enumerate the explicit entries for the case in which the bit is set
         // and for the one in which it is not set.
@@ -751,7 +751,7 @@ void InternalAdd<DdType::CUDD, ValueType>::toMatrixComponentsRec(DdNode const* d
     if (currentRowLevel + currentColumnLevel == maxLevel) {
         if (generateValues) {
             columnsAndValues[rowIndications[rowGroupOffsets[currentRowOffset]]] =
-                storm::storage::MatrixEntry<uint_fast64_t, ValueType>(currentColumnOffset, storm::numbers::convertNumber<ValueType>(Cudd_V(dd)));
+                storm::storage::MatrixEntry<uint_fast64_t, ValueType>(currentColumnOffset, storm::numbers::convert<ValueType>(Cudd_V(dd)));
         }
         ++rowIndications[rowGroupOffsets[currentRowOffset]];
     } else {

@@ -228,11 +228,11 @@ template<typename ValueType, bool RawMode>
 ValueType Z3LpSolver<ValueType, RawMode>::getContinuousValue(Variable const& variable) const {
     storm::expressions::Expression value = getValue(variable);
     if (value.getBaseExpression().isIntegerLiteralExpression()) {
-        return storm::numbers::convertNumber<ValueType>(value.getBaseExpression().asIntegerLiteralExpression().getValue());
+        return storm::numbers::convert<ValueType>(value.getBaseExpression().asIntegerLiteralExpression().getValue());
     }
     STORM_LOG_THROW(value.getBaseExpression().isRationalLiteralExpression(), storm::exceptions::ExpressionEvaluationException,
                     "Expected a rational literal while obtaining the value of a continuous variable. Got " << value << "instead.");
-    return storm::numbers::convertNumber<ValueType>(value.getBaseExpression().asRationalLiteralExpression().getValue());
+    return storm::numbers::convert<ValueType>(value.getBaseExpression().asRationalLiteralExpression().getValue());
 }
 
 template<typename ValueType, bool RawMode>
@@ -266,11 +266,11 @@ ValueType Z3LpSolver<ValueType, RawMode>::getObjectiveValue() const {
 
     storm::expressions::Expression result = this->expressionAdapter->translateExpression(*lastCheckObjectiveValue);
     if (result.getBaseExpression().isIntegerLiteralExpression()) {
-        return storm::numbers::convertNumber<ValueType>(result.getBaseExpression().asIntegerLiteralExpression().getValue());
+        return storm::numbers::convert<ValueType>(result.getBaseExpression().asIntegerLiteralExpression().getValue());
     }
     STORM_LOG_THROW(result.getBaseExpression().isRationalLiteralExpression(), storm::exceptions::ExpressionEvaluationException,
                     "Expected a rational literal while obtaining the objective result. Got " << result << "instead.");
-    return storm::numbers::convertNumber<ValueType>(result.getBaseExpression().asRationalLiteralExpression().getValue());
+    return storm::numbers::convert<ValueType>(result.getBaseExpression().asRationalLiteralExpression().getValue());
 }
 
 template<typename ValueType, bool RawMode>

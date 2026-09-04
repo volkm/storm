@@ -1195,8 +1195,7 @@ boost::optional<ExplicitPivotStateResult<ValueType>> pickPivotState(
     // The distance of a state that has not been reached yet, i.e. one that any real distance improves upon. With
     // probability distances that is zero. With hop distances no reachable state is more than numberOfStates - 1 hops
     // away, so numberOfStates lies beyond every achievable distance.
-    ValueType unreachableDistance =
-        probabilityDistances ? storm::numbers::zero<ValueType>() : storm::numbers::convertNumber<ValueType, uint64_t>(numberOfStates);
+    ValueType unreachableDistance = probabilityDistances ? storm::numbers::zero<ValueType>() : storm::numbers::convert<ValueType, uint64_t>(numberOfStates);
     ValueType zeroDistance = probabilityDistances ? storm::numbers::one<ValueType>() : storm::numbers::zero<ValueType>();
 
     // Create storages for the lower and upper Dijkstra search.

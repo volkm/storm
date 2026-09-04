@@ -577,7 +577,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
         setUpViOperator();
 
         helper::OptimisticValueIterationHelper<ValueType, false> oviHelper(viOperatorNontriv);
-        auto prec = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+        auto prec = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
         std::optional<ValueType> lowerBound, upperBound;
         if (this->hasLowerBound()) {
             lowerBound = this->getLowerBound(true);
@@ -593,7 +593,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
         this->createLowerBoundsVector(x);
         std::optional<ValueType> guessingFactor;
         if (env.solver().ovi().getUpperBoundGuessingFactor()) {
-            guessingFactor = storm::numbers::convertNumber<ValueType>(*env.solver().ovi().getUpperBoundGuessingFactor());
+            guessingFactor = storm::numbers::convert<ValueType>(*env.solver().ovi().getUpperBoundGuessingFactor());
         }
         this->startMeasureProgress();
         auto status = oviHelper.OVI(x, b, numIterations, env.solver().minMax().getRelativeTerminationCriterion(), prec, dir, guessingFactor, lowerBound,
@@ -641,9 +641,9 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
         this->createUpperBoundsVector(*upperX);
 
         this->startMeasureProgress();
-        auto statusIters = helper.solveEquations(lowerX, *upperX, b, numIterations,
-                                                 storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision()), dir, gviCallback);
-        auto two = storm::numbers::convertNumber<ValueType>(2.0);
+        auto statusIters = helper.solveEquations(lowerX, *upperX, b, numIterations, storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision()),
+                                                 dir, gviCallback);
+        auto two = storm::numbers::convert<ValueType>(2.0);
         storm::utility::vector::applyPointwise<ValueType, ValueType, ValueType>(
             lowerX, *upperX, x, [&two](ValueType const& first, ValueType const& second) -> ValueType { return (first + second) / two; });
 
@@ -734,7 +734,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
         storm::solver::helper::ValueIterationHelper<ValueType, true, SolutionType> viHelper(viOperatorTriv);
 
         auto status = viHelper.VI(x, b, numIterations, env.solver().minMax().getRelativeTerminationCriterion(),
-                                  storm::numbers::convertNumber<SolutionType>(env.solver().minMax().getPrecision()), dir, viCallback,
+                                  storm::numbers::convert<SolutionType>(env.solver().minMax().getPrecision()), dir, viCallback,
                                   env.solver().minMax().getMultiplicationStyle(), this->getUncertaintyResolutionMode());
         this->reportStatus(status, numIterations);
 
@@ -752,7 +752,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
         storm::solver::helper::ValueIterationHelper<ValueType, false, SolutionType> viHelper(viOperatorNontriv);
 
         auto status = viHelper.VI(x, b, numIterations, env.solver().minMax().getRelativeTerminationCriterion(),
-                                  storm::numbers::convertNumber<SolutionType>(env.solver().minMax().getPrecision()), dir, viCallback,
+                                  storm::numbers::convert<SolutionType>(env.solver().minMax().getPrecision()), dir, viCallback,
                                   env.solver().minMax().getMultiplicationStyle(), this->getUncertaintyResolutionMode());
         this->reportStatus(status, numIterations);
 
@@ -790,7 +790,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
     } else {
         setUpViOperator();
         helper::IntervalIterationHelper<ValueType, false> iiHelper(viOperatorNontriv);
-        auto prec = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+        auto prec = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
         auto lowerBoundsCallback = [&](std::vector<SolutionType>& vector) { this->createLowerBoundsVector(vector); };
         auto upperBoundsCallback = [&](std::vector<SolutionType>& vector) { this->createUpperBoundsVector(vector); };
 
@@ -844,7 +844,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
 
         setUpViOperator();
 
-        auto precision = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+        auto precision = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
         uint64_t numIterations{0};
         auto sviCallback = [&](typename helper::SoundValueIterationHelper<ValueType, false>::SVIData const& current) {
             this->showProgressIterative(numIterations);
@@ -954,7 +954,7 @@ bool IterativeMinMaxLinearEquationSolver<ValueType, SolutionType>::solveEquation
             return this->updateStatus(current, x, SolverGuarantee::None, numIterations, env.solver().minMax().getMaximalNumberOfIterations());
         };
         this->startMeasureProgress();
-        auto status = rsHelper.RS(x, b, numIterations, storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision()), dir, rsCallback);
+        auto status = rsHelper.RS(x, b, numIterations, storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision()), dir, rsCallback);
 
         this->reportStatus(status, numIterations);
 

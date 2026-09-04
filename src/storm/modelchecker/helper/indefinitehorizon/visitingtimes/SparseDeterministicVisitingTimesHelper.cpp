@@ -58,7 +58,7 @@ std::vector<ValueType> SparseDeterministicVisitingTimesHelper<ValueType>::comput
                                                                                                        storm::storage::BitVector const& initialStates) {
     STORM_LOG_ASSERT(!initialStates.empty(), "Provided an empty set of initial states.");
     STORM_LOG_ASSERT(initialStates.size() == transitionMatrix.getRowCount(), "Dimension mismatch.");
-    ValueType const p = storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType, uint64_t>(initialStates.getNumberOfSetBits());
+    ValueType const p = storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType, uint64_t>(initialStates.getNumberOfSetBits());
     std::vector<ValueType> result(transitionMatrix.getRowCount(), storm::numbers::zero<ValueType>());
     storm::utility::vector::setVectorValues(result, initialStates, p);
     computeExpectedVisitingTimes(env, result);
@@ -285,13 +285,13 @@ storm::Environment SparseDeterministicVisitingTimesHelper<ValueType>::getEnviron
             STORM_LOG_THROW(!storm::numbers::isZero(min), storm::exceptions::InvalidOperationException,
                             "An error occurred during the adjustment of the precision. Min. rate = " << min << ".");
             newEnv.solver().setLinearEquationSolverPrecision(
-                static_cast<storm::RationalNumber>(prec.first.get() * storm::numbers::convertNumber<storm::RationalNumber>(min)));
+                static_cast<storm::RationalNumber>(prec.first.get() * storm::numbers::convert<storm::RationalNumber>(min)));
         }
     }
 
     auto prec = newEnv.solver().getPrecisionOfLinearEquationSolver(newEnv.solver().getLinearEquationSolverType());
     if (prec.first.is_initialized()) {
-        STORM_LOG_INFO("Precision for EVTs computation: " << storm::numbers::convertNumber<double>(prec.first.get()) << " (exact: " << prec.first.get() << ")"
+        STORM_LOG_INFO("Precision for EVTs computation: " << storm::numbers::convert<double>(prec.first.get()) << " (exact: " << prec.first.get() << ")"
                                                           << '\n');
     }
 
@@ -337,10 +337,10 @@ storm::Environment SparseDeterministicVisitingTimesHelper<ValueType>::getEnviron
         // We need to increase the solver's relative precision that is used in an SCC depending on the maximal SCC chain length.
         auto subEnvPrec = subEnv.solver().getPrecisionOfLinearEquationSolver(subEnv.solver().getLinearEquationSolverType());
 
-        double scaledPrecision1 = 1 - std::pow(1 - storm::numbers::convertNumber<double>(subEnvPrec.first.get()), 1.0 / sccDecomposition->getMaxSccDepth());
+        double scaledPrecision1 = 1 - std::pow(1 - storm::numbers::convert<double>(subEnvPrec.first.get()), 1.0 / sccDecomposition->getMaxSccDepth());
 
         // set new precision
-        subEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convertNumber<storm::RationalNumber>(scaledPrecision1));
+        subEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convert<storm::RationalNumber>(scaledPrecision1));
 
     } else if (needAdaptPrecision && !subEnv.solver().getPrecisionOfLinearEquationSolver(subEnv.solver().getLinearEquationSolverType()).second.get()) {
         // Sound computations wrt. absolute precision:
@@ -389,8 +389,8 @@ storm::Environment SparseDeterministicVisitingTimesHelper<ValueType>::getEnviron
                 // As the maximal number of incoming transitions is greater than one, adjustment is necessary.
                 // For this, we need the number of SCCs in the longest SCC chain -1, i.e., sccDecomposition->getMaxSccDepth() -1
                 for (uint64_t i = 1; i < sccDecomposition->getMaxSccDepth(); i++) {
-                    scale = scale + storm::numbers::pow(storm::numbers::convertNumber<storm::RationalNumber>(maxNumInc), i) *
-                                        storm::numbers::convertNumber<storm::RationalNumber>(boundEVT);
+                    scale = scale + storm::numbers::pow(storm::numbers::convert<storm::RationalNumber>(maxNumInc), i) *
+                                        storm::numbers::convert<storm::RationalNumber>(boundEVT);
                 }
             }
             subEnv.solver().setLinearEquationSolverPrecision(static_cast<storm::RationalNumber>(subEnvPrec.first.get() / scale));

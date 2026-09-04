@@ -320,7 +320,7 @@ class MathsatExpressionAdapter : public storm::expressions::ExpressionVisitor {
             if (msat_is_integer_type(env, msat_term_get_type(term))) {
                 return manager.integer(std::stoll(msat_term_repr(term)));
             } else if (msat_is_rational_type(env, msat_term_get_type(term))) {
-                return manager.rational(storm::numbers::convertNumber<storm::RationalNumber>(termString));
+                return manager.rational(storm::numbers::convert<storm::RationalNumber>(termString));
             }
         } else if (msat_term_is_term_ite(env, term)) {
             return storm::expressions::ite(translateExpression(msat_term_get_arg(term, 0)), translateExpression(msat_term_get_arg(term, 1)),

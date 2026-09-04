@@ -136,7 +136,7 @@ bool operator==(SparseBeliefState<ValueType> const& lhs, SparseBeliefState<Value
     if (lhs.belief.size() != rhs.belief.size()) {
         return false;
     }
-    storm::numbers::ConstantsComparator<ValueType> cmp(storm::numbers::convertNumber<ValueType>(0.00001), true);
+    storm::numbers::ConstantsComparator<ValueType> cmp(storm::numbers::convert<ValueType>(0.00001), true);
     auto lhsIt = lhs.belief.begin();
     auto rhsIt = rhs.belief.begin();
     while (lhsIt != lhs.belief.end()) {

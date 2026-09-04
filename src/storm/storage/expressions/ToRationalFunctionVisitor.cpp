@@ -50,7 +50,7 @@ boost::any ToRationalFunctionVisitor<RationalFunctionType>::visit(BinaryNumerica
         case BinaryNumericalFunctionExpression::OperatorType::Power: {
             STORM_LOG_THROW(storm::numbers::isInteger(secondOperandAsRationalFunction), storm::exceptions::InvalidArgumentException,
                             "Exponent of power operator must be an integer but is " << secondOperandAsRationalFunction << ".");
-            auto exponentAsInteger = storm::numbers::convertNumber<carl::sint>(secondOperandAsRationalFunction);
+            auto exponentAsInteger = storm::numbers::convert<carl::sint>(secondOperandAsRationalFunction);
             return storm::numbers::pow(firstOperandAsRationalFunction, exponentAsInteger);
         }
         default:
@@ -107,12 +107,12 @@ boost::any ToRationalFunctionVisitor<RationalFunctionType>::visit(BooleanLiteral
 
 template<typename RationalFunctionType>
 boost::any ToRationalFunctionVisitor<RationalFunctionType>::visit(IntegerLiteralExpression const& expression, boost::any const&) {
-    return RationalFunctionType(storm::numbers::convertNumber<storm::RationalFunction>(expression.getValue()));
+    return RationalFunctionType(storm::numbers::convert<storm::RationalFunction>(expression.getValue()));
 }
 
 template<typename RationalFunctionType>
 boost::any ToRationalFunctionVisitor<RationalFunctionType>::visit(RationalLiteralExpression const& expression, boost::any const&) {
-    return storm::numbers::convertNumber<storm::RationalFunction>(expression.getValue());
+    return storm::numbers::convert<storm::RationalFunction>(expression.getValue());
 }
 
 template<typename RationalFunctionType>

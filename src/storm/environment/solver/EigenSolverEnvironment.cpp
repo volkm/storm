@@ -19,7 +19,7 @@ EigenSolverEnvironment::EigenSolverEnvironment() {
     } else {
         maxIterationCount = std::numeric_limits<uint_fast64_t>::max();
     }
-    precision = storm::numbers::convertNumber<storm::RationalNumber>(eigenSettings.getPrecision());
+    precision = storm::numbers::convert<storm::RationalNumber>(eigenSettings.getPrecision());
 }
 
 EigenSolverEnvironment::~EigenSolverEnvironment() {

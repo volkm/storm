@@ -63,8 +63,8 @@ std::map<storm::storage::sparse::state_type, SolutionType> SparseDtmcPrctlHelper
 
         Environment preciseEnv = env;
         ValueType precision = rewardUnfolding.getRequiredEpochModelPrecision(
-            initEpoch, storm::numbers::convertNumber<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
-        preciseEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convertNumber<storm::RationalNumber>(precision));
+            initEpoch, storm::numbers::convert<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
+        preciseEnv.solver().setLinearEquationSolverPrecision(storm::numbers::convert<storm::RationalNumber>(precision));
 
         // In case of cdf export we store the necessary data.
         std::vector<std::vector<ValueType>> cdfData;
@@ -89,7 +89,7 @@ std::map<storm::storage::sparse::state_type, SolutionType> SparseDtmcPrctlHelper
                 std::vector<ValueType> cdfEntry;
                 for (uint64_t i = 0; i < rewardUnfolding.getEpochManager().getDimensionCount(); ++i) {
                     uint64_t offset = rewardUnfolding.getDimension(i).boundType == helper::rewardbounded::DimensionBoundType::LowerBound ? 1 : 0;
-                    cdfEntry.push_back(storm::numbers::convertNumber<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
+                    cdfEntry.push_back(storm::numbers::convert<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
                                        rewardUnfolding.getDimension(i).scalingFactor);
                 }
                 cdfEntry.push_back(rewardUnfolding.getInitialStateResult(epoch));
@@ -221,7 +221,7 @@ std::vector<SolutionType> SparseDtmcPrctlHelper<ValueType, RewardModelType, Solu
     // Check whether we need to compute exact probabilities for some states.
     if (qualitative || maybeStatesNotRelevant) {
         // Set the values for all maybe-states to 0.5 to indicate that their probability values are neither 0 nor 1.
-        storm::utility::vector::setVectorValues<SolutionType>(result, maybeStates, storm::numbers::convertNumber<SolutionType>(0.5));
+        storm::utility::vector::setVectorValues<SolutionType>(result, maybeStates, storm::numbers::convert<SolutionType>(0.5));
     } else {
         if (!maybeStates.empty()) {
             // In this case we have to compute the probabilities.
@@ -262,7 +262,7 @@ std::vector<SolutionType> SparseDtmcPrctlHelper<ValueType, RewardModelType, Solu
                 if (hint.isExplicitModelCheckerHint() && hint.template asExplicitModelCheckerHint<ValueType>().hasResultHint()) {
                     x = storm::utility::vector::filterVector(hint.template asExplicitModelCheckerHint<SolutionType>().getResultHint(), maybeStates);
                 } else {
-                    x = std::vector<SolutionType>(maybeStates.getNumberOfSetBits(), storm::numbers::convertNumber<SolutionType>(0.5));
+                    x = std::vector<SolutionType>(maybeStates.getNumberOfSetBits(), storm::numbers::convert<SolutionType>(0.5));
                 }
 
                 // Prepare the right-hand side of the equation system. For entry i this corresponds to
@@ -323,13 +323,13 @@ std::vector<SolutionType> SparseDtmcPrctlHelper<ValueType, RewardModelType, Solu
             // Initialize the x vector with 0.5 for each element.
             // This is the initial guess for the iterative solvers. It should be safe as for all
             // 'maybe' states we know that the probability is strictly larger than 0.
-            std::vector<SolutionType> x = std::vector<SolutionType>(relevantStates.getNumberOfSetBits(), storm::numbers::convertNumber<SolutionType>(0.5));
+            std::vector<SolutionType> x = std::vector<SolutionType>(relevantStates.getNumberOfSetBits(), storm::numbers::convert<SolutionType>(0.5));
 
             // Prepare the right-hand side of the equation system.
             std::vector<SolutionType> b(relevantStates.getNumberOfSetBits(), storm::numbers::zero<SolutionType>());
             // Set initial states
             size_t i = 0;
-            ValueType initDist = storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType>(initialStates.getNumberOfSetBits());
+            ValueType initDist = storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType>(initialStates.getNumberOfSetBits());
             for (uint64_t state : relevantStates) {
                 if (initialStates.get(state)) {
                     b[i] = initDist;

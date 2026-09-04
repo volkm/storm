@@ -57,9 +57,9 @@ std::ostream& RegionRefinementCheckResult<ValueType>::writeIllustrationToStream(
         out << '\n';
 
         CoefficientType deltaX =
-            (getParameterSpace().getUpperBoundary(x) - getParameterSpace().getLowerBoundary(x)) / storm::numbers::convertNumber<CoefficientType>(sizeX);
+            (getParameterSpace().getUpperBoundary(x) - getParameterSpace().getLowerBoundary(x)) / storm::numbers::convert<CoefficientType>(sizeX);
         CoefficientType deltaY =
-            (getParameterSpace().getUpperBoundary(y) - getParameterSpace().getLowerBoundary(y)) / storm::numbers::convertNumber<CoefficientType>(sizeY);
+            (getParameterSpace().getUpperBoundary(y) - getParameterSpace().getLowerBoundary(y)) / storm::numbers::convert<CoefficientType>(sizeY);
         CoefficientType printedRegionArea = deltaX * deltaY;
         for (CoefficientType yUpper = getParameterSpace().getUpperBoundary(y); yUpper != getParameterSpace().getLowerBoundary(y); yUpper -= deltaY) {
             CoefficientType yLower = yUpper - deltaY;

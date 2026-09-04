@@ -24,7 +24,7 @@ class UnsoundEnvironment {
     typedef double ValueType;
     static storm::Environment createEnvironment() {
         storm::Environment env;
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-10));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-10));
         return env;
     }
 };
@@ -67,7 +67,7 @@ class QuantileQueryTest : public ::testing::Test {
         if (input.find("inf") != std::string::npos) {
             return storm::numbers::infinity<ValueType>();
         }
-        return storm::numbers::convertNumber<ValueType>(input);
+        return storm::numbers::convert<ValueType>(input);
     }
 
     template<typename MT>
@@ -107,8 +107,7 @@ class QuantileQueryTest : public ::testing::Test {
                                                std::unique_ptr<storm::modelchecker::CheckResult>& result, std::vector<std::string> const& expected) {
         bool equal = true;
         std::string errorMessage = "";
-        ValueType comparePrecision =
-            std::is_same<ValueType, double>::value ? storm::numbers::convertNumber<ValueType>(1e-10) : storm::numbers::zero<ValueType>();
+        ValueType comparePrecision = std::is_same<ValueType, double>::value ? storm::numbers::convert<ValueType>(1e-10) : storm::numbers::zero<ValueType>();
         auto filter = getInitialStateFilter(model);
         result->filter(*filter);
         std::vector<std::vector<ValueType>> resultPoints;

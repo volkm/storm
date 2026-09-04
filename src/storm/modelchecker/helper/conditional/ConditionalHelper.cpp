@@ -983,7 +983,7 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
                         "Bisection method does not adequately handle propagation of errors. Result is not necessarily sound.");
 
     bool const relative = env.modelchecker().conditional().isRelativePrecision();
-    auto const precision = storm::numbers::convertNumber<SolutionType>(env.modelchecker().conditional().getPrecision());
+    auto const precision = storm::numbers::convert<SolutionType>(env.modelchecker().conditional().getPrecision());
 
     WeightedReachabilityHelper<ValueType, SolutionType> wrh(initialState, transitionMatrix, normalForm, computeScheduler);
     SolutionType pMin{storm::numbers::zero<SolutionType>()};
@@ -992,8 +992,8 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
     if (useAdvancedBounds) {
         pMin = wrh.computeWeightedDiff(env, storm::OptimizationDirection::Minimize, storm::numbers::zero<ValueType>(), storm::numbers::one<ValueType>());
         pMax = wrh.computeWeightedDiff(env, storm::OptimizationDirection::Maximize, storm::numbers::zero<ValueType>(), storm::numbers::one<ValueType>());
-        STORM_LOG_TRACE("Conditioning event bounds:\n\t Lower bound: " << storm::numbers::convertNumber<double>(pMin)
-                                                                       << ",\n\t Upper bound: " << storm::numbers::convertNumber<double>(pMax));
+        STORM_LOG_TRACE("Conditioning event bounds:\n\t Lower bound: " << storm::numbers::convert<double>(pMin)
+                                                                       << ",\n\t Upper bound: " << storm::numbers::convert<double>(pMax));
     }
     storm::utility::Maximum<SolutionType> lowerBound = storm::numbers::zero<ValueType>();
     storm::utility::Minimum<SolutionType> upperBound = storm::numbers::one<ValueType>();
@@ -1062,14 +1062,14 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
                                       << ",\n\t Difference:       " << boundDiff << ",\n\t Middle val:       " << middleValue
                                       << ",\n\t Difference bound: " << (relative ? (precision * *lowerBound) : precision) << ".");
         if (goal.isBounded()) {
-            STORM_LOG_TRACE("Using threshold " << storm::numbers::convertNumber<double>(goal.thresholdValue()) << " with comparison "
+            STORM_LOG_TRACE("Using threshold " << storm::numbers::convert<double>(goal.thresholdValue()) << " with comparison "
                                                << (goal.boundIsALowerBound() ? (goal.boundIsStrict() ? ">" : ">=") : (goal.boundIsStrict() ? "<" : "<="))
                                                << ".");
         }
         if (boundDiff <= (relative ? (precision * *lowerBound) : precision)) {
             STORM_LOG_INFO("Bisection method converged after " << iterationCount << " iterations. Difference is "
                                                                << std::setprecision(std::numeric_limits<double>::digits10)
-                                                               << storm::numbers::convertNumber<double>(boundDiff) << ".");
+                                                               << storm::numbers::convert<double>(boundDiff) << ".");
             break;
         } else if (usePolicyTracking && lowerScheduler && upperScheduler && (*lowerScheduler == *upperScheduler)) {
             STORM_LOG_INFO("Bisection method converged after " << iterationCount << " iterations due to identical schedulers for lower and upper bound.");
@@ -1081,10 +1081,10 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
         }
         // Check if bounds are fully below or above threshold
         if (goal.isBounded() && (*upperBound <= goal.thresholdValue() || (*lowerBound >= goal.thresholdValue()))) {
-            STORM_LOG_INFO("Bisection method determined result after " << iterationCount << " iterations. Found bounds are ["
-                                                                       << storm::numbers::convertNumber<double>(*lowerBound) << ", "
-                                                                       << storm::numbers::convertNumber<double>(*upperBound) << "], threshold is "
-                                                                       << storm::numbers::convertNumber<double>(goal.thresholdValue()) << ".");
+            STORM_LOG_INFO("Bisection method determined result after "
+                           << iterationCount << " iterations. Found bounds are [" << storm::numbers::convert<double>(*lowerBound) << ", "
+                           << storm::numbers::convert<double>(*upperBound) << "], threshold is " << storm::numbers::convert<double>(goal.thresholdValue())
+                           << ".");
             break;
         }
         if (!storm::numbers::NumberTraits<SolutionType>::IsExact && storm::numbers::isAlmostZero(boundDiff)) {
@@ -1094,7 +1094,7 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
         // check for early termination
         if (storm::utility::resources::isTerminate()) {
             STORM_LOG_WARN("Bisection solver aborted after " << iterationCount << "iterations. Bound difference is "
-                                                             << storm::numbers::convertNumber<double>(boundDiff) << ".");
+                                                             << storm::numbers::convert<double>(boundDiff) << ".");
             break;
         }
         // process the middle value for the next iteration
@@ -1121,8 +1121,7 @@ typename internal::ResultReturnType<ValueType> computeViaBisection(Environment c
                     rationalCandidateCount = 0;
                 }
                 // Also simplify the middle value
-                SolutionType delta =
-                    std::min<SolutionType>(*upperBound - middle, middle - *lowerBound) / storm::numbers::convertNumber<SolutionType, uint64_t>(16);
+                SolutionType delta = std::min<SolutionType>(*upperBound - middle, middle - *lowerBound) / storm::numbers::convert<SolutionType, uint64_t>(16);
                 middle = storm::numbers::findRational(middle - delta, true, middle + delta, true);
             }
         }
@@ -1222,8 +1221,7 @@ internal::ResultReturnType<SolutionType> computeViaPolicyIteration(Environment c
         STORM_LOG_WARN_COND(
             targetResults[wrh.getInternalInitialState()] <= conditionResults[wrh.getInternalInitialState()],
             "Potential numerical issues: the probability to reach the target is greater than the probability to reach the condition. Difference is "
-                << (storm::numbers::convertNumber<double, ValueType>(targetResults[wrh.getInternalInitialState()] -
-                                                                     conditionResults[wrh.getInternalInitialState()]))
+                << (storm::numbers::convert<double, ValueType>(targetResults[wrh.getInternalInitialState()] - conditionResults[wrh.getInternalInitialState()]))
                 << ".");
         ValueType const lambda = storm::numbers::isZero(conditionResults[wrh.getInternalInitialState()])
                                      ? storm::numbers::zero<ValueType>()
@@ -1286,7 +1284,7 @@ std::unique_ptr<CheckResult> computeConditionalProbabilities(Environment const& 
     if (env.solver().isForceSoundness()) {
         // We intuitively have to divide the precision into two parts, one for computations when constructing the normal form and one for the actual analysis.
         // As the former is usually less numerically challenging, we use a factor of 1/10 for the normal form construction and 9/10 for the analysis.
-        auto const normalFormPrecisionFactor = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/10");
+        auto const normalFormPrecisionFactor = storm::numbers::convert<storm::RationalNumber, std::string>("1/10");
         normalFormConstructionEnv.modelchecker().conditional().setPrecision(precision * normalFormPrecisionFactor, false);
         analysisEnv.modelchecker().conditional().setPrecision(precision * (storm::numbers::one<storm::RationalNumber>() - normalFormPrecisionFactor), false);
     } else {

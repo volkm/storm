@@ -28,7 +28,7 @@ class SparseGmmxxGmresIluEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Gmres);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::Ilu);
-        // env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6)); // Need to increase precision because eq sys yields
+        // env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6)); // Need to increase precision because eq sys yields
         // incorrect results
         return env;
     }
@@ -81,7 +81,7 @@ class ExpectedVisitingTimesCtmcCslModelCheckerTest : public ::testing::Test {
         return _environment;
     }
     ValueType parseNumber(std::string const& input) const {
-        return storm::numbers::convertNumber<ValueType>(input);
+        return storm::numbers::convert<ValueType>(input);
     }
     ValueType precision() const {
         return TestType::isExact ? parseNumber("0") : parseNumber("1e-6");

@@ -54,7 +54,7 @@ GameBasedMdpModelChecker<Type, ModelType>::GameBasedMdpModelChecker(storm::stora
                                                                     std::shared_ptr<storm::utility::solver::SmtSolverFactory> const& smtSolverFactory)
     : options(options),
       smtSolverFactory(smtSolverFactory),
-      comparator(storm::numbers::convertNumber<ValueType>(storm::settings::getModule<storm::settings::modules::AbstractionSettings>().getPrecision()),
+      comparator(storm::numbers::convert<ValueType>(storm::settings::getModule<storm::settings::modules::AbstractionSettings>().getPrecision()),
                  storm::settings::getModule<storm::settings::modules::AbstractionSettings>().getRelativeTerminationCriterion()),
       reuseQualitativeResults(false),
       reuseQuantitativeResults(false),
@@ -828,8 +828,8 @@ std::unique_ptr<storm::modelchecker::CheckResult> GameBasedMdpModelChecker<Type,
                                                             << "ms (after " << totalWatch.getTimeInMilliseconds() << "ms in iteration " << this->iteration
                                                             << ").");
         } else {
-            STORM_LOG_INFO("Obtained quantitative bounds [" << minVal << ", " << maxVal << "] (approx. [" << storm::numbers::convertNumber<double>(minVal)
-                                                            << ", " << storm::numbers::convertNumber<double>(maxVal) << "], difference " << difference
+            STORM_LOG_INFO("Obtained quantitative bounds [" << minVal << ", " << maxVal << "] (approx. [" << storm::numbers::convert<double>(minVal) << ", "
+                                                            << storm::numbers::convert<double>(maxVal) << "], difference " << difference
                                                             << ") on the actual value for the initial states in " << quantitativeWatch.getTimeInMilliseconds()
                                                             << "ms (after " << totalWatch.getTimeInMilliseconds() << "ms in iteration " << this->iteration
                                                             << ").");
@@ -1266,7 +1266,7 @@ void postProcessStrategies(uint64_t iteration, storm::OptimizationDirection cons
     }
 
     if (sanityCheck) {
-        storm::numbers::ConstantsComparator<ValueType> sanityComparator(storm::numbers::convertNumber<ValueType>(1e-6), true);
+        storm::numbers::ConstantsComparator<ValueType> sanityComparator(storm::numbers::convert<ValueType>(1e-6), true);
 
         ///////// SANITY CHECK: apply lower strategy, obtain DTMC matrix and model check it. the values should
         ///////// still be the lower ones.
@@ -1511,8 +1511,8 @@ std::unique_ptr<storm::modelchecker::CheckResult> GameBasedMdpModelChecker<Type,
                                                             << "ms (after " << totalWatch.getTimeInMilliseconds() << "ms in iteration " << this->iteration
                                                             << ").");
         } else {
-            STORM_LOG_INFO("Obtained quantitative bounds [" << minVal << ", " << maxVal << "] (approx. [" << storm::numbers::convertNumber<double>(minVal)
-                                                            << ", " << storm::numbers::convertNumber<double>(maxVal) << "], difference " << difference
+            STORM_LOG_INFO("Obtained quantitative bounds [" << minVal << ", " << maxVal << "] (approx. [" << storm::numbers::convert<double>(minVal) << ", "
+                                                            << storm::numbers::convert<double>(maxVal) << "], difference " << difference
                                                             << ") on the actual value for the initial states in " << quantitativeWatch.getTimeInMilliseconds()
                                                             << "ms (after " << totalWatch.getTimeInMilliseconds() << "ms in iteration " << this->iteration
                                                             << ").");

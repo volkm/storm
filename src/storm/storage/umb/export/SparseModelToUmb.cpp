@@ -37,7 +37,7 @@ void transitionMatrixToUmb(storm::storage::SparseMatrix<ValueType> const& matrix
         auto const& row = matrix.getRow(rowIndex);
         for (auto const& entry : row) {
             umb.branchToTarget->push_back(entry.getColumn());
-            branchProbabilities.push_back(storm::numbers::convertNumber<TargetValueType>(entry.getValue()));
+            branchProbabilities.push_back(storm::numbers::convert<TargetValueType>(entry.getValue()));
         }
         if (normalize) {
             auto rowProbs = std::span<TargetValueType>(branchProbabilities.end() - row.getNumberOfEntries(), branchProbabilities.end());
@@ -203,7 +203,7 @@ void rewardToUmb(std::string const& rewardModelName, storm::models::sparse::Stan
                     branchRewards.push_back(storm::numbers::zero<TargetValueType>());
                 } else {
                     STORM_LOG_ASSERT(rewIt->getColumn() == entry.getColumn(), "Unexpected column in reward model.");
-                    branchRewards.push_back(storm::numbers::convertNumber<TargetValueType>(rewIt->getValue()));
+                    branchRewards.push_back(storm::numbers::convert<TargetValueType>(rewIt->getValue()));
                 }
             }
         }

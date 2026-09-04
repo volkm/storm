@@ -250,25 +250,25 @@ bool BeliefExplorationSettings::isCutZeroGapSet() const {
 template<typename ValueType>
 void BeliefExplorationSettings::setValuesInOptionsStruct(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>& options) const {
     options.refine = isRefineSet();
-    options.refinePrecision = storm::numbers::convertNumber<ValueType>(getRefinePrecision());
+    options.refinePrecision = storm::numbers::convert<ValueType>(getRefinePrecision());
     options.refineStepLimit = getRefineStepLimit();
     options.explorationTimeLimit = getExplorationTimeLimit();
 
     options.clippingGridRes = getClippingGridResolution();
     options.resolutionInit = getResolutionInit();
-    options.resolutionFactor = storm::numbers::convertNumber<ValueType>(getResolutionFactor());
+    options.resolutionFactor = storm::numbers::convert<ValueType>(getResolutionFactor());
     options.sizeThresholdInit = getSizeThresholdInit();
-    options.sizeThresholdFactor = storm::numbers::convertNumber<ValueType>(getSizeThresholdFactor());
-    options.gapThresholdInit = storm::numbers::convertNumber<ValueType>(getGapThresholdInit());
-    options.gapThresholdFactor = storm::numbers::convertNumber<ValueType>(getGapThresholdFactor());
-    options.optimalChoiceValueThresholdInit = storm::numbers::convertNumber<ValueType>(getOptimalChoiceValueThresholdInit());
-    options.optimalChoiceValueThresholdFactor = storm::numbers::convertNumber<ValueType>(getOptimalChoiceValueThresholdFactor());
-    options.obsThresholdInit = storm::numbers::convertNumber<ValueType>(getObservationScoreThresholdInit());
-    options.obsThresholdIncrementFactor = storm::numbers::convertNumber<ValueType>(getObservationScoreThresholdFactor());
+    options.sizeThresholdFactor = storm::numbers::convert<ValueType>(getSizeThresholdFactor());
+    options.gapThresholdInit = storm::numbers::convert<ValueType>(getGapThresholdInit());
+    options.gapThresholdFactor = storm::numbers::convert<ValueType>(getGapThresholdFactor());
+    options.optimalChoiceValueThresholdInit = storm::numbers::convert<ValueType>(getOptimalChoiceValueThresholdInit());
+    options.optimalChoiceValueThresholdFactor = storm::numbers::convert<ValueType>(getOptimalChoiceValueThresholdFactor());
+    options.obsThresholdInit = storm::numbers::convert<ValueType>(getObservationScoreThresholdInit());
+    options.obsThresholdIncrementFactor = storm::numbers::convert<ValueType>(getObservationScoreThresholdFactor());
     options.useClipping = isUseClippingSet();
     options.useStateEliminationCutoff = isStateEliminationCutoffSet();
 
-    options.numericPrecision = storm::numbers::convertNumber<ValueType>(getNumericPrecision());
+    options.numericPrecision = storm::numbers::convert<ValueType>(getNumericPrecision());
     if (storm::numbers::NumberTraits<ValueType>::IsExact) {
         if (isNumericPrecisionSetFromDefault()) {
             STORM_LOG_WARN_COND(storm::numbers::isZero(options.numericPrecision), "Setting numeric precision to zero because exact arithmethic is used.");

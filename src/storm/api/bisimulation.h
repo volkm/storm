@@ -30,7 +30,7 @@ std::shared_ptr<ModelType> performDeterministicSparseBisimulationMinimization(st
     // may be reworked to require an explicit choice throughout the API in the future.
     typename ModelType::ValueType const resolvedTolerance = storm::numbers::NumberTraits<typename ModelType::ValueType>::IsExact
                                                                 ? storm::numbers::zero<typename ModelType::ValueType>()
-                                                                : storm::numbers::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
+                                                                : storm::numbers::convert<typename ModelType::ValueType>(tolerance.value_or(
                                                                       storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
     OptionsType options =
         (!formulas.empty() && graphPreserving) ? OptionsType(*model, formulas, resolvedTolerance) : OptionsType::preservingAllLabels(resolvedTolerance);
@@ -58,7 +58,7 @@ std::shared_ptr<ModelType> performNondeterministicSparseBisimulationMinimization
     // may be reworked to require an explicit choice throughout the API in the future.
     typename ModelType::ValueType const resolvedTolerance = storm::numbers::NumberTraits<typename ModelType::ValueType>::IsExact
                                                                 ? storm::numbers::zero<typename ModelType::ValueType>()
-                                                                : storm::numbers::convertNumber<typename ModelType::ValueType>(tolerance.value_or(
+                                                                : storm::numbers::convert<typename ModelType::ValueType>(tolerance.value_or(
                                                                       storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
     OptionsType options =
         (!formulas.empty() && graphPreserving) ? OptionsType(*model, formulas, resolvedTolerance) : OptionsType::preservingAllLabels(resolvedTolerance);

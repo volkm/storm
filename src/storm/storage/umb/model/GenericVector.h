@@ -63,7 +63,7 @@ class GenericVector {
             return get<ToType>();
         } else {
             return get<FromType>() |
-                   std::ranges::views::transform([](FromType const& value) -> ToType { return storm::numbers::convertNumber<ToType, FromType>(value); });
+                   std::ranges::views::transform([](FromType const& value) -> ToType { return storm::numbers::convert<ToType, FromType>(value); });
         }
     }
 
@@ -101,9 +101,9 @@ class GenericVector {
     ValueType at(uint64_t index) const {
         STORM_LOG_ASSERT(isType<double>() || isType<storm::RationalNumber>(), "Unexpected type.");
         if (isType<double>()) {
-            return storm::numbers::convertNumber<ValueType>(get<double>()[index]);
+            return storm::numbers::convert<ValueType>(get<double>()[index]);
         } else {
-            return storm::numbers::convertNumber<ValueType>(get<storm::RationalNumber>()[index]);
+            return storm::numbers::convert<ValueType>(get<storm::RationalNumber>()[index]);
         }
     }
 

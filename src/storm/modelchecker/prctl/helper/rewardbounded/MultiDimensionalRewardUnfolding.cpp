@@ -271,7 +271,7 @@ void MultiDimensionalRewardUnfolding<ValueType, SingleObjectiveMode>::computeMax
             // We always consider upper bounds to be non-strict and lower bounds to be strict.
             // Thus, >=N would become >N-1. However, note that the case N=0 is treated separately.
             if (dimensions[dim].boundType == DimensionBoundType::LowerBound || dimensions[dim].boundType == DimensionBoundType::UpperBound) {
-                ValueType discretizedBound = storm::numbers::convertNumber<ValueType>(bound.evaluateAsRational());
+                ValueType discretizedBound = storm::numbers::convert<ValueType>(bound.evaluateAsRational());
                 discretizedBound /= dimensions[dim].scalingFactor;
                 if (storm::numbers::isInteger(discretizedBound)) {
                     if (isStrict == (dimensions[dim].boundType == DimensionBoundType::UpperBound)) {
@@ -280,7 +280,7 @@ void MultiDimensionalRewardUnfolding<ValueType, SingleObjectiveMode>::computeMax
                 } else {
                     discretizedBound = storm::numbers::floor(discretizedBound);
                 }
-                uint64_t dimensionValue = storm::numbers::convertNumber<uint64_t>(discretizedBound);
+                uint64_t dimensionValue = storm::numbers::convert<uint64_t>(discretizedBound);
                 STORM_LOG_THROW(epochManager.isValidDimensionValue(dimensionValue), storm::exceptions::NotSupportedException,
                                 "The bound " << bound << " is too high for the considered number of dimensions.");
                 dimensions[dim].maxValue = dimensionValue;
@@ -755,7 +755,7 @@ std::string MultiDimensionalRewardUnfolding<ValueType, SingleObjectiveMode>::sol
 
 template<typename ValueType, bool SingleObjectiveMode>
 ValueType MultiDimensionalRewardUnfolding<ValueType, SingleObjectiveMode>::getRequiredEpochModelPrecision(Epoch const& startEpoch, ValueType const& precision) {
-    return precision / storm::numbers::convertNumber<ValueType>(epochManager.getSumOfDimensions(startEpoch) + 1);
+    return precision / storm::numbers::convert<ValueType>(epochManager.getSumOfDimensions(startEpoch) + 1);
 }
 
 template<typename ValueType, bool SingleObjectiveMode>

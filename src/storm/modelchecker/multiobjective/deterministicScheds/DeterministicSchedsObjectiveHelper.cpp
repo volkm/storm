@@ -428,7 +428,7 @@ std::vector<ValueType> computeValuesOfReducedSystem(Environment const& env, stor
 template<typename ValueType>
 void plusMinMaxSolverPrecision(Environment const& env, ValueType& value) {
     if (!storm::numbers::NumberTraits<ValueType>::IsExact) {
-        auto eps = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+        auto eps = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
         if (env.solver().minMax().getRelativeTerminationCriterion()) {
             value += value * eps;
         } else {
@@ -440,7 +440,7 @@ void plusMinMaxSolverPrecision(Environment const& env, ValueType& value) {
 template<typename ValueType>
 void minusMinMaxSolverPrecision(Environment const& env, ValueType& value) {
     if (!storm::numbers::NumberTraits<ValueType>::IsExact) {
-        auto eps = storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision());
+        auto eps = storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision());
         if (env.solver().minMax().getRelativeTerminationCriterion()) {
             value -= value * eps;
         } else {

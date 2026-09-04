@@ -99,7 +99,7 @@ std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> ApplyFini
             uint64_t currEntry = 1;
             for (auto const& entry : pomdp.getTransitionMatrix().getRow(state, action)) {
                 auto it = weightedTransitions.find(entry.getColumn());
-                auto entryVal = storm::numbers::convertNumber<storm::RationalFunction>(entry.getValue());
+                auto entryVal = storm::numbers::convert<storm::RationalFunction>(entry.getValue());
                 ratSum += entryVal;
                 if (currEntry == nrEntries && storm::numbers::one<storm::RationalFunction>() - ratSum != storm::numbers::zero<storm::RationalFunction>()) {
                     // In case there are numeric problems with the conversion, we simply add the lost mass to the last value
@@ -135,7 +135,7 @@ std::shared_ptr<storm::models::sparse::Model<storm::RationalFunction>> ApplyFini
                 uint64_t offset = pomdp.getTransitionMatrix().getRowGroupIndices()[state];
                 for (uint64_t action = 0; action < pomdp.getNumberOfChoices(state); ++action) {
                     if (!storm::numbers::isZero(pomdpActionRewards[offset + action])) {
-                        stateReward += storm::numbers::convertNumber<storm::RationalFunction>(pomdpActionRewards[offset + action]) * weights[action];
+                        stateReward += storm::numbers::convert<storm::RationalFunction>(pomdpActionRewards[offset + action]) * weights[action];
                     }
                 }
             }

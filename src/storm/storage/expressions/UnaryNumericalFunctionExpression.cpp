@@ -109,11 +109,11 @@ std::shared_ptr<BaseExpression const> UnaryNumericalFunctionExpression::simplify
                     break;
                 case OperatorType::Cos:
                     useInteger = false;
-                    rationalValue = storm::numbers::cos(storm::numbers::convertNumber<storm::RationalNumber>(intValue));
+                    rationalValue = storm::numbers::cos(storm::numbers::convert<storm::RationalNumber>(intValue));
                     break;
                 case OperatorType::Sin:
                     useInteger = false;
-                    rationalValue = storm::numbers::sin(storm::numbers::convertNumber<storm::RationalNumber>(intValue));
+                    rationalValue = storm::numbers::sin(storm::numbers::convert<storm::RationalNumber>(intValue));
                     break;
             }
             if (useInteger) {
@@ -144,7 +144,7 @@ std::shared_ptr<BaseExpression const> UnaryNumericalFunctionExpression::simplify
                     break;
             }
             if (convertToInteger) {
-                return std::shared_ptr<BaseExpression>(new IntegerLiteralExpression(this->getManager(), storm::numbers::convertNumber<int64_t>(value)));
+                return std::shared_ptr<BaseExpression>(new IntegerLiteralExpression(this->getManager(), storm::numbers::convert<int64_t>(value)));
             } else {
                 return std::shared_ptr<BaseExpression>(new RationalLiteralExpression(this->getManager(), value));
             }

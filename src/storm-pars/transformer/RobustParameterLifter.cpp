@@ -79,7 +79,7 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustParameterLifter(storm
             occurringVariables.insert(variables.begin(), variables.end());
 
             if (storm::numbers::isConstant(transition)) {
-                builder.addNextValue(oldToNewColumnIndexMapping[row], oldToNewColumnIndexMapping[column], storm::numbers::convertNumber<double>(transition));
+                builder.addNextValue(oldToNewColumnIndexMapping[row], oldToNewColumnIndexMapping[column], storm::numbers::convert<double>(transition));
             } else {
                 nonConstMatrixEntries.set(pMatrixEntryCount, true);
                 auto valuation = RobustAbstractValuation(transition);
@@ -104,7 +104,7 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustParameterLifter(storm
             continue;
         }
         if (storm::numbers::isConstant(transition)) {
-            vector.push_back(storm::numbers::convertNumber<double>(transition));
+            vector.push_back(storm::numbers::convert<double>(transition));
         } else {
             nonConstVectorEntries.set(pVectorEntryCount, true);
             auto valuation = RobustAbstractValuation(transition);
@@ -224,7 +224,7 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustAbstractValuation::ze
 
             double value = model->getRationalValue(var);
 
-            zeroes.emplace(storm::numbers::convertNumber<CoefficientType>(value));
+            zeroes.emplace(storm::numbers::convert<CoefficientType>(value));
 
             // Add new constraint so we search for the next zero in the polynomial
             // Get another model (or unsat)
@@ -274,7 +274,7 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustAbstractValuation::cu
 
     // Recover factors from polynomial
     CoefficientType a = storm::numbers::zero<CoefficientType>(), b = a, c = a, d = a;
-    storm::numbers::convertNumber<ConstantType>(a);
+    storm::numbers::convert<ConstantType>(a);
     for (auto const& term : polynomial.getTerms()) {
         STORM_LOG_ASSERT(term.getNrVariables() <= 1, "No terms with more than one variable allowed but " << term << " has " << term.getNrVariables());
         if (!term.isConstant() && term.getSingleVariable() != parameter) {
@@ -330,16 +330,16 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustAbstractValuation::cu
     // Convert to depressed cubic t^3+pt+q = 0 (subst x = t - b/3a)
     CoefficientType p = (3 * a * c - b * b) / (3 * a * a);
     CoefficientType q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a);
-    double pDouble = storm::numbers::convertNumber<ConstantType>(p);
-    double qDouble = storm::numbers::convertNumber<ConstantType>(q);
+    double pDouble = storm::numbers::convert<ConstantType>(p);
+    double qDouble = storm::numbers::convert<ConstantType>(q);
 
     if (storm::numbers::isZero(p)) {  // p = 0 -> t^3 = -q -> t = -q^1/3
-        roots = {storm::numbers::convertNumber<CoefficientType>(std::cbrt(-qDouble))};
+        roots = {storm::numbers::convert<CoefficientType>(std::cbrt(-qDouble))};
     } else if (storm::numbers::isZero(q)) {  // q = 0 -> t^3 + pt = 0 -> t(t^2+p)=0
         roots = {0};
         if (p < 0) {
-            roots.emplace(storm::numbers::convertNumber<CoefficientType>(storm::numbers::sqrt(-pDouble)));
-            roots.emplace(storm::numbers::convertNumber<CoefficientType>(-storm::numbers::sqrt(-pDouble)));
+            roots.emplace(storm::numbers::convert<CoefficientType>(storm::numbers::sqrt(-pDouble)));
+            roots.emplace(storm::numbers::convert<CoefficientType>(-storm::numbers::sqrt(-pDouble)));
         }
     } else {
         // These are all coefficients (we also plug the values into RationalFunctions later), i.e., they are rational numbers,
@@ -348,16 +348,16 @@ RobustParameterLifter<ParametricType, ConstantType>::RobustAbstractValuation::cu
         if (storm::numbers::isZero(D)) {  // D = 0 -> two roots
             roots = {-3 * q / (p * 2), 3 * q / p};
         } else if (D > 0) {  // Only one real root
-            double Ddouble = storm::numbers::convertNumber<ConstantType>(D);
-            CoefficientType u = storm::numbers::convertNumber<CoefficientType>(std::cbrt(-qDouble / 2 - storm::numbers::sqrt(Ddouble)));
+            double Ddouble = storm::numbers::convert<ConstantType>(D);
+            CoefficientType u = storm::numbers::convert<CoefficientType>(std::cbrt(-qDouble / 2 - storm::numbers::sqrt(Ddouble)));
             roots = {u - p / (3 * u)};
         } else {  // D < 0, three roots, but needs to use complex numbers/trigonometric solution
             double u = 2 * storm::numbers::sqrt(-pDouble / 3);
             double t = std::acos(3 * qDouble / pDouble / u) / 3;  // D < 0 implies p < 0 and acos argument in [-1..1]
             double k = 2 * M_PI / 3;
 
-            roots = {storm::numbers::convertNumber<CoefficientType>(u * std::cos(t)), storm::numbers::convertNumber<CoefficientType>(u * std::cos(t - k)),
-                     storm::numbers::convertNumber<CoefficientType>(u * std::cos(t - 2 * k))};
+            roots = {storm::numbers::convert<CoefficientType>(u * std::cos(t)), storm::numbers::convert<CoefficientType>(u * std::cos(t - k)),
+                     storm::numbers::convert<CoefficientType>(u * std::cos(t - 2 * k))};
         }
     }
 
@@ -434,7 +434,7 @@ void RobustParameterLifter<ParametricType, ConstantType>::RobustAbstractValuatio
             this->extrema = std::map<VariableType, std::set<CoefficientType>>();
             (*this->extrema)[annotation.getParameter()];
             for (auto const& root : *carlResult) {
-                (*this->extrema).at(annotation.getParameter()).emplace(storm::numbers::convertNumber<CoefficientType>(root));
+                (*this->extrema).at(annotation.getParameter()).emplace(storm::numbers::convert<CoefficientType>(root));
             }
         } else {
             // TODO make evaluation depth configurable
@@ -522,7 +522,7 @@ Interval evaluateExtremaAnnotations(std::map<UniPoly, std::set<double>> extremaA
         utility::Maximum<double> maxValue;
 
         for (auto const& potentialExtremum : potentialExtrema) {
-            auto value = storm::numbers::convertNumber<double>(poly.evaluate(storm::numbers::convertNumber<RationalFunctionCoefficient>(potentialExtremum)));
+            auto value = storm::numbers::convert<double>(poly.evaluate(storm::numbers::convert<RationalFunctionCoefficient>(potentialExtremum)));
             maxValue &= value;
             minValue &= value;
         }
@@ -567,7 +567,7 @@ bool RobustParameterLifter<ParametricType, ConstantType>::FunctionValuationColle
                 utility::Maximum<ConstantType> maximum;
                 for (auto const& potentialExtremum : potentialExtrema) {
                     // Possible optimization: evaluate all transitions together, keeping track of intermediate results
-                    auto value = maybeAnnotation->evaluate(storm::numbers::convertNumber<double>(potentialExtremum));
+                    auto value = maybeAnnotation->evaluate(storm::numbers::convert<double>(potentialExtremum));
                     maximum &= value;
                     minimum &= value;
                 }
@@ -618,8 +618,8 @@ bool RobustParameterLifter<ParametricType, ConstantType>::FunctionValuationColle
                 }
 
                 // Compute function values at left and right ends
-                lowerBound = storm::numbers::convertNumber<ConstantType>(abstrValuation.getTransition().evaluate(lowerPositions));
-                upperBound = storm::numbers::convertNumber<ConstantType>(abstrValuation.getTransition().evaluate(upperPositions));
+                lowerBound = storm::numbers::convert<ConstantType>(abstrValuation.getTransition().evaluate(lowerPositions));
+                upperBound = storm::numbers::convert<ConstantType>(abstrValuation.getTransition().evaluate(upperPositions));
             }
 
             if (upperBound < storm::numbers::zero<ConstantType>() || lowerBound > storm::numbers::one<ConstantType>()) {
@@ -704,7 +704,7 @@ bool RobustParameterLifter<ParametricType, ConstantType>::FunctionValuationColle
         // bool graphPreserving = true;
         // // const ConstantType epsilon =
         // //     graphPreserving ?
-        // storm::numbers::convertNumber<ConstantType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision())
+        // storm::numbers::convert<ConstantType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision())
         // //                     : storm::numbers::zero<ConstantType>();
         const ConstantType epsilon = 0;
         // We want to check in the realm of feasible instantiations, even if our not our entire parameter space is feasible

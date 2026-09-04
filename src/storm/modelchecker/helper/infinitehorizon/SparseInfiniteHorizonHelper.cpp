@@ -127,7 +127,7 @@ std::vector<ValueType> SparseInfiniteHorizonHelper<ValueType, Nondeterministic>:
     auto underlyingSolverEnvironment = env;
     if (env.solver().isForceSoundness()) {
         // For sound computations, the error in the MECS plus the error in the remaining system should not exceed the user defined precsion.
-        storm::RationalNumber newPrecision = env.solver().lra().getPrecision() / storm::numbers::convertNumber<storm::RationalNumber>(2);
+        storm::RationalNumber newPrecision = env.solver().lra().getPrecision() / storm::numbers::convert<storm::RationalNumber>(2);
         underlyingSolverEnvironment.solver().minMax().setPrecision(newPrecision);
         underlyingSolverEnvironment.solver().minMax().setRelativeTerminationCriterion(env.solver().lra().getRelativeTerminationCriterion());
         underlyingSolverEnvironment.solver().setLinearEquationSolverPrecision(newPrecision, env.solver().lra().getRelativeTerminationCriterion());

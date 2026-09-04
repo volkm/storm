@@ -135,15 +135,15 @@ class Annotation : public std::unordered_map<std::vector<uint64_t>, RationalFunc
                 ConstantType innerSum = storm::numbers::zero<ConstantType>();
                 for (uint64_t exponent = 0; exponent < coefficients.size(); exponent++) {
                     if (exponent != 0) {
-                        innerSum += carl::pow(input, exponent) * storm::numbers::convertNumber<ConstantType>(coefficients[exponent]);
+                        innerSum += carl::pow(input, exponent) * storm::numbers::convert<ConstantType>(coefficients[exponent]);
                     } else {
-                        innerSum += storm::numbers::convertNumber<ConstantType>(coefficients[exponent]);
+                        innerSum += storm::numbers::convert<ConstantType>(coefficients[exponent]);
                     }
                 }
                 // Inner polynomial ^ exponent
                 outerMult *= carl::pow(innerSum, info[i]);
             }
-            sumOfTerms += outerMult * storm::numbers::convertNumber<ConstantType>(constant);
+            sumOfTerms += outerMult * storm::numbers::convert<ConstantType>(constant);
         }
         return sumOfTerms;
     }

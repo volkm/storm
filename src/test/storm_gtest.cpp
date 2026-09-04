@@ -22,10 +22,10 @@ GTEST_API_ AssertionResult DoubleNearPredFormat(const char* expr1, const char* e
         return AssertionSuccess();
     }
     return AssertionFailure() << "The difference between " << expr1 << " and " << expr2 << " is " << diff << " (approx. "
-                              << storm::numbers::convertNumber<double>(diff) << "), which exceeds " << abs_error_expr << ", where\n"
-                              << expr1 << " evaluates to " << val1 << " (approx. " << storm::numbers::convertNumber<double>(val1) << "),\n"
-                              << expr2 << " evaluates to " << val2 << " (approx. " << storm::numbers::convertNumber<double>(val2) << "),\n"
-                              << abs_error_expr << " evaluates to " << abs_error << " (approx. " << storm::numbers::convertNumber<double>(abs_error) << ").";
+                              << storm::numbers::convert<double>(diff) << "), which exceeds " << abs_error_expr << ", where\n"
+                              << expr1 << " evaluates to " << val1 << " (approx. " << storm::numbers::convert<double>(val1) << "),\n"
+                              << expr2 << " evaluates to " << val2 << " (approx. " << storm::numbers::convert<double>(val2) << "),\n"
+                              << abs_error_expr << " evaluates to " << abs_error << " (approx. " << storm::numbers::convert<double>(abs_error) << ").";
 }
 }  // namespace internal
 }  // namespace testing

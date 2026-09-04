@@ -60,7 +60,7 @@ class SchedulerChoice {
     SchedulerChoice<NewValueType> toValueType() const {
         storm::storage::Distribution<NewValueType, uint_fast64_t> newDistribution;
         for (auto const& stateValuePair : distribution) {
-            newDistribution.addProbability(stateValuePair.first, storm::numbers::convertNumber<NewValueType>(stateValuePair.second));
+            newDistribution.addProbability(stateValuePair.first, storm::numbers::convert<NewValueType>(stateValuePair.second));
         }
         return SchedulerChoice<NewValueType>(std::move(newDistribution));
     }

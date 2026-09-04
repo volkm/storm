@@ -79,11 +79,11 @@ std::ostream& RegionCheckResult<ValueType>::writeToStream(std::ostream& out) con
 
 template<typename ValueType>
 std::ostream& RegionCheckResult<ValueType>::writeCondensedToStream(std::ostream& out) const {
-    double satPercent = storm::numbers::convertNumber<double>(satFraction) * 100.0;
-    double unsatPercent = storm::numbers::convertNumber<double>(unsatFraction) * 100.0;
-    double illDefinedPercent = storm::numbers::convertNumber<double>(illDefinedFraction) * 100.0;
-    auto oneHundred = storm::numbers::convertNumber<typename storm::storage::ParameterRegion<ValueType>::CoefficientType>(100.0);
-    auto one = storm::numbers::convertNumber<typename storm::storage::ParameterRegion<ValueType>::CoefficientType>(1.0);
+    double satPercent = storm::numbers::convert<double>(satFraction) * 100.0;
+    double unsatPercent = storm::numbers::convert<double>(unsatFraction) * 100.0;
+    double illDefinedPercent = storm::numbers::convert<double>(illDefinedFraction) * 100.0;
+    auto oneHundred = storm::numbers::convert<typename storm::storage::ParameterRegion<ValueType>::CoefficientType>(100.0);
+    auto one = storm::numbers::convert<typename storm::storage::ParameterRegion<ValueType>::CoefficientType>(1.0);
     out << "  Fraction of satisfied area: " << satPercent << "%\n";
     out << "Fraction of unsatisfied area: " << unsatPercent << "%\n";
     if (illDefinedPercent > 0) {

@@ -220,7 +220,7 @@ std::shared_ptr<Polytope<TargetType>> Polytope<ValueType>::convertNumberRepresen
     halfspacesPrime.reserve(halfspaces.size());
     for (auto const& h : halfspaces) {
         halfspacesPrime.emplace_back(storm::utility::vector::convertNumericVector<TargetType>(h.normalVector()),
-                                     storm::numbers::convertNumber<TargetType>(h.offset()));
+                                     storm::numbers::convert<TargetType>(h.offset()));
     }
 
     return Polytope<TargetType>::create(halfspacesPrime);

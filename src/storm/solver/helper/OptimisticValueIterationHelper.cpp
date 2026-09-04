@@ -205,8 +205,8 @@ SolverStatus OptimisticValueIterationHelper<ValueType, TrivialRowGrouping>::OVI(
         if (storm::numbers::isZero(currentGuessValue)) {
             maxIters = std::numeric_limits<uint64_t>::max();
         } else {
-            maxIters = numIterations + storm::numbers::convertNumber<uint64_t, ValueType>(
-                                           storm::numbers::ceil<ValueType>(storm::numbers::one<ValueType>() / currentGuessValue));
+            maxIters = numIterations +
+                       storm::numbers::convert<uint64_t, ValueType>(storm::numbers::ceil<ValueType>(storm::numbers::one<ValueType>() / currentGuessValue));
         }
         while (numIterations < maxIters) {
             ++numIterations;
@@ -228,7 +228,7 @@ SolverStatus OptimisticValueIterationHelper<ValueType, TrivialRowGrouping>::OVI(
             }
         }
         STORM_LOG_WARN_COND(numTries != 20, "Optimistic Value Iteration did not terminate after 20 refinements. It might be stuck.");
-        currentGuessValue = backend.error() / storm::numbers::convertNumber<ValueType, uint64_t>(2u);
+        currentGuessValue = backend.error() / storm::numbers::convert<ValueType, uint64_t>(2u);
     }
 }
 
@@ -281,7 +281,7 @@ SolverStatus OptimisticValueIterationHelper<ValueType, TrivialRowGrouping>::OVI(
         doublePrec -= precision * 1e-6;  // be slightly more precise to avoid a good chunk of floating point issues
     }
     auto status = OVI(vu, offsets, numIterations, relative, doublePrec, dir, guessValue ? *guessValue : doublePrec, lowerBound, upperBound, iterationCallback);
-    auto two = storm::numbers::convertNumber<ValueType>(2.0);
+    auto two = storm::numbers::convert<ValueType>(2.0);
     // get the average of lower- and upper result
     storm::utility::vector::applyPointwise<ValueType, ValueType, ValueType>(
         vu.first, vu.second, vu.first, [&two](ValueType const& a, ValueType const& b) -> ValueType { return (a + b) / two; });

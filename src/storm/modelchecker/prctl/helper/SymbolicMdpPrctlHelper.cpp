@@ -128,9 +128,8 @@ std::unique_ptr<CheckResult> SymbolicMdpPrctlHelper<DdType, ValueType>::computeU
     if (qualitative) {
         // Set the values for all maybe-states to 0.5 to indicate that their probability values are neither 0 nor 1.
         return std::unique_ptr<CheckResult>(new storm::modelchecker::SymbolicQuantitativeCheckResult<DdType, ValueType>(
-            model.getReachableStates(),
-            statesWithProbability01.second.template toAdd<ValueType>() +
-                maybeStates.template toAdd<ValueType>() * model.getManager().getConstant(storm::numbers::convertNumber<ValueType>(0.5))));
+            model.getReachableStates(), statesWithProbability01.second.template toAdd<ValueType>() +
+                                            maybeStates.template toAdd<ValueType>() * model.getManager().getConstant(storm::numbers::convert<ValueType>(0.5))));
     } else {
         // If there are maybe states, we need to solve an equation system.
         if (!maybeStates.isZero()) {

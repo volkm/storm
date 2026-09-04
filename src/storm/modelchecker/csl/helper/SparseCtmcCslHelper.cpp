@@ -28,13 +28,13 @@ bool SparseCtmcCslHelper::checkAndUpdateTransientProbabilityEpsilon(storm::Envir
         return false;
     }
 
-    ValueType precision = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+    ValueType precision = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
     // If we need to compute values with relative precision, it might be necessary to increase the precision requirements (epsilon)
     ValueType newEpsilon = epsilon;
     // Only consider positions that are relevant for the solve goal (e.g. initial states of the model) and are supposed to have a non-zero value
     for (uint64_t state : relevantPositions) {
         if (storm::numbers::isZero(resultVector[state])) {
-            newEpsilon = std::min(epsilon * storm::numbers::convertNumber<ValueType>(0.1), newEpsilon);
+            newEpsilon = std::min(epsilon * storm::numbers::convert<ValueType>(0.1), newEpsilon);
         } else {
             ValueType relativeError = epsilon / resultVector[state];  // epsilon is an upper bound for the absolute error we made
             if (relativeError > precision) {
@@ -75,7 +75,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
     std::vector<ValueType> result;
 
     // Set the possible (absolute) error allowed for truncation (epsilon for fox-glynn)
-    ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
+    ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
 
     // If we identify the states that have probability 0 of reaching the target states, we can exclude them from the
     // further computations.
@@ -194,7 +194,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
                             // divide the possible error by two since we will make this error two times.
                             std::vector<ValueType> subresult =
                                 computeTransientProbabilities(env, uniformizedMatrix, &b, *upperBound - lowerBound, uniformizationRate, values,
-                                                              epsilon / storm::numbers::convertNumber<ValueType>(2.0));
+                                                              epsilon / storm::numbers::convert<ValueType>(2.0));
                             storm::utility::vector::setVectorValues(newSubresult, statesWithProbabilityGreater0NonPsi % relevantStates, subresult);
                         }
 
@@ -211,7 +211,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
                         storm::storage::SparseMatrix<ValueType> uniformizedMatrix =
                             computeUniformizedMatrix(rateMatrix, relevantStates, uniformizationRate, exitRates);
                         newSubresult = computeTransientProbabilities<ValueType>(env, uniformizedMatrix, nullptr, lowerBound, uniformizationRate, newSubresult,
-                                                                                epsilon / storm::numbers::convertNumber<ValueType>(2.0));
+                                                                                epsilon / storm::numbers::convert<ValueType>(2.0));
 
                         // Fill in the correct values.
                         result = std::vector<ValueType>(numberOfStates, storm::numbers::zero<ValueType>());
@@ -317,7 +317,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeInstantaneousRewards(Environm
         computeUniformizedMatrix(rateMatrix, storm::storage::BitVector(numberOfStates, true), uniformizationRate, exitRateVector);
 
     // Set the possible error allowed for truncation (epsilon for fox-glynn)
-    ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+    ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
     if (env.solver().timeBounded().getRelativeTerminationCriterion()) {
         // Be more precise, if the maximum value is very small (precision can/has to be refined later)
         epsilon *= std::min(storm::numbers::one<ValueType>(), maxValue);
@@ -383,7 +383,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeCumulativeRewards(Environment
     }
 
     // Set the possible (absolute) error allowed for truncation (epsilon for fox-glynn)
-    ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+    ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
     if (env.solver().timeBounded().getRelativeTerminationCriterion()) {
         // Be more precise, if the value is very small (precision can/has to be refined later)
         epsilon *= std::min(storm::numbers::one<ValueType>(), maxReward);
@@ -558,7 +558,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeAllTransientProbabilities(Env
             std::cout << element << '\n';
         }*/
 
-        ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
+        ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
         STORM_LOG_WARN_COND(!env.solver().timeBounded().getRelativeTerminationCriterion(),
                             "Computation of transient probabilities with relative precision not supported. Using absolute precision instead.");
         std::vector<ValueType> values(relevantStates.getNumberOfSetBits(), storm::numbers::zero<ValueType>());
@@ -617,7 +617,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeTransientProbabilities(Enviro
                                                                           storm::storage::SparseMatrix<ValueType> const& uniformizedMatrix,
                                                                           std::vector<ValueType> const* addVector, ValueType timeBound,
                                                                           ValueType uniformizationRate, std::vector<ValueType> values, ValueType epsilon) {
-    STORM_LOG_WARN_COND(epsilon > storm::numbers::convertNumber<ValueType>(1e-20),
+    STORM_LOG_WARN_COND(epsilon > storm::numbers::convert<ValueType>(1e-20),
                         "Very low truncation error " << epsilon << " requested. Numerical inaccuracies are possible.");
     ValueType lambda = timeBound * uniformizationRate;
 
@@ -657,7 +657,7 @@ std::vector<ValueType> SparseCtmcCslHelper::computeTransientProbabilities(Enviro
             }
         }
         auto const relDiff = storm::numbers::abs<ValueType>(foxGlynnResult.totalWeight - (sumLeft + sumRight)) / foxGlynnResult.totalWeight;
-        STORM_LOG_WARN_COND(relDiff < storm::numbers::convertNumber<ValueType>(1e-8),
+        STORM_LOG_WARN_COND(relDiff < storm::numbers::convert<ValueType>(1e-8),
                             "Numerical instability when adjusting the FoxGlynn weights. Relative Difference: " << relDiff << ".");
     }
 

@@ -19,12 +19,12 @@ class DefaultDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::None;
@@ -36,12 +36,12 @@ class SelfloopReductionDefaultDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::SelfloopReduction;
@@ -53,12 +53,12 @@ class QualitativeReductionDefaultDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::QualitativeReduction;
@@ -70,12 +70,12 @@ class PreprocessedDefaultDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::All;
@@ -87,12 +87,12 @@ class FineDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.02);
+        return storm::numbers::convert<ValueType>(0.02);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>& options) {
         options.resolutionInit = 24;
@@ -106,12 +106,12 @@ class RefineDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.005);
+        return storm::numbers::convert<ValueType>(0.005);
     }
     static PreprocessingType const preprocessingType = PreprocessingType::None;
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>& options) {
@@ -126,12 +126,12 @@ class PreprocessedRefineDoubleVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.005);
+        return storm::numbers::convert<ValueType>(0.005);
     }
     static PreprocessingType const preprocessingType = PreprocessingType::All;
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>& options) {
@@ -146,13 +146,13 @@ class DefaultDoubleOVIEnvironment {
     static storm::Environment createEnvironment() {
         storm::Environment env;
         env.solver().minMax().setMethod(storm::solver::MinMaxMethod::SoundValueIteration);
-        env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-6));
+        env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-6));
         env.solver().setForceSoundness(true);
         return env;
     }
     static bool const isExactModelChecking = false;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::None;
@@ -169,7 +169,7 @@ class DefaultRationalPIEnvironment {
     }
     static bool const isExactModelChecking = true;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::None;
@@ -186,7 +186,7 @@ class PreprocessedDefaultRationalPIEnvironment {
     }
     static bool const isExactModelChecking = true;
     static ValueType precision() {
-        return storm::numbers::convertNumber<ValueType>(0.12);
+        return storm::numbers::convert<ValueType>(0.12);
     }  // there actually aren't any precision guarantees, but we still want to detect if results are weird.
     static void adaptOptions(storm::pomdp::modelchecker::BeliefExplorationPomdpModelCheckerOptions<ValueType>&) { /* intentionally left empty */ }
     static PreprocessingType const preprocessingType = PreprocessingType::All;
@@ -228,7 +228,7 @@ class BeliefExplorationPomdpModelCheckerTest : public ::testing::Test {
         return opt;
     }
     ValueType parseNumber(std::string const& str) {
-        return storm::numbers::convertNumber<ValueType>(str);
+        return storm::numbers::convert<ValueType>(str);
     }
     struct Input {
         std::shared_ptr<storm::models::sparse::Pomdp<ValueType>> model;
@@ -280,7 +280,7 @@ class BeliefExplorationPomdpModelCheckerTest : public ::testing::Test {
         if (TestType::isExactModelChecking) {
             return storm::numbers::zero<ValueType>();
         } else {
-            return storm::numbers::convertNumber<ValueType>(1e-6);
+            return storm::numbers::convert<ValueType>(1e-6);
         }
     }
     bool isExact() const {
@@ -402,7 +402,7 @@ TYPED_TEST(BeliefExplorationPomdpModelCheckerTest, simple_slippery_Pmin) {
     if (this->isExact()) {
         // This model's value can only be approximated arbitrarily close but never reached
         // Exact arithmetics will thus not reach the value with absoulute precision either.
-        ValueType approxPrecision = storm::numbers::convertNumber<ValueType>(1e-5);
+        ValueType approxPrecision = storm::numbers::convert<ValueType>(1e-5);
         EXPECT_LE(result.lowerBound, expected + approxPrecision);
         EXPECT_GE(result.upperBound, expected - approxPrecision);
     } else {
@@ -426,7 +426,7 @@ TYPED_TEST(BeliefExplorationPomdpModelCheckerTest, simple_slippery_Pmin_SE) {
     if (this->isExact()) {
         // This model's value can only be approximated arbitrarily close but never reached
         // Exact arithmetics will thus not reach the value with absoulute precision either.
-        ValueType approxPrecision = storm::numbers::convertNumber<ValueType>(1e-5);
+        ValueType approxPrecision = storm::numbers::convert<ValueType>(1e-5);
         EXPECT_LE(result.lowerBound, expected + approxPrecision);
         EXPECT_GE(result.upperBound, expected - approxPrecision);
     } else {
@@ -796,7 +796,7 @@ TYPED_TEST(BeliefExplorationPomdpModelCheckerTest, simple_slippery_Pmin_Clip) {
     if (this->isExact()) {
         // This model's value can only be approximated arbitrarily close but never reached
         // Exact arithmetics will thus not reach the value with absoulute precision either.
-        ValueType approxPrecision = storm::numbers::convertNumber<ValueType>(1e-4);
+        ValueType approxPrecision = storm::numbers::convert<ValueType>(1e-4);
         EXPECT_LE(result.lowerBound, expected + approxPrecision);
         EXPECT_GE(result.upperBound, expected - approxPrecision);
     } else {

@@ -1216,7 +1216,7 @@ class SparseMatrix {
         newColumnsAndValues.resize(columnsAndValues.size());
         std::transform(
             columnsAndValues.begin(), columnsAndValues.end(), newColumnsAndValues.begin(), [](MatrixEntry<SparseMatrix::index_type, ValueType> const& a) {
-                return MatrixEntry<SparseMatrix::index_type, NewValueType>(a.getColumn(), storm::numbers::convertNumber<NewValueType, ValueType>(a.getValue()));
+                return MatrixEntry<SparseMatrix::index_type, NewValueType>(a.getColumn(), storm::numbers::convert<NewValueType, ValueType>(a.getValue()));
             });
 
         return SparseMatrix<NewValueType>(columnCount, std::move(newRowIndications), std::move(newColumnsAndValues), std::move(newRowGroupIndices));

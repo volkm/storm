@@ -59,9 +59,9 @@ std::map<storm::storage::sparse::state_type, SolutionType> SparseMdpPrctlHelper<
         std::unique_ptr<storm::solver::MinMaxLinearEquationSolver<ValueType>> minMaxSolver;
 
         ValueType precision = rewardUnfolding.getRequiredEpochModelPrecision(
-            initEpoch, storm::numbers::convertNumber<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
+            initEpoch, storm::numbers::convert<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision()));
         Environment preciseEnv = env;
-        preciseEnv.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(precision));
+        preciseEnv.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(precision));
 
         // In case of cdf export we store the necessary data.
         std::vector<std::vector<ValueType>> cdfData;
@@ -82,7 +82,7 @@ std::map<storm::storage::sparse::state_type, SolutionType> SparseMdpPrctlHelper<
                 std::vector<ValueType> cdfEntry;
                 for (uint64_t i = 0; i < rewardUnfolding.getEpochManager().getDimensionCount(); ++i) {
                     uint64_t offset = rewardUnfolding.getDimension(i).boundType == helper::rewardbounded::DimensionBoundType::LowerBound ? 1 : 0;
-                    cdfEntry.push_back(storm::numbers::convertNumber<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
+                    cdfEntry.push_back(storm::numbers::convert<ValueType>(rewardUnfolding.getEpochManager().getDimensionOfEpoch(epoch, i) + offset) *
                                        rewardUnfolding.getDimension(i).scalingFactor);
                 }
                 cdfEntry.push_back(rewardUnfolding.getInitialStateResult(epoch));
@@ -475,10 +475,10 @@ MaybeStateResult<SolutionType> computeValuesForMaybeStates(Environment const& en
             getNextRelevantStateIndex = [&relevantState]() { ++relevantState; };
         }
         for (; relevantState < solver->getUpperBounds().size(); getNextRelevantStateIndex()) {
-            STORM_LOG_ASSERT(x.at(relevantState) <=
-                                 solver->getUpperBounds().at(relevantState) + storm::numbers::convertNumber<ValueType>(env.solver().minMax().getPrecision()),
-                             "Expecting result value for state " << relevantState << " to be <= " << solver->getUpperBounds().at(relevantState) << ", but got "
-                                                                 << x.at(relevantState) << ".");
+            STORM_LOG_ASSERT(
+                x.at(relevantState) <= solver->getUpperBounds().at(relevantState) + storm::numbers::convert<ValueType>(env.solver().minMax().getPrecision()),
+                "Expecting result value for state " << relevantState << " to be <= " << solver->getUpperBounds().at(relevantState) << ", but got "
+                                                    << x.at(relevantState) << ".");
         }
     }
 #endif
@@ -722,7 +722,7 @@ MDPSparseModelCheckingHelperReturnType<SolutionType> SparseMdpPrctlHelper<ValueT
     // Check whether we need to compute exact probabilities for some states.
     if (qualitative || maybeStatesNotRelevant) {
         // Set the values for all maybe-states to 0.5 to indicate that their probability values are neither 0 nor 1.
-        storm::utility::vector::setVectorValues<SolutionType>(result, qualitativeStateSets.maybeStates, storm::numbers::convertNumber<SolutionType>(0.5));
+        storm::utility::vector::setVectorValues<SolutionType>(result, qualitativeStateSets.maybeStates, storm::numbers::convert<SolutionType>(0.5));
     } else {
         if (!qualitativeStateSets.maybeStates.empty()) {
             // In this case we have have to compute the remaining probabilities.

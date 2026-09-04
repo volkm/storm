@@ -8,11 +8,11 @@
 namespace {
 
 storm::RationalNumber rn(double doubleValue) {
-    return storm::numbers::convertNumber<storm::RationalNumber>(doubleValue);
+    return storm::numbers::convert<storm::RationalNumber>(doubleValue);
 }
 
 storm::RationalNumber rn(std::string const& str) {
-    return storm::numbers::convertNumber<storm::RationalNumber>(str);
+    return storm::numbers::convert<storm::RationalNumber>(str);
 }
 TEST(RationalApproximationTest, inclusive_bounds) {
     EXPECT_EQ(rn("0"), storm::numbers::findRational(rn("0"), true, rn("0"), true));

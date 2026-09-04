@@ -112,12 +112,12 @@ boost::any ToExprtkStringVisitor::visit(BinaryNumericalFunctionExpression const&
         case BinaryNumericalFunctionExpression::OperatorType::Logarithm:
             if (expression.getSecondOperand()->isLiteral()) {
                 auto base = expression.getSecondOperand()->evaluateAsRational();
-                if (base == storm::numbers::convertNumber<storm::RationalNumber, uint64_t>(2ull)) {
+                if (base == storm::numbers::convert<storm::RationalNumber, uint64_t>(2ull)) {
                     stream << "log2(";
                     expression.getFirstOperand()->accept(*this, data);
                     stream << ")";
                     break;
-                } else if (base == storm::numbers::convertNumber<storm::RationalNumber, uint64_t>(10ull)) {
+                } else if (base == storm::numbers::convert<storm::RationalNumber, uint64_t>(10ull)) {
                     stream << "log10(";
                     expression.getFirstOperand()->accept(*this, data);
                     stream << ")";

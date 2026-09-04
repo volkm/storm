@@ -228,8 +228,8 @@ storm::expressions::Expression ExpressionCreator::createRationalLiteralExpressio
 
 storm::expressions::Expression ExpressionCreator::createIntegerLiteralExpression(storm::RationalNumber const& value, bool&, bool& overflow) const {
     STORM_LOG_ASSERT(storm::numbers::isInteger(value), "Expected integer value.");
-    auto const min = storm::numbers::convertNumber<storm::RationalNumber>(std::numeric_limits<int64_t>::min());
-    auto const max = storm::numbers::convertNumber<storm::RationalNumber>(std::numeric_limits<int64_t>::max());
+    auto const min = storm::numbers::convert<storm::RationalNumber>(std::numeric_limits<int64_t>::min());
+    auto const max = storm::numbers::convert<storm::RationalNumber>(std::numeric_limits<int64_t>::max());
     overflow = value < min || value > max;
     if (overflow) {
         STORM_LOG_ERROR("Overflow when parsing integer literal '"
@@ -237,7 +237,7 @@ storm::expressions::Expression ExpressionCreator::createIntegerLiteralExpression
         // parsing failure is triggered by the calling parser
         return manager.boolean(false);
     } else if (this->createExpressions) {
-        return manager.integer(storm::numbers::convertNumber<int64_t>(value));
+        return manager.integer(storm::numbers::convert<int64_t>(value));
     } else {
         return manager.boolean(false);
     }

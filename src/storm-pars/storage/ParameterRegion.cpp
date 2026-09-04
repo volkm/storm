@@ -177,7 +177,7 @@ typename ParameterRegion<ParametricType>::CoefficientType ParameterRegion<Parame
             // HACK to get regions with zero area to work correctly
             // (It's a hack but it's a harmless one for now, as regions with zero area do not exist without discrete parameters)
             // This area represents half of the area of the region
-            result /= storm::numbers::convertNumber<CoefficientType>(2);
+            result /= storm::numbers::convert<CoefficientType>(2);
         }
     }
     return result;
@@ -252,11 +252,11 @@ std::string ParameterRegion<ParametricType>::toString(bool boundariesAsDouble) c
     std::stringstream regionstringstream;
     if (boundariesAsDouble) {
         for (auto var : this->getVariables()) {
-            regionstringstream << storm::numbers::convertNumber<double>(this->getLowerBoundary(var));
+            regionstringstream << storm::numbers::convert<double>(this->getLowerBoundary(var));
             regionstringstream << "<=";
             regionstringstream << var;
             regionstringstream << "<=";
-            regionstringstream << storm::numbers::convertNumber<double>(this->getUpperBoundary(var));
+            regionstringstream << storm::numbers::convert<double>(this->getUpperBoundary(var));
             regionstringstream << ",";
         }
     } else {

@@ -311,7 +311,7 @@ void SparseDerivativeInstantiationModelChecker<FunctionType, ConstantType>::init
                          "Entries of parametric and constant matrix are not at the same position.");
         if (storm::numbers::isConstant(parametricEntryIt->getValue())) {
             // Constant entries can be inserted directly
-            constantEntryIt->setValue(storm::numbers::convertNumber<ConstantType>(parametricEntryIt->getValue()));
+            constantEntryIt->setValue(storm::numbers::convert<ConstantType>(parametricEntryIt->getValue()));
             // STORM_PRINT_AND_LOG("Setting constant entry\n");
         } else {
             // insert the new function and store that the current constantMatrix entry needs to be set to the value of this function

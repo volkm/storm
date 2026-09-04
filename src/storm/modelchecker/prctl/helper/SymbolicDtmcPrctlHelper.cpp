@@ -34,7 +34,7 @@ storm::dd::Add<DdType, ValueType> SymbolicDtmcPrctlHelper<DdType, ValueType>::co
     if (qualitative) {
         // Set the values for all maybe-states to 0.5 to indicate that their probability values are neither 0 nor 1.
         return statesWithProbability01.second.template toAdd<ValueType>() +
-               maybeStates.template toAdd<ValueType>() * model.getManager().getConstant(storm::numbers::convertNumber<ValueType>(0.5));
+               maybeStates.template toAdd<ValueType>() * model.getManager().getConstant(storm::numbers::convert<ValueType>(0.5));
     } else {
         // If there are maybe states, we need to solve an equation system.
         if (!maybeStates.isZero()) {

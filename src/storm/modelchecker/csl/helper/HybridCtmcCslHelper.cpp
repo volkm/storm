@@ -86,7 +86,7 @@ std::unique_ptr<CheckResult> HybridCtmcCslHelper::computeBoundedUntilProbabiliti
     }
 
     // Set the possible (absolute) error allowed for truncation (epsilon for fox-glynn)
-    ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
+    ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision()) / 8.0;
 
     // From this point on, we know that we have to solve a more complicated problem [t, t'] with either t != 0
     // or t' != inf.
@@ -345,7 +345,7 @@ std::unique_ptr<CheckResult> HybridCtmcCslHelper::computeInstantaneousRewards(
         STORM_LOG_INFO("Converting symbolic matrix/vector to explicit representation done in " << conversionWatch.getTimeInMilliseconds() << "ms.");
 
         // Set the possible error allowed for truncation (epsilon for fox-glynn)
-        ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+        ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
         if (env.solver().timeBounded().getRelativeTerminationCriterion()) {
             // Be more precise, if the maximum value is very small (This still gives no sound guarantee!)
             epsilon *= std::min(storm::numbers::one<ValueType>(), maxValue);
@@ -424,7 +424,7 @@ std::unique_ptr<CheckResult> HybridCtmcCslHelper::computeCumulativeRewards(
     }
 
     // Set the possible (absolute) error allowed for truncation (epsilon for fox-glynn)
-    ValueType epsilon = storm::numbers::convertNumber<ValueType>(env.solver().timeBounded().getPrecision());
+    ValueType epsilon = storm::numbers::convert<ValueType>(env.solver().timeBounded().getPrecision());
     if (env.solver().timeBounded().getRelativeTerminationCriterion()) {
         // Be more precise, if the value is very small (this still gives no sound guarantee)
         epsilon *= std::min(storm::numbers::one<ValueType>(), maxReward);

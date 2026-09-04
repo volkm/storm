@@ -80,12 +80,12 @@ std::shared_ptr<BaseExpression const> BinaryRelationExpression::simplify() const
         storm::RationalNumber secondOperandEvaluation;
 
         if (firstOperandSimplified->hasIntegerType()) {
-            firstOperandEvaluation = storm::numbers::convertNumber<storm::RationalNumber>(firstOperandSimplified->evaluateAsInt());
+            firstOperandEvaluation = storm::numbers::convert<storm::RationalNumber>(firstOperandSimplified->evaluateAsInt());
         } else {
             firstOperandEvaluation = firstOperandSimplified->evaluateAsRational();
         }
         if (secondOperandSimplified->hasIntegerType()) {
-            secondOperandEvaluation = storm::numbers::convertNumber<storm::RationalNumber>(secondOperandSimplified->evaluateAsInt());
+            secondOperandEvaluation = storm::numbers::convert<storm::RationalNumber>(secondOperandSimplified->evaluateAsInt());
         } else {
             secondOperandEvaluation = secondOperandSimplified->evaluateAsRational();
         }

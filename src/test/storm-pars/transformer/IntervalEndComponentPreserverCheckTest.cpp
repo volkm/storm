@@ -67,7 +67,7 @@ void testModelInterval(std::string programFile, std::string formulaAsString, std
 
     auto env = storm::Environment();
     env.solver().minMax().setMethod(storm::solver::MinMaxMethod::ValueIteration);
-    env.solver().minMax().setPrecision(storm::numbers::convertNumber<storm::RationalNumber>(1e-8));
+    env.solver().minMax().setPrecision(storm::numbers::convert<storm::RationalNumber>(1e-8));
 
     auto factory = std::make_unique<storm::solver::GeneralMinMaxLinearEquationSolverFactory<storm::Interval, double>>();
 

@@ -118,7 +118,7 @@ template<typename ValueType>
 bool isInteger(ValueType const& number);
 
 template<typename TargetType, typename SourceType>
-TargetType convertNumber(SourceType const& number);
+TargetType convert(SourceType const& number);
 
 template<typename ValueType>
 std::pair<ValueType, ValueType> asFraction(ValueType const& number);

@@ -243,7 +243,7 @@ void print(std::ostream& out, ValueType const& value) {
     } else {
         out << value;
         if (std::is_same<ValueType, storm::RationalNumber>::value) {
-            out << " (approx. " << storm::numbers::convertNumber<double>(value) << ")";
+            out << " (approx. " << storm::numbers::convert<double>(value) << ")";
         }
     }
 }
@@ -268,13 +268,13 @@ void printRange(std::ostream& out, ValueType const& min, ValueType const& max) {
         if (min == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(min);
+            out << storm::numbers::convert<double>(min);
         }
         out << ", ";
         if (max == storm::numbers::infinity<ValueType>()) {
             out << "inf";
         } else {
-            out << storm::numbers::convertNumber<double>(max);
+            out << storm::numbers::convert<double>(max);
         }
         out << "])";
     }

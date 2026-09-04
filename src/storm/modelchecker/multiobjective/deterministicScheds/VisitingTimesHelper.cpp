@@ -39,7 +39,7 @@ ValueType VisitingTimesHelper<ValueType>::computeMecTraversalLowerBound(storm::s
                     }
                 }
                 if (numEntries > 0) {
-                    v &= storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType>(numEntries);
+                    v &= storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType>(numEntries);
                 }
             } else {
                 // actually determine the minimal probability

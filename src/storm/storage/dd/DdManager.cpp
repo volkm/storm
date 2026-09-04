@@ -147,7 +147,7 @@ Add<LibraryType, ValueType> DdManager<LibraryType>::getIdentity(storm::expressio
 
     Add<LibraryType, ValueType> result = this->getAddZero<ValueType>();
     for (int_fast64_t value = metaVariable.getLow(); value <= metaVariable.getHigh(); ++value) {
-        result += this->getEncoding(variable, value).template toAdd<ValueType>() * this->getConstant(storm::numbers::convertNumber<ValueType>(value));
+        result += this->getEncoding(variable, value).template toAdd<ValueType>() * this->getConstant(storm::numbers::convert<ValueType>(value));
     }
     return result;
 }

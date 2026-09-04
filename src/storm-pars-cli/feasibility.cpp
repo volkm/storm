@@ -34,7 +34,7 @@ void printFeasibilityResult(bool success,
     }
     if (success) {
         STORM_PRINT_AND_LOG("Result at initial state: " << valueValuationPair.first << " ( approx. "
-                                                        << storm::numbers::convertNumber<double>(valueValuationPair.first) << ") at [" << valuationStr.str()
+                                                        << storm::numbers::convert<double>(valueValuationPair.first) << ") at [" << valuationStr.str()
                                                         << "].\n");
     } else {
         STORM_PRINT_AND_LOG("No satisfying result found.\n");
@@ -69,7 +69,7 @@ std::shared_ptr<FeasibilitySynthesisTask const> createFeasibilitySynthesisTaskFr
                         "When a bound is given, the guarantee is that this bound will be satisfied by a solution.");
     } else {
         if (feasibilitySettings.hasOptimalValueGuaranteeBeenSet()) {
-            t.setMaximalAllowedGap(storm::numbers::convertNumber<storm::RationalNumber>(feasibilitySettings.getOptimalValueGuarantee()));
+            t.setMaximalAllowedGap(storm::numbers::convert<storm::RationalNumber>(feasibilitySettings.getOptimalValueGuarantee()));
             t.setMaximalAllowedGapIsRelative(!feasibilitySettings.isAbsolutePrecisionSet());
         }
         STORM_LOG_THROW(feasibilitySettings.isParameterDirectionSet(), storm::exceptions::NotSupportedException,
@@ -184,7 +184,7 @@ void runFeasibilityWithGD(std::shared_ptr<storm::models::sparse::Model<ValueType
             if (startPoint) {
                 instantiationAndValue.first[param] = startPoint->at(param);
             } else {
-                instantiationAndValue.first[param] = storm::numbers::convertNumber<RationalFunction::CoeffType>(0.5);
+                instantiationAndValue.first[param] = storm::numbers::convert<RationalFunction::CoeffType>(0.5);
             }
         }
     }
@@ -238,7 +238,7 @@ void runFeasibilityWithPLA(std::shared_ptr<storm::models::sparse::Model<ValueTyp
         STORM_LOG_THROW(task->getMaximalAllowedGap() != std::nullopt, storm::exceptions::NotSupportedException,
                         "Without a bound, PLA requires an explicit target in form of a guarantee.");
 
-        ValueType precision = storm::numbers::convertNumber<ValueType>(task->getMaximalAllowedGap().value());
+        ValueType precision = storm::numbers::convert<ValueType>(task->getMaximalAllowedGap().value());
         storm::utility::Stopwatch watch(true);
         auto const& settings = storm::api::RefinementOptions<ValueType>{model, storm::api::createTask<ValueType>(task->getFormula().asSharedPointer(), true),
                                                                         engine, regionSplittingStrategy};

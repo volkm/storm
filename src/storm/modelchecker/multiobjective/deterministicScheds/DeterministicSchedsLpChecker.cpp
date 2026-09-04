@@ -63,7 +63,7 @@ void DeterministicSchedsLpChecker<ModelType, GeometryValueType>::setCurrentWeigh
     // set up objective function for the given weight vector
     for (uint64_t objIndex = 0; objIndex < initialStateResults.size(); ++objIndex) {
         currentObjectiveVariables.push_back(
-            lpModel->addUnboundedContinuousVariable("w_" + std::to_string(objIndex), storm::numbers::convertNumber<ValueType>(weightVector[objIndex])));
+            lpModel->addUnboundedContinuousVariable("w_" + std::to_string(objIndex), storm::numbers::convert<ValueType>(weightVector[objIndex])));
         lpModel->addConstraint("", currentObjectiveVariables.back().getExpression() == initialStateResults[objIndex]);
     }
     lpModel->update();
@@ -87,7 +87,7 @@ std::optional<std::pair<std::vector<GeometryValueType>, GeometryValueType>> Dete
         STORM_LOG_ASSERT(currentWeightVector.size() == eps.size(), "Eps vector has unexpected size.");
         // Specify the allowed gap between the obtained lower/upper objective bounds.
         GeometryValueType milpGap = storm::utility::vector::dotProduct(currentWeightVector, eps);
-        lpModel->setMaximalMILPGap(storm::numbers::convertNumber<ValueType>(milpGap), false);
+        lpModel->setMaximalMILPGap(storm::numbers::convert<ValueType>(milpGap), false);
     }
     lpModel->update();
     swCheckWeightVectors.start();
@@ -104,7 +104,7 @@ std::optional<std::pair<std::vector<GeometryValueType>, GeometryValueType>> Dete
         swValidate.stop();
         auto resultValue = storm::utility::vector::dotProduct(resultPoint, currentWeightVector);
         if (!eps.empty()) {
-            resultValue += storm::numbers::convertNumber<GeometryValueType>(lpModel->getMILPGap(false));
+            resultValue += storm::numbers::convert<GeometryValueType>(lpModel->getMILPGap(false));
         }
         result = std::make_pair(resultPoint, resultValue);
     }
@@ -130,7 +130,7 @@ DeterministicSchedsLpChecker<ModelType, GeometryValueType>::check(storm::Environ
     // Let p be the found solution point, q be the optimal (unknown) solution point, and w be the current weight vector.
     // The gap between the solution p and q is |w*p - w*q| = |w*(p-q)|
     GeometryValueType milpGap = storm::utility::vector::dotProduct(currentWeightVector, eps);
-    lpModel->setMaximalMILPGap(storm::numbers::convertNumber<ValueType>(milpGap), false);
+    lpModel->setMaximalMILPGap(storm::numbers::convert<ValueType>(milpGap), false);
     lpModel->update();
 
     std::vector<Point> foundPoints;
@@ -321,7 +321,7 @@ auto problematicMecConstraintsExpVisits(storm::solver::LpSolver<ValueType>& lpMo
     }
 
     // Create visits constraints
-    auto const initProb = lpModel.getConstant(storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType, uint64_t>(problematicMec.size()));
+    auto const initProb = lpModel.getConstant(storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType, uint64_t>(problematicMec.size()));
     std::vector<storm::expressions::Expression> outVisitsSummands;
     for (auto const& stateChoices : problematicMec) {
         auto const state = stateChoices.first;
@@ -352,7 +352,7 @@ auto problematicMecConstraintsExpVisits(storm::solver::LpSolver<ValueType>& lpMo
             uint64_t const preChoice = preEntry.getColumn();
             if (mecChoices.get(preChoice)) {
                 ValueType preProb =
-                    storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType, uint64_t>(matrix.getRow(preChoice).getNumberOfEntries());
+                    storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType, uint64_t>(matrix.getRow(preChoice).getNumberOfEntries());
                 stateVisitsSummands.push_back(lpModel.getConstant(-preProb) * expVisitsVars.at(preChoice));
             }
         }
@@ -397,7 +397,7 @@ auto problematicMecConstraintsOrder(storm::solver::LpSolver<ValueType>& lpModel,
     }
 
     // Create order constraints
-    auto const minDiff = lpModel.getConstant(-storm::numbers::one<ValueType>() / storm::numbers::convertNumber<ValueType, uint64_t>(problematicMec.size()));
+    auto const minDiff = lpModel.getConstant(-storm::numbers::one<ValueType>() / storm::numbers::convert<ValueType, uint64_t>(problematicMec.size()));
     for (auto const& stateChoices : problematicMec) {
         auto const state = stateChoices.first;
         auto const& choices = stateChoices.second;
@@ -673,14 +673,14 @@ void DeterministicSchedsLpChecker<ModelType, GeometryValueType>::checkRecursive(
                 // There is no progress if (due to numerical inaccuracies) the downwardclosure (including points that are epsilon close to it) contained in this
                 // polytope. We multiply eps by 0.999 so that points that lie on the boundary of polytope and downw. do not count in the intersection.
                 Point newPointPlusEps = newPoint;
-                storm::utility::vector::addScaledVector(newPointPlusEps, eps, storm::numbers::convertNumber<GeometryValueType>(0.999));
+                storm::utility::vector::addScaledVector(newPointPlusEps, eps, storm::numbers::convert<GeometryValueType>(0.999));
                 if (polytopeTree.getPolytope()->contains(newPoint) ||
                     !polytopeTree.getPolytope()
                          ->intersection(storm::storage::geometry::Polytope<GeometryValueType>::createDownwardClosure({newPointPlusEps}))
                          ->isEmpty()) {
-                    GeometryValueType offset = storm::numbers::convertNumber<GeometryValueType>(lpModel->getObjectiveValue());
+                    GeometryValueType offset = storm::numbers::convert<GeometryValueType>(lpModel->getObjectiveValue());
                     // Get the gap between the found solution and the known bound.
-                    offset += storm::numbers::convertNumber<GeometryValueType>(lpModel->getMILPGap(false));
+                    offset += storm::numbers::convert<GeometryValueType>(lpModel->getMILPGap(false));
                     // we might want to shift the halfspace to guarantee that our point is included.
                     offset = std::max(offset, storm::utility::vector::dotProduct(currentWeightVector, newPoint));
                     auto halfspace = storm::storage::geometry::Halfspace<GeometryValueType>(currentWeightVector, offset).invert();
@@ -711,7 +711,7 @@ void DeterministicSchedsLpChecker<ModelType, GeometryValueType>::checkRecursive(
                                 }
                             }
                             if (normalVectorContainsNegative) {
-                                h.offset() -= distance / storm::numbers::convertNumber<GeometryValueType, uint64_t>(2);
+                                h.offset() -= distance / storm::numbers::convert<GeometryValueType, uint64_t>(2);
                                 if (num_sharpen == 0) {
                                     lpModel->push();
                                 }
@@ -782,12 +782,12 @@ typename DeterministicSchedsLpChecker<ModelType, GeometryValueType>::Point Deter
     Point inducedPoint;
     for (uint64_t objIndex = 0; objIndex < objectiveHelper.size(); ++objIndex) {
         ValueType inducedValue = objectiveHelper[objIndex].evaluateScheduler(env, selectedChoices);
-        inducedPoint.push_back(storm::numbers::convertNumber<GeometryValueType>(inducedValue));
+        inducedPoint.push_back(storm::numbers::convert<GeometryValueType>(inducedValue));
         // If this objective has weight zero, the lp solution is not necessarily correct
         if (!storm::numbers::isZero(currentWeightVector[objIndex])) {
             ValueType lpValue = lpModel->getContinuousValue(currentObjectiveVariables[objIndex]);
-            double diff = storm::numbers::convertNumber<double>(storm::numbers::abs<ValueType>(inducedValue - lpValue));
-            STORM_LOG_WARN_COND(diff <= 1e-4 * std::abs(storm::numbers::convertNumber<double>(inducedValue)),
+            double diff = storm::numbers::convert<double>(storm::numbers::abs<ValueType>(inducedValue - lpValue));
+            STORM_LOG_WARN_COND(diff <= 1e-4 * std::abs(storm::numbers::convert<double>(inducedValue)),
                                 "Imprecise value for objective " << objIndex << ": LP says " << lpValue << " but scheduler induces " << inducedValue
                                                                  << " (difference is " << diff << ")");
         }

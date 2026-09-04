@@ -301,9 +301,8 @@ typename DFTModelChecker<ValueType>::dft_results DFTModelChecker<ValueType>::che
     }
 
     auto const& generalSettings = storm::settings::getModule<storm::settings::modules::GeneralSettings>();
-    ValueType const precision = std::is_same<ValueType, storm::RationalFunction>::value
-                                    ? storm::numbers::zero<ValueType>()
-                                    : storm::numbers::convertNumber<ValueType>(generalSettings.getPrecision());
+    ValueType const precision = std::is_same<ValueType, storm::RationalFunction>::value ? storm::numbers::zero<ValueType>()
+                                                                                        : storm::numbers::convert<ValueType>(generalSettings.getPrecision());
     if (approximationError > 0.0) {
         // Comparator for checking the error of the approximation
         storm::numbers::ConstantsComparator<ValueType> comparator(precision);

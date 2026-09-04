@@ -55,7 +55,7 @@ void Model<ValueType, RewardModelType>::assertValidityOfComponents(
     // More costly checks are only asserted to avoid doing them in release mode.
     [[maybe_unused]] ValueType const stochasticTolerance =
         isExact() ? storm::numbers::zero<ValueType>()
-                  : storm::numbers::convertNumber<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision());
+                  : storm::numbers::convert<ValueType>(storm::settings::getModule<storm::settings::modules::GeneralSettings>().getPrecision());
 
     uint64_t stateCount = this->getNumberOfStates();
     uint64_t choiceCount = this->getTransitionMatrix().getRowCount();

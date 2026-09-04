@@ -344,7 +344,7 @@ StateBehavior<ValueType, StateType> PrismNextStateGenerator<ValueType, StateType
 
         // For CTMCs, we need to keep track of the total exit rate to scale the action rewards later. For DTMCs
         // this is equal to the number of choices, which is why we initialize it like this here.
-        ValueType const totalNumberOfChoices = storm::numbers::convertNumber<ValueType, uint64_t>(allChoices.size());
+        ValueType const totalNumberOfChoices = storm::numbers::convert<ValueType, uint64_t>(allChoices.size());
         ValueType totalExitRate = this->isDiscreteTimeModel() ? totalNumberOfChoices : storm::numbers::zero<ValueType>();
 
         // Iterate over all choices and combine the probabilities/rates into one choice.

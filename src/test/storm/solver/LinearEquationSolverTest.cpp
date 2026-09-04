@@ -20,7 +20,7 @@ class NativeDoublePowerEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::Power);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-10"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-10"));
         return env;
     }
 };
@@ -33,7 +33,7 @@ class NativeDoublePowerRegMultEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::Power);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-10"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-10"));
         env.solver().native().setPowerMethodMultiplicationStyle(storm::solver::MultiplicationStyle::Regular);
         return env;
     }
@@ -49,7 +49,7 @@ class NativeDoubleSoundValueIterationEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::SoundValueIteration);
         env.solver().native().setRelativeTerminationCriterion(false);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-6"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-6"));
         return env;
     }
 };
@@ -64,7 +64,7 @@ class NativeDoubleOptimisticValueIterationEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::OptimisticValueIteration);
         env.solver().native().setRelativeTerminationCriterion(false);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-6"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-6"));
         return env;
     }
 };
@@ -79,7 +79,7 @@ class NativeDoubleIntervalIterationEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::IntervalIteration);
         env.solver().native().setRelativeTerminationCriterion(false);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-6"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-6"));
         return env;
     }
 };
@@ -94,7 +94,7 @@ class NativeDoubleGuessingViEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::GuessingValueIteration);
         env.solver().native().setRelativeTerminationCriterion(false);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-6"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-6"));
         return env;
     }
 };
@@ -107,7 +107,7 @@ class NativeDoubleJacobiEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::Jacobi);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-10"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-10"));
         return env;
     }
 };
@@ -120,7 +120,7 @@ class NativeDoubleGaussSeidelEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::GaussSeidel);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-10"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-10"));
         return env;
     }
 };
@@ -133,7 +133,7 @@ class NativeDoubleSorEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::SOR);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-10"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-10"));
         return env;
     }
 };
@@ -146,7 +146,7 @@ class NativeDoubleWalkerChaeEnvironment {
         storm::Environment env;
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Native);
         env.solver().native().setMethod(storm::solver::NativeLinearEquationSolverMethod::WalkerChae);
-        env.solver().native().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().native().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         env.solver().native().setMaximalNumberOfIterations(500000);
         return env;
     }
@@ -185,7 +185,7 @@ class GmmGmresIluEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Gmres);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::Ilu);
-        env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -199,7 +199,7 @@ class GmmGmresDiagonalEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Gmres);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::Diagonal);
-        env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -213,7 +213,7 @@ class GmmGmresNoneEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Gmres);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::None);
-        env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -227,7 +227,7 @@ class GmmBicgstabIluEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Bicgstab);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::Ilu);
-        env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -241,7 +241,7 @@ class GmmQmrDiagonalEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Gmmxx);
         env.solver().gmmxx().setMethod(storm::solver::GmmxxLinearEquationSolverMethod::Qmr);
         env.solver().gmmxx().setPreconditioner(storm::solver::GmmxxLinearEquationSolverPreconditioner::Diagonal);
-        env.solver().gmmxx().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().gmmxx().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -256,7 +256,7 @@ class EigenDGmresDiagonalEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Eigen);
         env.solver().eigen().setMethod(storm::solver::EigenLinearEquationSolverMethod::DGmres);
         env.solver().eigen().setPreconditioner(storm::solver::EigenLinearEquationSolverPreconditioner::Diagonal);
-        env.solver().eigen().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().eigen().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -270,7 +270,7 @@ class EigenGmresIluEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Eigen);
         env.solver().eigen().setMethod(storm::solver::EigenLinearEquationSolverMethod::Gmres);
         env.solver().eigen().setPreconditioner(storm::solver::EigenLinearEquationSolverPreconditioner::Ilu);
-        env.solver().eigen().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().eigen().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -284,7 +284,7 @@ class EigenBicgstabNoneEnvironment {
         env.solver().setLinearEquationSolverType(storm::solver::EquationSolverType::Eigen);
         env.solver().eigen().setMethod(storm::solver::EigenLinearEquationSolverMethod::Bicgstab);
         env.solver().eigen().setPreconditioner(storm::solver::EigenLinearEquationSolverPreconditioner::None);
-        env.solver().eigen().setPrecision(storm::numbers::convertNumber<storm::RationalNumber, std::string>("1e-8"));
+        env.solver().eigen().setPrecision(storm::numbers::convert<storm::RationalNumber, std::string>("1e-8"));
         return env;
     }
 };
@@ -338,7 +338,7 @@ class LinearEquationSolverTest : public ::testing::Test {
         return TestType::isExact ? parseNumber("0") : parseNumber("1e-6");
     }
     ValueType parseNumber(std::string const& input) const {
-        return storm::numbers::convertNumber<ValueType>(input);
+        return storm::numbers::convert<ValueType>(input);
     }
 
    private:
@@ -437,7 +437,7 @@ TEST(EliminationLinearEquationSolver, AbsorbingTwoCycle) {
 
 TEST(EliminationLinearEquationSolver, AbsorbingSinkReachability) {
     // A transient state can either reach the target with probability one half or fall into an absorbing sink.
-    auto half = storm::numbers::convertNumber<storm::RationalNumber, std::string>("1/2");
+    auto half = storm::numbers::convert<storm::RationalNumber, std::string>("1/2");
     auto one = storm::numbers::one<storm::RationalNumber>();
     auto zero = storm::numbers::zero<storm::RationalNumber>();
     testEliminationWithAbsorbingStates<storm::RationalNumber>({{{1, half}}, {{2, one}}, {{1, one}}}, {half, zero, zero}, {half, zero, zero});

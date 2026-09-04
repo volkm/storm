@@ -967,7 +967,7 @@ std::vector<TargetType> convertNumericVector(std::vector<SourceType> const& oldV
     std::vector<TargetType> resultVector;
     resultVector.reserve(oldVector.size());
     for (auto const& oldValue : oldVector) {
-        resultVector.push_back(storm::numbers::convertNumber<TargetType>(oldValue));
+        resultVector.push_back(storm::numbers::convert<TargetType>(oldValue));
     }
     return resultVector;
 }
@@ -984,7 +984,7 @@ std::vector<TargetType> convertNumericVector(std::vector<SourceType> const& oldV
 template<typename TargetType, typename SourceType>
 void convertNumericVector(std::vector<SourceType> const& inputVector, std::vector<TargetType>& targetVector) {
     STORM_LOG_ASSERT(inputVector.size() == targetVector.size(), "Vector size mismatch.");
-    applyPointwise(inputVector, targetVector, [](SourceType const& v) { return storm::numbers::convertNumber<TargetType>(v); });
+    applyPointwise(inputVector, targetVector, [](SourceType const& v) { return storm::numbers::convert<TargetType>(v); });
 }
 
 /*!
@@ -1041,7 +1041,7 @@ typename std::enable_if<std::is_same<ValueType, storm::RationalNumber>::value, s
     for (auto const& v : vec) {
         ValueType vScaled = v / factor;
         STORM_LOG_ASSERT(storm::numbers::isInteger(vScaled), "Resulting number '(" << v << ")/(" << factor << ") = " << vScaled << "' is not integral.");
-        result.push_back(storm::numbers::convertNumber<TargetValueType, ValueType>(vScaled));
+        result.push_back(storm::numbers::convert<TargetValueType, ValueType>(vScaled));
     }
     return std::make_pair(std::move(result), std::move(factor));
 }
@@ -1053,7 +1053,7 @@ typename std::enable_if<!std::is_same<ValueType, storm::RationalNumber>::value, 
     auto rationalNumberVec = convertNumericVector<storm::RationalNumber>(vec);
     auto rationalNumberResult = toIntegralVector<storm::RationalNumber, TargetValueType>(rationalNumberVec);
 
-    return std::make_pair(std::move(rationalNumberResult.first), storm::numbers::convertNumber<ValueType>(rationalNumberResult.second));
+    return std::make_pair(std::move(rationalNumberResult.first), storm::numbers::convert<ValueType>(rationalNumberResult.second));
 }
 
 template<typename Type>
