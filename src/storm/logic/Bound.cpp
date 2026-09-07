@@ -1,6 +1,7 @@
 #include "storm/logic/Bound.h"
 
 #include "storm/adapters/RationalFunctionAdapter.h"
+#include "storm/utility/ExtendedNumber.h"
 
 namespace storm::logic {
 
@@ -34,10 +35,14 @@ template double Bound::evaluateThresholdAs() const;
 
 template bool Bound::isSatisfied(storm::RationalNumber const& compareValue) const;
 template storm::RationalNumber Bound::evaluateThresholdAs() const;
+template bool Bound::isSatisfied(storm::utility::ExtendedNumber<storm::RationalNumber> const& compareValue) const;
+template storm::utility::ExtendedNumber<storm::RationalNumber> Bound::evaluateThresholdAs() const;
 
 #if STORM_RATIONAL_NUMBER_DIFFERS_FROM_COEFFICIENT
 template bool Bound::isSatisfied(storm::RationalFunctionCoefficient const& compareValue) const;
 template storm::RationalFunctionCoefficient Bound::evaluateThresholdAs() const;
+template bool Bound::isSatisfied(storm::utility::ExtendedNumber<storm::RationalFunctionCoefficient> const& compareValue) const;
+template storm::utility::ExtendedNumber<storm::RationalFunctionCoefficient> Bound::evaluateThresholdAs() const;
 #endif
 
 template storm::RationalFunction Bound::evaluateThresholdAs() const;

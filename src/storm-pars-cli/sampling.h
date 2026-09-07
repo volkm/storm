@@ -80,7 +80,7 @@ template<template<typename, typename> class ModelCheckerType, typename ModelType
 void verifyPropertiesAtSamplePointsDerivative(ModelType const& model, cli::SymbolicInput const& input, SampleInformation<ValueType> const& samples) {
     // When samples are provided, we create an instantiation model checker.
     ModelCheckerType<ValueType, SolveValueType> derivativeModelchecker(model);
-    storm::modelchecker::SparseDtmcInstantiationModelChecker<ModelType, SolveValueType> originalModelchecker(model);
+    storm::modelchecker::SparseDtmcInstantiationModelChecker<ModelType, SolveValueType> originalModelchecker(Environment(), model);
 
     for (auto const& property : input.properties) {
         storm::cli::printModelCheckingProperty(property);
@@ -120,7 +120,7 @@ void verifyPropertiesAtSamplePointsDerivative(ModelType const& model, cli::Symbo
 
                 boost::optional<std::vector<SolveValueType>> valueVector = boost::none;
                 if (originalResult) {
-                    valueVector = originalResult->template asExplicitQuantitativeCheckResult<SolveValueType>().getValueVector();
+                    valueVector = originalResult->template asExplicitQuantitativeCheckResult<SolveValueType>().getFiniteValueVector();
                     originalResult->filter(storm::modelchecker::ExplicitQualitativeCheckResult<SolveValueType>(model.getInitialStates()));
                 }
                 STORM_PRINT_AND_LOG("Model checking result:\n");
@@ -164,7 +164,7 @@ void verifyPropertiesAtSamplePointsDerivative(ModelType const& model, cli::Symbo
 template<template<typename, typename> class ModelCheckerType, typename ModelType, typename ValueType, typename SolveValueType = double, bool Derivative = false>
 void verifyPropertiesAtSamplePoints(ModelType const& model, cli::SymbolicInput const& input, SampleInformation<ValueType> const& samples) {
     // When samples are provided, we create an instantiation model checker.
-    ModelCheckerType<ModelType, SolveValueType> modelchecker(model);
+    ModelCheckerType<ModelType, SolveValueType> modelchecker(Environment(), model);
 
     for (auto const& property : input.properties) {
         storm::cli::printModelCheckingProperty(property);
