@@ -130,6 +130,9 @@ mark_as_advanced(STORM_RESOURCES_BUILD_JOBCOUNT)
 if(NOT STORM_RESOURCES_BUILD_JOBCOUNT GREATER 0)
 	message(FATAL_ERROR "STORM_RESOURCES_BUILD_JOBCOUNT must be a positive number. Got '${STORM_RESOURCES_BUILD_JOBCOUNT}' instead." )
 endif()
+# Compilers for resources. By default this is the same compiler Storm uses. Is extended to use CCache if available.
+set(STORM_RESOURCES_C_COMPILER   "${CMAKE_C_COMPILER}")
+set(STORM_RESOURCES_CXX_COMPILER "${CMAKE_CXX_COMPILER}")
 
 # Set some CMAKE Variables as advanced
 mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
@@ -175,15 +178,19 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ${STORM_WARNING_AS_ERROR})
 message(STATUS "Storm - Building ${CMAKE_BUILD_TYPE} version.")
 
 if(STORM_COMPILE_WITH_CCACHE)
-	find_program(CCACHE_FOUND ccache)
-	mark_as_advanced(CCACHE_FOUND)
-	if(CCACHE_FOUND)
+	find_program(CCACHE_EXECUTABLE ccache)
+	mark_as_advanced(CCACHE_EXECUTABLE)
+	if(CCACHE_EXECUTABLE)
 		message(STATUS "Storm - Using ccache")
 		# Relax the caching keys
 		# pch_defines tries to ignore precompiled headers (but often does not succeed in our case)
 		# the time options ignore time macros when calculating the cache key, improving cache hit rates
-		set(ENV{CCACHE_SLOPPINESS} "pch_defines,time_macros,include_file_mtime,include_file_ctime")
-		set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+		# Additional but not recommended: include_file_mtime,include_file_ctime
+		set(ENV{CCACHE_SLOPPINESS} "pch_defines,time_macros")
+		set_property(GLOBAL PROPERTY CMAKE_C_COMPILER_LAUNCHER ccache)
+		set_property(GLOBAL PROPERTY CMAKE_CXX_COMPILER_LAUNCHER ccache)
+		set(STORM_RESOURCES_C_COMPILER   "${CCACHE_EXECUTABLE} ${CMAKE_C_COMPILER}")
+		set(STORM_RESOURCES_CXX_COMPILER "${CCACHE_EXECUTABLE} ${CMAKE_CXX_COMPILER}")
 
 		if(STORM_COMPILE_WITH_PCH)
 			message(STATUS "Storm - PCH is enabled which will lead to significantly lower ccache hit rates. Consider setting STORM_COMPILE_WITH_PCH=OFF if you plan to rebuild Storm multiple times.")
@@ -281,7 +288,7 @@ else()
 endif()
 set(STORM_COMPILER_VERSION ${CMAKE_CXX_COMPILER_VERSION})
 
-if(CCACHE_FOUND)
+if(CCACHE_EXECUTABLE)
 	set(STORM_COMPILER_ID "${STORM_COMPILER_ID} (ccache)")
 endif()
 
