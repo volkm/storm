@@ -83,7 +83,7 @@ void printResult(ValueType const& lowerBound, ValueType const& upperBound) {
         } else {
             STORM_PRINT_AND_LOG(lowerBound);
         }
-    } else if (storm::utility::isInfinity<ValueType>(-lowerBound)) {
+    } else if (storm::utility::isInfinity(ValueType(-lowerBound))) {
         if (storm::utility::isInfinity(upperBound)) {
             STORM_PRINT_AND_LOG("[-inf, inf] (width=inf)");
         } else {
@@ -97,10 +97,8 @@ void printResult(ValueType const& lowerBound, ValueType const& upperBound) {
     }
     if (storm::NumberTraits<ValueType>::IsExact) {
         STORM_PRINT_AND_LOG(" (approx. ");
-        double roundedLowerBound =
-            storm::utility::isInfinity<ValueType>(-lowerBound) ? -storm::utility::infinity<double>() : storm::utility::convertNumber<double>(lowerBound);
-        double roundedUpperBound =
-            storm::utility::isInfinity(upperBound) ? storm::utility::infinity<double>() : storm::utility::convertNumber<double>(upperBound);
+        double roundedLowerBound = storm::utility::convertNumber<double>(lowerBound);
+        double roundedUpperBound = storm::utility::convertNumber<double>(upperBound);
         printResult(roundedLowerBound, roundedUpperBound);
         STORM_PRINT_AND_LOG(")");
     }
@@ -236,7 +234,9 @@ void performQualitativeAnalysis(std::shared_ptr<storm::models::sparse::Pomdp<Val
         storm::pomdp::qualitative::JaniBeliefSupportMdpGenerator<ValueType> janicreator(pomdp);
         janicreator.generate(targetStates, surelyNotAlmostSurelyReachTarget);
         bool initialOnly = !qualSettings.isWinningRegionSet();
-        janicreator.verifySymbolic(initialOnly);
+        storm::Environment env;
+        STORM_LOG_WARN("Using a default environment (and therefore default settings) for the symbolic analysis.");
+        janicreator.verifySymbolic(env, initialOnly);
         STORM_PRINT_AND_LOG("Initial state is safe: " << janicreator.isInitialWinning() << "\n");
     }
     STORM_LOG_THROW(computedSomething, storm::exceptions::InvalidSettingsException, "Nothing to be done, did you forget to set a method?");

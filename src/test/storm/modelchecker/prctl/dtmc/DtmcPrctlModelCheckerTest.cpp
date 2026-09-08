@@ -577,12 +577,12 @@ class DtmcPrctlModelCheckerTest : public ::testing::Test {
         program = program.preprocess(constantDefinitionString);
         if (TestType::engine == DtmcEngine::Hybrid || TestType::engine == DtmcEngine::PrismDd) {
             result.second = storm::api::extractFormulasFromProperties(storm::api::parsePropertiesForPrismProgram(formulasAsString, program));
-            result.first = storm::api::buildSymbolicModel<TestType::ddType, ValueType>(program, result.second)->template as<MT>();
+            result.first = storm::api::buildSymbolicModel<TestType::ddType, ValueType>(this->env(), program, result.second)->template as<MT>();
         } else if (TestType::engine == DtmcEngine::JaniDd) {
             auto janiData = storm::api::convertPrismToJani(program, storm::api::parsePropertiesForPrismProgram(formulasAsString, program));
             janiData.first.substituteFunctions();
             result.second = storm::api::extractFormulasFromProperties(janiData.second);
-            result.first = storm::api::buildSymbolicModel<TestType::ddType, ValueType>(janiData.first, result.second)->template as<MT>();
+            result.first = storm::api::buildSymbolicModel<TestType::ddType, ValueType>(this->env(), janiData.first, result.second)->template as<MT>();
         }
         return result;
     }
@@ -633,8 +633,8 @@ class DtmcPrctlModelCheckerTest : public ::testing::Test {
         return result->asQualitativeCheckResult().forallTrue();
     }
 
-    ValueType getQuantitativeResultAtInitialState(std::shared_ptr<storm::models::Model<ValueType>> const& model,
-                                                  std::unique_ptr<storm::modelchecker::CheckResult>& result) {
+    storm::utility::ExtendedValueType<ValueType> getQuantitativeResultAtInitialState(std::shared_ptr<storm::models::Model<ValueType>> const& model,
+                                                                                     std::unique_ptr<storm::modelchecker::CheckResult>& result) {
         auto filter = getInitialStateFilter(model);
         result->filter(*filter);
         return result->asQuantitativeCheckResult<ValueType>().getMin();
@@ -828,7 +828,8 @@ TEST(DtmcPrctlModelCheckerTest, AllUntilProbabilities) {
 
     phiStates.set(6);
     psiStates.set(1);
-    result = storm::modelchecker::helper::SparseDtmcPrctlHelper<double>::computeAllUntilProbabilities(env, std::move(goal), matrix, initialStates, phiStates,
+    storm::solver::SolveGoal<double> goal2(*model, tasks[0]);
+    result = storm::modelchecker::helper::SparseDtmcPrctlHelper<double>::computeAllUntilProbabilities(env, std::move(goal2), matrix, initialStates, phiStates,
                                                                                                       psiStates);
 
     EXPECT_NEAR(1, result[0], 1e-6);

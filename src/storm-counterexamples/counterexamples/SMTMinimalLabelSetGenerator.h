@@ -1,11 +1,18 @@
 #pragma once
 
+#include <algorithm>
 #include <chrono>
+#include <iterator>
+#include <memory>
 #include <queue>
+#include <set>
+#include <sstream>
+#include <utility>
 
 #include "storm-counterexamples/counterexamples/GuaranteedLabelSet.h"
 #include "storm-counterexamples/counterexamples/HighLevelCounterexample.h"
 #include "storm/exceptions/InvalidArgumentException.h"
+#include "storm/exceptions/InvalidPropertyException.h"
 #include "storm/exceptions/InvalidStateException.h"
 #include "storm/exceptions/MissingLibraryException.h"
 #include "storm/exceptions/NotSupportedException.h"
@@ -13,6 +20,10 @@
 #include "storm/modelchecker/prctl/helper/SparseMdpPrctlHelper.h"
 #include "storm/modelchecker/propositional/SparsePropositionalModelChecker.h"
 #include "storm/modelchecker/results/ExplicitQuantitativeCheckResult.h"
+#include "storm/models/ModelType.h"
+#include "storm/models/sparse/Dtmc.h"
+#include "storm/models/sparse/Mdp.h"
+#include "storm/models/sparse/Model.h"
 #include "storm/settings/SettingsManager.h"
 #include "storm/settings/modules/CounterexampleGeneratorSettings.h"
 #include "storm/settings/modules/GeneralSettings.h"
@@ -20,7 +31,9 @@
 #include "storm/storage/BoostTypes.h"
 #include "storm/storage/expressions/Expression.h"
 #include "storm/storage/prism/Program.h"
+#include "storm/storage/sparse/JaniChoiceOrigins.h"
 #include "storm/storage/sparse/PrismChoiceOrigins.h"
+#include "storm/utility/graph.h"
 #include "storm/utility/macros.h"
 
 namespace storm {
@@ -307,8 +320,9 @@ class SMTMinimalLabelSetGenerator {
                     storm::expressions::Expression alternativeExpression = variableInformation.manager->boolean(true);
 
                     // If the current synchSet is the same as left-hand side of the implication, we can to skip it.
-                    if (synchSet == labelSet)
+                    if (synchSet == labelSet) {
                         continue;
+                    }
 
                     // Build labels that are missing for this synchronization option.
                     std::set<uint_fast64_t> unknownSynchSetLabels;
@@ -392,8 +406,9 @@ class SMTMinimalLabelSetGenerator {
                 for (auto const& entry : transitionMatrix.getRow(currentChoice)) {
                     if (relevancyInformation.relevantStates.get(entry.getColumn())) {
                         for (auto relevantChoice : relevancyInformation.relevantChoicesForRelevantStates.at(entry.getColumn())) {
-                            if (labelSets[currentChoice] == labelSets[relevantChoice])
+                            if (labelSets[currentChoice] == labelSets[relevantChoice]) {
                                 continue;
+                            }
 
                             followingLabels[labelSets[currentChoice]].insert(labelSets[relevantChoice]);
                         }
@@ -511,7 +526,7 @@ class SMTMinimalLabelSetGenerator {
 
                         for (uint_fast64_t edgeIndex = 0; edgeIndex < automaton.getNumberOfEdges(); ++edgeIndex) {
                             // If the current edge is one of the edges we need to consider, add its guard.
-                            if (labelSetAndPrecedingLabelSetsPair.first.find(janiModel.encodeAutomatonAndEdgeIndices(automatonIndex, edgeIndex)) !=
+                            if (labelSetAndPrecedingLabelSetsPair.first.find(storm::jani::Model::encodeAutomatonAndEdgeIndices(automatonIndex, edgeIndex)) !=
                                 labelSetAndPrecedingLabelSetsPair.first.end()) {
                                 storm::jani::Edge const& edge = automaton.getEdge(edgeIndex);
 
@@ -545,8 +560,9 @@ class SMTMinimalLabelSetGenerator {
 
                     // Now check the possible preceding label sets for the essential ones.
                     for (auto const& precedingLabelSet : labelSetAndPrecedingLabelSetsPair.second) {
-                        if (labelSetAndPrecedingLabelSetsPair.first == precedingLabelSet)
+                        if (labelSetAndPrecedingLabelSetsPair.first == precedingLabelSet) {
                             continue;
+                        }
 
                         // std::cout << "push\n";
                         // Create a restore point so we can easily pop-off all weakest precondition expressions.
@@ -588,7 +604,8 @@ class SMTMinimalLabelSetGenerator {
 
                                 for (uint_fast64_t edgeIndex = 0; edgeIndex < automaton.getNumberOfEdges(); ++edgeIndex) {
                                     // If the current command is one of the commands we need to consider, store a reference to it in the container.
-                                    if (precedingLabelSet.find(janiModel.encodeAutomatonAndEdgeIndices(automatonIndex, edgeIndex)) != precedingLabelSet.end()) {
+                                    if (precedingLabelSet.find(storm::jani::Model::encodeAutomatonAndEdgeIndices(automatonIndex, edgeIndex)) !=
+                                        precedingLabelSet.end()) {
                                         storm::jani::Edge const& edge = automaton.getEdge(edgeIndex);
 
                                         preceedingGuardConjunction = preceedingGuardConjunction && edge.getGuard();
@@ -2019,7 +2036,7 @@ class SMTMinimalLabelSetGenerator {
         // Create a queue of reachable prob0E(psi) states so we can check which commands need to be added
         // to give them a strategy that avoids psi states.
         std::queue<uint_fast64_t> prob0EWorklist;
-        for (auto e : reachableProb0EStates) {
+        for (uint64_t e : reachableProb0EStates) {
             prob0EWorklist.push(e);
         }
 

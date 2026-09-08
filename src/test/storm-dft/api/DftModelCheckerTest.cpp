@@ -1,8 +1,12 @@
 #include "storm-config.h"
 #include "test/storm_gtest.h"
 
-#include "storm-dft/api/storm-dft.h"
-#include "storm-parsers/api/storm-parsers.h"
+#include "storm-dft/api/analysis.h"
+#include "storm-dft/api/io.h"
+#include "storm-dft/api/transformation.h"
+#include "storm-parsers/api/properties.h"
+#include "storm/api/properties.h"
+#include "storm/storage/jani/Property.h"
 
 namespace {
 
@@ -88,7 +92,7 @@ class DftModelCheckerTest : public ::testing::Test {
         return config;
     }
 
-    double analyze(std::string const& file, std::string const& property) {
+    double analyze(std::string const& file, std::string const& property) const {
         // Load, build and prepare DFT
         std::shared_ptr<storm::dft::storage::DFT<double>> dft =
             storm::dft::api::prepareForMarkovAnalysis<double>(*(storm::dft::api::loadDFTGalileoFile<double>(file)));
@@ -107,29 +111,29 @@ class DftModelCheckerTest : public ::testing::Test {
         // Perform model checking
         typename storm::dft::modelchecker::DFTModelChecker<double>::dft_results results =
             storm::dft::api::analyzeDFT<double>(*dft, properties, config.useSR, config.useMod, relevantEvents, false);
-        return boost::get<double>(results[0]);
+        return boost::get<typename storm::dft::modelchecker::DFTModelChecker<double>::ExtendedValueType>(results[0]);
     }
 
-    double analyzeMTTF(std::string const& file) {
+    double analyzeMTTF(std::string const& file) const {
         std::string property = "Tmin=? [F \"failed\"]";
         return analyze(file, property);
     }
 
-    double analyzeReliability(std::string const& file, double bound) {
+    double analyzeReliability(std::string const& file, double bound) const {
         std::string property = "Pmin=? [F<=" + std::to_string(bound) + " \"failed\"]";
         return analyze(file, property);
     }
 
-    double analyzeReachability(std::string const& file) {
+    double analyzeReachability(std::string const& file) const {
         std::string property = "Pmin=? [F \"failed\"]";
         return analyze(file, property);
     }
 
-    double precision() {
+    double precision() const {
         return 1e-12;
     }
 
-    double precisionReliability() {
+    double precisionReliability() const {
         return 1e-10;
     }
 
@@ -166,12 +170,12 @@ TYPED_TEST(DftModelCheckerTest, VotingMTTF) {
 
 TYPED_TEST(DftModelCheckerTest, PandMTTF) {
     double result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/pand.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
 }
 
 TYPED_TEST(DftModelCheckerTest, PorMTTF) {
     double result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/por.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
 }
 
 TYPED_TEST(DftModelCheckerTest, FdepMTTF) {
@@ -188,7 +192,7 @@ TYPED_TEST(DftModelCheckerTest, FdepMTTF) {
         STORM_SILENT_EXPECT_THROW(this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/fdep5.dft"), storm::exceptions::NotSupportedException);
         STORM_SILENT_EXPECT_THROW(this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/fdep6.dft"), storm::exceptions::NotSupportedException);
     } else {
-        double result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/fdep.dft");
+        result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/fdep.dft");
         EXPECT_NEAR(result, 2 / 3.0, this->precision());
         result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/fdep4.dft");
         EXPECT_NEAR(result, 1, this->precision());
@@ -215,7 +219,7 @@ TYPED_TEST(DftModelCheckerTest, PdepMTTF) {
         STORM_SILENT_EXPECT_THROW(this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/pdep4.dft"), storm::exceptions::NotSupportedException);
     } else {
         result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/pdep4.dft");
-        EXPECT_EQ(result, storm::utility::infinity<double>());
+        EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     }
 }
 
@@ -255,7 +259,7 @@ TYPED_TEST(DftModelCheckerTest, SeqMTTF) {
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/seq4.dft");
     EXPECT_NEAR(result, 6, this->precision());
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/seq5.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/seq6.dft");
     EXPECT_NEAR(result, 30000, this->precision());
 
@@ -263,7 +267,7 @@ TYPED_TEST(DftModelCheckerTest, SeqMTTF) {
         STORM_SILENT_EXPECT_THROW(this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/seq7.dft"), storm::exceptions::NotSupportedException);
     } else {
         result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/seq7.dft");
-        EXPECT_EQ(result, storm::utility::infinity<double>());
+        EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     }
     result = this->analyzeReliability(STORM_TEST_RESOURCES_DIR "/dft/seq7.dft", 1.0);
     EXPECT_NEAR(result, 0.08, this->precision());
@@ -282,21 +286,21 @@ TYPED_TEST(DftModelCheckerTest, Mutex) {
     EXPECT_NEAR(result, 1, this->precision());
 
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/mutex2.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     result = this->analyzeReliability(STORM_TEST_RESOURCES_DIR "/dft/mutex2.dft", 1.0);
     EXPECT_NEAR(result, 0, this->precision());
     result = this->analyzeReachability(STORM_TEST_RESOURCES_DIR "/dft/mutex2.dft");
     EXPECT_NEAR(result, 0, this->precision());
 
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/mutex3.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     result = this->analyzeReliability(STORM_TEST_RESOURCES_DIR "/dft/mutex3.dft", 1.0);
     EXPECT_NEAR(result, 0, this->precision());
     result = this->analyzeReachability(STORM_TEST_RESOURCES_DIR "/dft/mutex3.dft");
     EXPECT_NEAR(result, 0, this->precision());
 
     result = this->analyzeMTTF(STORM_TEST_RESOURCES_DIR "/dft/mutex4.dft");
-    EXPECT_EQ(result, storm::utility::infinity<double>());
+    EXPECT_EQ(result, storm::utility::positiveInfinity<double>());
     result = this->analyzeReliability(STORM_TEST_RESOURCES_DIR "/dft/mutex4.dft", 1.0);
     EXPECT_NEAR(result, 0.5842978146, this->precisionReliability());
     result = this->analyzeReachability(STORM_TEST_RESOURCES_DIR "/dft/mutex4.dft");

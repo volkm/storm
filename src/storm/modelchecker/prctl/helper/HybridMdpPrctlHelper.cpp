@@ -79,7 +79,7 @@ void eliminateExtendedStatesFromExplicitRepresentation(std::pair<storm::storage:
     if (scheduler) {
         // Eliminate superfluous entries from the scheduler.
         uint64_t position = 0;
-        for (auto state : properMaybeStates) {
+        for (uint64_t state : properMaybeStates) {
             scheduler.get()[position] = scheduler.get()[state];
             position++;
         }
@@ -300,7 +300,7 @@ std::unique_ptr<CheckResult> HybridMdpPrctlHelper<DdType, ValueType>::computeGlo
     Environment const& env, OptimizationDirection dir, storm::models::symbolic::NondeterministicModel<DdType, ValueType> const& model,
     storm::dd::Add<DdType, ValueType> const& transitionMatrix, storm::dd::Bdd<DdType> const& psiStates, bool qualitative) {
     std::unique_ptr<CheckResult> result =
-        computeUntilProbabilities(env, dir == OptimizationDirection::Minimize ? OptimizationDirection::Maximize : OptimizationDirection::Maximize, model,
+        computeUntilProbabilities(env, dir == OptimizationDirection::Minimize ? OptimizationDirection::Maximize : OptimizationDirection::Minimize, model,
                                   transitionMatrix, model.getReachableStates(), !psiStates && model.getReachableStates(), qualitative);
     result->asQuantitativeCheckResult<ValueType>().oneMinus();
     return result;

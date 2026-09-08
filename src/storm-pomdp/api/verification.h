@@ -1,7 +1,17 @@
 #pragma once
 
+#include <limits>
+#include <memory>
+#include <unordered_map>
+#include <vector>
+
 #include "storm-pomdp/modelchecker/BeliefExplorationPomdpModelChecker.h"
 #include "storm/environment/Environment.h"
+#include "storm/modelchecker/CheckTask.h"
+#include "storm/models/sparse/Model.h"
+#include "storm/models/sparse/Pomdp.h"
+#include "storm/storage/Scheduler.h"
+#include "storm/utility/constants.h"
 
 namespace storm {
 namespace pomdp {
@@ -71,7 +81,7 @@ storm::pomdp::modelchecker::BeliefExplorationPomdpModelChecker<storm::models::sp
     options.skipHeuristicSchedulers = false;
     options.useClipping = useClipping;
     options.useStateEliminationCutoff = false;
-    options.sizeThresholdInit = storm::utility::infinity<uint64_t>();
+    options.sizeThresholdInit = std::numeric_limits<uint64_t>::max();  // i.e. no size limit
     options.interactiveUnfolding = true;
     options.refine = false;
     options.gapThresholdInit = 0;

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "storm/api/storm.h"
-#include "storm/logic/Formula.h"
-#include "storm/modelchecker/results/CheckResult.h"
-#include "storm/utility/Stopwatch.h"
+#include <boost/variant.hpp>
 
 #include "storm-dft/storage/DFT.h"
 #include "storm-dft/utility/RelevantEvents.h"
+#include "storm/logic/Formula.h"
+#include "storm/transformer/NonMarkovianChainTransformer.h"
+#include "storm/utility/ExtendedNumber.h"
+#include "storm/utility/Stopwatch.h"
 
 namespace storm::dft {
 namespace modelchecker {
@@ -17,17 +18,18 @@ namespace modelchecker {
 template<typename ValueType>
 class DFTModelChecker {
    public:
-    typedef std::pair<ValueType, ValueType> approximation_result;
-    typedef std::vector<boost::variant<ValueType, approximation_result>> dft_results;
+    typedef storm::utility::ExtendedValueType<ValueType> ExtendedValueType;
+    typedef std::pair<ExtendedValueType, ExtendedValueType> approximation_result;
+    typedef std::vector<boost::variant<ExtendedValueType, approximation_result>> dft_results;
     typedef std::vector<std::shared_ptr<storm::logic::Formula const>> property_vector;
 
     class ResultOutputVisitor : public boost::static_visitor<> {
        public:
-        void operator()(ValueType result, std::ostream& os) const {
+        void operator()(ExtendedValueType const& result, std::ostream& os) const {
             os << result;
         }
 
-        void operator()(std::pair<ValueType, ValueType> const& result, std::ostream& os) const {
+        void operator()(approximation_result const& result, std::ostream& os) const {
             os << "(" << result.first << ", " << result.second << ")";
         }
     };
@@ -48,7 +50,7 @@ class DFTModelChecker {
      * @param allowDCForRelevant Whether to allow Don't Care propagation for relevant events
      * @param approximationError Error allowed for approximation. Value 0 indicates no approximation.
      * @param approximationHeuristic Heuristic used for state space exploration.
-     * @param eliminateChains If true, chains of non-Markovian states are elimianted from the resulting MA
+     * @param eliminateChains If true, chains of non-Markovian states are eliminated from the resulting MA
      * @param labelBehavior Behavior of labels of eliminated states
      * @return Model checking results for the given properties..
      */
@@ -64,7 +66,7 @@ class DFTModelChecker {
      *
      * @param os Output stream to write to.
      */
-    void printTimings(std::ostream& os = std::cout);
+    void printTimings(std::ostream& os = std::cout) const;
 
     /*!
      * Print result to stream.
@@ -72,7 +74,7 @@ class DFTModelChecker {
      * @param results List of results.
      * @param os Output stream to write to.
      */
-    void printResults(dft_results const& results, std::ostream& os = std::cout);
+    void printResults(dft_results const& results, std::ostream& os = std::cout) const;
 
    private:
     bool printInfo;
@@ -95,7 +97,7 @@ class DFTModelChecker {
      * @param allowDCForRelevant Whether to allow Don't Care propagation for relevant events
      * @param approximationError Error allowed for approximation. Value 0 indicates no approximation.
      * @param approximationHeuristic Heuristic used for approximation.
-     * @param eliminateChains If true, chains of non-Markovian states are elimianted from the resulting MA
+     * @param eliminateChains If true, chains of non-Markovian states are eliminated from the resulting MA
      * @param labelBehavior Behavior of labels of eliminated states
      * @return Model checking results (or in case of approximation two results for lower and upper bound)
      */
@@ -131,7 +133,7 @@ class DFTModelChecker {
      * @param allowDCForRelevant Whether to allow Don't Care propagation for relevant events
      * @param approximationError Error allowed for approximation. Value 0 indicates no approximation.
      * @param approximationHeuristic Heuristic used for approximation.
-     * @param eliminateChains If true, chains of non-Markovian states are elimianted from the resulting MA
+     * @param eliminateChains If true, chains of non-Markovian states are eliminated from the resulting MA
      * @param labelBehavior Behavior of labels of eliminated states
      *
      * @return Model checking result
@@ -150,7 +152,7 @@ class DFTModelChecker {
      *
      * @return Model checking result
      */
-    std::vector<ValueType> checkModel(std::shared_ptr<storm::models::sparse::Model<ValueType>>& model, property_vector const& properties);
+    std::vector<ExtendedValueType> checkModel(std::shared_ptr<storm::models::sparse::Model<ValueType>>& model, property_vector const& properties);
 
     /*!
      * Checks if the computed approximation is sufficient, i.e.

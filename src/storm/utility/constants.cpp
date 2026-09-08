@@ -8,6 +8,7 @@
 #include "storm/exceptions/InvalidArgumentException.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/storage/sparse/StateType.h"
+#include "storm/utility/ExtendedNumber.h"
 #include "storm/utility/NumberTraits.h"
 #include "storm/utility/logging.h"
 #include "storm/utility/macros.h"
@@ -27,6 +28,9 @@ ValueType zero() {
 
 template<typename ValueType>
 ValueType infinity() {
+    // std::numeric_limits<T>::infinity() is zero for types that have no infinity, so asking for the infinity of an
+    // integral type used to silently yield zero. Reject it instead.
+    static_assert(!std::numeric_limits<ValueType>::is_integer, "There is no infinity for integral types.");
     return std::numeric_limits<ValueType>::infinity();
 }
 
@@ -106,7 +110,12 @@ bool isConstant(ValueType const&) {
 
 template<typename ValueType>
 bool isInfinity(ValueType const& a) {
-    return a == infinity<ValueType>();
+    if constexpr (std::numeric_limits<ValueType>::is_integer) {
+        // Integral types have no infinity, so no value of them is infinite.
+        return false;
+    } else {
+        return a == infinity<ValueType>();
+    }
 }
 
 template<typename ValueType>
@@ -353,6 +362,9 @@ std::string to_string(ValueType const& value) {
 #if defined(STORM_HAVE_CLN)
 template<>
 storm::ClnRationalNumber infinity() {
+    STORM_LOG_DEPRECATED(
+        "storm::utility::infinity<storm::ClnRationalNumber>, which returns the literal 100000000000 rather than an infinity. Hold the value in a "
+        "storm::utility::ExtendedValueType<storm::ClnRationalNumber> instead.");
     // FIXME: this should be treated more properly.
     return storm::ClnRationalNumber(100000000000);
 }
@@ -563,6 +575,9 @@ NumberTraits<ClnRationalNumber>::IntegerType denominator(ClnRationalNumber const
 #if defined(STORM_HAVE_GMP)
 template<>
 storm::GmpRationalNumber infinity() {
+    STORM_LOG_DEPRECATED(
+        "storm::utility::infinity<storm::GmpRationalNumber>, which returns the literal 100000000000 rather than an infinity. Hold the value in a "
+        "storm::utility::ExtendedValueType<storm::GmpRationalNumber> instead.");
     // FIXME: this should be treated more properly.
     return storm::GmpRationalNumber(100000000000);
 }
@@ -801,6 +816,9 @@ storm::ClnRationalNumber convertNumber(storm::GmpRationalNumber const& number) {
 
 template<>
 storm::RationalFunction infinity() {
+    STORM_LOG_DEPRECATED(
+        "storm::utility::infinity<storm::RationalFunction>, which returns the literal 100000000000 rather than an infinity. Hold the value in a "
+        "storm::utility::ExtendedValueType<storm::RationalFunction> instead.");
     // FIXME: this should be treated more properly.
     return storm::RationalFunction(convertNumber<RationalFunctionCoefficient>(100000000000));
 }
@@ -1200,7 +1218,6 @@ template std::string to_string(double const& value);
 // int
 template int one();
 template int zero();
-template int infinity();
 template bool isOne(int const& value);
 template bool isZero(int const& value);
 template bool isConstant(int const& value);
@@ -1213,7 +1230,6 @@ template bool isBetween(int const& a, int const& b, int const& c, bool strict);
 // uint32_t
 template uint32_t one();
 template uint32_t zero();
-template uint32_t infinity();
 template bool isOne(uint32_t const& value);
 template bool isZero(uint32_t const& value);
 template bool isConstant(uint32_t const& value);
@@ -1225,7 +1241,6 @@ template bool isBetween(uint32_t const& a, uint32_t const& b, uint32_t const& c,
 // storm::storage::sparse::state_type
 template storm::storage::sparse::state_type one();
 template storm::storage::sparse::state_type zero();
-template storm::storage::sparse::state_type infinity();
 template bool isApproxEqual(storm::storage::sparse::state_type const& a, storm::storage::sparse::state_type const& b,
                             storm::storage::sparse::state_type const& precision, bool relative);
 template bool isOne(storm::storage::sparse::state_type const& value);
@@ -1347,5 +1362,20 @@ template bool isBetween(RationalInterval const&, RationalInterval const&, Ration
 template RationalInterval convertNumber(RationalInterval const&);
 
 template std::string to_string(storm::RationalInterval const& value);
+
+// Instantiations for the value types extended with the infinities.
+template std::pair<storm::ExtendedRationalNumber, storm::ExtendedRationalNumber> minmax(std::vector<storm::ExtendedRationalNumber> const& values);
+template storm::ExtendedRationalNumber minimum(std::vector<storm::ExtendedRationalNumber> const& values);
+template storm::ExtendedRationalNumber maximum(std::vector<storm::ExtendedRationalNumber> const& values);
+template std::pair<storm::ExtendedRationalNumber, storm::ExtendedRationalNumber> minmax(std::map<uint64_t, storm::ExtendedRationalNumber> const& values);
+template storm::ExtendedRationalNumber minimum(std::map<uint64_t, storm::ExtendedRationalNumber> const& values);
+template storm::ExtendedRationalNumber maximum(std::map<uint64_t, storm::ExtendedRationalNumber> const& values);
+
+template std::pair<storm::ExtendedRationalFunction, storm::ExtendedRationalFunction> minmax(std::vector<storm::ExtendedRationalFunction> const& values);
+template storm::ExtendedRationalFunction minimum(std::vector<storm::ExtendedRationalFunction> const& values);
+template storm::ExtendedRationalFunction maximum(std::vector<storm::ExtendedRationalFunction> const& values);
+template std::pair<storm::ExtendedRationalFunction, storm::ExtendedRationalFunction> minmax(std::map<uint64_t, storm::ExtendedRationalFunction> const& values);
+template storm::ExtendedRationalFunction minimum(std::map<uint64_t, storm::ExtendedRationalFunction> const& values);
+template storm::ExtendedRationalFunction maximum(std::map<uint64_t, storm::ExtendedRationalFunction> const& values);
 }  // namespace utility
 }  // namespace storm

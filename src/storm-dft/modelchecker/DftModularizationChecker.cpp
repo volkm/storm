@@ -3,22 +3,20 @@
 #include <sstream>
 
 #include "storm-dft/adapters/SFTBDDPropertyFormulaAdapter.h"
-#include "storm-dft/api/storm-dft.h"
 #include "storm-dft/builder/DFTBuilder.h"
 #include "storm-dft/modelchecker/DFTModelChecker.h"
 #include "storm-dft/modelchecker/SFTBDDChecker.h"
 #include "storm-dft/utility/DftModularizer.h"
-
 #include "storm-parsers/api/properties.h"
 #include "storm/api/properties.h"
-#include "storm/exceptions/InvalidModelException.h"
+#include "storm/storage/jani/Property.h"
 
 namespace storm::dft {
 namespace modelchecker {
 
 template<typename ValueType>
 DftModularizationChecker<ValueType>::DftModularizationChecker(std::shared_ptr<storm::dft::storage::DFT<ValueType>> dft)
-    : dft{dft}, modelchecker(true), sylvanBddManager{std::make_shared<storm::dft::storage::SylvanBddManager>()} {
+    : dft{dft}, modelchecker(true), sylvanBddManager{storm::dft::storage::SylvanBddManager::createWithDefaultEnvironment()} {
     // Initialize modules
     storm::dft::utility::DftModularizer<ValueType> modularizer;
     auto topModule = modularizer.computeModules(*dft);
@@ -53,7 +51,7 @@ std::vector<ValueType> DftModularizationChecker<ValueType>::check(FormulaVector 
 
     auto newDft = replaceDynamicModules(timepoints);
 
-    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{newDft, formulas, {}, sylvanBddManager};
+    storm::dft::adapters::SFTBDDPropertyFormulaAdapter checker{newDft, formulas, sylvanBddManager, {}};
     return checker.check(chunksize);
 }
 
@@ -76,7 +74,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
         // Remember probabilities for module
         std::map<ValueType, ValueType> activeSamples{};
         for (size_t i{0}; i < timepoints.size(); ++i) {
-            auto const probability{boost::get<ValueType>(result[i])};
+            auto const probability{storm::utility::narrow<ValueType>(boost::get<typename DFTModelChecker<ValueType>::ExtendedValueType>(result[i]))};
             auto const timebound{timepoints[i]};
             activeSamples[timebound] = probability;
         }
@@ -98,7 +96,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
         if (it != samplePoints.end()) {
             // Replace element by BE
             builder.addBasicElementSamples(element->name(), it->second);
-        } else if (dynamicElements.find(id) == dynamicElements.end()) {
+        } else if (!dynamicElements.contains(id)) {
             // Element is not part of a dynamic module -> keep
             builder.cloneElement(element);
             // Remember dependency conflict
@@ -113,7 +111,7 @@ std::shared_ptr<storm::dft::storage::DFT<ValueType>> DftModularizationChecker<Va
     // Update dependency conflicts
     for (size_t id : newDft->getDependencies()) {
         // Set dependencies not in conflict
-        if (depInConflict.find(newDft->getElement(id)->name()) == depInConflict.end()) {
+        if (!depInConflict.contains(newDft->getElement(id)->name())) {
             newDft->setDependencyNotInConflict(id);
         }
     }

@@ -1,5 +1,7 @@
 #include "storm-pars/transformer/SparseParametricMdpSimplifier.h"
 
+#include <optional>
+
 #include "storm/adapters/RationalFunctionAdapter.h"
 #include "storm/exceptions/NotSupportedException.h"
 #include "storm/exceptions/UnexpectedException.h"
@@ -90,7 +92,7 @@ bool SparseParametricMdpSimplifier<SparseModelType>::simplifyForUntilProbabiliti
 
     // Eliminate the end components that do not contain a target or a sink state (only required if the probability is maximized)
     if (!minimizing) {
-        this->simplifiedModel = this->eliminateNeutralEndComponents(
+        this->simplifiedModel = SparseParametricMdpSimplifier<SparseModelType>::eliminateNeutralEndComponents(
             *this->simplifiedModel, this->simplifiedModel->getStates(targetLabel) | this->simplifiedModel->getStates(sinkLabel));
     }
 
@@ -159,7 +161,7 @@ bool SparseParametricMdpSimplifier<SparseModelType>::simplifyForBoundedUntilProb
     // obtain the simplified formula for the simplified model
     auto labelFormula = std::make_shared<storm::logic::AtomicLabelFormula const>(targetLabel);
     auto boundedUntilFormula =
-        std::make_shared<storm::logic::BoundedUntilFormula const>(storm::logic::Formula::getTrueFormula(), labelFormula, boost::none,
+        std::make_shared<storm::logic::BoundedUntilFormula const>(storm::logic::Formula::getTrueFormula(), labelFormula, std::nullopt,
                                                                   storm::logic::TimeBound(formula.getSubformula().asBoundedUntilFormula().isUpperBoundStrict(),
                                                                                           formula.getSubformula().asBoundedUntilFormula().getUpperBound()),
                                                                   storm::logic::TimeBoundReference(storm::logic::TimeBoundType::Steps));
@@ -248,9 +250,9 @@ bool SparseParametricMdpSimplifier<SparseModelType>::simplifyForReachabilityRewa
 
     // Eliminate the end components in which no reward is collected (only required if rewards are minimized)
     if (minimizing) {
-        this->simplifiedModel = this->eliminateNeutralEndComponents(*this->simplifiedModel,
-                                                                    this->simplifiedModel->getStates(targetLabel) | this->simplifiedModel->getStates(sinkLabel),
-                                                                    rewardModelNameAsVector.front());
+        this->simplifiedModel = SparseParametricMdpSimplifier<SparseModelType>::eliminateNeutralEndComponents(
+            *this->simplifiedModel, this->simplifiedModel->getStates(targetLabel) | this->simplifiedModel->getStates(sinkLabel),
+            rewardModelNameAsVector.front());
     }
     return true;
 }
@@ -302,7 +304,7 @@ std::shared_ptr<SparseModelType> SparseParametricMdpSimplifier<SparseModelType>:
     SparseModelType const& model, storm::storage::BitVector const& ignoredStates, boost::optional<std::string> const& rewardModelName) {
     // Get the actions that can be part of an EC
     storm::storage::BitVector possibleECActions(model.getNumberOfChoices(), true);
-    for (auto state : ignoredStates) {
+    for (uint64_t state : ignoredStates) {
         for (uint_fast64_t actionIndex = model.getTransitionMatrix().getRowGroupIndices()[state];
              actionIndex < model.getTransitionMatrix().getRowGroupIndices()[state + 1]; ++actionIndex) {
             possibleECActions.set(actionIndex, false);
