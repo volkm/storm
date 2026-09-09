@@ -47,6 +47,8 @@ ARG cmake_args=""
 # Additional Archlinux packages
 ARG packages=""
 
+ARG ccache_size="3G"
+
 
 # Install dependencies
 ######################
@@ -68,10 +70,13 @@ RUN pacman -S --noconfirm \
         z3 \
         $packages
 
+# Check for ccache
+ENV CCACHE_DIR=/root/.ccache
+RUN command -v ccache >/dev/null 2>&1 || { echo "ERROR: ccache not found in the base image"; exit 1; }
+
 
 # Build Storm
 #############
-ENV CCACHE_DIR=/root/.ccache
 RUN mkdir /opt/storm
 WORKDIR /opt/storm
 
@@ -80,7 +85,7 @@ COPY . .
 
 # Seed ccache from the workflow cache directory if available.
 RUN mkdir -p "$CCACHE_DIR" && \
-        if [ -d "/opt/storm/.ci-ccache" ]; then cp -a /opt/storm/.ci-ccache/. "$CCACHE_DIR"/; fi
+    if [ -d "/opt/storm/.ci-ccache" ]; then cp -a /opt/storm/.ci-ccache/. "$CCACHE_DIR"/; fi
 
 # Switch to build directory
 RUN mkdir -p /opt/storm/build
@@ -111,6 +116,6 @@ RUN cmake -DCMAKE_BUILD_TYPE=$build_type \
 
 # Build Storm
 # (This can be adapted to only build 'storm' or 'binaries' depending on custom needs)
-RUN ccache --max-size=3G && ccache --zero-stats && make -j $no_threads && ccache --show-stats --verbose
+RUN ccache --max-size=$ccache_size && ccache --zero-stats && make -j $no_threads && ccache --show-stats --verbose
 
 WORKDIR /opt/storm

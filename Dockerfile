@@ -45,22 +45,13 @@ ARG all_sanitizers="OFF"
 ARG cmake_args=""
 ARG ccache_size="3G"
 
+# Check for ccache
+ENV CCACHE_DIR=/root/.ccache
+RUN command -v ccache >/dev/null 2>&1 || { echo "ERROR: ccache not found in the base image"; exit 1; }
+
 
 # Build Storm
 #############
-RUN if ! command -v ccache >/dev/null 2>&1; then \
-        if command -v apt-get >/dev/null 2>&1; then \
-            apt-get update && apt-get install -y --no-install-recommends ccache && rm -rf /var/lib/apt/lists/*; \
-        elif command -v apk >/dev/null 2>&1; then \
-            apk add --no-cache ccache; \
-        elif command -v pacman >/dev/null 2>&1; then \
-            pacman -S --noconfirm ccache; \
-        else \
-            echo "No supported package manager found for ccache installation"; \
-        fi; \
-    fi
-
-ENV CCACHE_DIR=/root/.ccache
 RUN mkdir /opt/storm
 WORKDIR /opt/storm
 

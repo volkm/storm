@@ -48,6 +48,8 @@ ARG cmake_args=""
 # Additional Alpine packages
 ARG packages=""
 
+ARG ccache_size="3G"
+
 RUN apk add --no-cache \
     bash \
     ccache \
@@ -70,10 +72,13 @@ RUN apk add --no-cache \
     libarchive-dev \
     $packages
 
+# Check for ccache
+ENV CCACHE_DIR=/root/.ccache
+RUN command -v ccache >/dev/null 2>&1 || { echo "ERROR: ccache not found in the base image"; exit 1; }
+
 
 # Build Storm
 #############
-ENV CCACHE_DIR=/root/.ccache
 RUN mkdir /opt/storm
 WORKDIR /opt/storm
 
@@ -113,6 +118,6 @@ RUN cmake -DCMAKE_BUILD_TYPE=$build_type \
 
 # Build Storm
 # (This can be adapted to only build 'storm' or 'binaries' depending on custom needs)
-RUN ccache --max-size=3G && ccache --zero-stats && make -j $no_threads && ccache --show-stats --verbose
+RUN ccache --max-size=$ccache_size && ccache --zero-stats && make -j $no_threads && ccache --show-stats --verbose
 
 WORKDIR /opt/storm
