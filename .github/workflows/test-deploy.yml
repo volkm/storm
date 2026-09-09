@@ -69,7 +69,7 @@ jobs:
           buildType: ${{ inputs.buildType }}
           docker: true
       - name: Run tests
-        run: docker exec ci bash -c "cd /opt/storm/build; ctest test --output-on-failure"
+        run: docker exec ci bash -c "cd /opt/storm/build; ctest --output-on-failure"
       - name: Build starter-project
         uses: ./.github/actions/starter-project-action
         with:

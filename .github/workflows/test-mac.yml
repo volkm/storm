@@ -110,7 +110,7 @@ jobs:
           docker: false
       - name: Run tests
         working-directory: ./build
-        run: ctest test --output-on-failure
+        run: ctest --output-on-failure
       - name: Build starter-project
         if: inputs.install
         uses: ./.github/actions/starter-project-action
