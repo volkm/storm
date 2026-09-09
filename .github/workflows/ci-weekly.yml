@@ -15,36 +15,42 @@ jobs:
         buildType: ["Debug", "Release"]
         config:
           - {name: "GMP; GMP; Required dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-basesystem:latest",
              disable_all: false,
              ClnExact: false,
              ClnRatfunc: false
           }
           - {name: "CLN; GMP; Required dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-basesystem:latest",
              disable_all: false,
              ClnExact: true,
              ClnRatfunc: false
           }
           - {name: "GMP; CLN; Required dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-basesystem:latest",
              disable_all: false,
              ClnExact: false,
              ClnRatfunc: true
           }
           - {name: "CLN; CLN; Required dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-basesystem:latest",
              disable_all: false,
              ClnExact: true,
              ClnRatfunc: true
           }
           - {name: "All dependencies (disabled)",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-dependencies:latest",
              disable_all: true,
              ClnExact: false,
              ClnRatfunc: false
           }
           - {name: "Minimal dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
              baseImg: "movesrwth/storm-basesystem:minimal_dependencies",
              disable_all: true,
              ClnExact: false,
@@ -56,10 +62,12 @@ jobs:
       name: ${{ matrix.config.name }}
       baseImg: ${{ matrix.config.baseImg }}
       buildType: ${{ matrix.buildType }}
+      cmakeArgs: ${{ matrix.config.cmakeArgs }}
       disable_cudd: ${{ matrix.config.disable_all }}
       disable_glpk: ${{ matrix.config.disable_all }}
       disable_gmm: ${{ matrix.config.disable_all }}
       disable_gurobi: ${{ matrix.config.disable_all }}
+      disable_highs: ${{ matrix.config.disable_all }}
       disable_libarchive: ${{ matrix.config.disable_all }}
       disable_mathsat: ${{ matrix.config.disable_all }}
       disable_soplex: ${{ matrix.config.disable_all }}

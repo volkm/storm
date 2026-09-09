@@ -162,9 +162,6 @@ if (STORM_DEVELOPER)
     set(STORM_DEBUG_SPOT ON)
     set(STORM_DEBUG_SYLVAN ON)
     set(STORM_WARNING_AS_ERROR ON)
-    # Turn off PCH for faster ccache usage on warm caches. PCH compiled files cannot be properly cached currently.
-    # TODO: remove and explicitly set if needed
-    set(STORM_COMPILE_WITH_PCH OFF)
     set(STORM_ENABLE_CLANG_FORMAT ON)
     set(STORM_ENABLE_CLANG_TIDY ON)
 else()

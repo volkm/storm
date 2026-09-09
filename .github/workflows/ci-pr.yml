@@ -13,6 +13,7 @@ jobs:
       matrix:
         config:
           - {name: "Debug; All dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
              buildType: "Debug",
              baseImg: "movesrwth/storm-dependencies:latest",
              disable_all: false, 
@@ -20,13 +21,15 @@ jobs:
              ClnRatfunc: false
           }
           - {name: "Release; All dependencies",
-             buildType: "Release", 
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
+             buildType: "Release",
              baseImg: "movesrwth/storm-dependencies:latest",
              disable_all: false, 
              ClnExact: false, 
              ClnRatfunc: false
           }
-          - {name: "Release; GMP; GMP; Minimal dependencies", 
+          - {name: "Release; GMP; GMP; Minimal dependencies",
+             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
              buildType: "Release",
              baseImg: "movesrwth/storm-basesystem:minimal_dependencies",
              disable_all: true,
@@ -39,10 +42,12 @@ jobs:
       name: ${{ matrix.config.name }}
       baseImg: ${{ matrix.config.baseImg }}
       buildType: ${{ matrix.config.buildType }}
+      cmakeArgs: ${{ matrix.config.cmakeArgs }}
       disable_cudd: ${{ matrix.config.disable_all }}
       disable_glpk: ${{ matrix.config.disable_all }}
       disable_gmm: ${{ matrix.config.disable_all }}
       disable_gurobi: ${{ matrix.config.disable_all }}
+      disable_highs: ${{ matrix.config.disable_all }}
       disable_libarchive: ${{ matrix.config.disable_all }}
       disable_mathsat: ${{ matrix.config.disable_all }}
       disable_soplex: ${{ matrix.config.disable_all }}
@@ -65,13 +70,13 @@ jobs:
       matrix:
         config:
           - {name: "GCC",
-             cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON",
+             cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
              packages: "",
              dockerfile: ".github/workflows/Dockerfile.archlinux", 
              baseImg: "archlinux:latest"
           }
           - {name: "Clang", 
-             cmakeArgs: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON", 
+             cmakeArgs: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
              packages: "clang", 
              dockerfile: ".github/workflows/Dockerfile.archlinux", 
              baseImg: "archlinux:latest"

@@ -47,6 +47,9 @@ on:
       disable_gurobi:
         type: boolean
         default: false
+      disable_highs:
+        type: boolean
+        default: false
       disable_libarchive:
         type: boolean
         default: false
@@ -126,6 +129,7 @@ jobs:
             --build-arg disable_glpk="${{ inputs.disable_glpk && 'ON' || 'OFF' }}" \
             --build-arg disable_gmm="${{ inputs.disable_gmm && 'ON' || 'OFF' }}" \
             --build-arg disable_gurobi="${{ inputs.disable_gurobi && 'ON' || 'OFF' }}" \
+            --build-arg disable_highs="${{ inputs.disable_highs && 'ON' || 'OFF' }}" \
             --build-arg disable_libarchive="${{ inputs.disable_libarchive && 'ON' || 'OFF' }}" \
             --build-arg disable_mathsat="${{ inputs.disable_mathsat && 'ON' || 'OFF' }}" \
             --build-arg disable_soplex="${{ inputs.disable_soplex && 'ON' || 'OFF' }}" \
