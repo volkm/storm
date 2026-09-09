@@ -19,6 +19,10 @@ on:
         description: "runner to use for the job"
         type: string
         default: "ubuntu-latest"
+      cmakeArgs:
+        description: "Extra CMake arguments"
+        type: string
+        default: "-DSTORM_WARNING_AS_ERROR=ON"
       restore_cache:
         description: "Restore ccache from cache"
         type: boolean
@@ -59,7 +63,7 @@ jobs:
             --build-arg build_type="${{ inputs.buildType }}" \
             --build-arg carl_tag="master" \
             --build-arg no_threads=${NR_JOBS} \
-            --build-arg cmake_args="-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF"
+            --build-arg cmake_args="${{ inputs.cmakeArgs }}"
             # Omitting arguments developer, disable_*, cln_exact, cln_ratfunc, all_sanitizers
       - name: Export ccache from Docker image
         if: inputs.save_cache && always() && steps.ccache-restore.outputs.cache-hit != 'true'

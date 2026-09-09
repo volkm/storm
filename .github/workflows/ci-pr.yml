@@ -107,6 +107,7 @@ jobs:
       nr_jobs: "4"
       distro: ${{ matrix.distro }}
       buildType: Release
+      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF"
       runner: ubuntu-latest
       restore_cache: true
       save_cache: true
@@ -140,6 +141,7 @@ jobs:
       distro: ${{ matrix.config.distro }}
       xcode: ${{ matrix.config.xcode }}
       buildType: ${{ matrix.config.buildType }}
+      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF"
       restore_cache: true
       save_cache: true
       install: false

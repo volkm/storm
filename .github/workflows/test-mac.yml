@@ -23,6 +23,10 @@ on:
         description: "CMake build type (Debug or Release)"
         type: string
         required: true
+      cmakeArgs:
+        description: "Extra CMake arguments"
+        type: string
+        default: "-DSTORM_WARNING_AS_ERROR=ON"
       restore_cache:
         description: "Restore ccache and Homebrew cache"
         type: boolean
@@ -86,7 +90,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" -DSTORM_CARL_GIT_TAG="master" -DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF
+          cmake .. -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" -DSTORM_CARL_GIT_TAG="master" ${{ inputs.cmakeArgs }}
       - name: Build storm
         working-directory: ./build
         run: |
