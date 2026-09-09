@@ -101,6 +101,12 @@ jobs:
              dockerfile: ".github/workflows/Dockerfile.archlinux",
              baseImg: "archlinux:latest"
           }
+          - {name: "musl",
+             cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
+             packages: "",
+             dockerfile: ".github/workflows/Dockerfile.alpine",
+             baseImg: "alpine:edge"
+          }
     uses: ./.github/workflows/test-build.yml
     with:
       nr_jobs: "4"
