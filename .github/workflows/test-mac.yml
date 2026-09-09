@@ -75,7 +75,7 @@ jobs:
         # cmake and gmp are already installed
         run: |
           brew update
-          brew install automake boost ccache cln ginac glpk hwloc libarchive xerces-c z3
+          brew install automake boost ccache cln ginac glpk highs hwloc libarchive xerces-c z3
       - name: Prepare ccache
         if: inputs.restore_cache
         run: |
