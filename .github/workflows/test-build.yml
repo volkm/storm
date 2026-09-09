@@ -19,6 +19,10 @@ on:
         description: "Enable developer mode"
         type: boolean
         default: true
+      carl_tag:
+        description: "Carl version"
+        type: string
+        default: "master"
       cmakeArgs:
         description: "Extra CMake arguments"
         type: string
@@ -125,6 +129,7 @@ jobs:
           docker build -t movesrwth/storm:ci --file ${{ inputs.dockerfile }} . \
             --build-arg BASE_IMAGE=${{ inputs.baseImg }} \
             --build-arg build_type="${{ inputs.buildType }}" \
+            --build-arg carl_tag="${{ inputs.carl_tag }}" \
             --build-arg disable_cudd="${{ inputs.disable_cudd && 'ON' || 'OFF' }}" \
             --build-arg disable_glpk="${{ inputs.disable_glpk && 'ON' || 'OFF' }}" \
             --build-arg disable_gmm="${{ inputs.disable_gmm && 'ON' || 'OFF' }}" \

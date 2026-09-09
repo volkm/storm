@@ -57,6 +57,7 @@ jobs:
           docker build -t movesrwth/storm:ci . \
             --build-arg BASE_IMAGE=movesrwth/storm-basesystem:${{ inputs.distro }} \
             --build-arg build_type="${{ inputs.buildType }}" \
+            --build-arg carl_tag="master" \
             --build-arg no_threads=${NR_JOBS} \
             --build-arg cmake_args="-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF"
             # Omitting arguments developer, disable_*, cln_exact, cln_ratfunc, all_sanitizers
