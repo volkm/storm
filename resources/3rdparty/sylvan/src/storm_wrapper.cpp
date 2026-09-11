@@ -212,7 +212,7 @@ storm_rational_number_ptr storm_rational_number_pow(storm_rational_number_ptr a,
     storm::RationalNumber const& srn_a = *static_cast<storm::RationalNumber const*>(a);
     storm::RationalNumber const& srn_b = *static_cast<storm::RationalNumber const*>(b);
 
-    int_fast64_t exponentAsInteger = storm::utility::convertNumber<int_fast64_t>(srn_b);
+    int64_t exponentAsInteger = storm::utility::convertNumber<int64_t>(srn_b);
     storm::RationalNumber* result_srn = new storm::RationalNumber(storm::utility::pow(srn_a, exponentAsInteger));
     return static_cast<storm_rational_number_ptr>(result_srn);
 }
@@ -551,7 +551,7 @@ storm_rational_function_ptr storm_rational_function_pow(storm_rational_function_
     storm::RationalFunction const& srf_a = *static_cast<storm::RationalFunction const*>(a);
     storm::RationalFunction const& srf_b = *static_cast<storm::RationalFunction const*>(b);
 
-    uint_fast64_t exponentAsInteger = storm::utility::convertNumber<uint_fast64_t>(srf_b.nominatorAsNumber());
+    uint64_t exponentAsInteger = storm::utility::convertNumber<uint64_t>(srf_b.nominatorAsNumber());
     storm::RationalFunction* result_srf = new storm::RationalFunction(storm::utility::pow(srf_a, exponentAsInteger));
     return static_cast<storm_rational_function_ptr>(result_srf);
 }
