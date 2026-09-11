@@ -340,6 +340,12 @@ class PrismParserGrammar : public qi::grammar<Iterator, storm::prism::Program(),
     storm::parser::PrismParserGrammar::modelTypeStruct modelType_;
     qi::symbols<char, storm::expressions::Expression> identifiers_;
 
+    // Collects a deferred parsing error message. Semantic actions and the error handler must not
+    // throw from inside phrase_parse (see SpiritErrorSink); they record here and fail the parse, and
+    // the driver raises the WrongFormatException afterwards. Constructed fresh per parse, so no reset
+    // is needed; the two parsing passes share one instance and the sink is only read on failure.
+    std::shared_ptr<SpiritErrorSink> errorSink;
+
     // Parser and manager used for recognizing expressions.
     std::shared_ptr<storm::expressions::ExpressionManager> manager;
     std::shared_ptr<storm::parser::ExpressionParser> expressionParser;
