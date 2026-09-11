@@ -60,7 +60,8 @@ storm::prism::Program PrismParserGrammar::parseFromString(std::string const& inp
         // Start first run.
         storm::spirit_encoding::space_type space;
         bool succeeded = qi::phrase_parse(iter, last, grammar, space | qi::lit("//") >> *(qi::char_ - (qi::eol | qi::eoi)) >> (qi::eol | qi::eoi), result);
-        STORM_LOG_THROW(succeeded, storm::exceptions::WrongFormatException, "Parsing failed in first pass.");
+        STORM_LOG_THROW(succeeded, storm::exceptions::WrongFormatException,
+                        (grammar.errorSink->hasError ? grammar.errorSink->message : "Parsing failed in first pass."));
         STORM_LOG_DEBUG("First pass of parsing PRISM input finished.");
 
         // Start second run.
@@ -69,7 +70,8 @@ storm::prism::Program PrismParserGrammar::parseFromString(std::string const& inp
         last = PositionIteratorType(input.end());
         grammar.moveToSecondRun();
         succeeded = qi::phrase_parse(iter, last, grammar, space | qi::lit("//") >> *(qi::char_ - (qi::eol | qi::eoi)) >> (qi::eol | qi::eoi), result);
-        STORM_LOG_THROW(succeeded, storm::exceptions::WrongFormatException, "Parsing failed in second pass.");
+        STORM_LOG_THROW(succeeded, storm::exceptions::WrongFormatException,
+                        (grammar.errorSink->hasError ? grammar.errorSink->message : "Parsing failed in second pass."));
     } catch (qi::expectation_failure<PositionIteratorType> const& e) {
         // If the parser expected content different than the one provided, display information about the location of the error.
         std::size_t lineNumber = boost::spirit::get_line(e.first);
@@ -89,8 +91,10 @@ PrismParserGrammar::PrismParserGrammar(std::string const& filename, Iterator fir
       prismCompatibility(prismCompatibility),
       filename(filename),
       annotate(first),
+      errorSink(std::make_shared<SpiritErrorSink>()),
       manager(new storm::expressions::ExpressionManager()),
-      expressionParser(new ExpressionParser(*manager, expressionKeywords_, false, false)) {
+      expressionParser(new ExpressionParser(*manager, expressionKeywords_, false, false)),
+      handler(SpiritErrorHandler{errorSink}) {
     ExpressionParser& expression_ = *expressionParser;
     boolExpression = (expression_[qi::_val = qi::_1])[qi::_pass = phoenix::bind(&PrismParserGrammar::isOfBoolType, phoenix::ref(*this), qi::_val)];
     boolExpression.name("boolean expression");
@@ -641,9 +645,8 @@ bool PrismParserGrammar::isOfNumericalType(storm::expressions::Expression const&
 
 bool PrismParserGrammar::addInitialStatesConstruct(storm::expressions::Expression const& initialStatesExpression,
                                                    GlobalProgramInformation& globalProgramInformation) {
-    STORM_LOG_THROW(!globalProgramInformation.hasInitialConstruct, storm::exceptions::WrongFormatException,
-                    "Parsing error in " << this->getFilename() << ": Program must not define two initial constructs.");
     if (globalProgramInformation.hasInitialConstruct) {
+        this->errorSink->record("Parsing error in " + this->getFilename() + ": Program must not define two initial constructs.");
         return false;
     }
     globalProgramInformation.hasInitialConstruct = true;
@@ -951,9 +954,8 @@ storm::prism::ClockVariable PrismParserGrammar::createClockVariable(std::string 
 }
 
 bool PrismParserGrammar::addObservablesConstruct(std::vector<std::string> const& observables, GlobalProgramInformation& globalProgramInformation) {
-    STORM_LOG_THROW(!globalProgramInformation.hasObservablesConstruct, storm::exceptions::WrongFormatException,
-                    "Parsing error in " << this->getFilename() << ": Program must not define two observables constructs.");
     if (globalProgramInformation.hasObservablesConstruct) {
+        this->errorSink->record("Parsing error in " + this->getFilename() + ": Program must not define two observables constructs.");
         return false;
     }
     globalProgramInformation.hasObservablesConstruct = true;
