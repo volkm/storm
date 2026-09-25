@@ -8,6 +8,7 @@ on:
     branches: [master]
   pull_request:
     types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
 
 # On PRs a newer run cancels the running one
 # On master pushes each run is its own group (via run_id) so CI is never canceled.
@@ -18,7 +19,7 @@ concurrency:
 jobs:
   buildTests:
     name: ${{ matrix.config.name }}
-    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
+    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: true
       matrix:
@@ -84,7 +85,7 @@ jobs:
 
   compilerTests:
     name: ${{ matrix.config.name }}
-    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
+    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: true
       matrix:
@@ -115,7 +116,7 @@ jobs:
 
   linuxTests:
     name: ${{ matrix.distro }}
-    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
+    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: true
       matrix:
@@ -136,7 +137,7 @@ jobs:
 
   macTests:
     name: ${{ matrix.config.name }}
-    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
+    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: true
       matrix:
