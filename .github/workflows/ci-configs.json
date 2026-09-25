@@ -145,29 +145,32 @@
   ],
   "linuxTests": [
     {
-      "name": "debian-12",
+      "name": "Debian 12",
       "scope": [
         "extensive",
         "quick",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "debian-12"
     },
     {
-      "name": "debian-13",
+      "name": "Debian 13",
       "scope": [
         "extensive",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "debian-13"
     },
     {
-      "name": "ubuntu-24.04",
+      "name": "Ubuntu 24.04",
       "scope": [
         "extensive",
         "quick",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "ubuntu-24.04"
     }
   ],
@@ -179,6 +182,7 @@
         "quick",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-14",
       "xcode": "15.4"
     },
@@ -188,6 +192,7 @@
         "extensive",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-15",
       "xcode": "16.4"
     },
@@ -198,6 +203,7 @@
         "quick",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-26",
       "xcode": "latest-stable"
     },
@@ -208,6 +214,7 @@
         "quick",
         "normal"
       ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-26-intel",
       "xcode": "latest-stable"
     }

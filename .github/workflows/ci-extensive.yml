@@ -85,9 +85,8 @@ jobs:
       name: ${{ matrix.config.name }}
       baseImg: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
       buildType: ${{ matrix.buildType }}
-      Developer: false
-      ClnRatfunc: true
-      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON"
+      Developer: ${{ matrix.buildType == 'Debug' }}
+      cmakeArgs: ${{ matrix.config.cmakeArgs }}
       starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
       restore_cache: false
       save_cache: false
@@ -108,7 +107,7 @@ jobs:
       distro: ${{ matrix.config.distro }}
       xcode: ${{ matrix.config.xcode }}
       buildType: ${{ matrix.buildType }}
-      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON"
+      cmakeArgs: ${{ matrix.config.cmakeArgs }}
       restore_cache: false
       save_cache: false
       install: true
