@@ -114,30 +114,32 @@ jobs:
           # Skip install steps for a quick PR push
           install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
 
-  deploy:
-    name: ${{ matrix.config.buildType }}
+  # Need to split deploy into two jobs
+  # Otherwise the name is not correctly displayed when the job is skipped.
+  deploy-debug:
+    name: Deploy (Debug)
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    strategy:
-      fail-fast: true
-      matrix:
-        config:
-          - {buildType: "Debug",
-             dockerTag: "ci-debug"
-          }
-          - {buildType: "Release",
-             dockerTag: "ci"
-          }
     uses: ./.github/workflows/test-deploy.yml
     with:
       nr_jobs: "4"
-      buildType: ${{ matrix.config.buildType }}
-      dockerTag: ${{ matrix.config.dockerTag }}
+      buildType: "Debug"
+      dockerTag: "ci-debug"
+    secrets: inherit
+
+  deploy-release:
+    name: Deploy (Release)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/test-deploy.yml
+    with:
+      nr_jobs: "4"
+      buildType: "Release"
+      dockerTag: "ci"
     secrets: inherit
 
   notify:
     name: Email notification
     runs-on: ubuntu-latest
-    needs: [linuxTests, macTests, deploy]
+    needs: [linuxTests, macTests, deploy-debug, deploy-release]
     if: github.repository_owner == 'stormchecker' && github.event_name == 'push' && always()
     steps:
       - uses: technote-space/workflow-conclusion-action@v3

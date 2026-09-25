@@ -8,7 +8,7 @@
       ],
       "buildType": "Debug",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "baseImg": "movesrwth/storm-dependencies:latest",
+      "baseImg": "movesrwth/storm-dependencies:latest"
     },
     {
       "name": "All dependencies",
@@ -18,7 +18,7 @@
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "baseImg": "movesrwth/storm-dependencies:latest",
+      "baseImg": "movesrwth/storm-dependencies:latest"
     },
     {
       "name": "All dependencies",
@@ -26,7 +26,7 @@
         "extensive"
       ],
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "baseImg": "movesrwth/storm-dependencies:latest",
+      "baseImg": "movesrwth/storm-dependencies:latest"
     },
     {
       "name": "Minimal dependencies",
@@ -167,7 +167,7 @@
   ],
   "macTests": [
     {
-      "name": "Mac 14, ARM",
+      "name": "Mac 14 ARM",
       "scope": [
         "extensive",
         "quick",
@@ -179,7 +179,7 @@
       "xcode": "15.4"
     },
     {
-      "name": "Mac 15, ARM",
+      "name": "Mac 15 ARM",
       "scope": [
         "extensive",
         "normal"
@@ -190,7 +190,7 @@
       "xcode": "16.4"
     },
     {
-      "name": "Mac 26, ARM",
+      "name": "Mac 26 ARM",
       "scope": [
         "extensive",
         "quick",
@@ -202,7 +202,7 @@
       "xcode": "latest-stable"
     },
     {
-      "name": "Mac 26, Intel",
+      "name": "Mac 26 Intel",
       "scope": [
         "extensive",
         "quick",
