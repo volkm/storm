@@ -1,0 +1,224 @@
+{
+  "buildTests": [
+    {
+      "name": "All dependencies (Debug)",
+      "scope": [
+        "quick",
+        "normal"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Debug",
+      "baseImg": "movesrwth/storm-dependencies:latest",
+      "disable_all": false,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "All dependencies (Release)",
+      "scope": [
+        "quick",
+        "normal"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Release",
+      "baseImg": "movesrwth/storm-dependencies:latest",
+      "disable_all": false,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "All dependencies",
+      "scope": [
+        "extensive"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "baseImg": "movesrwth/storm-dependencies:latest",
+      "disable_all": false,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "Minimal dependencies",
+      "scope": [
+        "extensive",
+        "quick"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Release",
+      "baseImg": "movesrwth/storm-basesystem:minimal_dependencies",
+      "disable_all": true,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "GMP; GMP; Required dependencies",
+      "scope": [
+        "extensive",
+        "normal"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Release",
+      "baseImg": "movesrwth/storm-basesystem:latest",
+      "disable_all": false,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "CLN; GMP; Required dependencies",
+      "scope": [
+        "extensive"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "baseImg": "movesrwth/storm-basesystem:latest",
+      "disable_all": false,
+      "ClnExact": true,
+      "ClnRatfunc": false
+    },
+    {
+      "name": "GMP; CLN; Required dependencies",
+      "scope": [
+        "extensive"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "baseImg": "movesrwth/storm-basesystem:latest",
+      "disable_all": false,
+      "ClnExact": false,
+      "ClnRatfunc": true
+    },
+    {
+      "name": "CLN; CLN; Required dependencies",
+      "scope": [
+        "extensive",
+        "normal"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Release",
+      "baseImg": "movesrwth/storm-basesystem:latest",
+      "disable_all": false,
+      "ClnExact": true,
+      "ClnRatfunc": true
+    },
+    {
+      "name": "All dependencies (disabled)",
+      "scope": [
+        "extensive"
+      ],
+      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "baseImg": "movesrwth/storm-dependencies:latest",
+      "disable_all": true,
+      "ClnExact": false,
+      "ClnRatfunc": false
+    }
+  ],
+  "compilerTests": [
+    {
+      "name": "GCC",
+      "scope": [
+        "quick",
+        "normal",
+        "extensive"
+      ],
+      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Debug",
+      "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3",
+      "baseImg": "archlinux:latest"
+    },
+    {
+      "name": "Clang",
+      "scope": [
+        "quick",
+        "normal",
+        "extensive"
+      ],
+      "cmakeArgs": "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON",
+      "buildType": "Debug",
+      "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3 clang llvm",
+      "baseImg": "archlinux:latest"
+    },
+    {
+      "name": "musl",
+      "scope": [
+        "extensive"
+      ],
+      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
+      "setup": "apk add --no-cache bash ccache cmake make gcc g++ git autoconf automake libc-dev linux-headers patch boost-dev gmp-dev cln-dev ginac-dev glpk-dev libarchive-dev z3-dev ",
+      "baseImg": "alpine:edge"
+    }
+  ],
+  "linuxTests": [
+    {
+      "name": "debian-12",
+      "scope": [
+        "extensive",
+        "quick",
+        "normal"
+      ],
+      "distro": "debian-12",
+      "buildType": "Release"
+    },
+    {
+      "name": "debian-13",
+      "scope": [
+        "extensive",
+        "normal"
+      ],
+      "distro": "debian-13",
+      "buildType": "Release"
+    },
+    {
+      "name": "ubuntu-24.04",
+      "scope": [
+        "extensive",
+        "quick",
+        "normal"
+      ],
+      "distro": "ubuntu-24.04",
+      "buildType": "Release"
+    }
+  ],
+  "macTests": [
+    {
+      "name": "Mac 14, ARM",
+      "scope": [
+        "extensive",
+        "quick",
+        "normal"
+      ],
+      "distro": "macos-14",
+      "xcode": "15.4",
+      "buildType": "Release"
+    },
+    {
+      "name": "Mac 15, ARM",
+      "scope": [
+        "extensive",
+        "normal"
+      ],
+      "distro": "macos-15",
+      "xcode": "16.4",
+      "buildType": "Release"
+    },
+    {
+      "name": "Mac 26, ARM",
+      "scope": [
+        "extensive",
+        "quick",
+        "normal"
+      ],
+      "distro": "macos-26",
+      "xcode": "latest-stable",
+      "buildType": "Release"
+    },
+    {
+      "name": "Mac 26, Intel",
+      "scope": [
+        "extensive",
+        "quick",
+        "normal"
+      ],
+      "distro": "macos-26-intel",
+      "xcode": "latest-stable",
+      "buildType": "Release"
+    }
+  ]
+}

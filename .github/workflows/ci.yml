@@ -1,0 +1,151 @@
+name: CI
+# Build Storm and perform checks (run tests, check compiler flags, build starter project)
+
+# on every pull request commit: run "quick" configs
+# for every PR is labeled "ready for review", on every master push, or on a manual run: run "normal" configs
+# Configurations are defined in ci-configs.json
+# This CI then calls the tests in test-build and test-deploy with the given configurations.
+# Cache is used for PRs and disabled for runs on the master
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# On PRs a newer run cancels the running one.
+# On master pushes each run is its own group (via run_id) so CI is never canceled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # Load configurations and filter according to scope (quick/normal)
+  prepare:
+    uses: ./.github/workflows/ci-prepare-configs.yml
+    with:
+      mode: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) && 'quick' || 'normal' }}
+
+  buildTests:
+    needs: prepare
+    name: ${{ matrix.config.name }}
+    strategy:
+      fail-fast: true
+      matrix:
+        config: ${{ fromJson(needs.prepare.outputs.buildTests) }}
+    uses: ./.github/workflows/test-build.yml
+    with:
+      nr_jobs: "4"
+      name: ${{ matrix.config.name }}
+      baseImg: ${{ matrix.config.baseImg }}
+      buildType: ${{ matrix.config.buildType }}
+      # Disable PCH on PRs to make ccache work
+      cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+      disable_cudd: ${{ matrix.config.disable_all }}
+      disable_glpk: ${{ matrix.config.disable_all }}
+      disable_gmm: ${{ matrix.config.disable_all }}
+      disable_gurobi: ${{ matrix.config.disable_all }}
+      disable_highs: ${{ matrix.config.disable_all }}
+      disable_libarchive: ${{ matrix.config.disable_all }}
+      disable_mathsat: ${{ matrix.config.disable_all }}
+      disable_soplex: ${{ matrix.config.disable_all }}
+      disable_spot: ${{ matrix.config.disable_all }}
+      disable_sylvan: ${{ matrix.config.disable_all }}
+      disable_xerces: ${{ matrix.config.disable_all }}
+      disable_z3: ${{ matrix.config.disable_all }}
+      Developer: ${{ matrix.config.buildType == 'Debug' }}
+      ClnExact: ${{ matrix.config.ClnExact }}
+      ClnRatfunc: ${{ matrix.config.ClnRatfunc }}
+      AllSanitizers: false
+      restore_cache: ${{ github.event_name == 'pull_request' }}
+      save_cache: ${{ github.event_name == 'pull_request' }}
+      # Skip install steps for a quick PR push
+      install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
+
+  compilerTests:
+    needs: prepare
+    name: ${{ matrix.config.name }}
+    strategy:
+      fail-fast: true
+      matrix:
+        config: ${{ fromJson(needs.prepare.outputs.compilerTests) }}
+    uses: ./.github/workflows/test-build.yml
+    with:
+      nr_jobs: "4"
+      name: ${{ matrix.config.name }}
+      buildType: ${{ matrix.config.buildType }}
+      Developer: true
+      baseImg: ${{ matrix.config.baseImg }}
+      # Disable PCH on PRs to make ccache work
+      cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+      setup: ${{ matrix.config.setup }}
+      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+      restore_cache: ${{ github.event_name == 'pull_request' }}
+      save_cache: ${{ github.event_name == 'pull_request' }}
+      # Skip install steps for a quick PR push
+      install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
+
+  linuxTests:
+    needs: prepare
+    name: ${{ matrix.config.name }}
+    strategy:
+      fail-fast: true
+      matrix:
+        config: ${{ fromJson(needs.prepare.outputs.linuxTests) }}
+    uses: ./.github/workflows/test-build.yml
+    with:
+      nr_jobs: "4"
+      name: ${{ matrix.config.name }}
+      baseImg: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
+      buildType: ${{ matrix.config.buildType }}
+      Developer: false
+      ClnRatfunc: true
+      # Disable PCH on PRs to make ccache work
+      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+      restore_cache: ${{ github.event_name == 'pull_request' }}
+      save_cache: ${{ github.event_name == 'pull_request' }}
+      # Skip install steps for a quick PR push
+      install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
+
+  macTests:
+    needs: prepare
+    name: ${{ matrix.config.name }}
+    strategy:
+      fail-fast: true
+      matrix:
+        config: ${{ fromJson(needs.prepare.outputs.macTests) }}
+    uses: ./.github/workflows/test-mac.yml
+    with:
+      nr_jobs: "4"
+      name: ${{ matrix.config.name }}
+      distro: ${{ matrix.config.distro }}
+      xcode: ${{ matrix.config.xcode }}
+      buildType: ${{ matrix.config.buildType }}
+      # Disable PCH on PRs to make ccache work
+      cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+      restore_cache: ${{ github.event_name == 'pull_request' }}
+      save_cache: ${{ github.event_name == 'pull_request' }}
+      # Skip install steps for a quick PR push
+      install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
+
+  deploy:
+    name: ${{ matrix.config.buildType }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    strategy:
+      fail-fast: true
+      matrix:
+        config:
+          - {buildType: "Debug",
+             dockerTag: "ci-debug"
+          }
+          - {buildType: "Release",
+             dockerTag: "ci"
+          }
+    uses: ./.github/workflows/test-deploy.yml
+    with:
+      nr_jobs: "4"
+      buildType: ${{ matrix.config.buildType }}
+      dockerTag: ${{ matrix.config.dockerTag }}
+    secrets: inherit

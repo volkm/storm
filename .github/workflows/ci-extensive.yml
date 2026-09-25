@@ -1,5 +1,5 @@
 name: CI Weekly
-# Comprehensive weekly test run across all configurations.
+# Extensive tests (run weekly) across all configurations.
 # No cache, not fail-fast, full task suite including deploy.
 
 on:
@@ -8,55 +8,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  prepare:
+    uses: ./.github/workflows/ci-prepare-configs.yml
+    with:
+      mode: extensive
+
   buildTests:
+    needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
-        config:
-          - {name: "GMP; GMP; Required dependencies",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-basesystem:latest",
-             disable_all: false,
-             ClnExact: false,
-             ClnRatfunc: false
-          }
-          - {name: "CLN; GMP; Required dependencies",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-basesystem:latest",
-             disable_all: false,
-             ClnExact: true,
-             ClnRatfunc: false
-          }
-          - {name: "GMP; CLN; Required dependencies",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-basesystem:latest",
-             disable_all: false,
-             ClnExact: false,
-             ClnRatfunc: true
-          }
-          - {name: "CLN; CLN; Required dependencies",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-basesystem:latest",
-             disable_all: false,
-             ClnExact: true,
-             ClnRatfunc: true
-          }
-          - {name: "All dependencies (disabled)",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-dependencies:latest",
-             disable_all: true,
-             ClnExact: false,
-             ClnRatfunc: false
-          }
-          - {name: "Minimal dependencies",
-             cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON",
-             baseImg: "movesrwth/storm-basesystem:minimal_dependencies",
-             disable_all: true,
-             ClnExact: false,
-             ClnRatfunc: false
-          }
+        config: ${{ fromJson(needs.prepare.outputs.buildTests) }}
     uses: ./.github/workflows/test-build.yml
     with:
       nr_jobs: "4"
@@ -85,27 +49,13 @@ jobs:
       install: true
 
   compilerTests:
+    needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
-        config:
-          - {name: "GCC",
-             cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON",
-             setup: "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3",
-             baseImg: "archlinux:latest"
-          }
-          - {name: "Clang",
-             cmakeArgs: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON",
-             setup: "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3 clang llvm",
-             baseImg: "archlinux:latest"
-          }
-          - {name: "musl",
-             cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
-             setup: "apk add --no-cache bash ccache cmake make gcc g++ git autoconf automake libc-dev linux-headers patch boost-dev gmp-dev cln-dev ginac-dev glpk-dev libarchive-dev z3-dev ",
-             baseImg: "alpine:edge"
-          }
+        config: ${{ fromJson(needs.prepare.outputs.compilerTests) }}
     uses: ./.github/workflows/test-build.yml
     with:
       nr_jobs: "4"
@@ -121,17 +71,18 @@ jobs:
       install: true
 
   linuxTests:
-    name: ${{ matrix.distro }} (${{ matrix.buildType }})
+    needs: prepare
+    name: ${{ matrix.config.name }} (${{ matrix.buildType }})
     strategy:
       fail-fast: false
       matrix:
-        distro: ["debian-12", "debian-13", "ubuntu-24.04"]
         buildType: ["Debug", "Release"]
+        config: ${{ fromJson(needs.prepare.outputs.linuxTests) }}
     uses: ./.github/workflows/test-build.yml
     with:
       nr_jobs: "4"
-      name: ${{ matrix.distro }}
-      baseImg: "movesrwth/storm-basesystem:${{ matrix.distro }}"
+      name: ${{ matrix.config.name }}
+      baseImg: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
       buildType: ${{ matrix.buildType }}
       Developer: false
       ClnRatfunc: true
@@ -142,28 +93,13 @@ jobs:
       install: true
 
   macTests:
+    needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
-        config:
-          - {name: "Mac 14, ARM",
-             distro: "macos-14",
-             xcode: "15.4"
-          }
-          - {name: "Mac 15, ARM",
-             distro: "macos-15",
-             xcode: "16.4"
-          }
-          - {name: "Mac 26, ARM",
-             distro: "macos-26",
-             xcode: "latest-stable"
-          }
-          - {name: "Mac 26, Intel",
-             distro: "macos-26-intel",
-             xcode: "latest-stable"
-          }
+        config: ${{ fromJson(needs.prepare.outputs.macTests) }}
     uses: ./.github/workflows/test-mac.yml
     with:
       nr_jobs: "4"
