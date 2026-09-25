@@ -17,100 +17,115 @@ jobs:
   buildTests:
     needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.config.baseImg }}
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
         config: ${{ fromJson(needs.prepare.outputs.buildTests) }}
-    uses: ./.github/workflows/test-build.yml
-    with:
-      nr_jobs: "4"
-      name: ${{ matrix.config.name }}
-      baseImg: ${{ matrix.config.baseImg }}
-      buildType: ${{ matrix.buildType }}
-      cmakeArgs: ${{ matrix.config.cmakeArgs }}
-      disable_cudd: ${{ matrix.config.disable_all }}
-      disable_glpk: ${{ matrix.config.disable_all }}
-      disable_gmm: ${{ matrix.config.disable_all }}
-      disable_gurobi: ${{ matrix.config.disable_all }}
-      disable_highs: ${{ matrix.config.disable_all }}
-      disable_libarchive: ${{ matrix.config.disable_all }}
-      disable_mathsat: ${{ matrix.config.disable_all }}
-      disable_soplex: ${{ matrix.config.disable_all }}
-      disable_spot: ${{ matrix.config.disable_all }}
-      disable_sylvan: ${{ matrix.config.disable_all }}
-      disable_xerces: ${{ matrix.config.disable_all }}
-      disable_z3: ${{ matrix.config.disable_all }}
-      Developer: ${{ matrix.buildType == 'Debug' }}
-      ClnExact: ${{ matrix.config.ClnExact }}
-      ClnRatfunc: ${{ matrix.config.ClnRatfunc }}
-      AllSanitizers: false
-      restore_cache: false
-      save_cache: false
-      install: true
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v7
+      - uses: ./.github/actions/build-test-action
+        with:
+          nr_jobs: "4"
+          name: ${{ matrix.config.name }}
+          buildType: ${{ matrix.buildType }}
+          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          disable_cudd: ${{ matrix.config.disable_all }}
+          disable_glpk: ${{ matrix.config.disable_all }}
+          disable_gmm: ${{ matrix.config.disable_all }}
+          disable_gurobi: ${{ matrix.config.disable_all }}
+          disable_highs: ${{ matrix.config.disable_all }}
+          disable_libarchive: ${{ matrix.config.disable_all }}
+          disable_mathsat: ${{ matrix.config.disable_all }}
+          disable_soplex: ${{ matrix.config.disable_all }}
+          disable_spot: ${{ matrix.config.disable_all }}
+          disable_sylvan: ${{ matrix.config.disable_all }}
+          disable_xerces: ${{ matrix.config.disable_all }}
+          disable_z3: ${{ matrix.config.disable_all }}
+          Developer: ${{ matrix.buildType == 'Debug' }}
+          ClnExact: ${{ matrix.config.ClnExact }}
+          ClnRatfunc: ${{ matrix.config.ClnRatfunc }}
+          AllSanitizers: false
+          restore_cache: false
+          save_cache: false
+          install: true
 
   compilerTests:
     needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.config.baseImg }}
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
         config: ${{ fromJson(needs.prepare.outputs.compilerTests) }}
-    uses: ./.github/workflows/test-build.yml
-    with:
-      nr_jobs: "4"
-      name: ${{ matrix.config.name }}
-      buildType: ${{ matrix.buildType }}
-      Developer: ${{ matrix.buildType == 'Debug' }}
-      baseImg: ${{ matrix.config.baseImg }}
-      cmakeArgs: ${{ matrix.config.cmakeArgs }}
-      setup: ${{ matrix.config.setup }}
-      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
-      restore_cache: false
-      save_cache: false
-      install: true
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v7
+      - uses: ./.github/actions/build-test-action
+        with:
+          nr_jobs: "4"
+          name: ${{ matrix.config.name }}
+          buildType: ${{ matrix.buildType }}
+          Developer: ${{ matrix.buildType == 'Debug' }}
+          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          setup: ${{ matrix.config.setup }}
+          starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+          restore_cache: false
+          save_cache: false
+          install: true
 
   linuxTests:
     needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    runs-on: ubuntu-latest
+    container: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
         config: ${{ fromJson(needs.prepare.outputs.linuxTests) }}
-    uses: ./.github/workflows/test-build.yml
-    with:
-      nr_jobs: "4"
-      name: ${{ matrix.config.name }}
-      baseImg: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
-      buildType: ${{ matrix.buildType }}
-      Developer: ${{ matrix.buildType == 'Debug' }}
-      cmakeArgs: ${{ matrix.config.cmakeArgs }}
-      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
-      restore_cache: false
-      save_cache: false
-      install: true
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v7
+      - uses: ./.github/actions/build-test-action
+        with:
+          nr_jobs: "4"
+          name: ${{ matrix.config.name }}
+          buildType: ${{ matrix.buildType }}
+          Developer: ${{ matrix.buildType == 'Debug' }}
+          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+          restore_cache: false
+          save_cache: false
+          install: true
 
   macTests:
     needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    runs-on: ${{ matrix.config.distro }}
     strategy:
       fail-fast: false
       matrix:
         buildType: ["Debug", "Release"]
         config: ${{ fromJson(needs.prepare.outputs.macTests) }}
-    uses: ./.github/workflows/test-mac.yml
-    with:
-      nr_jobs: "4"
-      name: ${{ matrix.config.name }}
-      distro: ${{ matrix.config.distro }}
-      xcode: ${{ matrix.config.xcode }}
-      buildType: ${{ matrix.buildType }}
-      cmakeArgs: ${{ matrix.config.cmakeArgs }}
-      restore_cache: false
-      save_cache: false
-      install: true
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v7
+      - uses: ./.github/actions/build-test-mac-action
+        with:
+          nr_jobs: "4"
+          name: ${{ matrix.config.name }}
+          xcode: ${{ matrix.config.xcode }}
+          buildType: ${{ matrix.buildType }}
+          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          restore_cache: false
+          save_cache: false
+          install: true
 
   deploy:
     name: ${{ matrix.config.buildType }}
