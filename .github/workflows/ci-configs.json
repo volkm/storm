@@ -31,8 +31,9 @@
     {
       "name": "Minimal dependencies",
       "scope": [
-        "extensive",
-        "quick"
+        "quick",
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
@@ -45,8 +46,8 @@
     {
       "name": "GMP; GMP; Required dependencies",
       "scope": [
-        "extensive",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
@@ -77,8 +78,8 @@
     {
       "name": "CLN; CLN; Required dependencies",
       "scope": [
-        "extensive",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
@@ -169,9 +170,8 @@
     {
       "name": "Mac 14 ARM",
       "scope": [
-        "extensive",
-        "quick",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
@@ -181,8 +181,8 @@
     {
       "name": "Mac 15 ARM",
       "scope": [
-        "extensive",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
@@ -192,9 +192,9 @@
     {
       "name": "Mac 26 ARM",
       "scope": [
-        "extensive",
         "quick",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
@@ -204,9 +204,8 @@
     {
       "name": "Mac 26 Intel",
       "scope": [
-        "extensive",
-        "quick",
-        "normal"
+        "normal",
+        "extensive"
       ],
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
