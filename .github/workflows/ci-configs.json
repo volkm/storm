@@ -1,5 +1,5 @@
 {
-  "buildTests": [
+  "linuxTests": [
     {
       "name": "All dependencies",
       "scope": [
@@ -110,9 +110,7 @@
       "ClnExact": false,
       "ClnRatfunc": false,
       "starterProjectCommand": "--help"
-    }
-  ],
-  "linuxTests": [
+    },
     {
       "name": "GCC",
       "scope": [

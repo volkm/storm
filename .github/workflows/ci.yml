@@ -27,41 +27,6 @@ jobs:
     with:
       mode: ${{ (github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) && 'quick' || 'normal' }}
 
-  buildTests:
-    needs: prepare
-    name: ${{ matrix.config.name }} (${{ matrix.config.buildType }})
-    runs-on: ubuntu-latest
-    container: ${{ matrix.config.baseImg }}
-    strategy:
-      fail-fast: true
-      matrix:
-        config: ${{ fromJson(needs.prepare.outputs.buildTests) }}
-    steps:
-      - name: Git clone
-        uses: actions/checkout@v7
-      - name: Resolve config
-        id: resolve-config
-        env:
-          CONFIG: ${{ toJson(matrix.config) }}
-        # Update config: disable PCH when using caching, set developer mode for debug
-        run: |
-          if [ "${{ github.event_name == 'pull_request' }}" = "true" ]; then
-            RESOLVED=$(echo "$CONFIG" | jq -c '.cmakeArgs += " -DSTORM_COMPILE_WITH_PCH=OFF" | .Developer = (.buildType == "Debug")')
-          else
-            RESOLVED=$(echo "$CONFIG" | jq -c '.Developer = (.buildType == "Debug")')
-          fi
-          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
-      - name: Build and test Storm
-        uses: ./.github/actions/build-test-action
-        with:
-          nr_jobs: "4"
-          name: ${{ matrix.config.name }}
-          config: ${{ steps.resolve-config.outputs.config }}
-          restore_cache: ${{ github.event_name == 'pull_request' }}
-          save_cache: ${{ github.event_name == 'pull_request' }}
-          # Skip install steps for a quick PR push
-          install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
-
   linuxTests:
     needs: prepare
     name: ${{ matrix.config.name }} (${{ matrix.config.buildType }})
@@ -172,7 +137,7 @@ jobs:
   notify:
     name: Email notification
     runs-on: ubuntu-latest
-    needs: [buildTests, linuxTests, macTests, deploy]
+    needs: [linuxTests, macTests, deploy]
     if: github.repository_owner == 'stormchecker' && github.event_name == 'push' && always()
     steps:
       - uses: technote-space/workflow-conclusion-action@v3

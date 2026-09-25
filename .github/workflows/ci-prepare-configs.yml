@@ -12,8 +12,6 @@ on:
         type: string
         required: true
     outputs:
-      buildTests:
-        value: ${{ jobs.prepare.outputs.buildTests }}
       linuxTests:
         value: ${{ jobs.prepare.outputs.linuxTests }}
       macTests:
@@ -23,7 +21,6 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      buildTests: ${{ steps.filter.outputs.buildTests }}
       linuxTests: ${{ steps.filter.outputs.linuxTests }}
       macTests: ${{ steps.filter.outputs.macTests }}
     steps:
@@ -33,12 +30,11 @@ jobs:
         run: |
           BLOB_KEYS=$(jq -c 'keys' .github/actions/build-test-action/defaults.json)
           declare -A STRUCTURAL_KEYS=(
-            [buildTests]='["name","scope","buildType","cmakeArgs","baseImg"]'
             [linuxTests]='["name","scope","buildType","cmakeArgs","baseImg","setup"]'
             [macTests]='["name","scope","buildType","cmakeArgs","distro","xcode"]'
           )
 
-          for cat in buildTests linuxTests macTests; do
+          for cat in linuxTests macTests; do
             allowed=$(jq -c --argjson a "${STRUCTURAL_KEYS[$cat]}" --argjson b "$BLOB_KEYS" -n '$a + $b')
             unknown=$(jq -c --argjson allowed "$allowed" --arg cat "$cat" '
               [ .[$cat][] | (keys - $allowed) | select(length > 0) ] | add // []
@@ -54,7 +50,7 @@ jobs:
           MODE: ${{ inputs.mode }}
         run: |
           DEFAULTS=$(cat .github/actions/build-test-action/defaults.json)
-          for cat in buildTests linuxTests macTests; do
+          for cat in linuxTests macTests; do
             filtered=$(jq -c --argjson defaults "$DEFAULTS" --arg cat "$cat" --arg scope "$MODE" \
               '.[$cat] | map(($defaults + .) | select(.scope | index($scope)))' \
               .github/workflows/ci-configs.json)
