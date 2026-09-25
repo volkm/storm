@@ -9,9 +9,6 @@
       "buildType": "Debug",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
-      "disable_all": false,
-      "ClnExact": false,
-      "ClnRatfunc": false
     },
     {
       "name": "All dependencies",
@@ -22,9 +19,6 @@
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
-      "disable_all": false,
-      "ClnExact": false,
-      "ClnRatfunc": false
     },
     {
       "name": "All dependencies",
@@ -33,9 +27,6 @@
       ],
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
-      "disable_all": false,
-      "ClnExact": false,
-      "ClnRatfunc": false
     },
     {
       "name": "Minimal dependencies",
@@ -60,7 +51,6 @@
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
-      "disable_all": false,
       "ClnExact": false,
       "ClnRatfunc": false
     },
@@ -71,7 +61,6 @@
       ],
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
-      "disable_all": false,
       "ClnExact": true,
       "ClnRatfunc": false
     },
@@ -82,7 +71,6 @@
       ],
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
-      "disable_all": false,
       "ClnExact": false,
       "ClnRatfunc": true
     },
@@ -95,7 +83,6 @@
       "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
-      "disable_all": false,
       "ClnExact": true,
       "ClnRatfunc": true
     },
