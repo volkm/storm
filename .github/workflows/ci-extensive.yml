@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Load configurations and filter according to scope (quick/normal)
   prepare:
     uses: ./.github/workflows/ci-prepare-configs.yml
     with:
