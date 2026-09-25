@@ -1,6 +1,8 @@
 name: CI Prepare configurations
 # Load CI configurations from .github/workflows/ci-configs.json
-# Filter configurations according to given "scope"
+# 1. Validate each entry's fields against a known allow-list per category
+# 2. Merge in the shared defaults from .github/actions/build-test-action/defaults.json
+# 3. Filter configurations according to given "scope"
 
 on:
   workflow_call:
@@ -27,12 +29,34 @@ jobs:
     steps:
       - name: Git clone
         uses: actions/checkout@v7
-      - name: Filter configs by scope
+      - name: Validate config field names
+        run: |
+          BLOB_KEYS=$(jq -c 'keys' .github/actions/build-test-action/defaults.json)
+          declare -A STRUCTURAL_KEYS=(
+            [buildTests]='["name","scope","buildType","cmakeArgs","baseImg"]'
+            [linuxTests]='["name","scope","buildType","cmakeArgs","baseImg","setup"]'
+            [macTests]='["name","scope","buildType","cmakeArgs","distro","xcode"]'
+          )
+
+          for cat in buildTests linuxTests macTests; do
+            allowed=$(jq -c --argjson a "${STRUCTURAL_KEYS[$cat]}" --argjson b "$BLOB_KEYS" -n '$a + $b')
+            unknown=$(jq -c --argjson allowed "$allowed" --arg cat "$cat" '
+              [ .[$cat][] | (keys - $allowed) | select(length > 0) ] | add // []
+            ' .github/workflows/ci-configs.json)
+            if [ "$unknown" != "[]" ]; then
+              echo "::error::Unknown field(s) in ci-configs.json category '$cat': $unknown"
+              exit 1
+            fi
+          done
+      - name: Resolve defaults and filter configs by scope
         id: filter
         env:
           MODE: ${{ inputs.mode }}
         run: |
+          DEFAULTS=$(cat .github/actions/build-test-action/defaults.json)
           for cat in buildTests linuxTests macTests; do
-            filtered=$(jq -c --arg cat "$cat" --arg scope "$MODE" '.[$cat] | map(select(.scope | index($scope)))' .github/workflows/ci-configs.json)
+            filtered=$(jq -c --argjson defaults "$DEFAULTS" --arg cat "$cat" --arg scope "$MODE" \
+              '.[$cat] | map(($defaults + .) | select(.scope | index($scope)))' \
+              .github/workflows/ci-configs.json)
             echo "$cat=$filtered" >> "$GITHUB_OUTPUT"
           done

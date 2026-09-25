@@ -27,30 +27,20 @@ jobs:
     steps:
       - name: Git clone
         uses: actions/checkout@v7
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: set build type, set developer mode for debug
+        run: |
+          RESOLVED=$(echo "$CONFIG" | jq -c --arg bt "${{ matrix.buildType }}" '.buildType = $bt | .Developer = (.buildType == "Debug")')
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
-          cmakeArgs: ${{ matrix.config.cmakeArgs }}
-          starterProjectCommand: ${{ matrix.config.starterProjectCommand }}
-          disable_cudd: ${{ matrix.config.disable_all }}
-          disable_glpk: ${{ matrix.config.disable_all }}
-          disable_gmm: ${{ matrix.config.disable_all }}
-          disable_gurobi: ${{ matrix.config.disable_all }}
-          disable_highs: ${{ matrix.config.disable_all }}
-          disable_libarchive: ${{ matrix.config.disable_all }}
-          disable_mathsat: ${{ matrix.config.disable_all }}
-          disable_soplex: ${{ matrix.config.disable_all }}
-          disable_spot: ${{ matrix.config.disable_all }}
-          disable_sylvan: ${{ matrix.config.disable_all }}
-          disable_xerces: ${{ matrix.config.disable_all }}
-          disable_z3: ${{ matrix.config.disable_all }}
-          Developer: ${{ matrix.buildType == 'Debug' }}
-          ClnExact: ${{ matrix.config.ClnExact }}
-          ClnRatfunc: ${{ matrix.config.ClnRatfunc }}
-          AllSanitizers: false
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: false
           save_cache: false
           install: true
@@ -71,14 +61,20 @@ jobs:
       - name: Install packages
         if: matrix.config.setup != ''
         run: ${{ matrix.config.setup }}
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: set build type, set developer mode for debug
+        run: |
+          RESOLVED=$(echo "$CONFIG" | jq -c --arg bt "${{ matrix.buildType }}" '.buildType = $bt | .Developer = (.buildType == "Debug")')
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
-          Developer: ${{ matrix.buildType == 'Debug' }}
-          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: false
           save_cache: false
           install: true
@@ -102,13 +98,20 @@ jobs:
         run: |
           brew update
           brew install automake boost ccache cln ginac glpk highs hwloc libarchive xerces-c z3
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: set build type, set developer mode for debug
+        run: |
+          RESOLVED=$(echo "$CONFIG" | jq -c --arg bt "${{ matrix.buildType }}" '.buildType = $bt | .Developer = (.buildType == "Debug")')
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
-          cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: false
           save_cache: false
           install: true

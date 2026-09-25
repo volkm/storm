@@ -9,74 +9,13 @@ inputs:
     description: "Display name for the test configuration"
     type: string
     required: true
-  buildType:
-    description: "CMake build type (Debug or Release)"
+  config:
+    description: >
+      JSON-encoded config object (e.g. from ci-configs.json, resolved by the calling job)
+      providing: buildType, cmakeArgs, Developer, carl_tag, starterProjectCommand, disable_all,
+      ClnExact, ClnRatfunc, AllSanitizers.
     type: string
     required: true
-  Developer:
-    description: "Enable developer mode"
-    type: boolean
-    default: false
-  carl_tag:
-    description: "Carl version"
-    type: string
-    default: "master"
-  cmakeArgs:
-    description: "Extra CMake arguments"
-    type: string
-    default: ""
-  starterProjectCommand:
-    description: "Command to pass to the starter-project"
-    type: string
-    default: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
-  disable_cudd:
-    type: boolean
-    default: false
-  disable_glpk:
-    type: boolean
-    default: false
-  disable_gmm:
-    type: boolean
-    default: false
-  disable_gurobi:
-    type: boolean
-    default: false
-  disable_highs:
-    type: boolean
-    default: false
-  disable_libarchive:
-    type: boolean
-    default: false
-  disable_mathsat:
-    type: boolean
-    default: false
-  disable_soplex:
-    type: boolean
-    default: false
-  disable_spot:
-    type: boolean
-    default: false
-  disable_sylvan:
-    type: boolean
-    default: false
-  disable_xerces:
-    type: boolean
-    default: false
-  disable_z3:
-    type: boolean
-    default: false
-  ClnExact:
-    description: "Use CLN for exact arithmetic"
-    type: boolean
-    default: false
-  ClnRatfunc:
-    description: "Use CLN for rational functions"
-    type: boolean
-    default: true
-  AllSanitizers:
-    description: "Enable all sanitizers"
-    type: boolean
-    default: false
   restore_cache:
     description: "Restore ccache from cache"
     type: boolean
@@ -101,6 +40,20 @@ runs:
           echo "CCACHE_DIR=${GITHUB_WORKSPACE}/.ci-ccache" >> "$GITHUB_ENV"
         fi
       shell: bash
+    - name: Parse config
+      env:
+        CONFIG: ${{ inputs.config }}
+      run: |
+        echo "BUILD_TYPE=$(echo "$CONFIG" | jq -r '.buildType')" >> "$GITHUB_ENV"
+        echo "CMAKE_ARGS=$(echo "$CONFIG" | jq -r '.cmakeArgs')" >> "$GITHUB_ENV"
+        echo "DEVELOPER=$(echo "$CONFIG" | jq -r '.Developer')" >> "$GITHUB_ENV"
+        echo "CARL_TAG=$(echo "$CONFIG" | jq -r '.carl_tag')" >> "$GITHUB_ENV"
+        echo "DISABLE_ALL=$(echo "$CONFIG" | jq -r '.disable_all')" >> "$GITHUB_ENV"
+        echo "CLN_EXACT=$(echo "$CONFIG" | jq -r '.ClnExact')" >> "$GITHUB_ENV"
+        echo "CLN_RATFUNC=$(echo "$CONFIG" | jq -r '.ClnRatfunc')" >> "$GITHUB_ENV"
+        echo "ALL_SANITIZERS=$(echo "$CONFIG" | jq -r '.AllSanitizers')" >> "$GITHUB_ENV"
+        echo "STARTER_PROJECT_COMMAND=$(echo "$CONFIG" | jq -r '.starterProjectCommand')" >> "$GITHUB_ENV"
+      shell: bash
     - name: Ensure ccache directory exists
       if: inputs.restore_cache == 'true'
       run: mkdir -p "${CCACHE_DIR}"
@@ -111,9 +64,9 @@ runs:
       uses: actions/cache/restore@v6
       with:
         path: ${{ env.CCACHE_DIR }}
-        key: buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
         restore-keys: |
-          buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-
+          buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-
           buildtest-ccache-${{ inputs.name }}-
     - name: Prepare ccache
       if: inputs.restore_cache == 'true'
@@ -126,25 +79,25 @@ runs:
       run: |
         mkdir build
         cd build
-        cmake -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" \
-              -DSTORM_CARL_GIT_TAG="${{ inputs.carl_tag }}" \
-              -DSTORM_DISABLE_CUDD=${{ inputs.disable_cudd == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_GLPK=${{ inputs.disable_glpk == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_GMM=${{ inputs.disable_gmm == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_GUROBI=${{ inputs.disable_gurobi == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_HIGHS=${{ inputs.disable_highs == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_LIBARCHIVE=${{ inputs.disable_libarchive == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_MATHSAT=${{ inputs.disable_mathsat == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_SOPLEX=${{ inputs.disable_soplex == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_SPOT=${{ inputs.disable_spot == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_SYLVAN=${{ inputs.disable_sylvan == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_XERCES=${{ inputs.disable_xerces == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DISABLE_Z3=${{ inputs.disable_z3 == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_DEVELOPER=${{ inputs.Developer == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_USE_CLN_EA=${{ inputs.ClnExact == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_USE_CLN_RF=${{ inputs.ClnRatfunc == 'true' && 'ON' || 'OFF' }} \
-              -DSTORM_COMPILE_WITH_ALL_SANITIZERS=${{ inputs.AllSanitizers == 'true' && 'ON' || 'OFF' }} \
-              ${{ inputs.cmakeArgs }} ..
+        cmake -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}" \
+              -DSTORM_CARL_GIT_TAG="${{ env.CARL_TAG }}" \
+              -DSTORM_DISABLE_CUDD=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GLPK=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GMM=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GUROBI=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_HIGHS=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_LIBARCHIVE=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_MATHSAT=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SOPLEX=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SPOT=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SYLVAN=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_XERCES=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_Z3=${{ env.DISABLE_ALL == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DEVELOPER=${{ env.DEVELOPER == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_USE_CLN_EA=${{ env.CLN_EXACT == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_USE_CLN_RF=${{ env.CLN_RATFUNC == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_COMPILE_WITH_ALL_SANITIZERS=${{ env.ALL_SANITIZERS == 'true' && 'ON' || 'OFF' }} \
+              ${{ env.CMAKE_ARGS }} ..
       shell: bash
     - name: Build storm
       working-directory: ./build
@@ -160,7 +113,7 @@ runs:
       uses: actions/cache/save@v6
       with:
         path: ${{ env.CCACHE_DIR }}
-        key: buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
     - name: Run storm
       working-directory: ./build
       run: ./bin/storm --version
@@ -168,7 +121,7 @@ runs:
     - name: Check compile flags
       uses: ./.github/actions/check-compile-flags-action
       with:
-        buildType: ${{ inputs.buildType }}
+        buildType: ${{ env.BUILD_TYPE }}
         docker: false
     - name: Run tests
       working-directory: ./build
@@ -182,7 +135,7 @@ runs:
       with:
         docker: false
         stormDir: "${GITHUB_WORKSPACE}/build"
-        command: ${{ inputs.starterProjectCommand }}
+        command: ${{ env.STARTER_PROJECT_COMMAND }}
     - name: Install storm
       if: inputs.install == 'true'
       working-directory: ./build
@@ -202,4 +155,4 @@ runs:
       with:
         docker: false
         stormDir: ""
-        command: ${{ inputs.starterProjectCommand }}
+        command: ${{ env.STARTER_PROJECT_COMMAND }}

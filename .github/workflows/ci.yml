@@ -39,31 +39,24 @@ jobs:
     steps:
       - name: Git clone
         uses: actions/checkout@v7
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: disable PCH when using caching, set developer mode for debug
+        run: |
+          if [ "${{ github.event_name == 'pull_request' }}" = "true" ]; then
+            RESOLVED=$(echo "$CONFIG" | jq -c '.cmakeArgs += " -DSTORM_COMPILE_WITH_PCH=OFF" | .Developer = (.buildType == "Debug")')
+          else
+            RESOLVED=$(echo "$CONFIG" | jq -c '.Developer = (.buildType == "Debug")')
+          fi
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.config.buildType }}
-          # Disable PCH on PRs to make ccache work
-          cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
-          starterProjectCommand: ${{ matrix.config.starterProjectCommand }}
-          disable_cudd: ${{ matrix.config.disable_all }}
-          disable_glpk: ${{ matrix.config.disable_all }}
-          disable_gmm: ${{ matrix.config.disable_all }}
-          disable_gurobi: ${{ matrix.config.disable_all }}
-          disable_highs: ${{ matrix.config.disable_all }}
-          disable_libarchive: ${{ matrix.config.disable_all }}
-          disable_mathsat: ${{ matrix.config.disable_all }}
-          disable_soplex: ${{ matrix.config.disable_all }}
-          disable_spot: ${{ matrix.config.disable_all }}
-          disable_sylvan: ${{ matrix.config.disable_all }}
-          disable_xerces: ${{ matrix.config.disable_all }}
-          disable_z3: ${{ matrix.config.disable_all }}
-          Developer: ${{ matrix.config.buildType == 'Debug' }}
-          ClnExact: ${{ matrix.config.ClnExact }}
-          ClnRatfunc: ${{ matrix.config.ClnRatfunc }}
-          AllSanitizers: false
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: ${{ github.event_name == 'pull_request' }}
           save_cache: ${{ github.event_name == 'pull_request' }}
           # Skip install steps for a quick PR push
@@ -84,15 +77,24 @@ jobs:
       - name: Install packages
         if: matrix.config.setup != ''
         run: ${{ matrix.config.setup }}
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: disable PCH when using caching, set developer mode for debug
+        run: |
+          if [ "${{ github.event_name == 'pull_request' }}" = "true" ]; then
+            RESOLVED=$(echo "$CONFIG" | jq -c '.cmakeArgs += " -DSTORM_COMPILE_WITH_PCH=OFF" | .Developer = (.buildType == "Debug")')
+          else
+            RESOLVED=$(echo "$CONFIG" | jq -c '.Developer = (.buildType == "Debug")')
+          fi
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.config.buildType }}
-          Developer: ${{ matrix.config.buildType == 'Debug' }}
-          # Disable PCH on PRs to make ccache work
-          cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: ${{ github.event_name == 'pull_request' }}
           save_cache: ${{ github.event_name == 'pull_request' }}
           # Skip install steps for a quick PR push
@@ -124,14 +126,24 @@ jobs:
         run: |
           brew update
           brew install automake boost ccache cln ginac glpk highs hwloc libarchive xerces-c z3
+      - name: Resolve config
+        id: resolve-config
+        env:
+          CONFIG: ${{ toJson(matrix.config) }}
+        # Update config: disable PCH when using caching, set developer mode for debug
+        run: |
+          if [ "${{ github.event_name == 'pull_request' }}" = "true" ]; then
+            RESOLVED=$(echo "$CONFIG" | jq -c '.cmakeArgs += " -DSTORM_COMPILE_WITH_PCH=OFF" | .Developer = (.buildType == "Debug")')
+          else
+            RESOLVED=$(echo "$CONFIG" | jq -c '.Developer = (.buildType == "Debug")')
+          fi
+          echo "config=$RESOLVED" >> "$GITHUB_OUTPUT"
       - name: Build and test Storm
         uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.config.buildType }}
-          # Disable PCH on PRs to make ccache work
-          cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+          config: ${{ steps.resolve-config.outputs.config }}
           restore_cache: ${{ github.event_name == 'pull_request' }}
           save_cache: ${{ github.event_name == 'pull_request' }}
           # Skip install steps for a quick PR push
