@@ -2,10 +2,10 @@ name: CI
 # Build Storm and perform checks (run tests, check compiler flags, build starter project)
 
 # on every pull request commit: run "quick" configs
-# for every PR is labeled "ready for review", on every master push, or on a manual run: run "normal" configs
-# Configurations are defined in ci-configs.json
-# This CI then calls the tests in test-build and test-deploy with the given configurations.
-# Cache is used for PRs and disabled for runs on the master
+# for every PR labeled "ready for review", on every master push, or on a manual run: run "normal" configs
+# Configurations are defined in ci-configs.json.
+# This CI then calls the tests in build-test-action and test-deploy with the given configurations.
+# Cache is restored everywhere but only saved on master pushes.
 
 on:
   pull_request:
@@ -76,8 +76,8 @@ jobs:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
           config: ${{ steps.resolve-config.outputs.config }}
-          restore_cache: ${{ github.event_name == 'pull_request' }}
-          save_cache: ${{ github.event_name == 'pull_request' }}
+          restore_cache: true
+          save_cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           # Skip install steps for a quick PR push
           install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
 
@@ -96,7 +96,6 @@ jobs:
         with:
           xcode-version: ${{ matrix.config.xcode }}
       - name: Cache Homebrew downloads
-        if: github.event_name == 'pull_request'
         uses: actions/cache@v6
         with:
           path: ~/Library/Caches/Homebrew
@@ -125,8 +124,8 @@ jobs:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
           config: ${{ steps.resolve-config.outputs.config }}
-          restore_cache: ${{ github.event_name == 'pull_request' }}
-          save_cache: ${{ github.event_name == 'pull_request' }}
+          restore_cache: true
+          save_cache: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           # Skip install steps for a quick PR push
           install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
 

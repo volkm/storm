@@ -64,7 +64,7 @@ runs:
       uses: actions/cache/restore@v6
       with:
         path: ${{ env.CCACHE_DIR }}
-        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.sha }}
         restore-keys: |
           buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-
           buildtest-ccache-${{ inputs.name }}-
@@ -113,7 +113,7 @@ runs:
       uses: actions/cache/save@v6
       with:
         path: ${{ env.CCACHE_DIR }}
-        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.run_id }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ env.BUILD_TYPE }}-${{ hashFiles('CMakeLists.txt') }}-${{ github.sha }}
     - name: Run storm
       working-directory: ./build
       run: ./bin/storm --version
