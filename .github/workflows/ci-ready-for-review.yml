@@ -91,14 +91,12 @@ jobs:
         config:
           - {name: "GCC",
              cmakeArgs: "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
-             packages: "",
-             dockerfile: ".github/workflows/Dockerfile.archlinux",
+             setup: "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3",
              baseImg: "archlinux:latest"
           }
           - {name: "Clang",
              cmakeArgs: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF",
-             packages: "clang llvm",
-             dockerfile: ".github/workflows/Dockerfile.archlinux",
+             setup: "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3 clang llvm",
              baseImg: "archlinux:latest"
           }
     uses: ./.github/workflows/test-build.yml
@@ -109,9 +107,8 @@ jobs:
       Developer: true
       baseImg: ${{ matrix.config.baseImg }}
       cmakeArgs: ${{ matrix.config.cmakeArgs }}
-      packages: ${{ matrix.config.packages }}
-      dockerfile: ${{ matrix.config.dockerfile }}
-      starterProjectCommand: "/opt/storm/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+      setup: ${{ matrix.config.setup }}
+      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
       restore_cache: ${{ github.event_name != 'push' }}
       save_cache: false
       install: true
@@ -123,13 +120,16 @@ jobs:
       fail-fast: true
       matrix:
         distro: ["debian-12", "debian-13", "ubuntu-24.04"]
-    uses: ./.github/workflows/test-linux.yml
+    uses: ./.github/workflows/test-build.yml
     with:
       nr_jobs: "4"
-      distro: ${{ matrix.distro }}
+      name: ${{ matrix.distro }}
+      baseImg: "movesrwth/storm-basesystem:${{ matrix.distro }}"
       buildType: Release
+      Developer: false
+      ClnRatfunc: true
       cmakeArgs: "-DSTORM_WARNING_AS_ERROR=ON -DSTORM_COMPILE_WITH_PCH=OFF"
-      runner: ubuntu-latest
+      starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
       restore_cache: ${{ github.event_name != 'push' }}
       save_cache: false
       install: true
