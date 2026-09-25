@@ -180,7 +180,7 @@ jobs:
         uses: ./.github/actions/starter-project-action
         with:
           docker: false
-          stormDir: "${{ github.workspace }}/build"
+          stormDir: "${GITHUB_WORKSPACE}/build"
           command: ${{ inputs.starterProjectCommand }}
       - name: Install storm
         if: inputs.install
