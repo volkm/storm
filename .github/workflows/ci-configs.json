@@ -6,7 +6,7 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Debug",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": false,
@@ -19,7 +19,7 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": false,
@@ -31,7 +31,7 @@
       "scope": [
         "extensive"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": false,
       "ClnExact": false,
@@ -43,12 +43,13 @@
         "extensive",
         "quick"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
       "baseImg": "movesrwth/storm-basesystem:minimal_dependencies",
       "disable_all": true,
       "ClnExact": false,
-      "ClnRatfunc": false
+      "ClnRatfunc": false,
+      "starterProjectCommand": "--help"
     },
     {
       "name": "GMP; GMP; Required dependencies",
@@ -56,7 +57,7 @@
         "extensive",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
@@ -68,7 +69,7 @@
       "scope": [
         "extensive"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
       "ClnExact": true,
@@ -79,7 +80,7 @@
       "scope": [
         "extensive"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
       "ClnExact": false,
@@ -91,7 +92,7 @@
         "extensive",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
@@ -103,11 +104,12 @@
       "scope": [
         "extensive"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": true,
       "ClnExact": false,
-      "ClnRatfunc": false
+      "ClnRatfunc": false,
+      "starterProjectCommand": "--help"
     }
   ],
   "compilerTests": [
@@ -118,7 +120,7 @@
         "normal",
         "extensive"
       ],
-      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3",
       "baseImg": "archlinux:latest"
     },
@@ -129,7 +131,7 @@
         "normal",
         "extensive"
       ],
-      "cmakeArgs": "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3 clang llvm",
       "baseImg": "archlinux:latest"
     },
@@ -138,7 +140,7 @@
       "scope": [
         "extensive"
       ],
-      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
+      "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
       "setup": "apk add --no-cache bash ccache cmake make gcc g++ git autoconf automake libc-dev linux-headers patch boost-dev gmp-dev cln-dev ginac-dev glpk-dev libarchive-dev z3-dev ",
       "baseImg": "alpine:edge"
     }
@@ -151,7 +153,7 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "distro": "debian-12"
     },
     {
@@ -160,7 +162,7 @@
         "extensive",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "distro": "debian-13"
     },
     {
@@ -170,7 +172,7 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "distro": "ubuntu-24.04"
     }
   ],

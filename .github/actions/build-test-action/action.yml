@@ -28,11 +28,7 @@ inputs:
   starterProjectCommand:
     description: "Command to pass to the starter-project"
     type: string
-    default: "--help"
-  setup:
-    description: "Shell command to install packages before configuring"
-    type: string
-    default: ""
+    default: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
   disable_cudd:
     type: boolean
     default: false
@@ -98,11 +94,12 @@ runs:
   using: "composite"
   steps:
     - name: Set CCACHE_DIR
-      run: echo "CCACHE_DIR=${GITHUB_WORKSPACE}/.ci-ccache" >> "$GITHUB_ENV"
-      shell: bash
-    - name: Install packages
-      if: inputs.setup != ''
-      run: ${{ inputs.setup }}
+      run: |
+        if [ "$RUNNER_OS" = "macOS" ]; then
+          echo "CCACHE_DIR=/Users/runner/.ccache" >> "$GITHUB_ENV"
+        else
+          echo "CCACHE_DIR=${GITHUB_WORKSPACE}/.ci-ccache" >> "$GITHUB_ENV"
+        fi
       shell: bash
     - name: Ensure ccache directory exists
       if: inputs.restore_cache == 'true'
@@ -130,7 +127,6 @@ runs:
         mkdir build
         cd build
         cmake -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" \
-              -DSTORM_PORTABLE=ON \
               -DSTORM_CARL_GIT_TAG="${{ inputs.carl_tag }}" \
               -DSTORM_DISABLE_CUDD=${{ inputs.disable_cudd == 'true' && 'ON' || 'OFF' }} \
               -DSTORM_DISABLE_GLPK=${{ inputs.disable_glpk == 'true' && 'ON' || 'OFF' }} \
@@ -190,7 +186,7 @@ runs:
     - name: Install storm
       if: inputs.install == 'true'
       working-directory: ./build
-      run: make install
+      run: ${{ runner.os == 'macOS' && 'sudo make install' || 'make install' }}
       shell: bash
     - name: Remove build dir
       if: inputs.install == 'true'
