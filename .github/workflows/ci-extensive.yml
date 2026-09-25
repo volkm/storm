@@ -123,6 +123,7 @@ jobs:
           xcode: ${{ matrix.config.xcode }}
           buildType: ${{ matrix.buildType }}
           cmakeArgs: ${{ matrix.config.cmakeArgs }}
+          starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
           restore_cache: false
           save_cache: false
           install: true

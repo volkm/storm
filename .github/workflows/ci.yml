@@ -142,6 +142,7 @@ jobs:
           buildType: ${{ matrix.buildType }}
           # Disable PCH on PRs to make ccache work
           cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
+          starterProjectCommand: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
           restore_cache: ${{ github.event_name == 'pull_request' }}
           save_cache: ${{ github.event_name == 'pull_request' }}
           # Skip install steps for a quick PR push

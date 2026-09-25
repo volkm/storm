@@ -6,7 +6,7 @@ inputs:
     type: string
     default: "4"
   name:
-    description: "Display name (e.g. Xcode 15.4, ARM)"
+    description: "Display name for the test configuration"
     type: string
     required: true
   xcode:
@@ -17,10 +17,70 @@ inputs:
     description: "CMake build type (Debug or Release)"
     type: string
     required: true
+  Developer:
+    description: "Enable developer mode"
+    type: boolean
+    default: false
+  carl_tag:
+    description: "Carl version"
+    type: string
+    default: "master"
   cmakeArgs:
     description: "Extra CMake arguments"
     type: string
     default: ""
+  starterProjectCommand:
+    description: "Command to pass to the starter-project"
+    type: string
+    default: "--help"
+  disable_cudd:
+    type: boolean
+    default: false
+  disable_glpk:
+    type: boolean
+    default: false
+  disable_gmm:
+    type: boolean
+    default: false
+  disable_gurobi:
+    type: boolean
+    default: false
+  disable_highs:
+    type: boolean
+    default: false
+  disable_libarchive:
+    type: boolean
+    default: false
+  disable_mathsat:
+    type: boolean
+    default: false
+  disable_soplex:
+    type: boolean
+    default: false
+  disable_spot:
+    type: boolean
+    default: false
+  disable_sylvan:
+    type: boolean
+    default: false
+  disable_xerces:
+    type: boolean
+    default: false
+  disable_z3:
+    type: boolean
+    default: false
+  ClnExact:
+    description: "Use CLN for exact arithmetic"
+    type: boolean
+    default: false
+  ClnRatfunc:
+    description: "Use CLN for rational functions"
+    type: boolean
+    default: true
+  AllSanitizers:
+    description: "Enable all sanitizers"
+    type: boolean
+    default: false
   restore_cache:
     description: "Restore ccache and Homebrew cache"
     type: boolean
@@ -37,6 +97,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Set CCACHE_DIR
+      run: echo "CCACHE_DIR=/Users/runner/.ccache" >> "$GITHUB_ENV"
+      shell: bash
     - uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: ${{ inputs.xcode }}
@@ -48,20 +111,20 @@ runs:
         key: buildtest-brew-${{ inputs.name }}-${{ hashFiles('.github/actions/build-test-mac-action/action.yml') }}
         restore-keys: |
           buildtest-brew-${{ inputs.name }}-
-    - name: Ensure ccache directory exists (macOS)
+    - name: Ensure ccache directory exists
       if: inputs.restore_cache == 'true'
-      run: mkdir -p /Users/runner/.ccache
+      run: mkdir -p "${CCACHE_DIR}"
       shell: bash
-    - name: Restore ccache (macOS)
-      id: ccache-restore-macos
+    - name: Restore ccache
+      id: ccache-restore
       if: inputs.restore_cache == 'true'
       uses: actions/cache/restore@v6
       with:
-        path: /Users/runner/.ccache
-        key: buildtest-ccache-macos-${{ inputs.name }}-${{ inputs.buildType }}-${{ github.run_id }}
+        path: ${{ env.CCACHE_DIR }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-${{ github.run_id }}
         restore-keys: |
-          buildtest-ccache-macos-${{ inputs.name }}-${{ inputs.buildType }}-
-          buildtest-ccache-macos-${{ inputs.name }}-
+          buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-
+          buildtest-ccache-${{ inputs.name }}-
     - name: Install dependencies
       # cmake and gmp are already installed
       run: |
@@ -79,7 +142,25 @@ runs:
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" -DSTORM_CARL_GIT_TAG="master" ${{ inputs.cmakeArgs }}
+        cmake -DCMAKE_BUILD_TYPE="${{ inputs.buildType }}" \
+              -DSTORM_CARL_GIT_TAG="${{ inputs.carl_tag }}" \
+              -DSTORM_DISABLE_CUDD=${{ inputs.disable_cudd == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GLPK=${{ inputs.disable_glpk == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GMM=${{ inputs.disable_gmm == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_GUROBI=${{ inputs.disable_gurobi == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_HIGHS=${{ inputs.disable_highs == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_LIBARCHIVE=${{ inputs.disable_libarchive == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_MATHSAT=${{ inputs.disable_mathsat == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SOPLEX=${{ inputs.disable_soplex == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SPOT=${{ inputs.disable_spot == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_SYLVAN=${{ inputs.disable_sylvan == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_XERCES=${{ inputs.disable_xerces == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DISABLE_Z3=${{ inputs.disable_z3 == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_DEVELOPER=${{ inputs.Developer == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_USE_CLN_EA=${{ inputs.ClnExact == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_USE_CLN_RF=${{ inputs.ClnRatfunc == 'true' && 'ON' || 'OFF' }} \
+              -DSTORM_COMPILE_WITH_ALL_SANITIZERS=${{ inputs.AllSanitizers == 'true' && 'ON' || 'OFF' }} \
+              ${{ inputs.cmakeArgs }} ..
       shell: bash
     - name: Build storm
       working-directory: ./build
@@ -90,15 +171,15 @@ runs:
       if: inputs.restore_cache == 'true'
       run: ccache --show-stats --verbose
       shell: bash
-    - name: Save ccache (macOS)
-      if: inputs.save_cache == 'true' && always() && steps.ccache-restore-macos.outputs.cache-hit != 'true'
+    - name: Save ccache
+      if: inputs.save_cache == 'true' && always() && steps.ccache-restore.outputs.cache-hit != 'true'
       uses: actions/cache/save@v6
       with:
-        path: /Users/runner/.ccache
-        key: buildtest-ccache-macos-${{ inputs.name }}-${{ inputs.buildType }}-${{ github.run_id }}
+        path: ${{ env.CCACHE_DIR }}
+        key: buildtest-ccache-${{ inputs.name }}-${{ inputs.buildType }}-${{ github.run_id }}
     - name: Run storm (build tree)
       working-directory: ./build
-      run: ./bin/storm
+      run: ./bin/storm --version
       shell: bash
     - name: Check compile flags
       uses: ./.github/actions/check-compile-flags-action
@@ -115,7 +196,7 @@ runs:
       with:
         docker: false
         stormDir: "${GITHUB_WORKSPACE}/build"
-        command: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+        command: ${{ inputs.starterProjectCommand }}
     - name: Install storm
       if: inputs.install == 'true'
       working-directory: ./build
@@ -123,13 +204,11 @@ runs:
       shell: bash
     - name: Remove build dir
       if: inputs.install == 'true'
-      run: |
-        rm -rf ${GITHUB_WORKSPACE}/build
+      run: rm -rf build
       shell: bash
     - name: Run installed storm
       if: inputs.install == 'true'
-      run: |
-        /usr/local/bin/storm --version
+      run: /usr/local/bin/storm --version
       shell: bash
     - name: Build starter-project on installed Storm
       if: inputs.install == 'true'
@@ -137,4 +216,4 @@ runs:
       with:
         docker: false
         stormDir: ""
-        command: "${GITHUB_WORKSPACE}/resources/examples/testfiles/dtmc/brp-16-2.pm 'P=? [F s=5]'"
+        command: ${{ inputs.starterProjectCommand }}
