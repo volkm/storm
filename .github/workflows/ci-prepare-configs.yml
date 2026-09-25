@@ -12,8 +12,6 @@ on:
     outputs:
       buildTests:
         value: ${{ jobs.prepare.outputs.buildTests }}
-      compilerTests:
-        value: ${{ jobs.prepare.outputs.compilerTests }}
       linuxTests:
         value: ${{ jobs.prepare.outputs.linuxTests }}
       macTests:
@@ -24,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       buildTests: ${{ steps.filter.outputs.buildTests }}
-      compilerTests: ${{ steps.filter.outputs.compilerTests }}
       linuxTests: ${{ steps.filter.outputs.linuxTests }}
       macTests: ${{ steps.filter.outputs.macTests }}
     steps:
@@ -35,7 +32,7 @@ jobs:
         env:
           MODE: ${{ inputs.mode }}
         run: |
-          for cat in buildTests compilerTests linuxTests macTests; do
+          for cat in buildTests linuxTests macTests; do
             filtered=$(jq -c --arg cat "$cat" --arg scope "$MODE" '.[$cat] | map(select(.scope | index($scope)))' .github/workflows/ci-configs.json)
             echo "$cat=$filtered" >> "$GITHUB_OUTPUT"
           done

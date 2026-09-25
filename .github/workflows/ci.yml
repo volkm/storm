@@ -39,7 +39,8 @@ jobs:
     steps:
       - name: Git clone
         uses: actions/checkout@v7
-      - uses: ./.github/actions/build-test-action
+      - name: Build and test Storm
+        uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
@@ -68,54 +69,28 @@ jobs:
           # Skip install steps for a quick PR push
           install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
 
-  compilerTests:
+  linuxTests:
     needs: prepare
-    name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    name: ${{ matrix.config.name }} (${{ matrix.config.buildType }})
     runs-on: ubuntu-latest
     container: ${{ matrix.config.baseImg }}
     strategy:
       fail-fast: true
       matrix:
-        buildType: ["Debug"]
-        config: ${{ fromJson(needs.prepare.outputs.compilerTests) }}
+        config: ${{ fromJson(needs.prepare.outputs.linuxTests) }}
     steps:
       - name: Git clone
         uses: actions/checkout@v7
       - name: Install packages
         if: matrix.config.setup != ''
         run: ${{ matrix.config.setup }}
-      - uses: ./.github/actions/build-test-action
+      - name: Build and test Storm
+        uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
-          Developer: ${{ matrix.buildType == 'Debug' }}
-          # Disable PCH on PRs to make ccache work
-          cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
-          restore_cache: ${{ github.event_name == 'pull_request' }}
-          save_cache: ${{ github.event_name == 'pull_request' }}
-          # Skip install steps for a quick PR push
-          install: ${{ !(github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'ready for review')) }}
-
-  linuxTests:
-    needs: prepare
-    name: ${{ matrix.config.name }} (${{ matrix.buildType }})
-    runs-on: ubuntu-latest
-    container: "movesrwth/storm-basesystem:${{ matrix.config.distro }}"
-    strategy:
-      fail-fast: true
-      matrix:
-        buildType: ["Release"]
-        config: ${{ fromJson(needs.prepare.outputs.linuxTests) }}
-    steps:
-      - name: Git clone
-        uses: actions/checkout@v7
-      - uses: ./.github/actions/build-test-action
-        with:
-          nr_jobs: "4"
-          name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
-          Developer: ${{ matrix.buildType == 'Debug' }}
+          buildType: ${{ matrix.config.buildType }}
+          Developer: ${{ matrix.config.buildType == 'Debug' }}
           # Disable PCH on PRs to make ccache work
           cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
           restore_cache: ${{ github.event_name == 'pull_request' }}
@@ -125,12 +100,11 @@ jobs:
 
   macTests:
     needs: prepare
-    name: ${{ matrix.config.name }} (${{ matrix.buildType }})
+    name: ${{ matrix.config.name }} (${{ matrix.config.buildType }})
     runs-on: ${{ matrix.config.distro }}
     strategy:
       fail-fast: true
       matrix:
-        buildType: ["Release"]
         config: ${{ fromJson(needs.prepare.outputs.macTests) }}
     steps:
       - name: Git clone
@@ -150,11 +124,12 @@ jobs:
         run: |
           brew update
           brew install automake boost ccache cln ginac glpk highs hwloc libarchive xerces-c z3
-      - uses: ./.github/actions/build-test-action
+      - name: Build and test Storm
+        uses: ./.github/actions/build-test-action
         with:
           nr_jobs: "4"
           name: ${{ matrix.config.name }}
-          buildType: ${{ matrix.buildType }}
+          buildType: ${{ matrix.config.buildType }}
           # Disable PCH on PRs to make ccache work
           cmakeArgs: "${{ matrix.config.cmakeArgs }}${{ github.event_name == 'pull_request' && ' -DSTORM_COMPILE_WITH_PCH=OFF' || '' }}"
           restore_cache: ${{ github.event_name == 'pull_request' }}
@@ -185,7 +160,7 @@ jobs:
   notify:
     name: Email notification
     runs-on: ubuntu-latest
-    needs: [buildTests, compilerTests, linuxTests, macTests, deploy]
+    needs: [buildTests, linuxTests, macTests, deploy]
     if: github.repository_owner == 'stormchecker' && github.event_name == 'push' && always()
     steps:
       - uses: technote-space/workflow-conclusion-action@v3

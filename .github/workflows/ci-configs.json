@@ -6,8 +6,8 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Debug",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": false,
       "ClnExact": false,
@@ -19,8 +19,8 @@
         "quick",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-dependencies:latest",
       "disable_all": false,
       "ClnExact": false,
@@ -43,8 +43,8 @@
         "extensive",
         "quick"
       ],
-      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:minimal_dependencies",
       "disable_all": true,
       "ClnExact": false,
@@ -57,8 +57,8 @@
         "extensive",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
       "ClnExact": false,
@@ -92,8 +92,8 @@
         "extensive",
         "normal"
       ],
-      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "buildType": "Release",
+      "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "baseImg": "movesrwth/storm-basesystem:latest",
       "disable_all": false,
       "ClnExact": true,
@@ -112,7 +112,7 @@
       "starterProjectCommand": "--help"
     }
   ],
-  "compilerTests": [
+  "linuxTests": [
     {
       "name": "GCC",
       "scope": [
@@ -120,6 +120,7 @@
         "normal",
         "extensive"
       ],
+      "buildType": "Debug",
       "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3",
       "baseImg": "archlinux:latest"
@@ -131,6 +132,7 @@
         "normal",
         "extensive"
       ],
+      "buildType": "Debug",
       "cmakeArgs": "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
       "setup": "pacman -Syu --noconfirm && pacman -S --noconfirm base-devel ccache cmake git boost cln ginac glpk gmp highs hwloc libarchive xerces-c z3 clang llvm",
       "baseImg": "archlinux:latest"
@@ -140,40 +142,42 @@
       "scope": [
         "extensive"
       ],
+      "buildType": "Debug",
       "cmakeArgs": "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON -DSTORM_DISABLE_HIGHS=ON",
       "setup": "apk add --no-cache bash ccache cmake make gcc g++ git autoconf automake libc-dev linux-headers patch boost-dev gmp-dev cln-dev ginac-dev glpk-dev libarchive-dev z3-dev ",
       "baseImg": "alpine:edge"
-    }
-  ],
-  "linuxTests": [
+    },
     {
       "name": "Debian 12",
       "scope": [
-        "extensive",
         "quick",
-        "normal"
+        "normal",
+        "extensive"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "distro": "debian-12"
+      "baseImg": "movesrwth/storm-basesystem:debian-12"
     },
     {
       "name": "Debian 13",
       "scope": [
-        "extensive",
-        "normal"
+        "normal",
+        "extensive"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "distro": "debian-13"
+      "baseImg": "movesrwth/storm-basesystem:debian-13"
     },
     {
       "name": "Ubuntu 24.04",
       "scope": [
-        "extensive",
         "quick",
-        "normal"
+        "normal",
+        "extensive"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_PORTABLE=ON -DSTORM_WARNING_AS_ERROR=ON",
-      "distro": "ubuntu-24.04"
+      "baseImg": "movesrwth/storm-basesystem:ubuntu-24.04"
     }
   ],
   "macTests": [
@@ -184,6 +188,7 @@
         "quick",
         "normal"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-14",
       "xcode": "15.4"
@@ -194,6 +199,7 @@
         "extensive",
         "normal"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-15",
       "xcode": "16.4"
@@ -205,6 +211,7 @@
         "quick",
         "normal"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-26",
       "xcode": "latest-stable"
@@ -216,6 +223,7 @@
         "quick",
         "normal"
       ],
+      "buildType": "Release",
       "cmakeArgs": "-DSTORM_WARNING_AS_ERROR=ON",
       "distro": "macos-26-intel",
       "xcode": "latest-stable"
