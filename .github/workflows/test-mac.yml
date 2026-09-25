@@ -26,7 +26,7 @@ on:
       cmakeArgs:
         description: "Extra CMake arguments"
         type: string
-        default: "-DSTORM_WARNING_AS_ERROR=ON"
+        default: ""
       restore_cache:
         description: "Restore ccache and Homebrew cache"
         type: boolean

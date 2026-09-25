@@ -14,11 +14,11 @@ on:
       buildType:
         description: "CMake build type (Debug or Release)"
         type: string
-        default: "Debug"
+        required: true
       Developer:
         description: "Enable developer mode"
         type: boolean
-        default: true
+        default: false
       carl_tag:
         description: "Carl version"
         type: string
@@ -26,7 +26,7 @@ on:
       cmakeArgs:
         description: "Extra CMake arguments"
         type: string
-        default: "-DSTORM_WARNING_AS_ERROR=ON"
+        default: ""
       starterProjectCommand:
         description: "Command to pass to the starter-project"
         type: string
@@ -82,7 +82,7 @@ on:
       ClnRatfunc:
         description: "Use CLN for rational functions"
         type: boolean
-        default: false
+        default: true
       AllSanitizers:
         description: "Enable all sanitizers"
         type: boolean
