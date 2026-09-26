@@ -77,7 +77,7 @@ std::shared_ptr<storm::models::sparse::Dtmc<ValueType, RewardModelType>> Continu
         RewardModelType timeRewards(std::move(exitRates));
         auto insertRes = dtmcComponents.rewardModels.insert(std::make_pair(*timeRewardModelName, std::move(timeRewards)));
         STORM_LOG_THROW(insertRes.second, storm::exceptions::InvalidArgumentException,
-                        "Could not insert auxiliary reward model " << *timeRewardModelName << " because a model with this name already exists.");
+                        "Test Could not insert auxiliary reward model " << *timeRewardModelName << " because a model with this name already exists.");
     }
     // Note: exitRates might be invalidated at this point.
 
