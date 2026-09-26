@@ -29,7 +29,7 @@ std::shared_ptr<models::sparse::Model<ValueType, RewardModelType>> NonMarkovianC
     }
 
     STORM_LOG_WARN_COND(labelBehavior == EliminationLabelBehavior::KeepLabels || labelBehavior == EliminationLabelBehavior::ExtendLabels,
-                        "Labels are not preserved! Results may be incorrect. Continue at your own caution.");
+                        "Test, test Labels are not preserved! Results may be incorrect. Continue at your own caution.");
 
     // Initialize
     storm::storage::FlexibleSparseMatrix<ValueType> flexibleMatrix(ma->getTransitionMatrix());
