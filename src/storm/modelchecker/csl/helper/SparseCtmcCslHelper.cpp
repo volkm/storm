@@ -18,6 +18,19 @@ namespace storm {
 namespace modelchecker {
 namespace helper {
 
+namespace {
+// A state whose entire outgoing behavior is a single self-loop (i.e. its self-loop rate equals its total exit
+// rate) has a row in the uniformized matrix that is invariant to the choice of uniformization rate: the diagonal
+// entry (selfLoopRate - exitRate)/lambda + 1 is exactly 1 for any lambda, and there is no other entry in the row
+// to scale. Such a state (typically a fixed deadlock) must therefore not be allowed to inflate the uniformization
+// rate chosen for the rest of the system.
+template<typename ValueType>
+bool isTrivialSelfLoop(storm::storage::SparseMatrix<ValueType> const& rateMatrix, uint64_t state) {
+    auto row = rateMatrix.getRow(state);
+    return row.getNumberOfEntries() == 1 && row.begin()->getColumn() == state;
+}
+}  // namespace
+
 template<typename ValueType>
 bool SparseCtmcCslHelper::checkAndUpdateTransientProbabilityEpsilon(storm::Environment const& env, ValueType& epsilon,
                                                                     std::vector<ValueType> const& resultVector,
@@ -146,7 +159,14 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
 
                     ValueType uniformizationRate = 0;
                     for (uint64_t state : relevantStates) {
-                        uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                        if (!isTrivialSelfLoop(rateMatrix, state)) {
+                            uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                        }
+                    }
+                    if (storm::utility::isZero(uniformizationRate)) {
+                        // Every relevant state is a trivial self-loop, so its row is invariant to the choice of
+                        // uniformization rate. Any positive value is safe here.
+                        uniformizationRate = storm::utility::one<ValueType>();
                     }
                     uniformizationRate *= 1.02;
                     STORM_LOG_THROW(uniformizationRate > 0, storm::exceptions::InvalidStateException, "The uniformization rate must be positive.");
@@ -202,7 +222,14 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
                         // we must re-uniformize the CTMC, so we need to compute the second uniformized matrix.
                         ValueType uniformizationRate = storm::utility::zero<ValueType>();
                         for (uint64_t state : relevantStates) {
-                            uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                            if (!isTrivialSelfLoop(rateMatrix, state)) {
+                                uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                            }
+                        }
+                        if (storm::utility::isZero(uniformizationRate)) {
+                            // Every relevant state is a trivial self-loop, so its row is invariant to the choice of
+                            // uniformization rate. Any positive value is safe here.
+                            uniformizationRate = storm::utility::one<ValueType>();
                         }
                         uniformizationRate *= 1.02;
                         STORM_LOG_THROW(uniformizationRate > 0, storm::exceptions::InvalidStateException, "The uniformization rate must be positive.");
@@ -227,7 +254,14 @@ std::vector<ValueType> SparseCtmcCslHelper::computeBoundedUntilProbabilities(
                         // we must re-uniformize the CTMC, so we need to compute the second uniformized matrix.
                         ValueType uniformizationRate = storm::utility::zero<ValueType>();
                         for (uint64_t state : statesWithProbabilityGreater0) {
-                            uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                            if (!isTrivialSelfLoop(rateMatrix, state)) {
+                                uniformizationRate = std::max(uniformizationRate, exitRates[state]);
+                            }
+                        }
+                        if (storm::utility::isZero(uniformizationRate)) {
+                            // Every relevant state is a trivial self-loop, so its row is invariant to the choice of
+                            // uniformization rate. Any positive value is safe here.
+                            uniformizationRate = storm::utility::one<ValueType>();
                         }
                         uniformizationRate *= 1.02;
                         STORM_LOG_THROW(uniformizationRate > 0, storm::exceptions::InvalidStateException, "The uniformization rate must be positive.");
@@ -307,8 +341,15 @@ std::vector<ValueType> SparseCtmcCslHelper::computeInstantaneousRewards(Environm
     }
 
     ValueType uniformizationRate = 0;
-    for (auto const& rate : exitRateVector) {
-        uniformizationRate = std::max(uniformizationRate, rate);
+    for (uint_fast64_t state = 0; state < exitRateVector.size(); ++state) {
+        if (!isTrivialSelfLoop(rateMatrix, state)) {
+            uniformizationRate = std::max(uniformizationRate, exitRateVector[state]);
+        }
+    }
+    if (storm::utility::isZero(uniformizationRate)) {
+        // Every state is a trivial self-loop, so its row is invariant to the choice of uniformization rate.
+        // Any positive value is safe here.
+        uniformizationRate = storm::utility::one<ValueType>();
     }
     uniformizationRate *= 1.02;
     STORM_LOG_THROW(uniformizationRate > 0, storm::exceptions::InvalidStateException, "The uniformization rate must be positive.");
@@ -364,8 +405,15 @@ std::vector<ValueType> SparseCtmcCslHelper::computeCumulativeRewards(Environment
 
     // Start with the uniformization.
     ValueType uniformizationRate = 0;
-    for (auto const& rate : exitRateVector) {
-        uniformizationRate = std::max(uniformizationRate, rate);
+    for (uint_fast64_t state = 0; state < exitRateVector.size(); ++state) {
+        if (!isTrivialSelfLoop(rateMatrix, state)) {
+            uniformizationRate = std::max(uniformizationRate, exitRateVector[state]);
+        }
+    }
+    if (storm::utility::isZero(uniformizationRate)) {
+        // Every state is a trivial self-loop, so its row is invariant to the choice of uniformization rate.
+        // Any positive value is safe here.
+        uniformizationRate = storm::utility::one<ValueType>();
     }
     uniformizationRate *= 1.02;
     STORM_LOG_THROW(uniformizationRate > 0, storm::exceptions::InvalidStateException, "The uniformization rate must be positive.");
