@@ -197,7 +197,7 @@ std::shared_ptr<storm::models::sparse::Mdp<ValueType, RewardModelType>> Continuo
         RewardModelType timeRewards(std::move(timeRewardVector));
         auto insertRes = mdpComponents.rewardModels.insert(std::make_pair(*timeRewardModelName, std::move(timeRewards)));
         STORM_LOG_THROW(insertRes.second, storm::exceptions::InvalidArgumentException,
-                        "Could not insert auxiliary reward model " << *timeRewardModelName << " because a model with this name already exists.");
+                        "aaaaaa not insert auxiliary reward model " << *timeRewardModelName << " because a model with this name already exists.");
     }
 
     return std::make_shared<storm::models::sparse::Mdp<ValueType, RewardModelType>>(std::move(mdpComponents));
