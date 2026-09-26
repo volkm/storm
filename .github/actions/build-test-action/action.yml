@@ -102,7 +102,7 @@ runs:
         echo "GMM_VERSION=$GMM_VERSION" >> "$GITHUB_ENV"
         echo "EIGEN_TAG=$EIGEN_TAG" >> "$GITHUB_ENV"
         echo "GTEST_VERSION=$GTEST_VERSION" >> "$GITHUB_ENV"
-        echo "STORM_3RDPARTY_CACHE_DIR=${{ runner.temp }}/storm-3rdparty-cache" >> "$GITHUB_ENV"
+        echo "STORM_3RDPARTY_CACHE_DIR=${RUNNER_TEMP}/storm-3rdparty-cache" >> "$GITHUB_ENV"
       shell: bash
     - name: Restore gmm source cache
       id: gmm-cache-restore
