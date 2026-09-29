@@ -89,42 +89,12 @@ runs:
         ccache --show-stats --verbose
       shell: bash
 
-    # Caching source code for 3rdparty dependencies. This avoids redownloading them on each run.
-    # Currently caching the sources of gmm, Eigen, and googletest.
-    # The cache depends on the library version, otherwise newer versions would never be cached.
-    # The cache is located outside build/ and handed to CMake via FETCHCONTENT_SOURCE_DIR_<NAME>
-    - name: Determine 3rdparty dependency versions
-      if: inputs.restore_3rdparty_cache == 'true' || inputs.save_3rdparty_cache == 'true'
-      run: |
-        GMM_VERSION=$(sed -n 's/^ *set(GMM_VERSION "\(.*\)")$/\1/p' resources/3rdparty/CMakeLists.txt)
-        EIGEN_TAG=$(sed -n 's/^ *set(STORM_EIGEN_GIT_TAG "\(.*\)")$/\1/p' resources/3rdparty/CMakeLists.txt)
-        GTEST_VERSION=$(sed -n 's/^ *set(GTEST_VERSION "\(.*\)")$/\1/p' resources/3rdparty/CMakeLists.txt)
-        echo "GMM_VERSION=$GMM_VERSION" >> "$GITHUB_ENV"
-        echo "EIGEN_TAG=$EIGEN_TAG" >> "$GITHUB_ENV"
-        echo "GTEST_VERSION=$GTEST_VERSION" >> "$GITHUB_ENV"
-        echo "STORM_3RDPARTY_CACHE_DIR=${RUNNER_TEMP}/storm-3rdparty-cache" >> "$GITHUB_ENV"
-      shell: bash
-    - name: Restore gmm source cache
-      id: gmm-cache-restore
-      if: inputs.restore_3rdparty_cache == 'true'
-      uses: actions/cache/restore@v6
+    # Caching source code for 3rdparty dependencies.
+    - name: Restore 3rdparty source cache
+      id: cache-3rdparty-restore
+      uses: ./.github/actions/cache-3rdparty-action
       with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/gmm
-        key: 3rdparty-gmm-${{ env.GMM_VERSION }}
-    - name: Restore Eigen source cache
-      id: eigen-cache-restore
-      if: inputs.restore_3rdparty_cache == 'true'
-      uses: actions/cache/restore@v6
-      with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/StormEigen
-        key: 3rdparty-eigen-${{ env.EIGEN_TAG }}
-    - name: Restore googletest source cache
-      id: googletest-cache-restore
-      if: inputs.restore_3rdparty_cache == 'true'
-      uses: actions/cache/restore@v6
-      with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest
-        key: 3rdparty-googletest-${{ env.GTEST_VERSION }}
+        restore: ${{ inputs.restore_3rdparty_cache }}
 
     # Configure Storm
     - name: Configure storm
@@ -149,47 +119,14 @@ runs:
               -DSTORM_USE_CLN_EA=${{ env.CLN_EXACT == 'true' && 'ON' || 'OFF' }} \
               -DSTORM_USE_CLN_RF=${{ env.CLN_RATFUNC == 'true' && 'ON' || 'OFF' }} \
               -DSTORM_COMPILE_WITH_ALL_SANITIZERS=${{ env.ALL_SANITIZERS == 'true' && 'ON' || 'OFF' }} \
-              ${{ steps.gmm-cache-restore.outputs.cache-hit == 'true' && format('-DFETCHCONTENT_SOURCE_DIR_GMM={0}/gmm', env.STORM_3RDPARTY_CACHE_DIR) || '' }} \
-              ${{ steps.eigen-cache-restore.outputs.cache-hit == 'true' && format('-DFETCHCONTENT_SOURCE_DIR_EIGEN={0}/StormEigen', env.STORM_3RDPARTY_CACHE_DIR) || '' }} \
-              ${{ steps.googletest-cache-restore.outputs.cache-hit == 'true' && format('-DFETCHCONTENT_SOURCE_DIR_GOOGLETEST={0}/googletest', env.STORM_3RDPARTY_CACHE_DIR) || '' }} \
+              ${{ steps.cache-3rdparty-restore.outputs.cmake-args }} \
               ${{ env.CMAKE_ARGS }} ..
       shell: bash
 
-    # Save the 3rdparty caches
-    - name: Seed 3rdparty cache from fresh downloads
-      if: inputs.save_3rdparty_cache == 'true'
-      run: |
-        if [ "${{ steps.gmm-cache-restore.outputs.cache-hit }}" != "true" ] && [ -d build/_deps/gmm-src ]; then
-          mkdir -p "${{ env.STORM_3RDPARTY_CACHE_DIR }}"
-          cp -a build/_deps/gmm-src "${{ env.STORM_3RDPARTY_CACHE_DIR }}/gmm"
-        fi
-        if [ "${{ steps.eigen-cache-restore.outputs.cache-hit }}" != "true" ] && [ -d build/resources/3rdparty/StormEigen/StormEigen ]; then
-          mkdir -p "${{ env.STORM_3RDPARTY_CACHE_DIR }}"
-          cp -a build/resources/3rdparty/StormEigen/StormEigen "${{ env.STORM_3RDPARTY_CACHE_DIR }}/StormEigen"
-        fi
-        if [ "${{ steps.googletest-cache-restore.outputs.cache-hit }}" != "true" ] && [ -d build/_deps/googletest-src ]; then
-          mkdir -p "${{ env.STORM_3RDPARTY_CACHE_DIR }}"
-          cp -a build/_deps/googletest-src "${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest"
-        fi
-      shell: bash
-    - name: Save gmm source cache
-      if: inputs.save_3rdparty_cache == 'true' && steps.gmm-cache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v6
+    - name: Save 3rdparty source cache
+      uses: ./.github/actions/cache-3rdparty-action
       with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/gmm
-        key: 3rdparty-gmm-${{ env.GMM_VERSION }}
-    - name: Save Eigen source cache
-      if: inputs.save_3rdparty_cache == 'true' && steps.eigen-cache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v6
-      with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/StormEigen
-        key: 3rdparty-eigen-${{ env.EIGEN_TAG }}
-    - name: Save googletest source cache
-      if: inputs.save_3rdparty_cache == 'true' && steps.googletest-cache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v6
-      with:
-        path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest
-        key: 3rdparty-googletest-${{ env.GTEST_VERSION }}
+        save: ${{ inputs.save_3rdparty_cache }}
 
     # Build Storm
     - name: Build storm
