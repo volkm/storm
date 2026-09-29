@@ -20,6 +20,9 @@ FetchContent_Declare(
         l3pp
         GIT_REPOSITORY https://github.com/hbruintjes/l3pp.git
         GIT_TAG 513c7589232396e4b8975113b7709a8f39b46c85
+        # l3pp has no CMakeLists.txt today, but guard against it gaining one upstream and being
+        # silently added as a subdirectory (see Eigen/Boost.PFR above for the same pattern).
+        SOURCE_SUBDIR do-not-add-as-subdirectory
 )
 FetchContent_MakeAvailable(l3pp)
 add_library(l3pp INTERFACE) # Not imported, we are in control of the sources.
@@ -517,6 +520,10 @@ if(STORM_LOAD_QVBS)
             qvbs
             GIT_REPOSITORY https://github.com/ahartmanns/qcomp.git
             GIT_SHALLOW 1
+            # qcomp has no CMakeLists.txt today, but guard against it gaining one upstream and
+            # being silently added as a subdirectory (see Eigen/Boost.PFR/l3pp above). Only
+            # STORM_QVBS_ROOT (a plain source-dir path) is actually needed here.
+            SOURCE_SUBDIR do-not-add-as-subdirectory
     )
     FetchContent_MakeAvailable(qvbs)
     set(STORM_HAVE_QVBS ON)

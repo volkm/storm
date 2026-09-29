@@ -2,15 +2,13 @@ name: 'Cache 3rdparty source downloads'
 description: >
   Restores and saves cached sources for gmm, Eigen, and googletest (fetched via FetchContent).
   Avoids redownloading them.
-  First call with restore: true, then execute configure step and append this call's cmake-args, then call wih save: true.
+  First call with restore: true, then execute configure step and append this call's cmake-args, then call with save: true.
 inputs:
   restore:
     description: "Restore cached 3rdparty source downloads"
-    type: boolean
     default: false
   save:
     description: "Save 3rdparty source downloads to cache"
-    type: boolean
     default: false
 outputs:
   cmake-args:
@@ -89,21 +87,25 @@ runs:
           mkdir -p "${{ env.STORM_3RDPARTY_CACHE_DIR }}"
           cp -a build/_deps/googletest-src "${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest"
         fi
+        # Only save if the directory actually exists (the dependency could be disabled).
+        echo "GMM_DIR_EXISTS=$([ -d "${{ env.STORM_3RDPARTY_CACHE_DIR }}/gmm" ] && echo true || echo false)" >> "$GITHUB_ENV"
+        echo "EIGEN_DIR_EXISTS=$([ -d "${{ env.STORM_3RDPARTY_CACHE_DIR }}/StormEigen" ] && echo true || echo false)" >> "$GITHUB_ENV"
+        echo "GOOGLETEST_DIR_EXISTS=$([ -d "${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest" ] && echo true || echo false)" >> "$GITHUB_ENV"
       shell: bash
     - name: Save gmm source cache
-      if: inputs.save == 'true' && env.GMM_CACHE_HIT != 'true'
+      if: inputs.save == 'true' && env.GMM_CACHE_HIT != 'true' && env.GMM_DIR_EXISTS == 'true'
       uses: actions/cache/save@v6
       with:
         path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/gmm
         key: 3rdparty-gmm-${{ env.GMM_VERSION }}
     - name: Save Eigen source cache
-      if: inputs.save == 'true' && env.EIGEN_CACHE_HIT != 'true'
+      if: inputs.save == 'true' && env.EIGEN_CACHE_HIT != 'true' && env.EIGEN_DIR_EXISTS == 'true'
       uses: actions/cache/save@v6
       with:
         path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/StormEigen
         key: 3rdparty-eigen-${{ env.EIGEN_TAG }}
     - name: Save googletest source cache
-      if: inputs.save == 'true' && env.GOOGLETEST_CACHE_HIT != 'true'
+      if: inputs.save == 'true' && env.GOOGLETEST_CACHE_HIT != 'true' && env.GOOGLETEST_DIR_EXISTS == 'true'
       uses: actions/cache/save@v6
       with:
         path: ${{ env.STORM_3RDPARTY_CACHE_DIR }}/googletest
